@@ -12,6 +12,7 @@ sudo docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 ```bash
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/schema.sql
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < migrations_facilitator_review.sql
 ```
 
 3) Verify tables exist:
@@ -50,3 +51,18 @@ User: ${SIG_DB_USER}
 Password: ${SIG_DB_PASSWORD}
 ```
 
+6) Create a Postgres datasource in Appsmith
+
+Appsmith UI → Datasources → New Datasource → PostgreSQL
+
+If Appsmith is in docker with Postgres:
+
+```bash
+Host: signaturegate-postgres
+Port: 5432
+DB: ${SIG_DB_NAME}
+User: ${SIG_DB_USER}
+Password: ${SIG_DB_PASSWORD}
+```
+
+Test & Save.
