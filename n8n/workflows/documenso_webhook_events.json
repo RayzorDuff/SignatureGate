@@ -1,0 +1,77 @@
+{
+  "name": "SignatureGate - Documenso - Webhook Events",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "signaturegate/documenso/events",
+        "httpMethod": "POST",
+        "responseMode": "onReceived"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        260,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const body = $json.body || {};\nconst event = body.event;\nconst payload = body.payload || {};\n\nif (!event) throw new Error('Missing webhook event');\n\nconst docId = payload.id ?? null;\nconst externalId = payload.externalId ?? null;\nconst statusFromDocumenso = payload.status ?? null;\n\n// Map Documenso event -> SignatureGate status.\n// Keep it simple and stable: completed => signed, cancelled/rejected => cancelled/rejected, others => pending_signature.\nlet status = null;\nif (event === 'document.completed') status = 'signed';\nelse if (event === 'document.rejected') status = 'rejected';\nelse if (event === 'document.cancelled') status = 'cancelled';\nelse if (event === 'document.sent' || event === 'document.signed') status = 'pending_signature';\n\nreturn [{\n  json: {\n    event,\n    status,\n    statusFromDocumenso,\n    docId,\n    externalId,\n    completedAt: payload.completedAt || null\n  }\n}];"
+      },
+      "name": "Normalize Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE member_agreements\nSET\n  status = COALESCE($3, status),\n  updated_at = now(),\n  signed_at = CASE WHEN $3 = 'signed' THEN COALESCE(signed_at, now()) ELSE signed_at END\nWHERE (documenso_document_id = $1::bigint AND $1::bigint <> 0)\n   OR (documenso_external_id = $2 AND $2 IS NOT NULL);",
+        "values": "={{ [$json.docId || 0, $json.externalId || null, $json.status] }}"
+      },
+      "name": "PG - Update status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        770,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "SIGNATUREGATE_POSTGRES"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Event": {
+      "main": [
+        [
+          {
+            "node": "PG - Update status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

@@ -1,0 +1,193 @@
+{
+  "name": "SignatureGate - Documenso - Send Release (Member+Facilitator)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "signaturegate/documenso/send",
+        "httpMethod": "POST",
+        "responseMode": "lastNode"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        260,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  ma.member_agreement_id,\n  ma.member_id,\n  ma.facilitator_id,\n  ma.agreement_template_id,\n  at.documenso_template_envelope_id,\n  at.documenso_member_recipient_id,\n  at.documenso_facilitator_recipient_id,\n  m.first_name AS member_first_name,\n  m.last_name  AS member_last_name,\n  m.email      AS member_email,\n  f.first_name AS facilitator_first_name,\n  f.last_name  AS facilitator_last_name,\n  f.email      AS facilitator_email\nFROM member_agreements ma\nJOIN agreement_templates at ON at.agreement_template_id = ma.agreement_template_id\nJOIN members m ON m.member_id = ma.member_id\nJOIN members f ON f.member_id = ma.facilitator_id\nWHERE ma.member_agreement_id = $1::uuid\nLIMIT 1;",
+        "values": "={{ [$json.body.member_agreement_id] }}"
+      },
+      "name": "PG - Load Agreement Context",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "SIGNATUREGATE_POSTGRES"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const row = items[0].json[0];\nif (!row) throw new Error('No row returned for member_agreement_id');\n\nif (!row.documenso_template_envelope_id) {\n  throw new Error('Missing agreement_templates.documenso_template_envelope_id. Run db/migrations_documenso_integration.sql and seed the template row.');\n}\nif (!row.documenso_member_recipient_id || !row.documenso_facilitator_recipient_id) {\n  throw new Error('Missing agreement_templates Documenso recipient IDs (member/facilitator).');\n}\nif (!row.member_email) throw new Error('Member email is required to send a Documenso request.');\nif (!row.facilitator_email) throw new Error('Facilitator email is required to send a Documenso request.');\n\nconst externalId = `ma:${row.member_agreement_id}`;\n\nconst payloadObj = {\n  envelopeId: row.documenso_template_envelope_id,\n  distributeDocument: true,\n  externalId,\n  recipients: [\n    {\n      id: row.documenso_member_recipient_id,\n      email: row.member_email,\n      name: `${row.member_first_name ?? ''} ${row.member_last_name ?? ''}`.trim()\n    },\n    {\n      id: row.documenso_facilitator_recipient_id,\n      email: row.facilitator_email,\n      name: `${row.facilitator_first_name ?? ''} ${row.facilitator_last_name ?? ''}`.trim()\n    }\n  ]\n};\n\nreturn [{\n  json: {\n    member_agreement_id: row.member_agreement_id,\n    externalId,\n    payload: JSON.stringify(payloadObj)\n  }\n}];"
+      },
+      "name": "Build Documenso Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        760,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.DOCUMENSO_BASE_URL || 'https://documenso.danks.store' }}/api/v2/envelope/use",
+        "authentication": "headerAuth",
+        "headerAuthentication": {
+          "name": "Authorization",
+          "value": "={{ $env.DOCUMENSO_API_TOKEN || 'api_REPLACE_ME' }}"
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "payload",
+              "value": "={{ $json.payload }}"
+            }
+          ]
+        }
+      },
+      "name": "HTTP - Documenso Use Template",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1020,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const res = items[0].json;\n\n// Documenso responses vary by version; try common shapes.\nconst docId = res?.payload?.id ?? res?.id ?? res?.documentId ?? res?.data?.id;\nif (!docId) {\n  throw new Error(`Documenso /envelope/use response missing id. Response: ${JSON.stringify(res).slice(0,1200)}`);\n}\n\nreturn [{\n  json: {\n    member_agreement_id: $node['Build Documenso Payload'].json.member_agreement_id,\n    documenso_document_id: docId,\n    documenso_external_id: $node['Build Documenso Payload'].json.externalId\n  }\n}];"
+      },
+      "name": "Extract Documenso Document ID",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE member_agreements\nSET\n  signature_method = 'documenso',\n  status = 'pending_signature',\n  documenso_document_id = $2::bigint,\n  documenso_external_id = $3,\n  updated_at = now()\nWHERE member_agreement_id = $1::uuid;",
+        "values": "={{ [$json.member_agreement_id, $json.documenso_document_id, $json.documenso_external_id] }}"
+      },
+      "name": "PG - Update member_agreements",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "SIGNATUREGATE_POSTGRES"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "responseData": "={{ { ok: true, member_agreement_id: $json.member_agreement_id, documenso_document_id: $json.documenso_document_id } }}",
+        "responseCode": 200
+      },
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "PG - Load Agreement Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Load Agreement Context": {
+      "main": [
+        [
+          {
+            "node": "Build Documenso Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Documenso Payload": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Documenso Use Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Documenso Use Template": {
+      "main": [
+        [
+          {
+            "node": "Extract Documenso Document ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Documenso Document ID": {
+      "main": [
+        [
+          {
+            "node": "PG - Update member_agreements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Update member_agreements": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

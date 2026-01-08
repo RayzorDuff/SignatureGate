@@ -37,3 +37,10 @@ NocoDB supports connecting external databases as data sources inside a base. 
 
 Note: relationships across different data sources may be limited; plan on joining in Appsmith / n8n rather than expecting cross-source relational UI to “just work.”
 
+
+
+## Document signing integration
+
+SignatureGate uses Documenso for two-party signing (Member + Facilitator).
+The UI triggers signing via an n8n webhook, and Documenso webhooks update agreement status back into Postgres.
+See `n8n/DOCUMENSO_INTEGRATION.md`.

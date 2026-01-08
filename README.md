@@ -59,3 +59,11 @@ This system will store personal contact info and signed agreement references. Us
 - Encrypted storage for documents (S3 compatible / object storage recommended)
 - Regular backups (Postgres + object storage)
 
+
+
+## Documenso signing
+
+Two-party signing (Member + Facilitator) is implemented via n8n + Documenso.
+
+- Setup & workflows: `n8n/DOCUMENSO_INTEGRATION.md`
+- Certificate troubleshooting: `deploy/DOCUMENSO_CERT_TROUBLESHOOTING.md`
