@@ -3,51 +3,58 @@
   "nodes": [
     {
       "parameters": {
-        "path": "signaturegate/documenso/events",
         "httpMethod": "POST",
-        "responseMode": "onReceived"
+        "path": "signaturegate/documenso/events",
+        "options": {}
       },
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        260,
-        300
-      ]
+        0,
+        0
+      ],
+      "id": "fd9cf7b6-09ad-4b3c-9801-ec8d3cde3994",
+      "webhookId": "47aa4702-88dc-4228-9075-cecda74bb3eb"
     },
     {
       "parameters": {
-        "language": "javaScript",
-        "jsCode": "const body = $json.body || {};\nconst event = body.event;\nconst payload = body.payload || {};\n\nif (!event) throw new Error('Missing webhook event');\n\nconst docId = payload.id ?? null;\nconst externalId = payload.externalId ?? null;\nconst statusFromDocumenso = payload.status ?? null;\n\n// Map Documenso event -> SignatureGate status.\n// Keep it simple and stable: completed => signed, cancelled/rejected => cancelled/rejected, others => pending_signature.\nlet status = null;\nif (event === 'document.completed') status = 'signed';\nelse if (event === 'document.rejected') status = 'rejected';\nelse if (event === 'document.cancelled') status = 'cancelled';\nelse if (event === 'document.sent' || event === 'document.signed') status = 'pending_signature';\n\nreturn [{\n  json: {\n    event,\n    status,\n    statusFromDocumenso,\n    docId,\n    externalId,\n    completedAt: payload.completedAt || null\n  }\n}];"
+        "jsCode": "// Documenso webhook receiver for SignatureGate\n// Works with Documenso events like:\n// - \"document.completed\" (docs list)\n// - \"DOCUMENT_COMPLETED\" (example payloads)\n// Payload shape (docs): { event: string, payload: {...}, createdAt, webhookEndpoint }\n\nconst body = $json.body ?? $json; // webhook node can output either raw body or {body:...}\nconst eventRaw = body.event;\nconst payload = body.payload ?? {};\n\nif (!eventRaw) throw new Error(`Missing webhook event. Body: ${JSON.stringify(body)}`);\n\n// Normalize event to lowercase dot format: \"document.completed\"\nconst norm = (e) => {\n  const s = String(e);\n  // Common cases:\n  //  - DOCUMENT_COMPLETED -> document.completed\n  //  - document.completed -> document.completed\n  //  - DOCUMENT.SENT -> document.sent\n  const lower = s.toLowerCase();\n  if (lower.includes(\".\")) return lower;\n  return lower.replace(/_/g, \".\");\n};\nconst event = norm(eventRaw);\n\n// Correlation: we rely on externalId = \"ma:<uuid>\" set during /envelope/use\nconst externalId = payload.externalId ?? payload.external_id ?? null;\n\nlet member_agreement_id = null;\nif (externalId && typeof externalId === \"string\" && externalId.startsWith(\"ma:\")) {\n  member_agreement_id = externalId.slice(3);\n}\n\n// Documenso document id in webhook docs is numeric; in our system we store text.\n// Keep as string for storage.\nconst docId = payload.id ?? payload.documentId ?? payload.document_id ?? null;\nconst documenso_document_id = (docId === null || docId === undefined) ? null : String(docId);\n\n// Map Documenso event -> SignatureGate status\n// (You can refine later to track partially-signed vs completed if desired.)\nlet status = null;\nswitch (event) {\n  case \"document.completed\":\n    status = \"signed\";\n    break;\n  case \"document.rejected\":\n    status = \"rejected\";\n    break;\n  case \"document.cancelled\":\n    status = \"cancelled\";\n    break;\n  case \"document.sent\":\n    status = \"pending_signature\";\n    break;\n  case \"document.opened\":\n    status = \"pending_signature\";\n    break;\n  case \"document.signed\":\n    // one signer signed; still pending overall unless you track per-recipient.\n    status = \"pending_signature\";\n    break;\n  default:\n    // don't change status for events we aren't handling yet\n    status = null;\n}\n\nreturn [{\n  json: {\n    event,\n    eventRaw,\n    status,\n    externalId,\n    member_agreement_id,\n    documenso_document_id,\n    payload,\n    createdAt: body.createdAt ?? null\n  }\n}];\n"
       },
       "name": "Normalize Event",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        520,
-        300
-      ]
+        272,
+        0
+      ],
+      "id": "160908b5-2eeb-4e90-a858-b40f060ec1ad"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE member_agreements\nSET\n  status = COALESCE($3, status),\n  updated_at = now(),\n  signed_at = CASE WHEN $3 = 'signed' THEN COALESCE(signed_at, now()) ELSE signed_at END\nWHERE (documenso_document_id = $1::bigint AND $1::bigint <> 0)\n   OR (documenso_external_id = $2 AND $2 IS NOT NULL);",
-        "values": "={{ [$json.docId || 0, $json.externalId || null, $json.status] }}"
+        "query": "UPDATE member_agreements\nSET\n  status = COALESCE($3, status),\n  documenso_document_id = COALESCE(documenso_document_id, $4)\nWHERE\n  ($1 IS NOT NULL AND member_agreement_id = $1::uuid)\n  OR ($2 IS NOT NULL AND documenso_external_id = $2);",
+        "options": {
+          "queryReplacement": "={{ $json.member_agreement_id }},{{ $json.externalId }},{{ $json.status }},{{ $json.documenso_document_id }}"
+        }
       },
       "name": "PG - Update status",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        770,
-        300
+        512,
+        0
       ],
+      "id": "f09dfa31-8e99-4d3e-9f6f-82525b57b8a0",
       "credentials": {
         "postgres": {
-          "name": "SIGNATUREGATE_POSTGRES"
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
         }
       }
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -72,7 +79,16 @@
       ]
     }
   },
-  "active": false,
-  "settings": {},
-  "versionId": "1"
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "0be50ce6-dae7-4991-919e-89f3720548a5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "eQVUc4nAQPZOhuho",
+  "tags": []
 }
