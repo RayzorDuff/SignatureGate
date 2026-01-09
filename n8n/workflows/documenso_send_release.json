@@ -3,124 +3,146 @@
   "nodes": [
     {
       "parameters": {
-        "path": "signaturegate/documenso/send",
         "httpMethod": "POST",
-        "responseMode": "lastNode"
+        "path": "signaturegate/documenso/send",
+        "responseMode": "responseNode",
+        "options": {}
       },
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        260,
-        300
-      ]
+        0,
+        0
+      ],
+      "id": "216938db-605a-41f0-b1d9-4b1672cea7f9",
+      "webhookId": "6931cbca-92b9-45c6-b8a3-30e494a2bd34",
+      "alwaysOutputData": true
     },
     {
       "parameters": {
         "operation": "executeQuery",
         "query": "SELECT\n  ma.member_agreement_id,\n  ma.member_id,\n  ma.facilitator_id,\n  ma.agreement_template_id,\n  at.documenso_template_envelope_id,\n  at.documenso_member_recipient_id,\n  at.documenso_facilitator_recipient_id,\n  m.first_name AS member_first_name,\n  m.last_name  AS member_last_name,\n  m.email      AS member_email,\n  f.first_name AS facilitator_first_name,\n  f.last_name  AS facilitator_last_name,\n  f.email      AS facilitator_email\nFROM member_agreements ma\nJOIN agreement_templates at ON at.agreement_template_id = ma.agreement_template_id\nJOIN members m ON m.member_id = ma.member_id\nJOIN members f ON f.member_id = ma.facilitator_id\nWHERE ma.member_agreement_id = $1::uuid\nLIMIT 1;",
-        "values": "={{ [$json.body.member_agreement_id] }}"
+        "options": {
+          "queryReplacement": "={{ $json.body.member_agreement_id }}"
+        }
       },
       "name": "PG - Load Agreement Context",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        520,
-        300
+        272,
+        0
       ],
+      "id": "6f4cb7ee-9375-43cd-83f5-a89689c8211f",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "name": "SIGNATUREGATE_POSTGRES"
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
         }
       }
     },
     {
       "parameters": {
-        "language": "javaScript",
-        "jsCode": "const row = items[0].json[0];\nif (!row) throw new Error('No row returned for member_agreement_id');\n\nif (!row.documenso_template_envelope_id) {\n  throw new Error('Missing agreement_templates.documenso_template_envelope_id. Run db/migrations_documenso_integration.sql and seed the template row.');\n}\nif (!row.documenso_member_recipient_id || !row.documenso_facilitator_recipient_id) {\n  throw new Error('Missing agreement_templates Documenso recipient IDs (member/facilitator).');\n}\nif (!row.member_email) throw new Error('Member email is required to send a Documenso request.');\nif (!row.facilitator_email) throw new Error('Facilitator email is required to send a Documenso request.');\n\nconst externalId = `ma:${row.member_agreement_id}`;\n\nconst payloadObj = {\n  envelopeId: row.documenso_template_envelope_id,\n  distributeDocument: true,\n  externalId,\n  recipients: [\n    {\n      id: row.documenso_member_recipient_id,\n      email: row.member_email,\n      name: `${row.member_first_name ?? ''} ${row.member_last_name ?? ''}`.trim()\n    },\n    {\n      id: row.documenso_facilitator_recipient_id,\n      email: row.facilitator_email,\n      name: `${row.facilitator_first_name ?? ''} ${row.facilitator_last_name ?? ''}`.trim()\n    }\n  ]\n};\n\nreturn [{\n  json: {\n    member_agreement_id: row.member_agreement_id,\n    externalId,\n    payload: JSON.stringify(payloadObj)\n  }\n}];"
+        "jsCode": "const items = $input.all();\n\nif (items && items.length > 0 && items[0].json) {\n    const row = items[0].json; // Access the json object directly\n\n    if (!row.member_agreement_id) {\n        throw new Error('member_agreement_id is missing from the row data');\n    }    \n    if (!row.documenso_template_envelope_id) {\n      throw new Error('Missing agreement_templates.documenso_template_envelope_id. Run db/migrations_documenso_integration.sql and seed the template row.');\n    }\n    if (!row.documenso_member_recipient_id || !row.documenso_facilitator_recipient_id) {\n      throw new Error('Missing agreement_templates Documenso recipient IDs (member/facilitator).');\n    }\n\n    const memberEmail = (row.member_email || '').trim();\n    const facilitatorEmail = (row.facilitator_email || '').trim();\n    \n    const emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n    \n    if (!emailRe.test(memberEmail)) {\n      throw new Error(`Invalid/missing member_email: \"${memberEmail}\"`);\n    }\n    if (!emailRe.test(facilitatorEmail)) {\n      throw new Error(`Invalid/missing facilitator_email: \"${facilitatorEmail}\"`);\n    }  \n    \n    const externalId = `ma:${row.member_agreement_id}`;\n    \n    const payloadObj = {\n      envelopeId: row.documenso_template_envelope_id,\n      distributeDocument: true,\n      externalId,\n      recipients: [\n        {\n          id: row.documenso_member_recipient_id,\n          email: memberEmail,\n          name: `${row.member_first_name ?? ''} ${row.member_last_name ?? ''}`.trim()\n        },\n        {\n          id: row.documenso_facilitator_recipient_id,\n          email: facilitatorEmail,\n          name: `${row.facilitator_first_name ?? ''} ${row.facilitator_last_name ?? ''}`.trim()\n        }\n      ]\n    };\n    \n    return [{\n      json: {\n        member_agreement_id: $json.member_agreement_id,\n        externalId: $json.externalId,\n        payload: {\n          envelopeId: row.documenso_template_envelope_id,\n          distributeDocument: true,\n          externalId: $json.externalId,\n          recipients: [\n            { id: 5, email: memberEmail, name:`${row.member_first_name ?? ''} ${row.member_last_name ?? ''}`.trim() },\n            { id: row.documenso_facilitator_recipient_id, email: facilitatorEmail, name: `${row.facilitator_first_name ?? ''} ${row.facilitator_last_name ?? ''}`.trim() }\n          ]\n        }\n      }\n    }];\n      \n} else {\n    // Handle the case where no input items were found\n    throw new Error('No input items found for member_agreement_id');\n\n}\n\n\n"
       },
       "name": "Build Documenso Payload",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        760,
-        300
-      ]
+        512,
+        0
+      ],
+      "id": "db65756f-1373-4687-9471-2b1e9863554a",
+      "alwaysOutputData": true
     },
     {
       "parameters": {
         "method": "POST",
         "url": "={{ $env.DOCUMENSO_BASE_URL || 'https://documenso.danks.store' }}/api/v2/envelope/use",
-        "authentication": "headerAuth",
-        "headerAuthentication": {
-          "name": "Authorization",
-          "value": "={{ $env.DOCUMENSO_API_TOKEN || 'api_REPLACE_ME' }}"
-        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "payload",
-              "value": "={{ $json.payload }}"
+        "specifyBody": "json",
+        "jsonBody": "={{ { payload: $json.payload } }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
             }
-          ]
+          }
         }
       },
       "name": "HTTP - Documenso Use Template",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        1020,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "language": "javaScript",
-        "jsCode": "const res = items[0].json;\n\n// Documenso responses vary by version; try common shapes.\nconst docId = res?.payload?.id ?? res?.id ?? res?.documentId ?? res?.data?.id;\nif (!docId) {\n  throw new Error(`Documenso /envelope/use response missing id. Response: ${JSON.stringify(res).slice(0,1200)}`);\n}\n\nreturn [{\n  json: {\n    member_agreement_id: $node['Build Documenso Payload'].json.member_agreement_id,\n    documenso_document_id: docId,\n    documenso_external_id: $node['Build Documenso Payload'].json.externalId\n  }\n}];"
-      },
-      "name": "Extract Documenso Document ID",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1250,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE member_agreements\nSET\n  signature_method = 'documenso',\n  status = 'pending_signature',\n  documenso_document_id = $2::bigint,\n  documenso_external_id = $3,\n  updated_at = now()\nWHERE member_agreement_id = $1::uuid;",
-        "values": "={{ [$json.member_agreement_id, $json.documenso_document_id, $json.documenso_external_id] }}"
-      },
-      "name": "PG - Update member_agreements",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [
-        1480,
-        300
+        768,
+        0
       ],
+      "id": "fb3d9c28-3175-4d10-8cce-6a3bb61be010",
+      "alwaysOutputData": true,
       "credentials": {
-        "postgres": {
-          "name": "SIGNATUREGATE_POSTGRES"
+        "httpHeaderAuth": {
+          "id": "u9hUDEIBmKAUCQnU",
+          "name": "Header Auth account"
         }
       }
     },
     {
       "parameters": {
-        "responseData": "={{ { ok: true, member_agreement_id: $json.member_agreement_id, documenso_document_id: $json.documenso_document_id } }}",
-        "responseCode": 200
+        "jsCode": "// n8n HTTP node is returning FULL RESPONSE\n// so the actual API JSON is in $json.body\nconst full = $json;\nconst body = full.body ?? full; // fallback if full-response toggled off\n\nconst documensoId = body.id;\nif (!documensoId) {\n  throw new Error(\n    `Documenso /envelope/use response missing id. Response: ${JSON.stringify(full)}`\n  );\n}\n\n// Optional: collect signing URLs (handy for debugging/admin UI)\nconst recipients = body.recipients || [];\nconst memberSigner = recipients.find(r => r.signingOrder === 1) || recipients[0];\nconst facilitatorSigner = recipients.find(r => r.signingOrder === 2) || recipients[1];\n\nreturn [{\n  json: {\n    documenso_document_id: documensoId,\n    member_id: $('Webhook').first().json.body.member_agreement_id,\n    // For debugging or UI (optional)\n    member_signing_url: memberSigner?.signingUrl,\n    facilitator_signing_url: facilitatorSigner?.signingUrl,\n    recipients\n  }\n}];\n"
+      },
+      "name": "Extract Documenso Document ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        0
+      ],
+      "id": "73ae532f-569a-4aba-ad41-4414a3c821aa",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE member_agreements\nSET\n  signature_method = 'documenso',\n  status = 'pending_signature',\n  documenso_document_id = $2,\n  documenso_external_id = $3,\n  updated_at = now()\nWHERE member_agreement_id = $1::uuid;",
+        "options": {
+          "queryReplacement": "={{ $json.member_id }},{{ $json.documenso_document_id }},{{ $json.externalId ?? ('ma:' + $json.member_agreement_id) }}"
+        }
+      },
+      "name": "PG - Update member_agreements",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        0
+      ],
+      "id": "2566d7ee-fed2-40f0-a7fd-852d9cd64fb7",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
       },
       "name": "Respond",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        1700,
-        300
-      ]
+        1440,
+        0
+      ],
+      "id": "52b7717e-3747-4f20-934b-7d0de7505592"
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -189,7 +211,16 @@
       ]
     }
   },
-  "active": false,
-  "settings": {},
-  "versionId": "1"
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "c459c9fd-950b-488b-bdad-74017232dc00",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "ZfAbXioeWeZgiVUS",
+  "tags": []
 }
