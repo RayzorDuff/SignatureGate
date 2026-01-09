@@ -36,10 +36,11 @@
     },
     {
       "parameters": {
-        "functionCode": "const row = items[0].json[0];\nif (!row) throw new Error('No row returned for member_agreement_id');\n\nif (!row.documenso_template_envelope_id) {\n  throw new Error('Missing agreement_templates.documenso_template_envelope_id. Run db/migrations_documenso_integration.sql and seed the template row.');\n}\nif (!row.documenso_member_recipient_id || !row.documenso_facilitator_recipient_id) {\n  throw new Error('Missing agreement_templates Documenso recipient IDs (member/facilitator).');\n}\nif (!row.member_email) throw new Error('Member email is required to send a Documenso request.');\nif (!row.facilitator_email) throw new Error('Facilitator email is required to send a Documenso request.');\n\nconst externalId = `ma:${row.member_agreement_id}`;\n\nconst payloadObj = {\n  envelopeId: row.documenso_template_envelope_id,\n  distributeDocument: true,\n  externalId,\n  recipients: [\n    {\n      id: row.documenso_member_recipient_id,\n      email: row.member_email,\n      name: `${row.member_first_name ?? ''} ${row.member_last_name ?? ''}`.trim()\n    },\n    {\n      id: row.documenso_facilitator_recipient_id,\n      email: row.facilitator_email,\n      name: `${row.facilitator_first_name ?? ''} ${row.facilitator_last_name ?? ''}`.trim()\n    }\n  ]\n};\n\nreturn [{\n  json: {\n    member_agreement_id: row.member_agreement_id,\n    externalId,\n    payload: JSON.stringify(payloadObj)\n  }\n}];"
+        "language": "javaScript",
+        "jsCode": "const row = items[0].json[0];\nif (!row) throw new Error('No row returned for member_agreement_id');\n\nif (!row.documenso_template_envelope_id) {\n  throw new Error('Missing agreement_templates.documenso_template_envelope_id. Run db/migrations_documenso_integration.sql and seed the template row.');\n}\nif (!row.documenso_member_recipient_id || !row.documenso_facilitator_recipient_id) {\n  throw new Error('Missing agreement_templates Documenso recipient IDs (member/facilitator).');\n}\nif (!row.member_email) throw new Error('Member email is required to send a Documenso request.');\nif (!row.facilitator_email) throw new Error('Facilitator email is required to send a Documenso request.');\n\nconst externalId = `ma:${row.member_agreement_id}`;\n\nconst payloadObj = {\n  envelopeId: row.documenso_template_envelope_id,\n  distributeDocument: true,\n  externalId,\n  recipients: [\n    {\n      id: row.documenso_member_recipient_id,\n      email: row.member_email,\n      name: `${row.member_first_name ?? ''} ${row.member_last_name ?? ''}`.trim()\n    },\n    {\n      id: row.documenso_facilitator_recipient_id,\n      email: row.facilitator_email,\n      name: `${row.facilitator_first_name ?? ''} ${row.facilitator_last_name ?? ''}`.trim()\n    }\n  ]\n};\n\nreturn [{\n  json: {\n    member_agreement_id: row.member_agreement_id,\n    externalId,\n    payload: JSON.stringify(payloadObj)\n  }\n}];"
       },
       "name": "Build Documenso Payload",
-      "type": "n8n-nodes-base.function",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         760,
@@ -76,10 +77,11 @@
     },
     {
       "parameters": {
-        "functionCode": "const res = items[0].json;\n\n// Documenso responses vary by version; try common shapes.\nconst docId = res?.payload?.id ?? res?.id ?? res?.documentId ?? res?.data?.id;\nif (!docId) {\n  throw new Error(`Documenso /envelope/use response missing id. Response: ${JSON.stringify(res).slice(0,1200)}`);\n}\n\nreturn [{\n  json: {\n    member_agreement_id: $node['Build Documenso Payload'].json.member_agreement_id,\n    documenso_document_id: docId,\n    documenso_external_id: $node['Build Documenso Payload'].json.externalId\n  }\n}];"
+        "language": "javaScript",
+        "jsCode": "const res = items[0].json;\n\n// Documenso responses vary by version; try common shapes.\nconst docId = res?.payload?.id ?? res?.id ?? res?.documentId ?? res?.data?.id;\nif (!docId) {\n  throw new Error(`Documenso /envelope/use response missing id. Response: ${JSON.stringify(res).slice(0,1200)}`);\n}\n\nreturn [{\n  json: {\n    member_agreement_id: $node['Build Documenso Payload'].json.member_agreement_id,\n    documenso_document_id: docId,\n    documenso_external_id: $node['Build Documenso Payload'].json.externalId\n  }\n}];"
       },
       "name": "Extract Documenso Document ID",
-      "type": "n8n-nodes-base.function",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         1250,

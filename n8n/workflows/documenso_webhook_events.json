@@ -17,10 +17,11 @@
     },
     {
       "parameters": {
-        "functionCode": "const body = $json.body || {};\nconst event = body.event;\nconst payload = body.payload || {};\n\nif (!event) throw new Error('Missing webhook event');\n\nconst docId = payload.id ?? null;\nconst externalId = payload.externalId ?? null;\nconst statusFromDocumenso = payload.status ?? null;\n\n// Map Documenso event -> SignatureGate status.\n// Keep it simple and stable: completed => signed, cancelled/rejected => cancelled/rejected, others => pending_signature.\nlet status = null;\nif (event === 'document.completed') status = 'signed';\nelse if (event === 'document.rejected') status = 'rejected';\nelse if (event === 'document.cancelled') status = 'cancelled';\nelse if (event === 'document.sent' || event === 'document.signed') status = 'pending_signature';\n\nreturn [{\n  json: {\n    event,\n    status,\n    statusFromDocumenso,\n    docId,\n    externalId,\n    completedAt: payload.completedAt || null\n  }\n}];"
+        "language": "javaScript",
+        "jsCode": "const body = $json.body || {};\nconst event = body.event;\nconst payload = body.payload || {};\n\nif (!event) throw new Error('Missing webhook event');\n\nconst docId = payload.id ?? null;\nconst externalId = payload.externalId ?? null;\nconst statusFromDocumenso = payload.status ?? null;\n\n// Map Documenso event -> SignatureGate status.\n// Keep it simple and stable: completed => signed, cancelled/rejected => cancelled/rejected, others => pending_signature.\nlet status = null;\nif (event === 'document.completed') status = 'signed';\nelse if (event === 'document.rejected') status = 'rejected';\nelse if (event === 'document.cancelled') status = 'cancelled';\nelse if (event === 'document.sent' || event === 'document.signed') status = 'pending_signature';\n\nreturn [{\n  json: {\n    event,\n    status,\n    statusFromDocumenso,\n    docId,\n    externalId,\n    completedAt: payload.completedAt || null\n  }\n}];"
       },
       "name": "Normalize Event",
-      "type": "n8n-nodes-base.function",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         520,

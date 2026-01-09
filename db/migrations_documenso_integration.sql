@@ -9,7 +9,7 @@ ALTER TABLE public.agreement_templates
 
 ALTER TABLE public.member_agreements
   ADD COLUMN IF NOT EXISTS updated_at timestamp with time zone DEFAULT now() NOT NULL,
-  ADD COLUMN IF NOT EXISTS documenso_document_id bigint,
+  ADD COLUMN IF NOT EXISTS documenso_document_id text,
   ADD COLUMN IF NOT EXISTS documenso_external_id text;
 
 -- Seed current Documenso template + recipient IDs for the active sacrament release template.
