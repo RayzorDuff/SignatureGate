@@ -1,0 +1,94 @@
+{
+  "name": "SignatureGate - Documenso - Webhook Events",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signaturegate/documenso/events",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fd9cf7b6-09ad-4b3c-9801-ec8d3cde3994",
+      "webhookId": "47aa4702-88dc-4228-9075-cecda74bb3eb"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Documenso webhook receiver for SignatureGate\n// Works with Documenso events like:\n// - \"document.completed\" (docs list)\n// - \"DOCUMENT_COMPLETED\" (example payloads)\n// Payload shape (docs): { event: string, payload: {...}, createdAt, webhookEndpoint }\n\nconst body = $json.body ?? $json; // webhook node can output either raw body or {body:...}\nconst eventRaw = body.event;\nconst payload = body.payload ?? {};\n\nif (!eventRaw) throw new Error(`Missing webhook event. Body: ${JSON.stringify(body)}`);\n\n// Normalize event to lowercase dot format: \"document.completed\"\nconst norm = (e) => {\n  const s = String(e);\n  // Common cases:\n  //  - DOCUMENT_COMPLETED -> document.completed\n  //  - document.completed -> document.completed\n  //  - DOCUMENT.SENT -> document.sent\n  const lower = s.toLowerCase();\n  if (lower.includes(\".\")) return lower;\n  return lower.replace(/_/g, \".\");\n};\nconst event = norm(eventRaw);\n\n// Correlation: we rely on externalId = \"ma:<uuid>\" set during /envelope/use\nconst externalId = payload.externalId ?? payload.external_id ?? null;\n\nlet member_agreement_id = null;\nif (externalId && typeof externalId === \"string\" && externalId.startsWith(\"ma:\")) {\n  member_agreement_id = externalId.slice(3);\n}\n\n// Documenso document id in webhook docs is numeric; in our system we store text.\n// Keep as string for storage.\nconst docId = payload.id ?? payload.documentId ?? payload.document_id ?? null;\nconst documenso_document_id = (docId === null || docId === undefined) ? null : String(docId);\n\n// Map Documenso event -> SignatureGate status\n// (You can refine later to track partially-signed vs completed if desired.)\nlet status = null;\nswitch (event) {\n  case \"document.completed\":\n    status = \"signed\";\n    break;\n  case \"document.rejected\":\n    status = \"rejected\";\n    break;\n  case \"document.cancelled\":\n    status = \"cancelled\";\n    break;\n  case \"document.sent\":\n    status = \"pending_signature\";\n    break;\n  case \"document.opened\":\n    status = \"pending_signature\";\n    break;\n  case \"document.signed\":\n    // one signer signed; still pending overall unless you track per-recipient.\n    status = \"pending_signature\";\n    break;\n  default:\n    // don't change status for events we aren't handling yet\n    status = null;\n}\n\nreturn [{\n  json: {\n    event,\n    eventRaw,\n    status,\n    externalId,\n    member_agreement_id,\n    documenso_document_id,\n    payload,\n    createdAt: body.createdAt ?? null\n  }\n}];\n"
+      },
+      "name": "Normalize Event",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        0
+      ],
+      "id": "160908b5-2eeb-4e90-a858-b40f060ec1ad"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE member_agreements\nSET\n  status = COALESCE($3, status),\n  documenso_document_id = COALESCE(documenso_document_id, $4)\nWHERE\n  ($1 IS NOT NULL AND member_agreement_id = $1::uuid)\n  OR ($2 IS NOT NULL AND documenso_external_id = $2);",
+        "options": {
+          "queryReplacement": "={{ $json.member_agreement_id }},{{ $json.externalId }},{{ $json.status }},{{ $json.documenso_document_id }}"
+        }
+      },
+      "name": "PG - Update status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        512,
+        0
+      ],
+      "id": "f09dfa31-8e99-4d3e-9f6f-82525b57b8a0",
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Event": {
+      "main": [
+        [
+          {
+            "node": "PG - Update status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "0be50ce6-dae7-4991-919e-89f3720548a5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "eQVUc4nAQPZOhuho",
+  "tags": []
+}
