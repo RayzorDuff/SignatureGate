@@ -1,0 +1,218 @@
+{
+  "name": "SignatureGate - Upload Evidence via n8n (Base64 -> NocoDB)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signaturegate/upload",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook - Upload Evidence",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "03a183aa-71e2-4661-9a1a-c1c891ecd7d6",
+      "webhookId": "b50c0cfb-200f-4ed6-be6f-2a55e37b3eae"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Expected request body:\n// { \"files\": [ { name, type/mimeType, data/base64/content } , ... ] }\n// Where data/base64/content may be:\n// - raw base64\n// - data URL: \"data:application/pdf;base64,....\"\nconst body = $json.body ?? $json;\nlet files = body.files ?? body.file ?? [];\nif (!Array.isArray(files)) files = [files];\nfiles = files.filter(Boolean);\nif (!files.length) {\n  throw new Error('No files found in webhook body. Expected {\"files\":[...]}');\n}\n\nconst out = [];\n\nfor (const f of files) {\n  const fileName = f.name || f.fileName || f.filename || 'upload.bin';\n  const mimeType = f.type || f.mimeType || f.mimetype || 'application/octet-stream';\n  let b64 = f.data || f.base64 || f.content || f.fileData || f.file || null;\n\n  // Some Appsmith file objects only include an \"id\" pointing to their internal store\n  // (e.g. \"uppy-...\"). If you see that, you are NOT actually sending base64.\n  if (!b64 && f.id) {\n    throw new Error(`File \"${fileName}\" did not include base64 content. Got id=\"${f.id}\". Ensure your Appsmith action sends base64 (data or base64 field), not only an id.`);\n  }\n  if (!b64 || typeof b64 !== 'string') {\n    throw new Error(`File \"${fileName}\" missing base64 content (expected string in data/base64/content). Keys: ${Object.keys(f).join(',')}`);\n  }\n\n  // Strip data URL prefix if present\n  if (b64.startsWith('data:')) {\n    const comma = b64.indexOf(',');\n    if (comma === -1) throw new Error(`Invalid data URL for \"${fileName}\"`);\n    b64 = b64.slice(comma + 1);\n  }\n\n  // Light validation\n  if (b64.length < 16) throw new Error(`Base64 payload too short for \"${fileName}\"`);\n\n  // Build n8n binary item: { binary: { data: { data:<base64>, mimeType, fileName } } }\n  out.push({\n    json: { fileName, mimeType },\n    binary: {\n      data: { data: b64, mimeType, fileName }\n    }\n  });\n}\n\nreturn out;"
+      },
+      "name": "Code - Base64 to Binary Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        0
+      ],
+      "id": "347c531f-e557-4aff-9043-6027495efcfa"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.NOCODB_BASE_URL || 'https://nocodb.danks.store').replace(/\\/+$/,'') + '/api/v2/storage/upload' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "files",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "response": {},
+          "timeout": 300000
+        }
+      },
+      "name": "HTTP - NocoDB Upload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        592,
+        0
+      ],
+      "id": "001903f1-1779-4a58-a436-0f180953429b",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "860iMhdghJRhIvm1",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize NocoDB upload response into a stable shape for Appsmith.\n// NocoDB typically returns an array of attachment objects, or { files: [...] }.\nconst r = $json.body ?? $json;\nlet files = r;\nif (r && typeof r === 'object' && Array.isArray(r.files)) files = r.files;\nif (!Array.isArray(files)) files = [files];\n\nconst outFiles = files.filter(x => x && typeof x === 'object' && (x.path || x.signedPath));\n\nreturn [{ json: { ok: true, files: outFiles } }];"
+      },
+      "name": "Code - Build Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        0
+      ],
+      "id": "f4099d42-8a63-4325-b1d2-d0a7fe4a2811"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "content-type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        0
+      ],
+      "id": "3a602ec4-4f8b-4b6d-b20a-aebd061a0e02"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE member_agreements\nSET\n  status = 'signed',\n  signed_at = NOW(),\n  evidence =\n    COALESCE(NULLIF(evidence, '')::jsonb, '[]'::jsonb)\n    || COALESCE($2::jsonb, '[]'::jsonb)\nWHERE member_agreement_id = $1::uuid\nRETURNING member_agreement_id;",
+        "options": {
+          "queryReplacement": "={{ $('Normalize Event').item.json.member_agreement_id }},{{$json.new_attachments_json}}"
+        }
+      },
+      "name": "PG - Attach signed PDF",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        944,
+        -256
+      ],
+      "id": "711fdc82-2fdd-4344-8b69-21a2a45c9291",
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $json.body ?? $json;\nlet files = r;\nif (r && typeof r === 'object' && Array.isArray(r.files)) files = r.files;\nif (!Array.isArray(files)) files = [files];\nreturn [{ json: { new_attachments_json: JSON.stringify(files) } }];"
+      },
+      "name": "Build Evidence JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        -256
+      ],
+      "id": "ded5a063-3eb6-457c-84b0-17b5fff93454"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Upload Evidence": {
+      "main": [
+        [
+          {
+            "node": "Code - Base64 to Binary Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Base64 to Binary Items": {
+      "main": [
+        [
+          {
+            "node": "HTTP - NocoDB Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - NocoDB Upload": {
+      "main": [
+        [
+          {
+            "node": "Code - Build Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Build Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Evidence JSON": {
+      "main": [
+        [
+          {
+            "node": "PG - Attach signed PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Attach signed PDF": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "d6e7cc92-2975-457f-a7b6-e896dbfb0e2d",
+  "meta": {
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "8Z6Ll2LSVBIfLPtk",
+  "tags": []
+}

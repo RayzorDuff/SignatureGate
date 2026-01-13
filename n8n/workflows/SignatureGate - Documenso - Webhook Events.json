@@ -14,7 +14,7 @@
         0,
         0
       ],
-      "id": "fd9cf7b6-09ad-4b3c-9801-ec8d3cde3994",
+      "id": "ec768227-0318-48d3-ba17-ae9ced484904",
       "webhookId": "47aa4702-88dc-4228-9075-cecda74bb3eb"
     },
     {
@@ -28,7 +28,7 @@
         272,
         0
       ],
-      "id": "160908b5-2eeb-4e90-a858-b40f060ec1ad"
+      "id": "7a753b71-137d-405e-86e8-610f8e5b047e"
     },
     {
       "parameters": {
@@ -45,7 +45,199 @@
         512,
         0
       ],
-      "id": "f09dfa31-8e99-4d3e-9f6f-82525b57b8a0",
+      "id": "594e87a4-db36-4a00-a897-912b6802bc27",
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "94de839c-0c67-4962-9b92-75e7dbf136f7",
+              "leftValue": "={{ $('Normalize Event').item.json.event }}",
+              "rightValue": "completed",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "name": "IF - Completed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        608,
+        208
+      ],
+      "id": "b7b90837-a239-461f-9232-243f9451fda8"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT member_agreement_id, documenso_document_id\nFROM member_agreements\nWHERE member_agreement_id = $1::uuid;",
+        "options": {
+          "queryReplacement": "={{ $('Normalize Event').item.json.member_agreement_id }}"
+        }
+      },
+      "name": "PG - Fetch agreement",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        832,
+        64
+      ],
+      "id": "79addb64-abf4-4dc1-9206-65e87bc721b2",
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "=GET",
+        "url": "={{ $env.DOCUMENSO_BASE_URL || 'https://documenso.danks.store' }}/api/v2/envelope/{{ $json.documenso_document_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {}
+        }
+      },
+      "name": "HTTP - Documenso Get Envelope",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1040,
+        64
+      ],
+      "id": "18e8acb1-31de-4e59-a55e-22aa1b15df9d",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "u9hUDEIBmKAUCQnU",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\nconst items = body.items ?? body.envelopeItems ?? body.envelope_items ?? [];\nif (!Array.isArray(items) || items.length === 0) {\n  throw new Error('No envelope items found in Documenso envelope response: ' + JSON.stringify(body).slice(0,2000));\n}\nconst item = items.find(i => String(i.fileType || i.mimetype || '').includes('pdf')) || items[0];\nconst envelopeItemId = item.id || item.envelopeItemId || item.envelope_item_id;\nif (!envelopeItemId) throw new Error('Missing envelope item id. Item: ' + JSON.stringify(item));\nreturn [{ json: { envelopeItemId } }];"
+      },
+      "name": "Pick Envelope Item",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        64
+      ],
+      "id": "0f1a75d9-f095-4391-a8d6-0cc4c73cf004"
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.DOCUMENSO_BASE_URL || 'https://documenso.danks.store' }}/api/v2/envelope/item/{{  $json.envelopeItemId }}/download",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {}
+        }
+      },
+      "name": "HTTP - Documenso Download PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1488,
+        64
+      ],
+      "id": "8156467f-24af-44b7-a7d9-7929ee9a909b",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "u9hUDEIBmKAUCQnU",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.NOCODB_BASE_URL || 'https://nocodb.danks.store').replace(/\\/+$/,'') + '/api/v2/storage/upload' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "files",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "response": {}
+        }
+      },
+      "name": "HTTP - NocoDB Upload Evidence",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1712,
+        64
+      ],
+      "id": "48c53fb8-88e9-45bf-a3e0-ba879fb14d9d",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "860iMhdghJRhIvm1",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $json.body ?? $json;\nlet files = r;\nif (r && typeof r === 'object' && Array.isArray(r.files)) files = r.files;\nif (!Array.isArray(files)) files = [files];\nreturn [{ json: { new_attachments_json: JSON.stringify(files) } }];"
+      },
+      "name": "Build Evidence JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        64
+      ],
+      "id": "dcdc1192-23d5-4ab0-9b00-7992a9898d3c"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE member_agreements\nSET\n  status = 'signed',\n  signed_at = NOW(),\n  evidence =\n    COALESCE(NULLIF(evidence, '')::jsonb, '[]'::jsonb)\n    || COALESCE($2::jsonb, '[]'::jsonb)\nWHERE member_agreement_id = $1::uuid\nRETURNING member_agreement_id;",
+        "options": {
+          "queryReplacement": "={{ $('Normalize Event').item.json.member_agreement_id }},{{$json.new_attachments_json}}"
+        }
+      },
+      "name": "PG - Attach signed PDF",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        64
+      ],
+      "id": "8d0dd0f8-d17b-43f2-8a19-210d675c48f0",
       "credentials": {
         "postgres": {
           "id": "r1oDpLoZSVIIOWRS",
@@ -77,6 +269,94 @@
           }
         ]
       ]
+    },
+    "PG - Update status": {
+      "main": [
+        [
+          {
+            "node": "IF - Completed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Completed?": {
+      "main": [
+        [
+          {
+            "node": "PG - Fetch agreement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Fetch agreement": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Documenso Get Envelope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Documenso Get Envelope": {
+      "main": [
+        [
+          {
+            "node": "Pick Envelope Item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Envelope Item": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Documenso Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Documenso Download PDF": {
+      "main": [
+        [
+          {
+            "node": "HTTP - NocoDB Upload Evidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - NocoDB Upload Evidence": {
+      "main": [
+        [
+          {
+            "node": "Build Evidence JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Evidence JSON": {
+      "main": [
+        [
+          {
+            "node": "PG - Attach signed PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -84,11 +364,11 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "0be50ce6-dae7-4991-919e-89f3720548a5",
+  "versionId": "7aaa9061-101a-4a21-8027-556d2652dfb1",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
-  "id": "eQVUc4nAQPZOhuho",
+  "id": "jA0LU4YYRqWJACRl",
   "tags": []
 }
