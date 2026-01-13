@@ -1,0 +1,169 @@
+{
+  "name": "SignatureGate - Airtable - List Available Sacrament Products",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "signaturegate/airtable/products/available",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "ed06d5de-b00d-4759-b48e-ba3891a80831",
+      "name": "Webhook - List Products",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        -16
+      ],
+      "webhookId": "9e30e67c-e104-4dfa-b1fd-02377b0bac7d"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appxJ59Wmyd96jXMm",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl51zhGGDuaL2Sm4",
+          "mode": "id"
+        },
+        "filterByFormula": "=AND({origin_strain_regulated}, {item_category} = 'freezedriedmushrooms', NOT(OR({storage_location} = 'Shipped', {storage_location} = 'Consumed', {storage_location} = 'Expired')))",
+        "options": {}
+      },
+      "id": "72608e49-1778-40d8-93df-75ac2d59b910",
+      "name": "Airtable - List Products",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        272,
+        64
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "vgt8hbjfh9CbsaQA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appxJ59Wmyd96jXMm",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl2QYDX1lLDyrpcm",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "820382e7-db7c-4db5-bb78-21766961b61b",
+      "name": "Airtable - List Locations",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        128,
+        64
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "vgt8hbjfh9CbsaQA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const products =  $('Airtable - List Products').all().map(i => i.json);\nconst locations = $('Airtable - List Locations').all().map(i => i.json);\n\nfunction asArray(v) {\n  if (v == null) return [];\n  return Array.isArray(v) ? v : [v];\n}\n\nfunction stripIndexPrefix(x) {\n  if (x == null) return null;\n  const s = String(x);\n  const m = s.match(/^\\d+:(rec[a-zA-Z0-9]+)/);\n  return m ? m[1] : s;\n}\n\nconst locById = new Map();\nfor (const rec of locations) {\n  const f = rec.fields ?? rec;\n  const name = (f.name ?? '').toString().trim();\n  if (rec.id) locById.set(rec.id, name);\n}\n\nconst EXCLUDE_LOCATIONS = new Set(['Shipped','Consumed','Expired']);\n\nconst out = [];\nfor (const rec of products) {\n  const f = rec.fields ?? rec;\n  const product_id = f.product_id;\n  if (!product_id) continue;\n\n  const locIds = asArray(f.storage_location)\n    .map(stripIndexPrefix)\n    .filter(x => x && x !== \"undefined\");\n\n  const locNames = locIds.map(id => locById.get(id)).filter(Boolean);\n\n  if (locNames.some(n => EXCLUDE_LOCATIONS.has(n))) continue;\n\n  out.push({\n    airtable_record_id: rec.id,\n    mushroomprocess_product_id: product_id,\n    item_name: (asArray(f.name)[0] ?? null),\n    strain: (asArray(f.species_strain)[0] ?? null),\n    net_weight_g: f.net_weight_g ?? null,\n    unit: \"g\",\n    storage_location: locNames[0] ?? null,\n  });\n}\n\nreturn [{ json: { ok: true, data: out } }];\n"
+      },
+      "id": "180f217a-ea2f-4c43-af7f-9b2ed98a8062",
+      "name": "Code - Filter & Normalize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "4d379ee5-6ead-4f45-93ca-c8c42b25da9d",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        592,
+        -16
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - List Products": {
+      "main": [
+        [
+          {
+            "node": "Airtable - List Locations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - List Products": {
+      "main": [
+        [
+          {
+            "node": "Code - Filter & Normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Filter & Normalize": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - List Locations": {
+      "main": [
+        [
+          {
+            "node": "Airtable - List Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "af6f833b-6eeb-46ae-809c-814bb36bcda9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "nY5117w4g7kW6iWo",
+  "tags": []
+}
