@@ -5,6 +5,61 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.1.0-beta] – 2026-01-13
+
+End-to-end Digital Agreement + Sacrament Release Pipeline
+
+### Major Features
+- Added full Documenso → n8n → Postgres → Appsmith signing lifecycle
+- Agreements now transition automatically from:
+  - pending_email_send
+  - pending_signature
+  - signed / rejected / cancelled
+- Completed signed PDFs are now fetched from Documenso, Base64 encoded in n8n, and stored into NocoDB storage
+- Signed documents are written back into SignatureGate as structured JSON evidence
+
+### New Integrations
+- Documenso webhooks normalized and correlated using:
+  externalId = "ma:<member_agreement_id>"
+- n8n now acts as the system of record bridge between:
+  - Documenso
+  - SignatureGate (Postgres)
+  - NocoDB (file storage)
+  - Airtable (inventory source)
+
+### New Sacrament Gate
+- A member must have a signed agreement for the active “sacrament_release” agreement template
+- SignatureGate enforces agreement-template matching before sacrament issuance
+- Supports multiple agreement types (e.g., sweat lodge, sacrament, facilitation)
+
+### New Sacrament Release Workflow
+- Appsmith “Release – Issue” page
+- n8n workflows:
+  - List available sacrament products from Airtable
+  - Mark products as Shipped after issuance
+
+### Inventory Enforcement
+- Airtable products are filtered by:
+  - item_category = freezedriedmushrooms
+  - origin_strain_regulated = true
+  - storage_location NOT IN (Shipped, Consumed, Expired)
+- When issued, Airtable storage_location is updated to Shipped
+
+### File Upload Reliability
+- Switched NocoDB upload pipeline from multipart to Base64 JSON
+- Eliminated Appsmith large-file upload instability
+- n8n now handles all PDF ingestion for signed agreements
+
+### Database Enhancements
+- member_agreements now stores:
+  - documenso_document_id
+  - structured evidence JSON
+- Agreement templates support multiple “required_for” types
+
+### Operational Stability
+- Correlation via externalId ensures all webhook events update the correct agreement
+- Fully idempotent Documenso webhook processing
+
 ---
 
 ## [0.0.1-alpha] – 2026-01-08

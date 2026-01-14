@@ -1,0 +1,240 @@
+{
+  "name": "SignatureGate - Airtable - Mark Product Shipped",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signaturegate/airtable/products/mark_shipped",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "e2846e8a-5eed-4d47-8476-0c27a5c58bd7",
+      "name": "Webhook - Mark Shipped",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        80
+      ],
+      "webhookId": "a9d06d03-8e94-4797-964a-5a3dba18c534"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Expected body JSON:\n * {\n *   \"airtable_record_id\": \"rec....\",   // preferred\n *   \"mushroomprocess_product_id\": \"PROD-....\", // optional alternative lookup\n * }\n */\nconst body = $json.body || $json;\nconst airtable_record_id = body.airtable_record_id;\nconst mushroomprocess_product_id = body.mushroomprocess_product_id;\n\nif (!airtable_record_id && !mushroomprocess_product_id) {\n  throw new Error(\"Missing airtable_record_id or mushroomprocess_product_id\");\n}\n\nreturn [{ json: { airtable_record_id, mushroomprocess_product_id } }];"
+      },
+      "id": "2eb5783d-2183-4f0a-a773-3058bfb3d608",
+      "name": "Code - Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input 0: Airtable - List Locations\n// Input 1: AirtableFindProduct (optional fallback)\nconst location = $('Airtable - Find Location Shipped').first()?.json;\n\n// Each item should look like { id: \"rec...\", fields: { name: \"Shipped\", ... } }\nconst shippedLocId = location?.id;\n\nif (!shippedLocId) {\n  throw new Error(\n    `Could not find 'Shipped' location. Sample names: ${locations.slice(0,10).map(r => r.fields?.name).join(\", \")}`\n  );\n}\n\n// product record id: prefer body.airtable_record_id, else from AirtableFindProduct\nlet prodRecId = $('Code - Validate Input').first().json.airtable_record_id;\n\nif (!prodRecId) {\n  const prod = $('Airtable - Find Product by product_id').first()?.json; // AirtableFindProduct\n  prodRecId = prod?.id;\n}\n\nif (!prodRecId) throw new Error(\"Could not resolve product Airtable record id.\");\n\n// product record id: prefer body.airtable_record_id, else from AirtableFindProduct\nlet prodId = $('Code - Validate Input').first().json.mushroomprocess_product_id;\n\nif (!prodId) {\n  const prod = $('Airtable - Find Product by product_id').first()?.json; // AirtableFindProduct\n  prodRecId = prod?.product_id;\n}\n\nif (!prodId) throw new Error(\"Could not resolve product Airtable product_id.\");\n\n\n\nreturn [{ json: { id: prodRecId,  product_id: prodId, storage_location: shippedLocId } }];\n"
+      },
+      "id": "e2ac0746-4969-4527-a29d-a69713b76221",
+      "name": "Code - Resolve IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, updated_product_record_id: $json.id } }}",
+        "options": {}
+      },
+      "id": "4c5896f1-3cc2-460a-9ef6-584dd1802d4e",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        640,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appxJ59Wmyd96jXMm",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl51zhGGDuaL2Sm4",
+          "mode": "id"
+        },
+        "filterByFormula": "={product_id} = '{{ $('Code - Validate Input').item.json.mushroomprocess_product_id }}'",
+        "options": {}
+      },
+      "id": "482180a0-fcf6-4d5c-ab8c-1931cd6ce79f",
+      "name": "Airtable - Find Product by product_id",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        0
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "vgt8hbjfh9CbsaQA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "=appxJ59Wmyd96jXMm",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl2QYDX1lLDyrpcm",
+          "mode": "id"
+        },
+        "filterByFormula": "{name} = 'Shipped'",
+        "options": {}
+      },
+      "id": "6568099d-952f-4417-baf6-77df07e03b26",
+      "name": "Airtable - Find Location Shipped",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        64,
+        208
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "vgt8hbjfh9CbsaQA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.airtable.com/v0/appxJ59Wmyd96jXMm/tbl51zhGGDuaL2Sm4/{{$json.id}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"fields\": {\n    \"storage_location\": [\"{{$json.storage_location}}\"]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        432,
+        160
+      ],
+      "id": "ccb134d9-2e62-44d6-88ba-04312e0316df",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8jOPRa981PHbg7oW",
+          "name": "Header Auth account 3"
+        },
+        "airtableApi": {
+          "id": "gSlk2xHftMApxRZA",
+          "name": "Airtable account"
+        },
+        "airtableTokenApi": {
+          "id": "vgt8hbjfh9CbsaQA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Mark Shipped": {
+      "main": [
+        [
+          {
+            "node": "Code - Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Find Product by product_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Resolve IDs": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Find Location Shipped": {
+      "main": [
+        [
+          {
+            "node": "Code - Resolve IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Find Product by product_id": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Find Location Shipped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "1562d030-4388-457b-a35b-b24eae700cd6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "OMIv5C1iUbxZEZ8o",
+  "tags": []
+}
