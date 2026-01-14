@@ -61,7 +61,41 @@ This system will store personal contact info and signed agreement references. Us
 
 
 
+## Authentication and role-based access (Appsmith)
+
+SignatureGate is intended to be deployed as a **private Appsmith app** (login required). The app reads the authenticated user identity from:
+
+- `appsmith.user.email`
+
+…and maps that email to a row in `public.members` to determine permissions.
+
+### Roles
+
+- **Facilitator**: `members.is_facilitator = TRUE`
+  - Can use the app.
+  - Member directory results are scoped to: members they created, members where they are the facilitator on an agreement, or members where a sacrament release exists with them as facilitator.
+
+- **Document Reviewer**: `members.is_document_reviewer = TRUE`
+  - Sees the full member directory (for review/QA workflows).
+
+### Deployment requirements
+
+- Do **not** make the app public.
+- Create Appsmith users (invite) using the **same email** you store in `members.email`.
+- Ensure the member row is `status='active'` and has the appropriate role flag(s).
+
+Implementation details and troubleshooting are in `appsmith/GETTING_STARTED.md`.
+
 ## Documenso signing
+
+### Documenso database migrations
+
+If you enable Documenso integration, apply the Documenso migration(s) in addition to the core schema/migrations:
+
+- `db/migrations_documenso_integration.sql`
+- `db/migrations_documenso_integration_1.sql`
+
+See `n8n/DOCUMENSO_INTEGRATION.md` for the Documenso workflow wiring and tokens.
 
 Two-party signing (Member + Facilitator) is implemented via n8n + Documenso.
 

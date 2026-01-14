@@ -122,3 +122,71 @@ Recommended pattern:
 
 - Use n8n to periodically sync `products.product_id` (and any metadata you need) into a local mirror table in Postgres.
 - This keeps SignatureGate fast and stable while you transition MushroomProcess to NocoDB.
+
+---
+
+## 8) Authentication, roles, and access control
+
+SignatureGate relies on **Appsmith authentication** and then maps the authenticated email to `public.members`.
+
+### Appsmith settings (must-do)
+
+1) **Do not make the app public** (login required)
+   - In Appsmith: App → Share / Access settings → ensure public/anonymous access is disabled.
+2) Add users in Appsmith using the same email they will use to sign in.
+3) Confirm `appsmith.user.email` shows the correct value in a widget or via a debug toast during setup.
+
+### Database setup for users
+
+Each person who needs access should have:
+
+- an Appsmith user account (email-based)
+- a matching `public.members` row:
+  - `email` matches Appsmith login email
+  - `status = 'active'`
+  - set at least one role flag:
+    - `is_facilitator = TRUE` for facilitators
+    - `is_document_reviewer = TRUE` for reviewers (optional)
+
+### What the app enforces
+
+On page load, the app runs an auth gate (JS) that:
+
+- waits for `appsmith.user.email` to be available
+- calls `qCurrentFacilitator` using `{ email: appsmith.user.email }`
+- treats “no matching active facilitator/reviewer row” as **Access denied**
+- treats real query errors (DB down, bad SQL, etc.) as **Access check failed**
+- stores useful context in `appsmith.store` (for defaults and filtering)
+
+### Query parameter best-practice
+
+To avoid issues with auth hydration timing, prefer passing the email as a parameter:
+
+```sql
+WHERE lower(email) = lower({{ this.params.email }})
+```
+
+…and in JS:
+
+```js
+qCurrentFacilitator.run({ email: appsmith.user.email })
+```
+
+### Troubleshooting
+
+If a user is unexpectedly denied:
+
+1) Confirm the Appsmith user can log in and `appsmith.user.email` is populated.
+2) Confirm the member row exists in Postgres and is active:
+
+```sql
+SELECT member_id, email, status, is_facilitator, is_document_reviewer
+FROM public.members
+WHERE lower(email) = lower('<email>');
+```
+
+3) Confirm migrations were applied in this order:
+   - `db/migrations_facilitator_review.sql`
+   - `db/migrations_facilitator_authentication.sql`
+   - `db/migrations_sacrament_release.sql`
+   - (optional) `db/migrations_documenso_integration*.sql`

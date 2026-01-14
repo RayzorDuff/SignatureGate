@@ -8,11 +8,23 @@ Confirm containers are up:
 sudo docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 ```
 
-2) Load the schema into Postgres (recommended: execute inside the container):
+2) Load the schema + migrations into Postgres (recommended: execute inside the container):
 
 ```bash
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/schema.sql
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < migrations_facilitator_review.sql
+
+# Core role + review workflow fields/indexes
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_facilitator_review.sql
+
+# Facilitator auth support (created_by_facilitator_id, etc.)
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_facilitator_authentication.sql
+
+# Sacrament release enhancements (facilitator linkage, etc.)
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_sacrament_release.sql
+
+# Optional: Documenso integration (only if using Documenso + n8n workflow)
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_integration.sql
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_integration_1.sql
 ```
 
 3) Verify tables exist:
@@ -66,3 +78,12 @@ Password: ${SIG_DB_PASSWORD}
 ```
 
 Test & Save.
+
+
+## Migration order
+After schema.sql run:
+- migrations_facilitator_review.sql
+- migrations_facilitator_authentication.sql
+- migrations_sacrament_release.sql
+- migrations_documenso_integration.sql
+- migrations_documenso_integration_1.sql
