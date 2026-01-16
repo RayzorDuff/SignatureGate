@@ -31,7 +31,14 @@
           "mode": "id"
         },
         "filterByFormula": "={{ \n  (() => {\n    const loc = ($json?.query?.storage_location || \"\").trim();\n    const base = \"AND({origin_strain_regulated}, {item_category} = 'freezedriedmushrooms', NOT(OR({storage_location} = 'Shipped', {storage_location} = 'Consumed', {storage_location} = 'Expired')))\";\n    if (!loc) return \"=\" + base;\n    return \"=AND(\" + base + \", {storage_location} = '\" + loc.replace(/'/g, \"\\\\'\") + \"')\";\n  })()\n}}\n",
-        "options": {}
+        "options": {},
+        "sort": {
+          "property": [
+            {
+              "field": "=product_id"
+            }
+          ]
+        }
       },
       "id": "72608e49-1778-40d8-93df-75ac2d59b910",
       "name": "Airtable - List Products",
@@ -159,7 +166,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "6730b8e1-f583-40af-8a37-5c0c5aa8058d",
+  "versionId": "ea72981f-304a-4410-814f-a0a8dcdb20eb",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
