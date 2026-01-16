@@ -244,6 +244,29 @@
           "name": "Postgres account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.audit_log (actor, action, entity_type, entity_id, details)\nVALUES ($1, $2, $3, $4, COALESCE($5::jsonb, '{}'::jsonb))\nRETURNING audit_log_id;",
+        "options": {
+          "queryReplacement": "={{ 'documenso' }},{{ 'member_agreement.signed' }},{{ 'member_agreement' }},{{ $('Normalize Event').item.json.member_agreement_id || 'unknown' }},{{ JSON.stringify({ event: $('Normalize Event').item.json.event, externalId: $('Normalize Event').item.json.externalId, documenso_document_id: $('Normalize Event').item.json.documenso_document_id, createdAt: $('Normalize Event').item.json.createdAt || null }) }}"
+        }
+      },
+      "name": "PG - Audit agreement signed",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        -304
+      ],
+      "id": "047d3a48-9979-4395-9fba-fd59951fce5d",
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -364,7 +387,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "7aaa9061-101a-4a21-8027-556d2652dfb1",
+  "versionId": "de877119-f4ec-4969-b494-f84a3212c8c7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"

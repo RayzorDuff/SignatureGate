@@ -154,6 +154,29 @@
           "name": "Airtable Personal Access Token account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.audit_log (actor, action, entity_type, entity_id, details)\nVALUES ($1, $2, $3, $4, COALESCE($5::jsonb, '{}'::jsonb))\nRETURNING audit_log_id;",
+        "options": {
+          "queryReplacement": "={{ 'n8n' }},{{ 'product.shipped' }},{{ 'product' }},{{ $json.product_id || $json.id || 'unknown' }},{{ JSON.stringify({ airtable_record_id: $json.id, product_id: $json.product_id, storage_location: 'Shipped' }) }}"
+        }
+      },
+      "name": "PG - Audit product shipped",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        368,
+        -80
+      ],
+      "id": "f7e7f57d-47cc-4a0d-b082-d9f0c4bd2376",
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -230,7 +253,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "1562d030-4388-457b-a35b-b24eae700cd6",
+  "versionId": "dde3f365-1ad1-4368-a68f-95050c8d37f7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"

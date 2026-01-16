@@ -70,7 +70,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Normalize NocoDB upload response into a stable shape for Appsmith.\n// NocoDB typically returns an array of attachment objects, or { files: [...] }.\nconst r = $json.body ?? $json;\nlet files = r;\nif (r && typeof r === 'object' && Array.isArray(r.files)) files = r.files;\nif (!Array.isArray(files)) files = [files];\n\nconst outFiles = files.filter(x => x && typeof x === 'object' && (x.path || x.signedPath));\n\nreturn [{ json: { ok: true, files: outFiles } }];"
+        "jsCode": "const items = $input.all();\n\nconst allFiles = [];\n\nfor (const it of items) {\n  const r = it.json?.body ?? it.json;\n  let files = r;\n  if (r && typeof r === 'object' && Array.isArray(r.files)) files = r.files;\n  if (!Array.isArray(files)) files = [files];\n\n  for (const f of files) {\n    if (f && typeof f === 'object' && (f.path || f.signedPath)) {\n      allFiles.push(f);\n    }\n  }\n}\n\nreturn [{ json: { ok: true, files: allFiles } }];\n"
       },
       "name": "Code - Build Response",
       "type": "n8n-nodes-base.code",
@@ -103,42 +103,6 @@
         0
       ],
       "id": "3a602ec4-4f8b-4b6d-b20a-aebd061a0e02"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE member_agreements\nSET\n  status = 'signed',\n  signed_at = NOW(),\n  evidence =\n    COALESCE(NULLIF(evidence, '')::jsonb, '[]'::jsonb)\n    || COALESCE($2::jsonb, '[]'::jsonb)\nWHERE member_agreement_id = $1::uuid\nRETURNING member_agreement_id;",
-        "options": {
-          "queryReplacement": "={{ $('Normalize Event').item.json.member_agreement_id }},{{$json.new_attachments_json}}"
-        }
-      },
-      "name": "PG - Attach signed PDF",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [
-        944,
-        -256
-      ],
-      "id": "711fdc82-2fdd-4344-8b69-21a2a45c9291",
-      "credentials": {
-        "postgres": {
-          "id": "r1oDpLoZSVIIOWRS",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const r = $json.body ?? $json;\nlet files = r;\nif (r && typeof r === 'object' && Array.isArray(r.files)) files = r.files;\nif (!Array.isArray(files)) files = [files];\nreturn [{ json: { new_attachments_json: JSON.stringify(files) } }];"
-      },
-      "name": "Build Evidence JSON",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        752,
-        -256
-      ],
-      "id": "ded5a063-3eb6-457c-84b0-17b5fff93454"
     }
   ],
   "pinData": {},
@@ -186,22 +150,6 @@
           }
         ]
       ]
-    },
-    "Build Evidence JSON": {
-      "main": [
-        [
-          {
-            "node": "PG - Attach signed PDF",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PG - Attach signed PDF": {
-      "main": [
-        []
-      ]
     }
   },
   "active": true,
@@ -209,7 +157,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "d6e7cc92-2975-457f-a7b6-e896dbfb0e2d",
+  "versionId": "c2a5bfb1-66f2-40d4-80d1-ab003f4b5d9c",
   "meta": {
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
