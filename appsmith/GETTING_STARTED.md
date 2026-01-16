@@ -172,6 +172,15 @@ WHERE lower(email) = lower({{ this.params.email }})
 qCurrentFacilitator.run({ email: appsmith.user.email })
 ```
 
+### Contributing
+
+Appsmith exports the json for the project in a single line text file.  To convert this file, 
+prior to commit or manipulation with a merge tool, run:
+
+```bash
+node pretty-json.mjs --in "Rooted Psyche Membership Ops - your-export.json" --out "Rooted Psyche Membership Ops.json" --sort-keys
+```
+
 ### Troubleshooting
 
 If a user is unexpectedly denied:
