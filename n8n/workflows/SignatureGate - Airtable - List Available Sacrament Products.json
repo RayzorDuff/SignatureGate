@@ -22,7 +22,7 @@
         "operation": "search",
         "base": {
           "__rl": true,
-          "value": "appxJ59Wmyd96jXMm",
+          "value": "=appxJ59Wmyd96jXMm",
           "mode": "id"
         },
         "table": {
@@ -30,8 +30,15 @@
           "value": "tbl51zhGGDuaL2Sm4",
           "mode": "id"
         },
-        "filterByFormula": "=AND({origin_strain_regulated}, {item_category} = 'freezedriedmushrooms', NOT(OR({storage_location} = 'Shipped', {storage_location} = 'Consumed', {storage_location} = 'Expired')))",
-        "options": {}
+        "filterByFormula": "={{ \n  (() => {\n    const loc = ($json?.query?.storage_location || \"\").trim();\n    const base = \"AND({origin_strain_regulated}, {item_category} = 'freezedriedmushrooms', NOT(OR({storage_location} = 'Shipped', {storage_location} = 'Consumed', {storage_location} = 'Expired')))\";\n    if (!loc) return \"=\" + base;\n    return \"=AND(\" + base + \", {storage_location} = '\" + loc.replace(/'/g, \"\\\\'\") + \"')\";\n  })()\n}}\n",
+        "options": {},
+        "sort": {
+          "property": [
+            {
+              "field": "=product_id"
+            }
+          ]
+        }
       },
       "id": "72608e49-1778-40d8-93df-75ac2d59b910",
       "name": "Airtable - List Products",
@@ -80,7 +87,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const products =  $('Airtable - List Products').all().map(i => i.json);\nconst locations = $('Airtable - List Locations').all().map(i => i.json);\n\nfunction asArray(v) {\n  if (v == null) return [];\n  return Array.isArray(v) ? v : [v];\n}\n\nfunction stripIndexPrefix(x) {\n  if (x == null) return null;\n  const s = String(x);\n  const m = s.match(/^\\d+:(rec[a-zA-Z0-9]+)/);\n  return m ? m[1] : s;\n}\n\nconst locById = new Map();\nfor (const rec of locations) {\n  const f = rec.fields ?? rec;\n  const name = (f.name ?? '').toString().trim();\n  if (rec.id) locById.set(rec.id, name);\n}\n\nconst EXCLUDE_LOCATIONS = new Set(['Shipped','Consumed','Expired']);\n\nconst out = [];\nfor (const rec of products) {\n  const f = rec.fields ?? rec;\n  const product_id = f.product_id;\n  if (!product_id) continue;\n\n  const locIds = asArray(f.storage_location)\n    .map(stripIndexPrefix)\n    .filter(x => x && x !== \"undefined\");\n\n  const locNames = locIds.map(id => locById.get(id)).filter(Boolean);\n\n  if (locNames.some(n => EXCLUDE_LOCATIONS.has(n))) continue;\n\n  out.push({\n    airtable_record_id: rec.id,\n    mushroomprocess_product_id: product_id,\n    item_name: (asArray(f.name)[0] ?? null),\n    strain: (asArray(f.species_strain)[0] ?? null),\n    net_weight_g: f.net_weight_g ?? null,\n    unit: \"g\",\n    storage_location: locNames[0] ?? null,\n  });\n}\n\nreturn [{ json: { ok: true, data: out } }];\n"
+        "jsCode": "const products =  $('Airtable - List Products').all().map(i => i.json);\nconst locations = $('Airtable - List Locations').all().map(i => i.json);\n\nfunction asArray(v) {\n  if (v == null) return [];\n  return Array.isArray(v) ? v : [v];\n}\n\nfunction stripIndexPrefix(x) {\n  if (x == null) return null;\n  const s = String(x);\n  const m = s.match(/^\\d+:(rec[a-zA-Z0-9]+)/);\n  return m ? m[1] : s;\n}\n\nconst locById = new Map();\nfor (const rec of locations) {\n  const f = rec.fields ?? rec;\n  const name = (f.name ?? '').toString().trim();\n  if (rec.id) locById.set(rec.id, name);\n}\n\nconst EXCLUDE_LOCATIONS = new Set(['Shipped','Consumed','Expired']);\n\nconst out = [];\nfor (const rec of products) {\n  const f = rec.fields ?? rec;\n  const product_id = f.product_id;\n  if (!product_id) continue;\n\n  const locIds = asArray(f.storage_location)\n    .map(stripIndexPrefix)\n    .filter(x => x && x !== \"undefined\");\n\n  const locNames = locIds.map(id => locById.get(id)).filter(Boolean);\n\n  if (locNames.some(n => EXCLUDE_LOCATIONS.has(n))) continue;\n\n  out.push({\n    airtable_record_id: rec.id,\n    mushroomprocess_product_id: product_id,\n    item_name: (asArray(f.name)[0] ?? null),\n    strain: (asArray(f.species_strain)[0] ?? null),\n    net_weight_g: f.net_weight_g ?? null,\n    unit: \"g\",\n    storage_location: locNames[0] ?? null,\n  });\n}\n\nlet filtered = out;\nconst req = $('Webhook - List Products').first().json;\n\nconst requestedLoc = (req?.query?.storage_location || \"\").trim();\nif (requestedLoc) {\n  filtered = out.filter(p => (p.storage_location || \"\").trim() === requestedLoc);\n}\n\nreturn [{ json: { ok: true, data: filtered } }];"
       },
       "id": "180f217a-ea2f-4c43-af7f-9b2ed98a8062",
       "name": "Code - Filter & Normalize",
@@ -159,7 +166,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "af6f833b-6eeb-46ae-809c-814bb36bcda9",
+  "versionId": "ea72981f-304a-4410-814f-a0a8dcdb20eb",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
