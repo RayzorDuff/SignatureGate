@@ -5,6 +5,91 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.1.1-beta] — 2026-01-15
+
+### Added
+- **Role-based authentication and access control** using Appsmith authentication mapped to `public.members.email`.
+  - App access is now gated at page load based on database roles.
+  - Unauthorized users are redirected to an Unauthorized page in published mode.
+- **Facilitator role support** via `members.is_facilitator`.
+  - Facilitators may access the app and perform member, agreement, and release workflows.
+- **Document reviewer role support** via `members.is_document_reviewer`.
+  - Reviewers have global visibility of members and available products.
+  - Facilitators who are also reviewers effectively act as admins.
+- **Creator tracking for members** via `members.created_by_facilitator_id`.
+  - Used to scope member visibility for non-reviewer facilitators.
+- **Facilitator-scoped member directory**
+  - Non-reviewer facilitators only see:
+    - members they created
+    - members they are a facilitator for on an agreement
+    - members with sacrament releases issued by them
+  - Reviewers see all members.
+- **Facilitator-aware product availability filtering**
+  - In *Release → Issue*, non-reviewer facilitators only see products located in a storage location matching their `"FirstName LastName"`.
+  - Reviewers continue to see all available products.
+- **Improved n8n upload handling**
+  - The “SignatureGate – Upload Evidence via n8n (Base64 → NocoDB)” workflow now correctly preserves multiple uploaded files instead of dropping all but one.
+
+---
+
+### Changed
+- **Authentication flow hardened**
+  - Appsmith user context (`appsmith.user.email`) is now awaited before authorization checks.
+  - Queries pass email as a parameter (`this.params.email`) instead of inlining Appsmith globals in SQL.
+- **Authorization semantics clarified**
+  - “Access denied” is now correctly distinguished from “Access check failed” (true errors vs. no role).
+- **Member directory query consolidated**
+  - Reviewer override logic moved into SQL, eliminating the need for UI-level conditional table bindings.
+- **n8n product listing workflow**
+  - Accepts an optional `storage_location` filter from Appsmith.
+  - Filters available products by facilitator location when provided.
+
+---
+
+### Database
+- Added migrations:
+  - `migrations_facilitator_review.sql`
+    - Facilitator and reviewer role flags
+    - Agreement review support
+  - `migrations_facilitator_authentication.sql`
+    - `created_by_facilitator_id`
+  - `migrations_sacrament_release.sql`
+    - Facilitator linkage to sacrament releases
+- Documented and clarified **migration order**.
+- Documented **optional Documenso integration migrations**:
+  - `migrations_documenso_integration.sql`
+  - `migrations_documenso_integration_1.sql`
+
+---
+
+### Documentation
+- Expanded `README.md` with:
+  - Appsmith authentication model
+  - Role definitions and behavior
+  - Documenso database migration notes
+- Expanded `db/README.md` with:
+  - Explicit migration order
+  - Verification steps
+- Expanded `appsmith/GETTING_STARTED.md` with:
+  - Required Appsmith configuration (non-public app)
+  - User creation and role mapping
+  - Runtime auth behavior
+  - Troubleshooting checklist
+
+---
+
+### Fixed
+- Fixed n8n Code node output normalization that caused multi-file uploads to collapse to a single file.
+- Fixed inconsistent behavior between editor and published modes during authentication.
+- Fixed edge cases where zero-row SQL results were incorrectly treated as runtime failures.
+
+---
+
+### Notes
+- This release introduces **breaking behavior** for existing installations that do not apply the new facilitator/reviewer migrations.
+- Appsmith apps **must not be public** for authentication to function correctly.
+- Product storage locations must exactly match facilitator `"FirstName LastName"` for location-based filtering to work as intended.
+
 ## [v0.1.0-beta] – 2026-01-13
 
 End-to-end Digital Agreement + Sacrament Release Pipeline
