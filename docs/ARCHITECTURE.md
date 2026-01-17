@@ -123,6 +123,18 @@ Appsmith → n8n → Airtable
 n8n → SignatureGate
   Insert sacrament_release record
 
+## Audit logging intent
+
+Audit logging in SignatureGate is designed to be:
+- authoritative
+- durable
+- legally defensible
+
+Not all audits live in one layer:
+- Appsmith audits user intent
+- n8n audits external completion
+
+Future changes must preserve this split.
 
 
 

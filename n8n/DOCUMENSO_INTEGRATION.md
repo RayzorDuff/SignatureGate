@@ -20,6 +20,7 @@ Run:
 
 ```bash
 psql "$SIGNATUREGATE_DATABASE_URL" -f db/migrations_documenso_integration.sql
+psql "$SIGNATUREGATE_DATABASE_URL" -f db/migrations_documenso_integration_1.sql
 ```
 
 This adds the Documenso columns and seeds the active `sacrament_release` template row with:
@@ -40,7 +41,7 @@ Set these as environment variables for your n8n container (recommended), or conf
 
 Two workflow exports are included under `n8n/workflows/`:
 
-1. `documenso_send_release.json`
+1. `SignatureGate - Documenso - Send Release (Member+Facilitator)`
    - Webhook: `POST /webhook/signaturegate/documenso/send`
    - Input body:
      ```json
@@ -51,7 +52,7 @@ Two workflow exports are included under `n8n/workflows/`:
      - Calls Documenso `POST /api/v2/envelope/use` with `distributeDocument=true`
      - Updates `member_agreements` with `signature_method='documenso'`, `status='pending_signature'`, and Documenso identifiers
 
-2. `documenso_webhook_events.json`
+2. `SignatureGate - Documenso - Webhook Events.json`
    - Webhook: `POST /webhook/signaturegate/documenso/events`
    - Behavior:
      - Accepts Documenso webhook events (e.g. `document.completed`)

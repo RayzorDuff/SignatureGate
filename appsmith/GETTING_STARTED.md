@@ -13,7 +13,7 @@ This doc is written to help a new user get to the **same working point** as the 
 
 ---
 
-## 1) Load Postgres schema
+## Load Postgres schema
 
 1. Create the Postgres DB (example):
    - DB name: `signaturegate`
@@ -27,7 +27,7 @@ This doc is written to help a new user get to the **same working point** as the 
 
 ---
 
-## 2) NocoDB base (recommended)
+## NocoDB base (recommended)
 
 Even if you prefer Appsmith → Postgres direct for core CRUD, keeping **NocoDB** connected is handy for:
 
@@ -51,7 +51,7 @@ Route Appsmith to NocoDB using the **internal docker hostname / local network pa
 
 ---
 
-## 3) Import the Appsmith app
+## Import the Appsmith app
 
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
@@ -71,7 +71,7 @@ If Appsmith partial import fails, use:
 
 ---
 
-## 4) Configure key pages
+## Configure key pages
 
 ### Members - Directory
 - Lists members
@@ -88,7 +88,7 @@ If Appsmith partial import fails, use:
 
 ---
 
-## 5) NocoDB attachments and evidence
+## NocoDB attachments and evidence
 
 In Postgres, `member_agreements.evidence` is stored as **jsonb** (array of file objects).
 
@@ -101,17 +101,17 @@ In NocoDB UI you may set the field to “Attachment”. NocoDB still stores JSON
 
 ---
 
-## 6) Where we go next (recommended order)
+## Where we go next
 
 1. **Agreements - Templates** page (manage templates & required_for tags)
-2. n8n → OpenSign “send for signature” workflow
-3. OpenSign webhooks → update `member_agreements` to `signed`
-4. Manual-signature reviewer workflow (pending_review → signed/rejected)
-5. Release Workflow page (gate: only release if signed)
+2. Manual-signature reviewer workflow (pending_review → signed/rejected)
+3. Release Workflow page (gate: only release if signed)
+4. Member information updates, unassigning sacraments and member removal
+5. Givebutter integration and tracking member donations
 
 ---
 
-## 7) Temporary Airtable integration for product_id inventory
+## Temporary Airtable integration for product_id inventory
 
 While MushroomProcess is still on Airtable, you can temporarily connect to it:
 
@@ -125,7 +125,7 @@ Recommended pattern:
 
 ---
 
-## 8) Authentication, roles, and access control
+## Authentication, roles, and access control
 
 SignatureGate relies on **Appsmith authentication** and then maps the authenticated email to `public.members`.
 
@@ -172,15 +172,6 @@ WHERE lower(email) = lower({{ this.params.email }})
 qCurrentFacilitator.run({ email: appsmith.user.email })
 ```
 
-### Contributing
-
-Appsmith exports the json for the project in a single line text file.  To convert this file, 
-prior to commit or manipulation with a merge tool, run:
-
-```bash
-node pretty-json.mjs --in "Rooted Psyche Membership Ops - your-export.json" --out "Rooted Psyche Membership Ops.json" --sort-keys
-```
-
 ### Troubleshooting
 
 If a user is unexpectedly denied:
@@ -199,3 +190,27 @@ WHERE lower(email) = lower('<email>');
    - `db/migrations_facilitator_authentication.sql`
    - `db/migrations_sacrament_release.sql`
    - (optional) `db/migrations_documenso_integration*.sql`
+
+## Audit logging behavior
+
+Most Appsmith workflows automatically write audit records when performing sensitive actions.
+
+When modifying or adding workflows that:
+- create members
+- issue agreements
+- attach evidence
+- issue sacrament releases
+
+ensure that an audit entry is written using the shared audit helper.
+
+Audit logging must never block the primary workflow, but it must not be removed or bypassed.
+
+## Contributing
+
+Appsmith exports the json for the project in a single line text file.  To convert this file, 
+prior to commit or manipulation with a merge tool, run:
+
+```bash
+node pretty-json.mjs --in "Rooted Psyche Membership Ops - your-export.json" --out "Rooted Psyche Membership Ops.json" --sort-keys
+```
+

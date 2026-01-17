@@ -59,7 +59,35 @@ This system will store personal contact info and signed agreement references. Us
 - Encrypted storage for documents (S3 compatible / object storage recommended)
 - Regular backups (Postgres + object storage)
 
+## Audit Logging
 
+SignatureGate maintains a centralized, append-only audit trail in `public.audit_log`.
+
+The audit log records all legally, spiritually, and operationally significant events, including:
+
+- Authentication outcomes
+- Member creation and status changes
+- Agreement creation, signing, and evidence attachment
+- Sacrament release issuance
+- Product shipment and final release completion
+
+### Design principles
+
+- Audit records are **append-only** and must never be modified or deleted.
+- Audit logging is **not** a debugging or analytics system.
+- If an action would ever need to be explained, reviewed, or defended later, it must be audited.
+
+### Where audits are written
+
+- **Appsmith**
+  - User-initiated actions (auth, member creation, agreement issuance, release issuance)
+- **n8n**
+  - External system callbacks (Documenso)
+  - Final irreversible workflow steps (product shipment)
+
+Audit writes are intentionally split this way to ensure:
+- correct actor attribution
+- durability even when external systems are involved
 
 ## Authentication and role-based access (Appsmith)
 

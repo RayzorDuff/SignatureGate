@@ -5,7 +5,44 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.1.1-beta] — 2026-01-15
+## [v0.1.2-beta] — 2026-01-17
+
+### Added
+- **Comprehensive audit logging system** across Appsmith, n8n, and Postgres.
+- New `audit_log` entries now record all legally and operationally significant events, including:
+  - Authentication outcomes (`auth.granted`, `auth.denied`, `auth.failed`)
+  - Member creation and lifecycle changes
+  - Agreement creation, signing, and evidence attachment
+  - Sacrament release issuance
+  - Product shipment (final release completion step)
+- **Documenso integration auditing**
+  - When Documenso completes a signing event, n8n now records `member_agreement.signed` in `audit_log`.
+- **Release completion auditing**
+  - When a product is marked as shipped via n8n, `product.shipped` is recorded in `audit_log`.
+
+### Changed
+- **Audit responsibility clarified and consolidated**
+  - Appsmith is now the primary source of audit writes for user-initiated actions.
+  - n8n writes audit records only for external system callbacks and irreversible workflow steps.
+- **Audit schema usage aligned**
+  - Audit writes now conform to the existing `audit_log` schema:
+    - `actor`, `action`, `entity_type`, `entity_id`, `details`
+- **Improved correctness for JSON audit payloads**
+  - n8n Postgres nodes now correctly quote JSON payloads before casting to `jsonb`.
+
+### Fixed
+- Fixed missing audit coverage for:
+  - Agreement signing via Documenso
+  - Product shipment marking
+- Fixed JSON casting errors in n8n audit inserts.
+- Fixed cyclic dependency issues in Appsmith audit helpers.
+
+### Notes
+- This release introduces **non-optional audit logging** for core workflows.
+- Audit logging is append-only and is not intended for debugging or analytics.
+- Downstream changes must preserve audit behavior when modifying agreement, release, or shipment flows.
+
+## [v0.1.1-beta] — 2026-01-15
 
 ### Added
 - **Role-based authentication and access control** using Appsmith authentication mapped to `public.members.email`.
@@ -147,7 +184,7 @@ End-to-end Digital Agreement + Sacrament Release Pipeline
 
 ---
 
-## [0.0.1-alpha] – 2026-01-08
+## [v0.0.1-alpha] – 2026-01-08
 
 ### Summary
 Initial alpha release of **SignatureGate**, a member agreement and compliance tracking system designed to integrate with NocoDB, Appsmith, n8n, and Documenso.  

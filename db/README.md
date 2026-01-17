@@ -25,6 +25,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Optional: Documenso integration (only if using Documenso + n8n workflow)
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_integration.sql
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_integration_1.sql
+
+# Audit Log - See below for details
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_audit_log.sql
 ```
 
 3) Verify tables exist:
@@ -87,3 +90,18 @@ After schema.sql run:
 - migrations_sacrament_release.sql
 - migrations_documenso_integration.sql
 - migrations_documenso_integration_1.sql
+- migrations_audit_log.sql
+
+## audit_log table
+
+The `audit_log` table is used for permanent, append-only recording of significant system events.
+
+Columns:
+- `actor` – email or system identifier (`n8n`, `documenso`)
+- `action` – machine-readable event name (e.g. `member_agreement.signed`)
+- `entity_type` – logical entity affected
+- `entity_id` – identifier of the affected entity
+- `details` – JSON payload with contextual metadata
+- `created_at` – server timestamp
+
+This table is not intended for debugging or analytics and should not be truncated or modified.
