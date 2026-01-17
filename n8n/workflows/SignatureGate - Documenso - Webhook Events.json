@@ -247,18 +247,50 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO public.audit_log (actor, action, entity_type, entity_id, details)\nVALUES ($1, $2, $3, $4, COALESCE($5::jsonb, '{}'::jsonb))\nRETURNING audit_log_id;",
-        "options": {
-          "queryReplacement": "={{ 'documenso' }},{{ 'member_agreement.signed' }},{{ 'member_agreement' }},{{ $('Normalize Event').item.json.member_agreement_id || 'unknown' }},{{ JSON.stringify({ event: $('Normalize Event').item.json.event, externalId: $('Normalize Event').item.json.externalId, documenso_document_id: $('Normalize Event').item.json.documenso_document_id, createdAt: $('Normalize Event').item.json.createdAt || null }) }}"
-        }
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "audit_log",
+          "mode": "list",
+          "cachedResultName": "audit_log"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "actor",
+              "value": "documenso"
+            },
+            {
+              "column": "action",
+              "value": "member_agreement.signed"
+            },
+            {
+              "column": "entity_type",
+              "value": "member_agreement"
+            },
+            {
+              "column": "entity_id",
+              "value": "={{ $('Normalize Event').item.json.member_agreement_id || 'unknown' }}"
+            },
+            {
+              "column": "details",
+              "value": "={{ JSON.stringify({ event: $('Normalize Event').item.json.event, externalId: $('Normalize Event').item.json.externalId, documenso_document_id: $('Normalize Event').item.json.documenso_document_id, createdAt: $('Normalize Event').item.json.createdAt || null }) }}"
+            }
+          ]
+        },
+        "options": {}
       },
       "name": "PG - Audit agreement signed",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        1584,
-        -304
+        2336,
+        64
       ],
       "id": "047d3a48-9979-4395-9fba-fd59951fce5d",
       "credentials": {
@@ -380,6 +412,17 @@
           }
         ]
       ]
+    },
+    "PG - Attach signed PDF": {
+      "main": [
+        [
+          {
+            "node": "PG - Audit agreement signed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -387,7 +430,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "de877119-f4ec-4969-b494-f84a3212c8c7",
+  "versionId": "5305aa14-38ef-4f19-ac44-6ddc47b27ada",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"

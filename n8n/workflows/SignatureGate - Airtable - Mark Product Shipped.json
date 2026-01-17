@@ -40,14 +40,14 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        224,
-        80
+        192,
+        -16
       ]
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { ok: true, updated_product_record_id: $json.id } }}",
+        "responseBody": "={{ { ok: true, updated_product_record_id: $('HTTP Request').item.json.id } }}",
         "options": {}
       },
       "id": "4c5896f1-3cc2-460a-9ef6-584dd1802d4e",
@@ -135,8 +135,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        432,
-        160
+        368,
+        128
       ],
       "id": "ccb134d9-2e62-44d6-88ba-04312e0316df",
       "name": "HTTP Request",
@@ -157,18 +157,50 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO public.audit_log (actor, action, entity_type, entity_id, details)\nVALUES ($1, $2, $3, $4, COALESCE($5::jsonb, '{}'::jsonb))\nRETURNING audit_log_id;",
-        "options": {
-          "queryReplacement": "={{ 'n8n' }},{{ 'product.shipped' }},{{ 'product' }},{{ $json.product_id || $json.id || 'unknown' }},{{ JSON.stringify({ airtable_record_id: $json.id, product_id: $json.product_id, storage_location: 'Shipped' }) }}"
-        }
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "audit_log",
+          "mode": "list",
+          "cachedResultName": "audit_log"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "actor",
+              "value": "n8n"
+            },
+            {
+              "column": "action",
+              "value": "product.shipped"
+            },
+            {
+              "column": "entity_type",
+              "value": "product"
+            },
+            {
+              "column": "=entity_id",
+              "value": "={{ $json.product_id || $json.id || 'unknown' }}"
+            },
+            {
+              "column": "details",
+              "value": "={{ JSON.stringify({ airtable_record_id: $json.id, product_id: $json.product_id, storage_location: 'Shipped' }) }}"
+            }
+          ]
+        },
+        "options": {}
       },
       "name": "PG - Audit product shipped",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        368,
-        -80
+        528,
+        -96
       ],
       "id": "f7e7f57d-47cc-4a0d-b082-d9f0c4bd2376",
       "credentials": {
@@ -240,6 +272,17 @@
       "main": [
         [
           {
+            "node": "PG - Audit product shipped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Audit product shipped": {
+      "main": [
+        [
+          {
             "node": "Respond",
             "type": "main",
             "index": 0
@@ -253,7 +296,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "dde3f365-1ad1-4368-a68f-95050c8d37f7",
+  "versionId": "cbaa5272-23e5-49ca-b1d5-6845db0395b5",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
