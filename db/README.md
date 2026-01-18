@@ -28,6 +28,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # Audit Log - See below for details
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_audit_log.sql
+
+# Document Reviewer actions
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_agreement_review_actions.sql
 ```
 
 3) Verify tables exist:
