@@ -31,6 +31,10 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # Document Reviewer actions
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_agreement_review_actions.sql
+
+# Donations and Donations Reviewer actions
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_donations_review.sql
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_is_donation_reviewer.sql
 ```
 
 3) Verify tables exist:
