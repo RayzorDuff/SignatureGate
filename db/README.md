@@ -38,6 +38,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # Givebutter - ensure unique email
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_givebutter_email_unique.sql
+
+# Allow voiding releases
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_release_void.sql
 ```
 
 3) Verify tables exist:
