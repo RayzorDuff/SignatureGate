@@ -35,6 +35,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Donations and Donations Reviewer actions
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_donations_review.sql
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_is_donation_reviewer.sql
+
+# Givebutter - ensure unique email
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_givebutter_email_unique.sql
 ```
 
 3) Verify tables exist:
