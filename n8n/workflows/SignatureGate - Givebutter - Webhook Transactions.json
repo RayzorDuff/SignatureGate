@@ -1,0 +1,138 @@
+{
+  "name": "SignatureGate - Givebutter - Webhook Transactions",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signaturegate/givebutter/transactions",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d302d9b8-ea09-4d5b-9c86-e7586aef33ce",
+      "webhookId": "6975cb1a-e9a0-4129-902e-f3afd9aaf42d"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Givebutter webhook receiver for SignatureGate\n// Recommended event: transaction.succeeded\n// Expects webhook URL: /webhook/signaturegate/givebutter/transactions\n//\n// Optional auth: if GIVEBUTTER_SIGNING_SECRET is set in n8n env, require header 'Signature' to match.\n\nconst body = $json.body ?? $json;\nconst headers = ($json.headers ?? body.headers ?? {});\n\n// Shared-secret header check (matches how Documenso hooks are handled: fail fast on bad payload)\nconst expected = ($env.GIVEBUTTER_SIGNING_SECRET || '').toString().trim();\nif (expected) {\n  const sig = (headers.signature || headers.Signature || headers.SIGNATURE || '').toString().trim();\n  if (!sig) throw new Error('Missing Signature header for Givebutter webhook');\n  if (sig !== expected) throw new Error('Invalid Signature header for Givebutter webhook');\n}\n\n// Normalize event name\nconst event = (body.event || body.type || body.name || '').toString();\nif (!event) throw new Error(`Missing webhook event/type. Body: ${JSON.stringify(body)}`);\n\n// Pull the transaction payload from common shapes\nconst data = body.data || body.payload || body.transaction || body;\n\n// Try multiple email locations\nconst email = (\n  data.email ||\n  data.donor?.email ||\n  data.supporter?.email ||\n  data.payer?.email ||\n  data.customer?.email ||\n  ''\n).toString().trim().toLowerCase();\n\n// Givebutter transaction id / reference\nconst provider_reference = (\n  data.id ||\n  data.transaction_id ||\n  data.transactionId ||\n  data.reference ||\n  data.reference_id ||\n  ''\n).toString();\n\nif (!provider_reference) throw new Error(`Missing transaction id/reference. Body: ${JSON.stringify(body)}`);\n\n// Amount handling (prefer cents fields if provided; otherwise treat as dollars and multiply by 100)\nlet amount_cents = null;\nif (data.amount_cents != null) {\n  amount_cents = Number(data.amount_cents);\n} else if (data.amountCents != null) {\n  amount_cents = Number(data.amountCents);\n} else if (data.amount != null) {\n  // some providers send cents in 'amount' - if this is Givebutter dollars, adjust as needed in future\n  const v = Number(data.amount);\n  amount_cents = Number.isFinite(v) ? Math.round(v * 100) : null;\n} else if (data.donated != null) {\n  const v = Number(data.donated);\n  amount_cents = Number.isFinite(v) ? Math.round(v * 100) : null;\n}\n\nconst currency = (data.currency || 'USD').toString().toUpperCase();\n\n// Timestamp\nconst donated_at = data.transacted_at || data.transactedAt || data.created_at || data.createdAt || null;\n\n// Notes (optional)\nconst notes = data.message || data.note || null;\n\nconst first_name = (data.first_name || '').toString();\nconst last_name = (data.last_name || '').toString();\nconst phone = (data.phone || '').toString();\n\nreturn [{\n  json: {\n    event,\n    email,\n    provider: 'givebutter',\n    provider_reference,\n    amount_cents,\n    currency,\n    donated_at,\n    notes,\n    first_name,\n    last_name,\n    phone,\n    raw: body\n  }\n}];\n"
+      },
+      "name": "Normalize Transaction",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        0
+      ],
+      "id": "034a5a60-5dcf-4b66-a8b5-d2e362858f94"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "6d22c030-a627-4991-b203-6d1ddd5162fc",
+              "leftValue": "",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "IF - Transaction Event",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        512,
+        0
+      ],
+      "id": "a6ff9dcd-803c-4472-aafe-d3c1fa58afc8"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH input AS (\n  SELECT\n    NULLIF(trim($1), '')::text  AS email,\n    NULLIF(trim($8), '')::text  AS first_name,\n    NULLIF(trim($9), '')::text  AS last_name,\n    NULLIF(trim($10), '')::text AS phone\n),\nexisting AS (\n  SELECT m.member_id\n  FROM public.members m\n  JOIN input i ON i.email IS NOT NULL\n  WHERE lower(m.email) = lower(i.email)\n  LIMIT 1\n),\ncreated AS (\n  INSERT INTO public.members (email, first_name, last_name, phone, status, created_at)\n  SELECT\n    i.email,\n    COALESCE(i.first_name, ''),\n    COALESCE(i.last_name, ''),\n    i.phone,\n    'active',\n    now()\n  FROM input i\n  WHERE i.email IS NOT NULL\n    AND NOT EXISTS (SELECT 1 FROM existing)\n  RETURNING member_id\n),\nmember AS (\n  SELECT member_id FROM existing\n  UNION ALL\n  SELECT member_id FROM created\n  LIMIT 1\n),\nins AS (\n  INSERT INTO public.donations (\n    member_id,\n    provider,\n    provider_reference,\n    amount_cents,\n    currency,\n    donated_at,\n    notes,\n    status\n  )\n  SELECT\n    (SELECT member_id FROM member),\n    'givebutter',\n    $2,\n    $3,\n    COALESCE($4, 'USD'),\n    CASE WHEN $5 IS NULL OR $5 = '' THEN NULL ELSE $5::timestamptz END,\n    $6,\n    'verified'\n  WHERE NOT EXISTS (\n    SELECT 1\n    FROM public.donations d\n    WHERE d.provider = 'givebutter' AND d.provider_reference = $2\n  )\n  RETURNING donation_id\n),\naudit AS (\n  INSERT INTO public.audit_log (actor, action, entity_type, entity_id, details)\n  SELECT\n    'givebutter',\n    'donation.verified',\n    'donation',\n    ins.donation_id::text,\n    $7::jsonb\n  FROM ins\n  RETURNING 1\n)\nSELECT ins.donation_id\nFROM ins;\n",
+        "options": {
+          "queryReplacement": "={{ $json.email }},{{ $json.provider_reference }},{{ $json.amount_cents }},{{ $json.currency }},{{ $json.donated_at }},{{ $json.notes }},{{ JSON.stringify($json.raw) }},{{ $json.first_name }},{{ $json.last_name }},{{ $json.phone }}"
+        }
+      },
+      "name": "PG - Insert Donation + Audit",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        784,
+        0
+      ],
+      "id": "0fe9c839-cc71-4f65-a357-200ee3b848d3",
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Transaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Transaction": {
+      "main": [
+        [
+          {
+            "node": "IF - Transaction Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Transaction Event": {
+      "main": [
+        [
+          {
+            "node": "PG - Insert Donation + Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "dd9ad5ae-f063-4bc1-8c79-7a1affb4f751",
+  "meta": {
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "cX9wkV5IDsNebpTs",
+  "tags": []
+}
