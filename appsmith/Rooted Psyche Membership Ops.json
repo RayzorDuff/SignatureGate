@@ -61,7 +61,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\t\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\t\n\t_requireMemberId() {\n    let memberId = selMember?.selectedOptionValue;\n\t\t\n    if (!memberId) {\n\t\t\tif(!appsmith.URL.queryParams.member_id ) {\n\t\t\t\tshowAlert(\"Select a member first.\", \"warning\");\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tmemberId = appsmith.URL.queryParams.member_id;\n\t\t\tselMember.setSelectedOption(memberId);\n\t\t}\n    \t\n\t\treturn memberId;\n  },\n\n  _requireFacilitator() {\n    const facilitatorId = inpFacilitator?.selectedOptionValue;\n    if (!facilitatorId) {\n      showAlert(\"Please select a facilitator before creating an agreement.\", \"warning\");\n      return null;\n    }\n\t\t\n\t\tstoreValue(\"facilitator_id\", facilitatorId);\n    return facilitatorId;\n  },\n\t\n  async setMemberId(formMemberId) {\n\t\t\n\t\tconst memberId = formMemberId || this._requireMemberId();\n\t\tstoreValue(\"member_id\", memberId);\t\n\t\t\n\t\tawait Promise.allSettled([\n      qMemberById.run(),\n      qMemberAgreements.run(),\n      qMemberReleases.run(),\n      qMembersDirectory.run(),\n\t\t\tqMemberDonations.run(),\n      // If you want facilitator dropdown populated on load:\n      qListFacilitators?.run?.(),\n    ]);\t\n\t\t\n\t\treturn memberId;\n  },\t\n\t\n\t/* Not needed...\n\tresetAllWidgets: () => {\n    resetWidget('inpCreated', true);\n    resetWidget('inpStatus', true);\n    resetWidget('inpRoles', true);\n    // Add other widgets as needed\n  },\n\t*/\n\t\n  async init() {\n\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\t//showAlert(\"Access granted for \" + appsmith.store.facilitator_email + \" id=\" + appsmith.store.facilitator_id + \" document reviewer=\" + appsmith.store.facilitator_is_reviewer + \" donations reviewer=\" + appsmith.store.facilitator_is_donations_reviewer, \"success\");\n\t\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tstoreValue(\"NC_PUBLIC_URL\", \"https://nocodb.danks.store\");\n\n\t\treturn this.setMemberId();\n\n\t},\n\n\t_normalizeUploadResponse(uploadRes) {\n\t\tconst r = uploadRes?.data ?? uploadRes;\n\n\t\tconst arr =\n\t\t\tArray.isArray(r) ? r :\n\t\t\tArray.isArray(r?.files) ? r.files :\n\t\t\t(r && typeof r === \"object\") ? [r] :\n\t\t\t[];\n\n\t\t// Require real attachment objects (path or signedPath)\n\t\tconst good = arr.filter(x => x && (x.path || x.signedPath));\n\n\t\tif (!good.length) {\n\t\t\tconsole.log(\"Unexpected upload response:\", uploadRes);\n\t\t\tthrow new Error(\"Upload succeeded but did not return attachment path(s).\");\n\t\t}\n\n\t\treturn good;\n\t},\n\n\tasync sendDigitalAgreement() {\n\t\tconst memberId = this._requireMemberId();\n\t\tconst facilitatorId = this._requireFacilitator();\n\t\t\n\t\tif (!facilitatorId) {\n\t\t\tshowAlert(\"Invalid Facilitator.\", \"error\");\t\t\t\n\t\t\treturn;\n\t\t}\n\t\tif (!memberId) {\n\t\t\tshowAlert(\"Invalid Member.\", \"error\");\n\t\t\treturn;\n\t\t}\n\t\t//showAlert(\"Creating Digital Agreement in SQL.\", \"success\");\n\t\t\n\t\t// 1) Create the pending agreement record first\n\t\tconst createRes = await qCreatePendingAgreement.run({\n\t\t\tmember_id: memberId,\n\t\t\tfacilitator_id: facilitatorId,\n\t\t\tsignature_method: \"documenso\",\n\t\t\tstatus: \"pending_email_send\",\n\t\t\tevidence_json: \"[]\",\n\t\t});\n\n\t\t//showAlert(\"Normalizing Agreement.\", \"success\");\n\t\t// 2) Normalize returned agreement id\n\t\tconst agreementId =\n\t\t\t(typeof createRes === \"string\" && createRes) ||\n\t\t\tcreateRes?.member_agreement_id ||\n\t\t\tcreateRes?.[0]?.member_agreement_id ||\n\t\t\tcreateRes?.[0]?.member_agreements_id || // just in case naming differs\n\t\t\tnull;\n\n\t\tif (!agreementId) {\n\t\t\tshowAlert(\"Agreement created, but no member_agreement_id was returned.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tshowAlert(\"Digital release queued (pending email send).\", \"success\");\n\n\t\t// 3) Trigger n8n webhook with a JSON body\n\t\tconst triggerRes = await apiTriggerDocumenso.run({\n\t\t\tmember_agreement_id: agreementId,\n\t\t\t// optional but useful for logs / idempotency\n\t\t\texternalId: `ma:${agreementId}`,\n\t\t});\n\n\t\tshowAlert(\"Email sent.\", \"success\");\n\n\t\t// 4) Refresh UI\n\t\tawait qMemberAgreements.run();\n\t\tresetWidget(\"FilePicker1\", true);\n\n\t\treturn { agreementId, triggerRes };\n\t},\n\n  async openPaperUpload() {\n    const memberId = this._requireMemberId();\n    const facilitatorId = this._requireFacilitator();\n\n\t\tif (!facilitatorId) {\n\t\t\tshowAlert(\"Invalid Facilitator.\", \"error\");\t\t\t\n\t\t\treturn;\n\t\t}\n\t\tif (!memberId) {\n\t\t\tshowAlert(\"Invalid Member.\", \"error\");\n\t\t\treturn;\n\t\t}\n\t\n\t\tconst raw = FilePicker1?.selectedFiles?.length\n    ? FilePicker1.selectedFiles\n    : (FilePicker1?.files || []);\n    \n\t\tconsole.log(\"FilePicker1.selectedFiles raw:\", raw);\n\t\t\n\t\t//showAlert(`Raw files length: ${(FilePicker1?.selectedFiles ?? []).length}`, \"info\");\n    // Only keep real File-like objects\n    const files = raw.filter((f) =>\n      f &&\n      typeof f === \"object\" &&\n      typeof f.name === \"string\" &&\n      typeof f.size === \"number\" &&\n      f.size >= 0\n    );\n\n\t\tif (!files.length) {\n\t\t\tshowAlert(\"Please choose at least one valid file to upload for the paper agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\n    // If there were invalid entries, surface it loudly (this is what you're hitting)\n    if (files.length !== raw.length) {\n      showAlert(\n        `Some selected items were invalid (null/non-file). Remove them and re-select the file(s).`,\n        \"warning\"\n      );\n      // Stop here so you don't get silent partial uploads\n      return;\n    }\n\n\t\t// Optional: guard against non-File objects\n\t\tconst bad = files.find(f => typeof f !== \"object\" || !(\"name\" in f) || !(\"size\" in f));\n\t\tif (bad) {\n\t\t\tconsole.log(\"Bad file entry:\", bad, raw);\n\t\t\tshowAlert(\"One of the selected items isn't a valid file. Try removing it and re-selecting files.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tshowAlert(`Uploading ${files.length} file(s)...`, \"info\");\t\n\t\t\n\t\t// N8N Method - Use Base64 in FilePicker\n\t\ttry {\t\t\n\t\t\tconst uploadRes = await apiUploadEvidenceViaN8n.run();\n\t\t\t// uploadRes should be {ok, files} where files is an attachment array from NocoDB\n\t\t\tconst attachments = uploadRes.files;\n\n\t\t/* NocoDB Method - Use Binary in FilePicker\n\t\t// 1) Upload files to NocoDB storage\n\t\t\tconst attachments = [];\n\t\t\t\n\t\t\tfor (const f of files) {\n\t\t\t\t// apiUploadEvidence must use {{this.params.files}} in bodyFormData\n\t\t\t\tconsole.log(\"About to upload, files param:\", { files: [f] });\n\t\t\t\tconsole.log(\"About to upload, complete upload array:\", FilePicker1?.Selectedfiles );\n\t\t\t\tconsole.log(\"About to upload, raw filtered:\", files );\n\t\t\t\tconst uploadRes = await apiUploadEvidence.run({ files: [f] });\n\t\t\t\t//const uploadRes = await apiUploadEvidence.run({ files: FilePicker1.files });\n\t\t\t\tconsole.log(\"Got back from apiUploadEvidence:\", uploadRes );\n\t\t\t\tconst normalized = this._normalizeUploadResponse(uploadRes);\n\t\t\t\tconsole.log(\"Got back from _normalizeUploadResponse:\", normalized );\n\t\t\t\t// normalized is expected to be an array\n\t\t\t\tif (Array.isArray(normalized)) attachments.push(...normalized);\n\t\t\t\telse if (normalized) attachments.push(normalized);\n\t\t\t}\n*/\n\t\t\n\t\t\tconst evidenceJson = JSON.stringify(attachments);\n\t\t\t\n\t\t\t// 2) Create the agreement record in pending_review with evidence attached\n\t\t\tconst ins = await qCreatePendingAgreement.run({\n\t\t\t\tmember_id: memberId,\n\t\t\t\tfacilitator_id: facilitatorId,\n\t\t\t\tsignature_method: \"paper\",\n\t\t\t\tstatus: \"pending_review\",\n\t\t\t\tevidence_json: evidenceJson,\n\t\t\t});\n\n\t\t\t// Audit: paper agreement created with evidence (SQL update happens here, after HTTP upload)\nconst _agId = ins?.[0]?.member_agreement_id || ins?.member_agreement_id || \"\";\nawait this.auditLog(\"member_agreement.created\",\"member_agreement\", _agId, { member_id: memberId, facilitator_id: facilitatorId, signature_method: \"paper\", status: \"pending_review\" });\nawait this.auditLog(\"member_agreement.evidence_uploaded\",\"member_agreement\", _agId, { member_id: memberId, facilitator_id: facilitatorId, attachments: Array.isArray(attachments) ? attachments.length : 0 });\nshowAlert(\"Paper agreement uploaded and queued for review.\", \"success\");\n\n\t\t\t// 3) Refresh UI\n\t\t\tawait qMemberAgreements.run();\n      resetWidget(\"FilePicker1\", true);\n\n\t\t\treturn { attachments, ins };\n\t\t\t\n\t\t} catch (e) {\n\t\t\tconsole.error(\"Paper upload failed:\", e);\n\t\t\tshowAlert(`Upload failed: ${e?.message ?? e}`, \"error\");\n\t\t\tthrow e; // so you can see it in Appsmith errors too\n\t\t}\t\t\t\n  },\n\t\n\tevidenceLinks(evidenceCell) {\n\t\t// evidenceCell might be:\n\t\t// - an array of file objects\n\t\t// - a JSON string\n\t\t// - null\n\t\t// - or even nested like [[{...},{...}], [{...}]] depending on your query/table mapping\n\t\tconst base = (appsmith.store.NC_PUBLIC_URL || \"\").replace(/\\/+$/, \"\");\n\t\tif (!base) return \"<span style='color:#999'>Set NC_PUBLIC_URL</span>\";\n\n\t\tlet ev = evidenceCell;\n\n\t\t// If it's a string, try parse\n\t\tif (typeof ev === \"string\") {\n\t\t\ttry { ev = JSON.parse(ev); } catch (e) { /* ignore */ }\n\t\t}\n\n\t\t// Normalize:\n\t\t// If it's nested arrays, flatten to a single array of file objects.\n\t\tif (Array.isArray(ev) && Array.isArray(ev[0])) {\n\t\t\tev = ev.flat();\n\t\t}\n\n\t\tif (!Array.isArray(ev) || ev.length === 0) return \"\";\n\n\t\tconst esc = (s) => String(s ?? \"\")\n\t\t\t.replaceAll(\"&\", \"&amp;\")\n\t\t\t.replaceAll(\"<\", \"&lt;\")\n\t\t\t.replaceAll(\">\", \"&gt;\")\n\t\t\t.replaceAll('\"', \"&quot;\")\n\t\t\t.replaceAll(\"'\", \"&#39;\");\n\n\t\t// Build \"buttons\" as <a> tags styled like buttons\n\t\treturn ev\n// Use for signed paths\n//\t\t\t.filter(f => f && (f.signedPath || f.path))\n\t\t\t\t.filter(f => f && f.path)\n\t\t\t.map((f, idx) => {\n// Use for signed paths\n//\t\t\t\tconst href = `${base}/${f.signedPath || f.path}`; // prefer signedPath\n\t\t\t\tconst href = `${base}/${f.path}`;\n\t\t\t\tconst label = esc(f.title || `File ${idx + 1}`);\n\t\t\t\treturn `<a\n\t\t\t\t\thref=\"${esc(href)}\"\n\t\t\t\t\ttarget=\"_blank\"\n\t\t\t\t\trel=\"noopener noreferrer\"\n\t\t\t\t\tstyle=\"\n\t\t\t\t\t\tdisplay:inline-block;\n\t\t\t\t\t\tmargin:2px 6px 2px 0;\n\t\t\t\t\t\tpadding:4px 8px;\n\t\t\t\t\t\tborder:1px solid #ccc;\n\t\t\t\t\t\tborder-radius:6px;\n\t\t\t\t\t\ttext-decoration:none;\n\t\t\t\t\t\tfont-size:12px;\n\t\t\t\t\t\tcolor:#111;\n\t\t\t\t\t\tbackground:#f7f7f7;\n\t\t\t\t\t\"\n\t\t\t\t>⬇ ${label}</a>`;\n\t\t\t})\n\t\t\t.join(\"\");\n\t},\n\n\tasync verifyAgreement(agreementId, reviewNotes, newStatus, memberId, rowEvidence, agreementType) {\n\n\t\tawait qVerifyAgreement.run({ member_agreement_id: agreementId, review_notes: reviewNotes, new_status: newStatus });\n\t\tawait memberProfile.auditLog(\"agreement.approved\", \"member_agreement\", agreementId, {\n\t\t\tmember_id: memberId || appsmith.store.member_id,\n\t\t\tstatus: newStatus,\n\t\t\treview_notes: reviewNotes,\n\t\t\tevidence: rowEvidence,\n\t\t\tagreement_type: agreementType\n\t\t});\n\t\tawait qMemberAgreements.run();\n\n\t\tshowAlert(\"Agreement \" + newStatus + \".\", \"success\");\n\n\t},\t\n\t\n\tasync verifyDonation(donationId, reviewNotes, newStatus, memberId, amountCents, donatedAt) {\n\t\t\n  \tawait qVerifyDonation.run({ donation_id: donationId, review_notes: reviewNotes, new_status: newStatus  });\n  \tawait memberProfile.auditLog(\"donation.\" + newStatus, \"donation\", donationId, {\n    \t\tmember_id: memberId || appsmith.store.member_id,\n    \t\tstatus: newStatus,\n    \t\treview_notes: reviewNotes,\n    \t\tamount_cents: amountCents,\n    \t\tdonated_at: donatedAt\n  \t});\n  \tawait qMemberDonations.run();\n  \n\t\tshowAlert(\"Donation \" + newStatus + \".\", \"success\");\n\n\t},\n\t\n};\n",
+        "body": "export default {\n\t\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\t\n\t_requireMemberId() {\n    let memberId = selMember?.selectedOptionValue;\n\t\t\n    if (!memberId) {\n\t\t\tif(!appsmith.URL.queryParams.member_id ) {\n\t\t\t\tshowAlert(\"Select a member first.\", \"warning\");\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tmemberId = appsmith.URL.queryParams.member_id;\n\t\t\tselMember.setSelectedOption(memberId);\n\t\t}\n    \t\n\t\treturn memberId;\n  },\n\n  _requireFacilitator() {\n    const facilitatorId = inpFacilitator?.selectedOptionValue;\n    if (!facilitatorId) {\n      showAlert(\"Please select a facilitator before creating an agreement.\", \"warning\");\n      return null;\n    }\n\t\t\n\t\tstoreValue(\"facilitator_id\", facilitatorId);\n    return facilitatorId;\n  },\n\t\n  async setMemberId(formMemberId) {\n\t\t\n\t\tconst memberId = formMemberId || this._requireMemberId();\n\t\tstoreValue(\"member_id\", memberId);\t\n\t\t\n\t\tawait Promise.allSettled([\n      qMemberById.run(),\n      qMemberAgreements.run(),\n      qMemberReleases.run(),\n      qMembersDirectory.run(),\n\t\t\tqMemberDonations.run(),\n      // If you want facilitator dropdown populated on load:\n      qListFacilitators?.run?.(),\n    ]);\t\n\t\t\n\t\treturn memberId;\n  },\t\n\t\n\t/* Not needed...\n\tresetAllWidgets: () => {\n    resetWidget('inpCreated', true);\n    resetWidget('inpStatus', true);\n    resetWidget('inpRoles', true);\n    // Add other widgets as needed\n  },\n\t*/\n\t\n  async init() {\n\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\t//showAlert(\"Access granted for \" + appsmith.store.facilitator_email + \" id=\" + appsmith.store.facilitator_id + \" document reviewer=\" + appsmith.store.facilitator_is_reviewer + \" donations reviewer=\" + appsmith.store.facilitator_is_donations_reviewer, \"success\");\n\t\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tstoreValue(\"NC_PUBLIC_URL\", \"https://nocodb.danks.store\");\n\n\t\treturn this.setMemberId();\n\n\t},\n\n\t_normalizeUploadResponse(uploadRes) {\n\t\tconst r = uploadRes?.data ?? uploadRes;\n\n\t\tconst arr =\n\t\t\tArray.isArray(r) ? r :\n\t\t\tArray.isArray(r?.files) ? r.files :\n\t\t\t(r && typeof r === \"object\") ? [r] :\n\t\t\t[];\n\n\t\t// Require real attachment objects (path or signedPath)\n\t\tconst good = arr.filter(x => x && (x.path || x.signedPath));\n\n\t\tif (!good.length) {\n\t\t\tconsole.log(\"Unexpected upload response:\", uploadRes);\n\t\t\tthrow new Error(\"Upload succeeded but did not return attachment path(s).\");\n\t\t}\n\n\t\treturn good;\n\t},\n\n\tasync sendDigitalAgreement() {\n\t\tconst memberId = this._requireMemberId();\n\t\tconst facilitatorId = this._requireFacilitator();\n\t\t\n\t\tif (!facilitatorId) {\n\t\t\tshowAlert(\"Invalid Facilitator.\", \"error\");\t\t\t\n\t\t\treturn;\n\t\t}\n\t\tif (!memberId) {\n\t\t\tshowAlert(\"Invalid Member.\", \"error\");\n\t\t\treturn;\n\t\t}\n\t\t//showAlert(\"Creating Digital Agreement in SQL.\", \"success\");\n\t\t\n\t\t// 1) Create the pending agreement record first\n\t\tconst createRes = await qCreatePendingAgreement.run({\n\t\t\tmember_id: memberId,\n\t\t\tfacilitator_id: facilitatorId,\n\t\t\tsignature_method: \"documenso\",\n\t\t\tstatus: \"pending_email_send\",\n\t\t\tevidence_json: \"[]\",\n\t\t});\n\n\t\t//showAlert(\"Normalizing Agreement.\", \"success\");\n\t\t// 2) Normalize returned agreement id\n\t\tconst agreementId =\n\t\t\t(typeof createRes === \"string\" && createRes) ||\n\t\t\tcreateRes?.member_agreement_id ||\n\t\t\tcreateRes?.[0]?.member_agreement_id ||\n\t\t\tcreateRes?.[0]?.member_agreements_id || // just in case naming differs\n\t\t\tnull;\n\n\t\tif (!agreementId) {\n\t\t\tshowAlert(\"Agreement created, but no member_agreement_id was returned.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tshowAlert(\"Digital release queued (pending email send).\", \"success\");\n\n\t\t// 3) Trigger n8n webhook with a JSON body\n\t\tconst triggerRes = await apiTriggerDocumenso.run({\n\t\t\tmember_agreement_id: agreementId,\n\t\t\t// optional but useful for logs / idempotency\n\t\t\texternalId: `ma:${agreementId}`,\n\t\t});\n\n\t\tshowAlert(\"Email sent.\", \"success\");\n\n\t\t// 4) Refresh UI\n\t\tawait qMemberAgreements.run();\n\t\tresetWidget(\"FilePicker1\", true);\n\n\t\treturn { agreementId, triggerRes };\n\t},\n\n  async openPaperUpload() {\n    const memberId = this._requireMemberId();\n    const facilitatorId = this._requireFacilitator();\n\n\t\tif (!facilitatorId) {\n\t\t\tshowAlert(\"Invalid Facilitator.\", \"error\");\t\t\t\n\t\t\treturn;\n\t\t}\n\t\tif (!memberId) {\n\t\t\tshowAlert(\"Invalid Member.\", \"error\");\n\t\t\treturn;\n\t\t}\n\t\n\t\tconst raw = FilePicker1?.selectedFiles?.length\n    ? FilePicker1.selectedFiles\n    : (FilePicker1?.files || []);\n    \n\t\tconsole.log(\"FilePicker1.selectedFiles raw:\", raw);\n\t\t\n\t\t//showAlert(`Raw files length: ${(FilePicker1?.selectedFiles ?? []).length}`, \"info\");\n    // Only keep real File-like objects\n    const files = raw.filter((f) =>\n      f &&\n      typeof f === \"object\" &&\n      typeof f.name === \"string\" &&\n      typeof f.size === \"number\" &&\n      f.size >= 0\n    );\n\n\t\tif (!files.length) {\n\t\t\tshowAlert(\"Please choose at least one valid file to upload for the paper agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\n    // If there were invalid entries, surface it loudly (this is what you're hitting)\n    if (files.length !== raw.length) {\n      showAlert(\n        `Some selected items were invalid (null/non-file). Remove them and re-select the file(s).`,\n        \"warning\"\n      );\n      // Stop here so you don't get silent partial uploads\n      return;\n    }\n\n\t\t// Optional: guard against non-File objects\n\t\tconst bad = files.find(f => typeof f !== \"object\" || !(\"name\" in f) || !(\"size\" in f));\n\t\tif (bad) {\n\t\t\tconsole.log(\"Bad file entry:\", bad, raw);\n\t\t\tshowAlert(\"One of the selected items isn't a valid file. Try removing it and re-selecting files.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tshowAlert(`Uploading ${files.length} file(s)...`, \"info\");\t\n\t\t\n\t\t// N8N Method - Use Base64 in FilePicker\n\t\ttry {\t\t\n\t\t\tconst uploadRes = await apiUploadEvidenceViaN8n.run();\n\t\t\t// uploadRes should be {ok, files} where files is an attachment array from NocoDB\n\t\t\tconst attachments = uploadRes.files;\n\n\t\t/* NocoDB Method - Use Binary in FilePicker\n\t\t// 1) Upload files to NocoDB storage\n\t\t\tconst attachments = [];\n\t\t\t\n\t\t\tfor (const f of files) {\n\t\t\t\t// apiUploadEvidence must use {{this.params.files}} in bodyFormData\n\t\t\t\tconsole.log(\"About to upload, files param:\", { files: [f] });\n\t\t\t\tconsole.log(\"About to upload, complete upload array:\", FilePicker1?.Selectedfiles );\n\t\t\t\tconsole.log(\"About to upload, raw filtered:\", files );\n\t\t\t\tconst uploadRes = await apiUploadEvidence.run({ files: [f] });\n\t\t\t\t//const uploadRes = await apiUploadEvidence.run({ files: FilePicker1.files });\n\t\t\t\tconsole.log(\"Got back from apiUploadEvidence:\", uploadRes );\n\t\t\t\tconst normalized = this._normalizeUploadResponse(uploadRes);\n\t\t\t\tconsole.log(\"Got back from _normalizeUploadResponse:\", normalized );\n\t\t\t\t// normalized is expected to be an array\n\t\t\t\tif (Array.isArray(normalized)) attachments.push(...normalized);\n\t\t\t\telse if (normalized) attachments.push(normalized);\n\t\t\t}\n*/\n\t\t\n\t\t\tconst evidenceJson = JSON.stringify(attachments);\n\t\t\t\n\t\t\t// 2) Create the agreement record in pending_review with evidence attached\n\t\t\tconst ins = await qCreatePendingAgreement.run({\n\t\t\t\tmember_id: memberId,\n\t\t\t\tfacilitator_id: facilitatorId,\n\t\t\t\tsignature_method: \"paper\",\n\t\t\t\tstatus: \"pending_review\",\n\t\t\t\tevidence_json: evidenceJson,\n\t\t\t});\n\n\t\t\t// Audit: paper agreement created with evidence (SQL update happens here, after HTTP upload)\nconst _agId = ins?.[0]?.member_agreement_id || ins?.member_agreement_id || \"\";\nawait this.auditLog(\"member_agreement.created\",\"member_agreement\", _agId, { member_id: memberId, facilitator_id: facilitatorId, signature_method: \"paper\", status: \"pending_review\" });\nawait this.auditLog(\"member_agreement.evidence_uploaded\",\"member_agreement\", _agId, { member_id: memberId, facilitator_id: facilitatorId, attachments: Array.isArray(attachments) ? attachments.length : 0 });\nshowAlert(\"Paper agreement uploaded and queued for review.\", \"success\");\n\n\t\t\t// 3) Refresh UI\n\t\t\tawait qMemberAgreements.run();\n      resetWidget(\"FilePicker1\", true);\n\n\t\t\treturn { attachments, ins };\n\t\t\t\n\t\t} catch (e) {\n\t\t\tconsole.error(\"Paper upload failed:\", e);\n\t\t\tshowAlert(`Upload failed: ${e?.message ?? e}`, \"error\");\n\t\t\tthrow e; // so you can see it in Appsmith errors too\n\t\t}\t\t\t\n  },\n\t\n\tevidenceLinks(evidenceCell) {\n\t\t// evidenceCell might be:\n\t\t// - an array of file objects\n\t\t// - a JSON string\n\t\t// - null\n\t\t// - or even nested like [[{...},{...}], [{...}]] depending on your query/table mapping\n\t\tconst base = (appsmith.store.NC_PUBLIC_URL || \"\").replace(/\\/+$/, \"\");\n\t\tif (!base) return \"<span style='color:#999'>Set NC_PUBLIC_URL</span>\";\n\n\t\tlet ev = evidenceCell;\n\n\t\t// If it's a string, try parse\n\t\tif (typeof ev === \"string\") {\n\t\t\ttry { ev = JSON.parse(ev); } catch (e) { /* ignore */ }\n\t\t}\n\n\t\t// Normalize:\n\t\t// If it's nested arrays, flatten to a single array of file objects.\n\t\tif (Array.isArray(ev) && Array.isArray(ev[0])) {\n\t\t\tev = ev.flat();\n\t\t}\n\n\t\tif (!Array.isArray(ev) || ev.length === 0) return \"\";\n\n\t\tconst esc = (s) => String(s ?? \"\")\n\t\t\t.replaceAll(\"&\", \"&amp;\")\n\t\t\t.replaceAll(\"<\", \"&lt;\")\n\t\t\t.replaceAll(\">\", \"&gt;\")\n\t\t\t.replaceAll('\"', \"&quot;\")\n\t\t\t.replaceAll(\"'\", \"&#39;\");\n\n\t\t// Build \"buttons\" as <a> tags styled like buttons\n\t\treturn ev\n// Use for signed paths\n//\t\t\t.filter(f => f && (f.signedPath || f.path))\n\t\t\t\t.filter(f => f && f.path)\n\t\t\t.map((f, idx) => {\n// Use for signed paths\n//\t\t\t\tconst href = `${base}/${f.signedPath || f.path}`; // prefer signedPath\n\t\t\t\tconst href = `${base}/${f.path}`;\n\t\t\t\tconst label = esc(f.title || `File ${idx + 1}`);\n\t\t\t\treturn `<a\n\t\t\t\t\thref=\"${esc(href)}\"\n\t\t\t\t\ttarget=\"_blank\"\n\t\t\t\t\trel=\"noopener noreferrer\"\n\t\t\t\t\tstyle=\"\n\t\t\t\t\t\tdisplay:inline-block;\n\t\t\t\t\t\tmargin:2px 6px 2px 0;\n\t\t\t\t\t\tpadding:4px 8px;\n\t\t\t\t\t\tborder:1px solid #ccc;\n\t\t\t\t\t\tborder-radius:6px;\n\t\t\t\t\t\ttext-decoration:none;\n\t\t\t\t\t\tfont-size:12px;\n\t\t\t\t\t\tcolor:#111;\n\t\t\t\t\t\tbackground:#f7f7f7;\n\t\t\t\t\t\"\n\t\t\t\t>⬇ ${label}</a>`;\n\t\t\t})\n\t\t\t.join(\"\");\n\t},\n\n\tasync verifyAgreement(agreementId, reviewNotes, newStatus, memberId, rowEvidence, agreementType) {\n\n\t\tawait qVerifyAgreement.run({ member_agreement_id: agreementId, review_notes: reviewNotes, new_status: newStatus });\n\t\tawait memberProfile.auditLog(\"agreement.approved\", \"member_agreement\", agreementId, {\n\t\t\tmember_id: memberId || appsmith.store.member_id,\n\t\t\tstatus: newStatus,\n\t\t\treview_notes: reviewNotes,\n\t\t\tevidence: rowEvidence,\n\t\t\tagreement_type: agreementType\n\t\t});\n\t\tawait qMemberAgreements.run();\n\n\t\tshowAlert(\"Agreement \" + newStatus + \".\", \"success\");\n\n\t},\t\n\t\n\tasync verifyDonation(donationId, reviewNotes, newStatus, memberId, amountCents, donatedAt) {\n\t\t\n  \tawait qVerifyDonation.run({ donation_id: donationId, review_notes: reviewNotes, new_status: newStatus  });\n  \tawait memberProfile.auditLog(\"donation.\" + newStatus, \"donation\", donationId, {\n    \t\tmember_id: memberId || appsmith.store.member_id,\n    \t\tstatus: newStatus,\n    \t\treview_notes: reviewNotes,\n    \t\tamount_cents: amountCents,\n    \t\tdonated_at: donatedAt\n  \t});\n  \tawait qMemberDonations.run();\n  \n\t\tshowAlert(\"Donation \" + newStatus + \".\", \"success\");\n\n\t},\n\t\n\tasync voidRelease(voidReleaseId, voidReleaseType, voidReason, mushroomProcessId, airtableRecordId) {\n\t\n    if (voidReleaseType === \"sacrament_release\") {\n\t\t\t// 1) Mark UNshipped in Airtable (only if sacrament_release)\n\t\t\tawait apiMarkProductUnShipped.run({\n\t\t\t\tairtable_record_id: airtableRecordId,\n\t\t\t\tmushroomprocess_product_id: mushroomProcessId,\n\t\t\t});\n    }\n\t\t\n\t\tif (!voidReleaseId) {\n\t\t\tshowAlert(\"Please choose a release to void.\", \"warning\");\n\t\t\treturn;\t\t\t\n\t\t}\n\t\t\n\t\tconst voided = await qVoidRelease.run({\n      void_reason: voidReason || \"Voided by: \" + appsmith.store.facilitator_full_name,\n\t\t\tsacrament_release_id: voidReleaseId\n\t\t});\n\t\t\t\t\n\t\tshowAlert(`Release voided: ${voided?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.voided\",\"release\", voided?.[0]?.sacrament_release_id, {\n\t\t\tvoid_reason: voidReason,\n\t\t\trelease_type: voidReleaseType,\n\t\t\tsacrament_release_id: voidReleaseId,\n\t\t\tvoided_by: appsmith.store.facilitator_id,\n      mushroomprocess_product_id: mushroomProcessId|| null,\n\t\t\tstorage_locaton: (appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" )  ? \"Products Storage\" : appsmith.store.facilitator_full_name,\n\t\t});\n\t\t\n\t\treturn voided;\n\t},\n};\n",
         "name": "memberProfile",
         "pageId": "Members - Profile",
         "pluginId": "js-plugin",
@@ -72,7 +72,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\t\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\t\n\t_requireMemberId() {\n    let memberId = selMember?.selectedOptionValue;\n\t\t\n    if (!memberId) {\n\t\t\tif(!appsmith.URL.queryParams.member_id ) {\n\t\t\t\tshowAlert(\"Select a member first.\", \"warning\");\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tmemberId = appsmith.URL.queryParams.member_id;\n\t\t\tselMember.setSelectedOption(memberId);\n\t\t}\n    \t\n\t\treturn memberId;\n  },\n\n  _requireFacilitator() {\n    const facilitatorId = inpFacilitator?.selectedOptionValue;\n    if (!facilitatorId) {\n      showAlert(\"Please select a facilitator before creating an agreement.\", \"warning\");\n      return null;\n    }\n\t\t\n\t\tstoreValue(\"facilitator_id\", facilitatorId);\n    return facilitatorId;\n  },\n\t\n  async setMemberId(formMemberId) {\n\t\t\n\t\tconst memberId = formMemberId || this._requireMemberId();\n\t\tstoreValue(\"member_id\", memberId);\t\n\t\t\n\t\tawait Promise.allSettled([\n      qMemberById.run(),\n      qMemberAgreements.run(),\n      qMemberReleases.run(),\n      qMembersDirectory.run(),\n\t\t\tqMemberDonations.run(),\n      // If you want facilitator dropdown populated on load:\n      qListFacilitators?.run?.(),\n    ]);\t\n\t\t\n\t\treturn memberId;\n  },\t\n\t\n\t/* Not needed...\n\tresetAllWidgets: () => {\n    resetWidget('inpCreated', true);\n    resetWidget('inpStatus', true);\n    resetWidget('inpRoles', true);\n    // Add other widgets as needed\n  },\n\t*/\n\t\n  async init() {\n\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\t//showAlert(\"Access granted for \" + appsmith.store.facilitator_email + \" id=\" + appsmith.store.facilitator_id + \" document reviewer=\" + appsmith.store.facilitator_is_reviewer + \" donations reviewer=\" + appsmith.store.facilitator_is_donations_reviewer, \"success\");\n\t\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tstoreValue(\"NC_PUBLIC_URL\", \"https://nocodb.danks.store\");\n\n\t\treturn this.setMemberId();\n\n\t},\n\n\t_normalizeUploadResponse(uploadRes) {\n\t\tconst r = uploadRes?.data ?? uploadRes;\n\n\t\tconst arr =\n\t\t\tArray.isArray(r) ? r :\n\t\t\tArray.isArray(r?.files) ? r.files :\n\t\t\t(r && typeof r === \"object\") ? [r] :\n\t\t\t[];\n\n\t\t// Require real attachment objects (path or signedPath)\n\t\tconst good = arr.filter(x => x && (x.path || x.signedPath));\n\n\t\tif (!good.length) {\n\t\t\tconsole.log(\"Unexpected upload response:\", uploadRes);\n\t\t\tthrow new Error(\"Upload succeeded but did not return attachment path(s).\");\n\t\t}\n\n\t\treturn good;\n\t},\n\n\tasync sendDigitalAgreement() {\n\t\tconst memberId = this._requireMemberId();\n\t\tconst facilitatorId = this._requireFacilitator();\n\t\t\n\t\tif (!facilitatorId) {\n\t\t\tshowAlert(\"Invalid Facilitator.\", \"error\");\t\t\t\n\t\t\treturn;\n\t\t}\n\t\tif (!memberId) {\n\t\t\tshowAlert(\"Invalid Member.\", \"error\");\n\t\t\treturn;\n\t\t}\n\t\t//showAlert(\"Creating Digital Agreement in SQL.\", \"success\");\n\t\t\n\t\t// 1) Create the pending agreement record first\n\t\tconst createRes = await qCreatePendingAgreement.run({\n\t\t\tmember_id: memberId,\n\t\t\tfacilitator_id: facilitatorId,\n\t\t\tsignature_method: \"documenso\",\n\t\t\tstatus: \"pending_email_send\",\n\t\t\tevidence_json: \"[]\",\n\t\t});\n\n\t\t//showAlert(\"Normalizing Agreement.\", \"success\");\n\t\t// 2) Normalize returned agreement id\n\t\tconst agreementId =\n\t\t\t(typeof createRes === \"string\" && createRes) ||\n\t\t\tcreateRes?.member_agreement_id ||\n\t\t\tcreateRes?.[0]?.member_agreement_id ||\n\t\t\tcreateRes?.[0]?.member_agreements_id || // just in case naming differs\n\t\t\tnull;\n\n\t\tif (!agreementId) {\n\t\t\tshowAlert(\"Agreement created, but no member_agreement_id was returned.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tshowAlert(\"Digital release queued (pending email send).\", \"success\");\n\n\t\t// 3) Trigger n8n webhook with a JSON body\n\t\tconst triggerRes = await apiTriggerDocumenso.run({\n\t\t\tmember_agreement_id: agreementId,\n\t\t\t// optional but useful for logs / idempotency\n\t\t\texternalId: `ma:${agreementId}`,\n\t\t});\n\n\t\tshowAlert(\"Email sent.\", \"success\");\n\n\t\t// 4) Refresh UI\n\t\tawait qMemberAgreements.run();\n\t\tresetWidget(\"FilePicker1\", true);\n\n\t\treturn { agreementId, triggerRes };\n\t},\n\n  async openPaperUpload() {\n    const memberId = this._requireMemberId();\n    const facilitatorId = this._requireFacilitator();\n\n\t\tif (!facilitatorId) {\n\t\t\tshowAlert(\"Invalid Facilitator.\", \"error\");\t\t\t\n\t\t\treturn;\n\t\t}\n\t\tif (!memberId) {\n\t\t\tshowAlert(\"Invalid Member.\", \"error\");\n\t\t\treturn;\n\t\t}\n\t\n\t\tconst raw = FilePicker1?.selectedFiles?.length\n    ? FilePicker1.selectedFiles\n    : (FilePicker1?.files || []);\n    \n\t\tconsole.log(\"FilePicker1.selectedFiles raw:\", raw);\n\t\t\n\t\t//showAlert(`Raw files length: ${(FilePicker1?.selectedFiles ?? []).length}`, \"info\");\n    // Only keep real File-like objects\n    const files = raw.filter((f) =>\n      f &&\n      typeof f === \"object\" &&\n      typeof f.name === \"string\" &&\n      typeof f.size === \"number\" &&\n      f.size >= 0\n    );\n\n\t\tif (!files.length) {\n\t\t\tshowAlert(\"Please choose at least one valid file to upload for the paper agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\n    // If there were invalid entries, surface it loudly (this is what you're hitting)\n    if (files.length !== raw.length) {\n      showAlert(\n        `Some selected items were invalid (null/non-file). Remove them and re-select the file(s).`,\n        \"warning\"\n      );\n      // Stop here so you don't get silent partial uploads\n      return;\n    }\n\n\t\t// Optional: guard against non-File objects\n\t\tconst bad = files.find(f => typeof f !== \"object\" || !(\"name\" in f) || !(\"size\" in f));\n\t\tif (bad) {\n\t\t\tconsole.log(\"Bad file entry:\", bad, raw);\n\t\t\tshowAlert(\"One of the selected items isn't a valid file. Try removing it and re-selecting files.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tshowAlert(`Uploading ${files.length} file(s)...`, \"info\");\t\n\t\t\n\t\t// N8N Method - Use Base64 in FilePicker\n\t\ttry {\t\t\n\t\t\tconst uploadRes = await apiUploadEvidenceViaN8n.run();\n\t\t\t// uploadRes should be {ok, files} where files is an attachment array from NocoDB\n\t\t\tconst attachments = uploadRes.files;\n\n\t\t/* NocoDB Method - Use Binary in FilePicker\n\t\t// 1) Upload files to NocoDB storage\n\t\t\tconst attachments = [];\n\t\t\t\n\t\t\tfor (const f of files) {\n\t\t\t\t// apiUploadEvidence must use {{this.params.files}} in bodyFormData\n\t\t\t\tconsole.log(\"About to upload, files param:\", { files: [f] });\n\t\t\t\tconsole.log(\"About to upload, complete upload array:\", FilePicker1?.Selectedfiles );\n\t\t\t\tconsole.log(\"About to upload, raw filtered:\", files );\n\t\t\t\tconst uploadRes = await apiUploadEvidence.run({ files: [f] });\n\t\t\t\t//const uploadRes = await apiUploadEvidence.run({ files: FilePicker1.files });\n\t\t\t\tconsole.log(\"Got back from apiUploadEvidence:\", uploadRes );\n\t\t\t\tconst normalized = this._normalizeUploadResponse(uploadRes);\n\t\t\t\tconsole.log(\"Got back from _normalizeUploadResponse:\", normalized );\n\t\t\t\t// normalized is expected to be an array\n\t\t\t\tif (Array.isArray(normalized)) attachments.push(...normalized);\n\t\t\t\telse if (normalized) attachments.push(normalized);\n\t\t\t}\n*/\n\t\t\n\t\t\tconst evidenceJson = JSON.stringify(attachments);\n\t\t\t\n\t\t\t// 2) Create the agreement record in pending_review with evidence attached\n\t\t\tconst ins = await qCreatePendingAgreement.run({\n\t\t\t\tmember_id: memberId,\n\t\t\t\tfacilitator_id: facilitatorId,\n\t\t\t\tsignature_method: \"paper\",\n\t\t\t\tstatus: \"pending_review\",\n\t\t\t\tevidence_json: evidenceJson,\n\t\t\t});\n\n\t\t\t// Audit: paper agreement created with evidence (SQL update happens here, after HTTP upload)\nconst _agId = ins?.[0]?.member_agreement_id || ins?.member_agreement_id || \"\";\nawait this.auditLog(\"member_agreement.created\",\"member_agreement\", _agId, { member_id: memberId, facilitator_id: facilitatorId, signature_method: \"paper\", status: \"pending_review\" });\nawait this.auditLog(\"member_agreement.evidence_uploaded\",\"member_agreement\", _agId, { member_id: memberId, facilitator_id: facilitatorId, attachments: Array.isArray(attachments) ? attachments.length : 0 });\nshowAlert(\"Paper agreement uploaded and queued for review.\", \"success\");\n\n\t\t\t// 3) Refresh UI\n\t\t\tawait qMemberAgreements.run();\n      resetWidget(\"FilePicker1\", true);\n\n\t\t\treturn { attachments, ins };\n\t\t\t\n\t\t} catch (e) {\n\t\t\tconsole.error(\"Paper upload failed:\", e);\n\t\t\tshowAlert(`Upload failed: ${e?.message ?? e}`, \"error\");\n\t\t\tthrow e; // so you can see it in Appsmith errors too\n\t\t}\t\t\t\n  },\n\t\n\tevidenceLinks(evidenceCell) {\n\t\t// evidenceCell might be:\n\t\t// - an array of file objects\n\t\t// - a JSON string\n\t\t// - null\n\t\t// - or even nested like [[{...},{...}], [{...}]] depending on your query/table mapping\n\t\tconst base = (appsmith.store.NC_PUBLIC_URL || \"\").replace(/\\/+$/, \"\");\n\t\tif (!base) return \"<span style='color:#999'>Set NC_PUBLIC_URL</span>\";\n\n\t\tlet ev = evidenceCell;\n\n\t\t// If it's a string, try parse\n\t\tif (typeof ev === \"string\") {\n\t\t\ttry { ev = JSON.parse(ev); } catch (e) { /* ignore */ }\n\t\t}\n\n\t\t// Normalize:\n\t\t// If it's nested arrays, flatten to a single array of file objects.\n\t\tif (Array.isArray(ev) && Array.isArray(ev[0])) {\n\t\t\tev = ev.flat();\n\t\t}\n\n\t\tif (!Array.isArray(ev) || ev.length === 0) return \"\";\n\n\t\tconst esc = (s) => String(s ?? \"\")\n\t\t\t.replaceAll(\"&\", \"&amp;\")\n\t\t\t.replaceAll(\"<\", \"&lt;\")\n\t\t\t.replaceAll(\">\", \"&gt;\")\n\t\t\t.replaceAll('\"', \"&quot;\")\n\t\t\t.replaceAll(\"'\", \"&#39;\");\n\n\t\t// Build \"buttons\" as <a> tags styled like buttons\n\t\treturn ev\n// Use for signed paths\n//\t\t\t.filter(f => f && (f.signedPath || f.path))\n\t\t\t\t.filter(f => f && f.path)\n\t\t\t.map((f, idx) => {\n// Use for signed paths\n//\t\t\t\tconst href = `${base}/${f.signedPath || f.path}`; // prefer signedPath\n\t\t\t\tconst href = `${base}/${f.path}`;\n\t\t\t\tconst label = esc(f.title || `File ${idx + 1}`);\n\t\t\t\treturn `<a\n\t\t\t\t\thref=\"${esc(href)}\"\n\t\t\t\t\ttarget=\"_blank\"\n\t\t\t\t\trel=\"noopener noreferrer\"\n\t\t\t\t\tstyle=\"\n\t\t\t\t\t\tdisplay:inline-block;\n\t\t\t\t\t\tmargin:2px 6px 2px 0;\n\t\t\t\t\t\tpadding:4px 8px;\n\t\t\t\t\t\tborder:1px solid #ccc;\n\t\t\t\t\t\tborder-radius:6px;\n\t\t\t\t\t\ttext-decoration:none;\n\t\t\t\t\t\tfont-size:12px;\n\t\t\t\t\t\tcolor:#111;\n\t\t\t\t\t\tbackground:#f7f7f7;\n\t\t\t\t\t\"\n\t\t\t\t>⬇ ${label}</a>`;\n\t\t\t})\n\t\t\t.join(\"\");\n\t},\n\n\tasync verifyAgreement(agreementId, reviewNotes, newStatus, memberId, rowEvidence, agreementType) {\n\n\t\tawait qVerifyAgreement.run({ member_agreement_id: agreementId, review_notes: reviewNotes, new_status: newStatus });\n\t\tawait memberProfile.auditLog(\"agreement.approved\", \"member_agreement\", agreementId, {\n\t\t\tmember_id: memberId || appsmith.store.member_id,\n\t\t\tstatus: newStatus,\n\t\t\treview_notes: reviewNotes,\n\t\t\tevidence: rowEvidence,\n\t\t\tagreement_type: agreementType\n\t\t});\n\t\tawait qMemberAgreements.run();\n\n\t\tshowAlert(\"Agreement \" + newStatus + \".\", \"success\");\n\n\t},\t\n\t\n\tasync verifyDonation(donationId, reviewNotes, newStatus, memberId, amountCents, donatedAt) {\n\t\t\n  \tawait qVerifyDonation.run({ donation_id: donationId, review_notes: reviewNotes, new_status: newStatus  });\n  \tawait memberProfile.auditLog(\"donation.\" + newStatus, \"donation\", donationId, {\n    \t\tmember_id: memberId || appsmith.store.member_id,\n    \t\tstatus: newStatus,\n    \t\treview_notes: reviewNotes,\n    \t\tamount_cents: amountCents,\n    \t\tdonated_at: donatedAt\n  \t});\n  \tawait qMemberDonations.run();\n  \n\t\tshowAlert(\"Donation \" + newStatus + \".\", \"success\");\n\n\t},\n\t\n};\n",
+        "body": "export default {\n\t\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\t\n\t_requireMemberId() {\n    let memberId = selMember?.selectedOptionValue;\n\t\t\n    if (!memberId) {\n\t\t\tif(!appsmith.URL.queryParams.member_id ) {\n\t\t\t\tshowAlert(\"Select a member first.\", \"warning\");\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tmemberId = appsmith.URL.queryParams.member_id;\n\t\t\tselMember.setSelectedOption(memberId);\n\t\t}\n    \t\n\t\treturn memberId;\n  },\n\n  _requireFacilitator() {\n    const facilitatorId = inpFacilitator?.selectedOptionValue;\n    if (!facilitatorId) {\n      showAlert(\"Please select a facilitator before creating an agreement.\", \"warning\");\n      return null;\n    }\n\t\t\n\t\tstoreValue(\"facilitator_id\", facilitatorId);\n    return facilitatorId;\n  },\n\t\n  async setMemberId(formMemberId) {\n\t\t\n\t\tconst memberId = formMemberId || this._requireMemberId();\n\t\tstoreValue(\"member_id\", memberId);\t\n\t\t\n\t\tawait Promise.allSettled([\n      qMemberById.run(),\n      qMemberAgreements.run(),\n      qMemberReleases.run(),\n      qMembersDirectory.run(),\n\t\t\tqMemberDonations.run(),\n      // If you want facilitator dropdown populated on load:\n      qListFacilitators?.run?.(),\n    ]);\t\n\t\t\n\t\treturn memberId;\n  },\t\n\t\n\t/* Not needed...\n\tresetAllWidgets: () => {\n    resetWidget('inpCreated', true);\n    resetWidget('inpStatus', true);\n    resetWidget('inpRoles', true);\n    // Add other widgets as needed\n  },\n\t*/\n\t\n  async init() {\n\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\t//showAlert(\"Access granted for \" + appsmith.store.facilitator_email + \" id=\" + appsmith.store.facilitator_id + \" document reviewer=\" + appsmith.store.facilitator_is_reviewer + \" donations reviewer=\" + appsmith.store.facilitator_is_donations_reviewer, \"success\");\n\t\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tstoreValue(\"NC_PUBLIC_URL\", \"https://nocodb.danks.store\");\n\n\t\treturn this.setMemberId();\n\n\t},\n\n\t_normalizeUploadResponse(uploadRes) {\n\t\tconst r = uploadRes?.data ?? uploadRes;\n\n\t\tconst arr =\n\t\t\tArray.isArray(r) ? r :\n\t\t\tArray.isArray(r?.files) ? r.files :\n\t\t\t(r && typeof r === \"object\") ? [r] :\n\t\t\t[];\n\n\t\t// Require real attachment objects (path or signedPath)\n\t\tconst good = arr.filter(x => x && (x.path || x.signedPath));\n\n\t\tif (!good.length) {\n\t\t\tconsole.log(\"Unexpected upload response:\", uploadRes);\n\t\t\tthrow new Error(\"Upload succeeded but did not return attachment path(s).\");\n\t\t}\n\n\t\treturn good;\n\t},\n\n\tasync sendDigitalAgreement() {\n\t\tconst memberId = this._requireMemberId();\n\t\tconst facilitatorId = this._requireFacilitator();\n\t\t\n\t\tif (!facilitatorId) {\n\t\t\tshowAlert(\"Invalid Facilitator.\", \"error\");\t\t\t\n\t\t\treturn;\n\t\t}\n\t\tif (!memberId) {\n\t\t\tshowAlert(\"Invalid Member.\", \"error\");\n\t\t\treturn;\n\t\t}\n\t\t//showAlert(\"Creating Digital Agreement in SQL.\", \"success\");\n\t\t\n\t\t// 1) Create the pending agreement record first\n\t\tconst createRes = await qCreatePendingAgreement.run({\n\t\t\tmember_id: memberId,\n\t\t\tfacilitator_id: facilitatorId,\n\t\t\tsignature_method: \"documenso\",\n\t\t\tstatus: \"pending_email_send\",\n\t\t\tevidence_json: \"[]\",\n\t\t});\n\n\t\t//showAlert(\"Normalizing Agreement.\", \"success\");\n\t\t// 2) Normalize returned agreement id\n\t\tconst agreementId =\n\t\t\t(typeof createRes === \"string\" && createRes) ||\n\t\t\tcreateRes?.member_agreement_id ||\n\t\t\tcreateRes?.[0]?.member_agreement_id ||\n\t\t\tcreateRes?.[0]?.member_agreements_id || // just in case naming differs\n\t\t\tnull;\n\n\t\tif (!agreementId) {\n\t\t\tshowAlert(\"Agreement created, but no member_agreement_id was returned.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tshowAlert(\"Digital release queued (pending email send).\", \"success\");\n\n\t\t// 3) Trigger n8n webhook with a JSON body\n\t\tconst triggerRes = await apiTriggerDocumenso.run({\n\t\t\tmember_agreement_id: agreementId,\n\t\t\t// optional but useful for logs / idempotency\n\t\t\texternalId: `ma:${agreementId}`,\n\t\t});\n\n\t\tshowAlert(\"Email sent.\", \"success\");\n\n\t\t// 4) Refresh UI\n\t\tawait qMemberAgreements.run();\n\t\tresetWidget(\"FilePicker1\", true);\n\n\t\treturn { agreementId, triggerRes };\n\t},\n\n  async openPaperUpload() {\n    const memberId = this._requireMemberId();\n    const facilitatorId = this._requireFacilitator();\n\n\t\tif (!facilitatorId) {\n\t\t\tshowAlert(\"Invalid Facilitator.\", \"error\");\t\t\t\n\t\t\treturn;\n\t\t}\n\t\tif (!memberId) {\n\t\t\tshowAlert(\"Invalid Member.\", \"error\");\n\t\t\treturn;\n\t\t}\n\t\n\t\tconst raw = FilePicker1?.selectedFiles?.length\n    ? FilePicker1.selectedFiles\n    : (FilePicker1?.files || []);\n    \n\t\tconsole.log(\"FilePicker1.selectedFiles raw:\", raw);\n\t\t\n\t\t//showAlert(`Raw files length: ${(FilePicker1?.selectedFiles ?? []).length}`, \"info\");\n    // Only keep real File-like objects\n    const files = raw.filter((f) =>\n      f &&\n      typeof f === \"object\" &&\n      typeof f.name === \"string\" &&\n      typeof f.size === \"number\" &&\n      f.size >= 0\n    );\n\n\t\tif (!files.length) {\n\t\t\tshowAlert(\"Please choose at least one valid file to upload for the paper agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\n    // If there were invalid entries, surface it loudly (this is what you're hitting)\n    if (files.length !== raw.length) {\n      showAlert(\n        `Some selected items were invalid (null/non-file). Remove them and re-select the file(s).`,\n        \"warning\"\n      );\n      // Stop here so you don't get silent partial uploads\n      return;\n    }\n\n\t\t// Optional: guard against non-File objects\n\t\tconst bad = files.find(f => typeof f !== \"object\" || !(\"name\" in f) || !(\"size\" in f));\n\t\tif (bad) {\n\t\t\tconsole.log(\"Bad file entry:\", bad, raw);\n\t\t\tshowAlert(\"One of the selected items isn't a valid file. Try removing it and re-selecting files.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tshowAlert(`Uploading ${files.length} file(s)...`, \"info\");\t\n\t\t\n\t\t// N8N Method - Use Base64 in FilePicker\n\t\ttry {\t\t\n\t\t\tconst uploadRes = await apiUploadEvidenceViaN8n.run();\n\t\t\t// uploadRes should be {ok, files} where files is an attachment array from NocoDB\n\t\t\tconst attachments = uploadRes.files;\n\n\t\t/* NocoDB Method - Use Binary in FilePicker\n\t\t// 1) Upload files to NocoDB storage\n\t\t\tconst attachments = [];\n\t\t\t\n\t\t\tfor (const f of files) {\n\t\t\t\t// apiUploadEvidence must use {{this.params.files}} in bodyFormData\n\t\t\t\tconsole.log(\"About to upload, files param:\", { files: [f] });\n\t\t\t\tconsole.log(\"About to upload, complete upload array:\", FilePicker1?.Selectedfiles );\n\t\t\t\tconsole.log(\"About to upload, raw filtered:\", files );\n\t\t\t\tconst uploadRes = await apiUploadEvidence.run({ files: [f] });\n\t\t\t\t//const uploadRes = await apiUploadEvidence.run({ files: FilePicker1.files });\n\t\t\t\tconsole.log(\"Got back from apiUploadEvidence:\", uploadRes );\n\t\t\t\tconst normalized = this._normalizeUploadResponse(uploadRes);\n\t\t\t\tconsole.log(\"Got back from _normalizeUploadResponse:\", normalized );\n\t\t\t\t// normalized is expected to be an array\n\t\t\t\tif (Array.isArray(normalized)) attachments.push(...normalized);\n\t\t\t\telse if (normalized) attachments.push(normalized);\n\t\t\t}\n*/\n\t\t\n\t\t\tconst evidenceJson = JSON.stringify(attachments);\n\t\t\t\n\t\t\t// 2) Create the agreement record in pending_review with evidence attached\n\t\t\tconst ins = await qCreatePendingAgreement.run({\n\t\t\t\tmember_id: memberId,\n\t\t\t\tfacilitator_id: facilitatorId,\n\t\t\t\tsignature_method: \"paper\",\n\t\t\t\tstatus: \"pending_review\",\n\t\t\t\tevidence_json: evidenceJson,\n\t\t\t});\n\n\t\t\t// Audit: paper agreement created with evidence (SQL update happens here, after HTTP upload)\nconst _agId = ins?.[0]?.member_agreement_id || ins?.member_agreement_id || \"\";\nawait this.auditLog(\"member_agreement.created\",\"member_agreement\", _agId, { member_id: memberId, facilitator_id: facilitatorId, signature_method: \"paper\", status: \"pending_review\" });\nawait this.auditLog(\"member_agreement.evidence_uploaded\",\"member_agreement\", _agId, { member_id: memberId, facilitator_id: facilitatorId, attachments: Array.isArray(attachments) ? attachments.length : 0 });\nshowAlert(\"Paper agreement uploaded and queued for review.\", \"success\");\n\n\t\t\t// 3) Refresh UI\n\t\t\tawait qMemberAgreements.run();\n      resetWidget(\"FilePicker1\", true);\n\n\t\t\treturn { attachments, ins };\n\t\t\t\n\t\t} catch (e) {\n\t\t\tconsole.error(\"Paper upload failed:\", e);\n\t\t\tshowAlert(`Upload failed: ${e?.message ?? e}`, \"error\");\n\t\t\tthrow e; // so you can see it in Appsmith errors too\n\t\t}\t\t\t\n  },\n\t\n\tevidenceLinks(evidenceCell) {\n\t\t// evidenceCell might be:\n\t\t// - an array of file objects\n\t\t// - a JSON string\n\t\t// - null\n\t\t// - or even nested like [[{...},{...}], [{...}]] depending on your query/table mapping\n\t\tconst base = (appsmith.store.NC_PUBLIC_URL || \"\").replace(/\\/+$/, \"\");\n\t\tif (!base) return \"<span style='color:#999'>Set NC_PUBLIC_URL</span>\";\n\n\t\tlet ev = evidenceCell;\n\n\t\t// If it's a string, try parse\n\t\tif (typeof ev === \"string\") {\n\t\t\ttry { ev = JSON.parse(ev); } catch (e) { /* ignore */ }\n\t\t}\n\n\t\t// Normalize:\n\t\t// If it's nested arrays, flatten to a single array of file objects.\n\t\tif (Array.isArray(ev) && Array.isArray(ev[0])) {\n\t\t\tev = ev.flat();\n\t\t}\n\n\t\tif (!Array.isArray(ev) || ev.length === 0) return \"\";\n\n\t\tconst esc = (s) => String(s ?? \"\")\n\t\t\t.replaceAll(\"&\", \"&amp;\")\n\t\t\t.replaceAll(\"<\", \"&lt;\")\n\t\t\t.replaceAll(\">\", \"&gt;\")\n\t\t\t.replaceAll('\"', \"&quot;\")\n\t\t\t.replaceAll(\"'\", \"&#39;\");\n\n\t\t// Build \"buttons\" as <a> tags styled like buttons\n\t\treturn ev\n// Use for signed paths\n//\t\t\t.filter(f => f && (f.signedPath || f.path))\n\t\t\t\t.filter(f => f && f.path)\n\t\t\t.map((f, idx) => {\n// Use for signed paths\n//\t\t\t\tconst href = `${base}/${f.signedPath || f.path}`; // prefer signedPath\n\t\t\t\tconst href = `${base}/${f.path}`;\n\t\t\t\tconst label = esc(f.title || `File ${idx + 1}`);\n\t\t\t\treturn `<a\n\t\t\t\t\thref=\"${esc(href)}\"\n\t\t\t\t\ttarget=\"_blank\"\n\t\t\t\t\trel=\"noopener noreferrer\"\n\t\t\t\t\tstyle=\"\n\t\t\t\t\t\tdisplay:inline-block;\n\t\t\t\t\t\tmargin:2px 6px 2px 0;\n\t\t\t\t\t\tpadding:4px 8px;\n\t\t\t\t\t\tborder:1px solid #ccc;\n\t\t\t\t\t\tborder-radius:6px;\n\t\t\t\t\t\ttext-decoration:none;\n\t\t\t\t\t\tfont-size:12px;\n\t\t\t\t\t\tcolor:#111;\n\t\t\t\t\t\tbackground:#f7f7f7;\n\t\t\t\t\t\"\n\t\t\t\t>⬇ ${label}</a>`;\n\t\t\t})\n\t\t\t.join(\"\");\n\t},\n\n\tasync verifyAgreement(agreementId, reviewNotes, newStatus, memberId, rowEvidence, agreementType) {\n\n\t\tawait qVerifyAgreement.run({ member_agreement_id: agreementId, review_notes: reviewNotes, new_status: newStatus });\n\t\tawait memberProfile.auditLog(\"agreement.approved\", \"member_agreement\", agreementId, {\n\t\t\tmember_id: memberId || appsmith.store.member_id,\n\t\t\tstatus: newStatus,\n\t\t\treview_notes: reviewNotes,\n\t\t\tevidence: rowEvidence,\n\t\t\tagreement_type: agreementType\n\t\t});\n\t\tawait qMemberAgreements.run();\n\n\t\tshowAlert(\"Agreement \" + newStatus + \".\", \"success\");\n\n\t},\t\n\t\n\tasync verifyDonation(donationId, reviewNotes, newStatus, memberId, amountCents, donatedAt) {\n\t\t\n  \tawait qVerifyDonation.run({ donation_id: donationId, review_notes: reviewNotes, new_status: newStatus  });\n  \tawait memberProfile.auditLog(\"donation.\" + newStatus, \"donation\", donationId, {\n    \t\tmember_id: memberId || appsmith.store.member_id,\n    \t\tstatus: newStatus,\n    \t\treview_notes: reviewNotes,\n    \t\tamount_cents: amountCents,\n    \t\tdonated_at: donatedAt\n  \t});\n  \tawait qMemberDonations.run();\n  \n\t\tshowAlert(\"Donation \" + newStatus + \".\", \"success\");\n\n\t},\n\t\n\tasync voidRelease(voidReleaseId, voidReleaseType, voidReason, mushroomProcessId, airtableRecordId) {\n\t\n    if (voidReleaseType === \"sacrament_release\") {\n\t\t\t// 1) Mark UNshipped in Airtable (only if sacrament_release)\n\t\t\tawait apiMarkProductUnShipped.run({\n\t\t\t\tairtable_record_id: airtableRecordId,\n\t\t\t\tmushroomprocess_product_id: mushroomProcessId,\n\t\t\t});\n    }\n\t\t\n\t\tif (!voidReleaseId) {\n\t\t\tshowAlert(\"Please choose a release to void.\", \"warning\");\n\t\t\treturn;\t\t\t\n\t\t}\n\t\t\n\t\tconst voided = await qVoidRelease.run({\n      void_reason: voidReason || \"Voided by: \" + appsmith.store.facilitator_full_name,\n\t\t\tsacrament_release_id: voidReleaseId\n\t\t});\n\t\t\t\t\n\t\tshowAlert(`Release voided: ${voided?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.voided\",\"release\", voided?.[0]?.sacrament_release_id, {\n\t\t\tvoid_reason: voidReason,\n\t\t\trelease_type: voidReleaseType,\n\t\t\tsacrament_release_id: voidReleaseId,\n\t\t\tvoided_by: appsmith.store.facilitator_id,\n      mushroomprocess_product_id: mushroomProcessId|| null,\n\t\t\tstorage_locaton: (appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" )  ? \"Products Storage\" : appsmith.store.facilitator_full_name,\n\t\t});\n\t\t\n\t\treturn voided;\n\t},\n};\n",
         "name": "memberProfile",
         "pageId": "Members - Profile",
         "pluginId": "js-plugin",
@@ -88,7 +88,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tawait Promise.allSettled([\n      qMembersDirectory.run(),\n      // If you want facilitator dropdown populated on load:\n      qListFacilitators?.run?.(),\n    ]);\t\n\t\t\n\t},\n\t\n  async refreshGate() {\n    if (!selMember.selectedOptionValue) {\n\t\t\tif(!appsmith.URL.queryParams.member_id ) {\n\t\t\t\tshowAlert(\"Select a member first.\", \"warning\");\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tselMember.setSelectedOption(appsmith.URL.queryParams.member_id);\n\n    }\n    return await qGateCheckAgreement.run({\n      member_id: selMember.selectedOptionValue,\n      release_type: selReleaseType.selectedOptionValue,\n    });\n  },\n\n  async issueRelease() {\n    const member_id = selMember.selectedOptionValue;\n    const release_type = selReleaseType.selectedOptionValue;\n\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });// Gate: enforce the right agreement type\n    const gate = await this.refreshGate();\n    const gateRow = gate?.[0];\n    if (!gateRow?.member_agreement_id) {\n      showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n      return;\n    }\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n    const notes = inpNotes.text || null;\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow.member_agreement_id,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n      notes: notes,\n    });\n\n    showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
+        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tawait Promise.allSettled([\n      qMembersDirectory.run(),\n      // If you want facilitator dropdown populated on load:\n      qListFacilitators?.run?.(),\n    ]);\t\n\t\t\n\t},\n\t\n  async refreshGate() {\n    if (!selMember.selectedOptionValue) {\n\t\t\tif(!appsmith.URL.queryParams.member_id ) {\n\t\t\t\tshowAlert(\"Select a member first.\", \"warning\");\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tselMember.setSelectedOption(appsmith.URL.queryParams.member_id);\n\n    }\n    return await qGateCheckAgreement.run({\n      member_id: selMember.selectedOptionValue,\n      release_type: selReleaseType.selectedOptionValue,\n    });\n  },\n\t\n  async issueRelease() {\n    const member_id = selMember.selectedOptionValue;\n    const release_type = selReleaseType.selectedOptionValue;\n\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n    const gate = await this.refreshGate();\n    const gateRow = gate?.[0];\n    if (!gateRow?.member_agreement_id) {\n      showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n      return;\n    }\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n    const notes = inpNotes.text || null;\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow.member_agreement_id,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n      notes: notes,\n    });\n\n    showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", ins?.[0]?.sacrament_release_id, {       member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow.member_agreement_id,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n      notes: notes, });\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
         "name": "releaseFlows",
         "pageId": "Release - Issue",
         "pluginId": "js-plugin",
@@ -99,7 +99,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tawait Promise.allSettled([\n      qMembersDirectory.run(),\n      // If you want facilitator dropdown populated on load:\n      qListFacilitators?.run?.(),\n    ]);\t\n\t\t\n\t},\n\t\n  async refreshGate() {\n    if (!selMember.selectedOptionValue) {\n\t\t\tif(!appsmith.URL.queryParams.member_id ) {\n\t\t\t\tshowAlert(\"Select a member first.\", \"warning\");\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tselMember.setSelectedOption(appsmith.URL.queryParams.member_id);\n\n    }\n    return await qGateCheckAgreement.run({\n      member_id: selMember.selectedOptionValue,\n      release_type: selReleaseType.selectedOptionValue,\n    });\n  },\n\n  async issueRelease() {\n    const member_id = selMember.selectedOptionValue;\n    const release_type = selReleaseType.selectedOptionValue;\n\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });// Gate: enforce the right agreement type\n    const gate = await this.refreshGate();\n    const gateRow = gate?.[0];\n    if (!gateRow?.member_agreement_id) {\n      showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n      return;\n    }\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n    const notes = inpNotes.text || null;\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow.member_agreement_id,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n      notes: notes,\n    });\n\n    showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
+        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tawait Promise.allSettled([\n      qMembersDirectory.run(),\n      // If you want facilitator dropdown populated on load:\n      qListFacilitators?.run?.(),\n    ]);\t\n\t\t\n\t},\n\t\n  async refreshGate() {\n    if (!selMember.selectedOptionValue) {\n\t\t\tif(!appsmith.URL.queryParams.member_id ) {\n\t\t\t\tshowAlert(\"Select a member first.\", \"warning\");\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tselMember.setSelectedOption(appsmith.URL.queryParams.member_id);\n\n    }\n    return await qGateCheckAgreement.run({\n      member_id: selMember.selectedOptionValue,\n      release_type: selReleaseType.selectedOptionValue,\n    });\n  },\n\t\n  async issueRelease() {\n    const member_id = selMember.selectedOptionValue;\n    const release_type = selReleaseType.selectedOptionValue;\n\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n    const gate = await this.refreshGate();\n    const gateRow = gate?.[0];\n    if (!gateRow?.member_agreement_id) {\n      showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n      return;\n    }\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n    const notes = inpNotes.text || null;\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow.member_agreement_id,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n      notes: notes,\n    });\n\n    showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", ins?.[0]?.sacrament_release_id, {       member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow.member_agreement_id,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n      notes: notes, });\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
         "name": "releaseFlows",
         "pageId": "Release - Issue",
         "pluginId": "js-plugin",
@@ -5818,6 +5818,355 @@
     },
     {
       "deleted": false,
+      "gitSyncId": "696c3f53ef6f963f4d13c88d_43f416f1-a879-491e-80cb-695a67555c04",
+      "id": "Members - Profile_qVoidRelease",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "UPDATE public.sacrament_releases\nSET\n  status = 'voided',\n  voided_at = now(),\n  voided_by = {{ appsmith.store.facilitator_id }}::uuid,\n  void_reason = {{ this.params.void_reason }}\nWHERE sacrament_release_id = {{ this.params.sacrament_release_id }}::uuid\n  AND status = 'issued'\nRETURNING sacrament_release_id;\n",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-19T02:00:22Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.store.facilitator_id ",
+          " this.params.void_reason ",
+          " this.params.sacrament_release_id "
+        ],
+        "messages": [],
+        "name": "qVoidRelease",
+        "pageId": "Members - Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "UPDATE public.sacrament_releases\nSET\n  status = 'voided',\n  voided_at = now(),\n  voided_by = {{ appsmith.store.facilitator_id }}::uuid,\n  void_reason = {{ this.params.void_reason }}\nWHERE sacrament_release_id = {{ this.params.sacrament_release_id }}::uuid\n  AND status = 'issued'\nRETURNING sacrament_release_id;\n",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-19T02:00:22Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.store.facilitator_id ",
+          " this.params.void_reason ",
+          " this.params.sacrament_release_id "
+        ],
+        "messages": [],
+        "name": "qVoidRelease",
+        "pageId": "Members - Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696c3f53ef6f963f4d13c88d_2796f813-adeb-4b41-9be5-9d98313add41",
+      "id": "Members - Profile_apiMarkProductUnShipped",
+      "pluginId": "restapi-plugin",
+      "pluginType": "API",
+      "publishedAction": {
+        "actionConfiguration": {
+          "autoGeneratedHeaders": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"airtable_record_id\": {{ this.params.airtable_record_id }},\n\t\"mushroomprocess_product_id\": {{ this.params.mushroomprocess_product_id }},\n\t\"storage_location\": {{ (appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" )  ? \"Products Storage\" : appsmith.store.facilitator_full_name }}\n}\n",
+          "bodyFormData": [],
+          "encodeParamsToggle": true,
+          "formData": {
+            "apiContentType": "application/json"
+          },
+          "headers": [],
+          "httpMethod": "POST",
+          "httpVersion": "HTTP11",
+          "paginationType": "NONE",
+          "path": "/webhook/signaturegate/airtable/products/mark_unshipped",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "queryParameters": [],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-19T02:11:43Z",
+        "datasource": {
+          "deleted": false,
+          "id": "N8N",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "N8N",
+          "pluginId": "restapi-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " this.params.airtable_record_id ",
+          " (appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" )  ? \"Products Storage\" : appsmith.store.facilitator_full_name ",
+          " this.params.mushroomprocess_product_id "
+        ],
+        "messages": [],
+        "name": "apiMarkProductUnShipped",
+        "pageId": "Members - Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "autoGeneratedHeaders": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"airtable_record_id\": {{ this.params.airtable_record_id }},\n\t\"mushroomprocess_product_id\": {{ this.params.mushroomprocess_product_id }},\n\t\"storage_location\": {{ (appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" )  ? \"Products Storage\" : appsmith.store.facilitator_full_name }}\n}\n",
+          "bodyFormData": [],
+          "encodeParamsToggle": true,
+          "formData": {
+            "apiContentType": "application/json"
+          },
+          "headers": [],
+          "httpMethod": "POST",
+          "httpVersion": "HTTP11",
+          "paginationType": "NONE",
+          "path": "/webhook/signaturegate/airtable/products/mark_unshipped",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "queryParameters": [],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-19T02:11:43Z",
+        "datasource": {
+          "deleted": false,
+          "id": "N8N",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "N8N",
+          "pluginId": "restapi-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " this.params.airtable_record_id ",
+          " (appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" )  ? \"Products Storage\" : appsmith.store.facilitator_full_name ",
+          " this.params.mushroomprocess_product_id "
+        ],
+        "messages": [],
+        "name": "apiMarkProductUnShipped",
+        "pageId": "Members - Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696c3f53ef6f963f4d13c88d_a4d0226a-9f55-4116-aabe-cf628ad22e3f",
+      "id": "Members - Profile_memberProfile.voidRelease",
+      "pluginId": "js-plugin",
+      "pluginType": "JS",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "async function (voidReleaseId, voidReleaseType, voidReason, mushroomProcessId, airtableRecordId) {\n  if (voidReleaseType === \"sacrament_release\") {\n    await apiMarkProductUnShipped.run({\n      airtable_record_id: airtableRecordId,\n      mushroomprocess_product_id: mushroomProcessId\n    });\n  }\n  if (!voidReleaseId) {\n    showAlert(\"Please choose a release to void.\", \"warning\");\n    return;\n  }\n  const voided = await qVoidRelease.run({\n    void_reason: voidReason || \"Voided by: \" + appsmith.store.facilitator_full_name,\n    sacrament_release_id: voidReleaseId\n  });\n  showAlert(`Release voided: ${voided?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  await memberProfile.auditLog(\"release.voided\", \"release\", voided?.[0]?.sacrament_release_id, {\n    void_reason: voidReason,\n    release_type: voidReleaseType,\n    sacrament_release_id: voidReleaseId,\n    voided_by: appsmith.store.facilitator_id,\n    mushroomprocess_product_id: mushroomProcessId || null,\n    storage_locaton: appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" ? \"Products Storage\" : appsmith.store.facilitator_full_name\n  });\n  return voided;\n}",
+          "encodeParamsToggle": true,
+          "jsArguments": [
+            {
+              "name": "voidReleaseId"
+            },
+            {
+              "name": "voidReleaseType"
+            },
+            {
+              "name": "voidReason"
+            },
+            {
+              "name": "mushroomProcessId"
+            },
+            {
+              "name": "airtableRecordId"
+            }
+          ],
+          "paginationType": "NONE",
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "collectionId": "Members - Profile_memberProfile",
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-19T02:52:45Z",
+        "datasource": {
+          "deleted": false,
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "UNUSED_DATASOURCE",
+          "pluginId": "js-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "fullyQualifiedName": "memberProfile.voidRelease",
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          "async function (voidReleaseId, voidReleaseType, voidReason, mushroomProcessId, airtableRecordId) {\n  if (voidReleaseType === \"sacrament_release\") {\n    await apiMarkProductUnShipped.run({\n      airtable_record_id: airtableRecordId,\n      mushroomprocess_product_id: mushroomProcessId\n    });\n  }\n  if (!voidReleaseId) {\n    showAlert(\"Please choose a release to void.\", \"warning\");\n    return;\n  }\n  const voided = await qVoidRelease.run({\n    void_reason: voidReason || \"Voided by: \" + appsmith.store.facilitator_full_name,\n    sacrament_release_id: voidReleaseId\n  });\n  showAlert(`Release voided: ${voided?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  await memberProfile.auditLog(\"release.voided\", \"release\", voided?.[0]?.sacrament_release_id, {\n    void_reason: voidReason,\n    release_type: voidReleaseType,\n    sacrament_release_id: voidReleaseId,\n    voided_by: appsmith.store.facilitator_id,\n    mushroomprocess_product_id: mushroomProcessId || null,\n    storage_locaton: appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" ? \"Products Storage\" : appsmith.store.facilitator_full_name\n  });\n  return voided;\n}"
+        ],
+        "messages": [],
+        "name": "voidRelease",
+        "pageId": "Members - Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "async function (voidReleaseId, voidReleaseType, voidReason, mushroomProcessId, airtableRecordId) {\n  if (voidReleaseType === \"sacrament_release\") {\n    await apiMarkProductUnShipped.run({\n      airtable_record_id: airtableRecordId,\n      mushroomprocess_product_id: mushroomProcessId\n    });\n  }\n  if (!voidReleaseId) {\n    showAlert(\"Please choose a release to void.\", \"warning\");\n    return;\n  }\n  const voided = await qVoidRelease.run({\n    void_reason: voidReason || \"Voided by: \" + appsmith.store.facilitator_full_name,\n    sacrament_release_id: voidReleaseId\n  });\n  showAlert(`Release voided: ${voided?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  await memberProfile.auditLog(\"release.voided\", \"release\", voided?.[0]?.sacrament_release_id, {\n    void_reason: voidReason,\n    release_type: voidReleaseType,\n    sacrament_release_id: voidReleaseId,\n    voided_by: appsmith.store.facilitator_id,\n    mushroomprocess_product_id: mushroomProcessId || null,\n    storage_locaton: appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" ? \"Products Storage\" : appsmith.store.facilitator_full_name\n  });\n  return voided;\n}",
+          "encodeParamsToggle": true,
+          "jsArguments": [
+            {
+              "name": "voidReleaseId"
+            },
+            {
+              "name": "voidReleaseType"
+            },
+            {
+              "name": "voidReason"
+            },
+            {
+              "name": "mushroomProcessId"
+            },
+            {
+              "name": "airtableRecordId"
+            }
+          ],
+          "paginationType": "NONE",
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "collectionId": "Members - Profile_memberProfile",
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-19T02:52:45Z",
+        "datasource": {
+          "deleted": false,
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "UNUSED_DATASOURCE",
+          "pluginId": "js-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "fullyQualifiedName": "memberProfile.voidRelease",
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          "async function (voidReleaseId, voidReleaseType, voidReason, mushroomProcessId, airtableRecordId) {\n  if (voidReleaseType === \"sacrament_release\") {\n    await apiMarkProductUnShipped.run({\n      airtable_record_id: airtableRecordId,\n      mushroomprocess_product_id: mushroomProcessId\n    });\n  }\n  if (!voidReleaseId) {\n    showAlert(\"Please choose a release to void.\", \"warning\");\n    return;\n  }\n  const voided = await qVoidRelease.run({\n    void_reason: voidReason || \"Voided by: \" + appsmith.store.facilitator_full_name,\n    sacrament_release_id: voidReleaseId\n  });\n  showAlert(`Release voided: ${voided?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  await memberProfile.auditLog(\"release.voided\", \"release\", voided?.[0]?.sacrament_release_id, {\n    void_reason: voidReason,\n    release_type: voidReleaseType,\n    sacrament_release_id: voidReleaseId,\n    voided_by: appsmith.store.facilitator_id,\n    mushroomprocess_product_id: mushroomProcessId || null,\n    storage_locaton: appsmith.store.facilitator_is_reviewer || appsmith.store.facilitator_is_reviewer == \"true\" ? \"Products Storage\" : appsmith.store.facilitator_full_name\n  });\n  return voided;\n}"
+        ],
+        "messages": [],
+        "name": "voidRelease",
+        "pageId": "Members - Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_1403d907-7d8f-4e58-b4f7-6f37bf3c1c9b",
       "id": "Release - Issue_releaseFlows.verifyaccess",
       "pluginId": "js-plugin",
@@ -6097,7 +6446,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n  const member_id = selMember.selectedOptionValue;\n  const release_type = selReleaseType.selectedOptionValue;\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gate = await releaseFlows.refreshGate();\n  const gateRow = gate?.[0];\n  if (!gateRow?.member_agreement_id) {\n    showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  const notes = inpNotes.text || null;\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
+          "body": "async function () {\n  const member_id = selMember.selectedOptionValue;\n  const release_type = selReleaseType.selectedOptionValue;\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gate = await releaseFlows.refreshGate();\n  const gateRow = gate?.[0];\n  if (!gateRow?.member_agreement_id) {\n    showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  const notes = inpNotes.text || null;\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", ins?.[0]?.sacrament_release_id, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -6126,7 +6475,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n  const member_id = selMember.selectedOptionValue;\n  const release_type = selReleaseType.selectedOptionValue;\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gate = await releaseFlows.refreshGate();\n  const gateRow = gate?.[0];\n  if (!gateRow?.member_agreement_id) {\n    showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  const notes = inpNotes.text || null;\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
+          "async function () {\n  const member_id = selMember.selectedOptionValue;\n  const release_type = selReleaseType.selectedOptionValue;\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gate = await releaseFlows.refreshGate();\n  const gateRow = gate?.[0];\n  if (!gateRow?.member_agreement_id) {\n    showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  const notes = inpNotes.text || null;\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", ins?.[0]?.sacrament_release_id, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
         ],
         "messages": [],
         "name": "issueRelease",
@@ -6138,7 +6487,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n  const member_id = selMember.selectedOptionValue;\n  const release_type = selReleaseType.selectedOptionValue;\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gate = await releaseFlows.refreshGate();\n  const gateRow = gate?.[0];\n  if (!gateRow?.member_agreement_id) {\n    showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  const notes = inpNotes.text || null;\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
+          "body": "async function () {\n  const member_id = selMember.selectedOptionValue;\n  const release_type = selReleaseType.selectedOptionValue;\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gate = await releaseFlows.refreshGate();\n  const gateRow = gate?.[0];\n  if (!gateRow?.member_agreement_id) {\n    showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  const notes = inpNotes.text || null;\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", ins?.[0]?.sacrament_release_id, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -6167,7 +6516,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n  const member_id = selMember.selectedOptionValue;\n  const release_type = selReleaseType.selectedOptionValue;\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gate = await releaseFlows.refreshGate();\n  const gateRow = gate?.[0];\n  if (!gateRow?.member_agreement_id) {\n    showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  const notes = inpNotes.text || null;\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
+          "async function () {\n  const member_id = selMember.selectedOptionValue;\n  const release_type = selReleaseType.selectedOptionValue;\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gate = await releaseFlows.refreshGate();\n  const gateRow = gate?.[0];\n  if (!gateRow?.member_agreement_id) {\n    showAlert(`Not eligible. Member must sign the required agreement for: ${release_type}`, \"error\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  const notes = inpNotes.text || null;\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  showAlert(`Release issued: ${ins?.[0]?.sacrament_release_id || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", ins?.[0]?.sacrament_release_id, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow.member_agreement_id,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
         ],
         "messages": [],
         "name": "issueRelease",
@@ -6204,7 +6553,7 @@
           ],
           "paginationType": "NONE",
           "selfReferencingDataPaths": [],
-          "timeoutInMillisecond": 0
+          "timeoutInMillisecond": 10000
         },
         "collectionId": "Release - Issue_releaseFlows",
         "confirmBeforeExecute": false,
@@ -6258,7 +6607,7 @@
           ],
           "paginationType": "NONE",
           "selfReferencingDataPaths": [],
-          "timeoutInMillisecond": 0
+          "timeoutInMillisecond": 10000
         },
         "collectionId": "Release - Issue_releaseFlows",
         "confirmBeforeExecute": false,
@@ -7862,24 +8211,6 @@
     {
       "datasourceConfiguration": {
         "connection": {
-          "ssl": {
-            "authType": "DEFAULT"
-          }
-        },
-        "headers": [],
-        "queryParameters": [],
-        "url": "http://nocodb:8080"
-      },
-      "deleted": false,
-      "gitSyncId": "69546c473d3106150e1d4544_9e674e2b-c3af-46be-935b-ec6cb0340832",
-      "isAutoGenerated": false,
-      "messages": [],
-      "name": "NocoDB danks.store",
-      "pluginId": "restapi-plugin"
-    },
-    {
-      "datasourceConfiguration": {
-        "connection": {
           "mode": "READ_WRITE",
           "ssl": {
             "authType": "DEFAULT"
@@ -7909,6 +8240,24 @@
         },
         "headers": [],
         "queryParameters": [],
+        "url": "https://n8n.danks.store"
+      },
+      "deleted": false,
+      "gitSyncId": "69546c473d3106150e1d4544_1cd9eb89-bda6-4e67-a7f8-20e14ff7a422",
+      "isAutoGenerated": false,
+      "messages": [],
+      "name": "N8N",
+      "pluginId": "restapi-plugin"
+    },
+    {
+      "datasourceConfiguration": {
+        "connection": {
+          "ssl": {
+            "authType": "DEFAULT"
+          }
+        },
+        "headers": [],
+        "queryParameters": [],
         "url": "https://nocodb.danks.store"
       },
       "deleted": false,
@@ -7927,13 +8276,13 @@
         },
         "headers": [],
         "queryParameters": [],
-        "url": "https://n8n.danks.store"
+        "url": "http://nocodb:8080"
       },
       "deleted": false,
-      "gitSyncId": "69546c473d3106150e1d4544_1cd9eb89-bda6-4e67-a7f8-20e14ff7a422",
+      "gitSyncId": "69546c473d3106150e1d4544_9e674e2b-c3af-46be-935b-ec6cb0340832",
       "isAutoGenerated": false,
       "messages": [],
-      "name": "N8N",
+      "name": "NocoDB danks.store",
       "pluginId": "restapi-plugin"
     }
   ],
@@ -7952,7 +8301,7 @@
     "evaluationVersion": 2,
     "isManualUpdate": false,
     "isPublic": false,
-    "name": "Development Only - Rooted Psyche Membership Ops",
+    "name": "Rooted Psyche Membership Ops",
     "pages": [
       {
         "id": "Members – Intake",
@@ -8023,7 +8372,7 @@
         "isDefault": false
       }
     ],
-    "slug": "development-only-rooted-psyche-membership-ops",
+    "slug": "rooted-psyche-membership-ops",
     "staticUrlSettings": {
       "enabled": true,
       "uniqueSlug": "rooted-psyche-membership-ops-9803-831b-ce4f"
@@ -12984,8 +13333,9 @@
                   "columnWidthMap": {
                     "customColumn1": 100,
                     "customColumn2": 82,
-                    "evidence": 214,
+                    "evidence": 250,
                     "signature_method": 103,
+                    "status": 87,
                     "template_name": 168
                   },
                   "customIsLoading": false,
@@ -13725,14 +14075,20 @@
                     "notes",
                     "release_type",
                     "member_agreement_id",
-                    "facilitator_id"
+                    "facilitator_id",
+                    "status",
+                    "customColumn1",
+                    "voided_at",
+                    "voided_by",
+                    "void_reason",
+                    "EditActions1"
                   ],
-                  "columnUpdatedAt": 1768692106809,
+                  "columnUpdatedAt": 1768796120927,
                   "columnWidthMap": {
-                    "customColumn1": 99,
+                    "customColumn1": 131,
                     "customColumn2": 80,
                     "item_name": 210,
-                    "mushroomprocess_product_id": 255,
+                    "mushroomprocess_product_id": 189,
                     "net_weight_g": 87,
                     "quantity": 99,
                     "released_by": 123,
@@ -13806,14 +14162,75 @@
                     },
                     {
                       "key": "primaryColumns.strain.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.borderRadius"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.boxShadow"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.buttonColor"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.voided_at.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.voided_by.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.void_reason.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.isDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.saveButtonColor"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.discardBorderRadius"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.saveBorderRadius"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.isSaveDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.isDiscardDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.void_reason.isCellEditable"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.onClick"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.isDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.isSaveDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.isDiscardDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.void_reason.isCellEditable"
                     }
                   ],
-                  "dynamicTriggerPathList": [],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "primaryColumns.customColumn1.onClick"
+                    }
+                  ],
                   "enableClientSideSearch": true,
                   "endOfData": false,
                   "flexVerticalAlignment": "start",
@@ -13841,6 +14258,46 @@
                   "parentId": "0",
                   "parentRowSpace": 10,
                   "primaryColumns": {
+                    "EditActions1": {
+                      "alias": "EditActions1",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "buttonStyle": "rgb(3, 179, 101)",
+                      "columnType": "editActions",
+                      "computedValue": "",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "discardActionLabel": "Discard",
+                      "discardBorderRadius": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "discardButtonColor": "#F22B2B",
+                      "discardButtonVariant": "TERTIARY",
+                      "discardIconAlign": "left",
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "id": "EditActions1",
+                      "index": 10,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": true,
+                      "isDisabled": false,
+                      "isDiscardDisabled": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( !ReleasesTable.updatedRowIndices.includes(currentIndex)))}}",
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveDisabled": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( !ReleasesTable.updatedRowIndices.includes(currentIndex)))}}",
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "Save / Discard",
+                      "notation": "standard",
+                      "originalId": "EditActions1",
+                      "saveActionLabel": "Save",
+                      "saveBorderRadius": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "saveButtonColor": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+                      "saveIconAlign": "left",
+                      "sticky": "right",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "width": 150
+                    },
                     "created_at": {
                       "alias": "created_at",
                       "allowCellWrapping": false,
@@ -13869,6 +14326,45 @@
                       "originalId": "created_at",
                       "sticky": "",
                       "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "customColumn1": {
+                      "alias": "Void",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "borderRadius": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "boxShadow": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+                      "buttonColor": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+                      "buttonLabel": "Void Release",
+                      "buttonStyle": "rgb(3, 179, 101)",
+                      "columnType": "button",
+                      "computedValue": "",
+                      "currencyCode": "USD",
+                      "customAlias": "",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "customColumn1",
+                      "index": 10,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": true,
+                      "isDisabled": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"] == \"voided\")) : currentRow[\"status\"] == \"voided\" })()}}",
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Void",
+                      "labelColor": "#FFFFFF",
+                      "notation": "standard",
+                      "onClick": "{{ \n\nmemberProfile.voidRelease(\tcurrentRow.sacrament_release_id,\ncurrentRow.release_type,\ncurrentRow.void_reason,\ncurrentRow.mushroomprocess_product_id,\ncurrentRow.airtable_record_id\n)\n\n}}",
+                      "originalId": "customColumn1",
+                      "sticky": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,
                       "validation": {},
@@ -13931,7 +14427,7 @@
                       "isDiscardVisible": true,
                       "isEditable": false,
                       "isSaveVisible": true,
-                      "isVisible": true,
+                      "isVisible": false,
                       "label": "Facilitator ID",
                       "notation": "standard",
                       "originalId": "facilitator_id",
@@ -13999,7 +14495,7 @@
                       "isDiscardVisible": true,
                       "isEditable": false,
                       "isSaveVisible": true,
-                      "isVisible": true,
+                      "isVisible": false,
                       "label": "Agreement ID",
                       "notation": "standard",
                       "originalId": "member_agreement_id",
@@ -14317,6 +14813,40 @@
                       "verticalAlignment": "CENTER",
                       "width": 150
                     },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 16,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
                     "strain": {
                       "alias": "strain",
                       "allowCellWrapping": false,
@@ -14384,12 +14914,115 @@
                       "validation": {},
                       "verticalAlignment": "CENTER",
                       "width": 150
+                    },
+                    "void_reason": {
+                      "alias": "void_reason",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"void_reason\"])) : void_reason })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "void_reason",
+                      "index": 19,
+                      "isCellEditable": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow[\"status\"] != \"voided\" )) :  currentRow[\"status\"] != \"voided\"  })()}}",
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": true,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Void Reason",
+                      "notation": "standard",
+                      "originalId": "void_reason",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "voided_at": {
+                      "alias": "voided_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"voided_at\"])) : voided_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "voided_at",
+                      "index": 17,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "voided_at",
+                      "notation": "standard",
+                      "originalId": "voided_at",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "voided_by": {
+                      "alias": "voided_by",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"voided_by\"])) : voided_by })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "voided_by",
+                      "index": 18,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "voided_by",
+                      "notation": "standard",
+                      "originalId": "voided_by",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
                     }
                   },
                   "renderMode": "CANVAS",
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "searchKey": "",
+                  "showInlineEditingOptionDropdown": true,
                   "tableData": "{{qMemberReleases.data}}",
                   "textSize": "0.875rem",
                   "topRow": 68,
@@ -16496,8 +17129,9 @@
                   "columnWidthMap": {
                     "customColumn1": 100,
                     "customColumn2": 82,
-                    "evidence": 214,
+                    "evidence": 250,
                     "signature_method": 103,
+                    "status": 87,
                     "template_name": 168
                   },
                   "customIsLoading": false,
@@ -17237,14 +17871,20 @@
                     "notes",
                     "release_type",
                     "member_agreement_id",
-                    "facilitator_id"
+                    "facilitator_id",
+                    "status",
+                    "customColumn1",
+                    "voided_at",
+                    "voided_by",
+                    "void_reason",
+                    "EditActions1"
                   ],
-                  "columnUpdatedAt": 1768692106809,
+                  "columnUpdatedAt": 1768796120927,
                   "columnWidthMap": {
-                    "customColumn1": 99,
+                    "customColumn1": 131,
                     "customColumn2": 80,
                     "item_name": 210,
-                    "mushroomprocess_product_id": 255,
+                    "mushroomprocess_product_id": 189,
                     "net_weight_g": 87,
                     "quantity": 99,
                     "released_by": 123,
@@ -17318,14 +17958,75 @@
                     },
                     {
                       "key": "primaryColumns.strain.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.borderRadius"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.boxShadow"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.buttonColor"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.voided_at.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.voided_by.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.void_reason.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.isDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.saveButtonColor"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.discardBorderRadius"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.saveBorderRadius"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.isSaveDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.isDiscardDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.void_reason.isCellEditable"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.onClick"
+                    },
+                    {
+                      "key": "primaryColumns.customColumn1.isDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.isSaveDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.EditActions1.isDiscardDisabled"
+                    },
+                    {
+                      "key": "primaryColumns.void_reason.isCellEditable"
                     }
                   ],
-                  "dynamicTriggerPathList": [],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "primaryColumns.customColumn1.onClick"
+                    }
+                  ],
                   "enableClientSideSearch": true,
                   "endOfData": false,
                   "flexVerticalAlignment": "start",
@@ -17353,6 +18054,46 @@
                   "parentId": "0",
                   "parentRowSpace": 10,
                   "primaryColumns": {
+                    "EditActions1": {
+                      "alias": "EditActions1",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "buttonStyle": "rgb(3, 179, 101)",
+                      "columnType": "editActions",
+                      "computedValue": "",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "discardActionLabel": "Discard",
+                      "discardBorderRadius": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "discardButtonColor": "#F22B2B",
+                      "discardButtonVariant": "TERTIARY",
+                      "discardIconAlign": "left",
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "id": "EditActions1",
+                      "index": 10,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": true,
+                      "isDisabled": false,
+                      "isDiscardDisabled": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( !ReleasesTable.updatedRowIndices.includes(currentIndex)))}}",
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveDisabled": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( !ReleasesTable.updatedRowIndices.includes(currentIndex)))}}",
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "Save / Discard",
+                      "notation": "standard",
+                      "originalId": "EditActions1",
+                      "saveActionLabel": "Save",
+                      "saveBorderRadius": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "saveButtonColor": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+                      "saveIconAlign": "left",
+                      "sticky": "right",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "width": 150
+                    },
                     "created_at": {
                       "alias": "created_at",
                       "allowCellWrapping": false,
@@ -17381,6 +18122,45 @@
                       "originalId": "created_at",
                       "sticky": "",
                       "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "customColumn1": {
+                      "alias": "Void",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "borderRadius": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "boxShadow": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+                      "buttonColor": "{{ReleasesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+                      "buttonLabel": "Void Release",
+                      "buttonStyle": "rgb(3, 179, 101)",
+                      "columnType": "button",
+                      "computedValue": "",
+                      "currencyCode": "USD",
+                      "customAlias": "",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "customColumn1",
+                      "index": 10,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": true,
+                      "isDisabled": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"] == \"voided\")) : currentRow[\"status\"] == \"voided\" })()}}",
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Void",
+                      "labelColor": "#FFFFFF",
+                      "notation": "standard",
+                      "onClick": "{{ \n\nmemberProfile.voidRelease(\tcurrentRow.sacrament_release_id,\ncurrentRow.release_type,\ncurrentRow.void_reason,\ncurrentRow.mushroomprocess_product_id,\ncurrentRow.airtable_record_id\n)\n\n}}",
+                      "originalId": "customColumn1",
+                      "sticky": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,
                       "validation": {},
@@ -17443,7 +18223,7 @@
                       "isDiscardVisible": true,
                       "isEditable": false,
                       "isSaveVisible": true,
-                      "isVisible": true,
+                      "isVisible": false,
                       "label": "Facilitator ID",
                       "notation": "standard",
                       "originalId": "facilitator_id",
@@ -17511,7 +18291,7 @@
                       "isDiscardVisible": true,
                       "isEditable": false,
                       "isSaveVisible": true,
-                      "isVisible": true,
+                      "isVisible": false,
                       "label": "Agreement ID",
                       "notation": "standard",
                       "originalId": "member_agreement_id",
@@ -17829,6 +18609,40 @@
                       "verticalAlignment": "CENTER",
                       "width": 150
                     },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 16,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
                     "strain": {
                       "alias": "strain",
                       "allowCellWrapping": false,
@@ -17896,12 +18710,115 @@
                       "validation": {},
                       "verticalAlignment": "CENTER",
                       "width": 150
+                    },
+                    "void_reason": {
+                      "alias": "void_reason",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"void_reason\"])) : void_reason })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "void_reason",
+                      "index": 19,
+                      "isCellEditable": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow[\"status\"] != \"voided\" )) :  currentRow[\"status\"] != \"voided\"  })()}}",
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": true,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Void Reason",
+                      "notation": "standard",
+                      "originalId": "void_reason",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "voided_at": {
+                      "alias": "voided_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"voided_at\"])) : voided_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "voided_at",
+                      "index": 17,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "voided_at",
+                      "notation": "standard",
+                      "originalId": "voided_at",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "voided_by": {
+                      "alias": "voided_by",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = ReleasesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"voided_by\"])) : voided_by })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "voided_by",
+                      "index": 18,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "voided_by",
+                      "notation": "standard",
+                      "originalId": "voided_by",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
                     }
                   },
                   "renderMode": "CANVAS",
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "searchKey": "",
+                  "showInlineEditingOptionDropdown": true,
                   "tableData": "{{qMemberReleases.data}}",
                   "textSize": "0.875rem",
                   "topRow": 68,

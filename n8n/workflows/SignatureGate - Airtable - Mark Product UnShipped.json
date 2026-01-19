@@ -1,28 +1,11 @@
 {
-  "name": "SignatureGate - Airtable - Mark Product Shipped",
+  "name": "SignatureGate - Airtable - Mark Product UnShipped",
   "nodes": [
     {
       "parameters": {
-        "httpMethod": "POST",
-        "path": "signaturegate/airtable/products/mark_shipped",
-        "responseMode": "responseNode",
-        "options": {}
+        "jsCode": "/**\n * Expected body JSON:\n * {\n *   \"mushroomprocess_product_id\": \"PROD-....\", \n * }\n */\nconst body = $json.body || $json;\nconst mushroomprocess_product_id = body.mushroomprocess_product_id;\nconst storage_location = body.storage_location;\n\nif ( !mushroomprocess_product_id) {\n  throw new Error(\"Missing mushroomprocess_product_id\");\n}\n\nif (!storage_location) {\n  throw new Error(\"Missing storage_location\");\n}\n\nreturn [{ json: { mushroomprocess_product_id, storage_location } }];"
       },
-      "id": "e2846e8a-5eed-4d47-8476-0c27a5c58bd7",
-      "name": "Webhook - Mark Shipped",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [
-        -448,
-        80
-      ],
-      "webhookId": "a9d06d03-8e94-4797-964a-5a3dba18c534"
-    },
-    {
-      "parameters": {
-        "jsCode": "/**\n * Expected body JSON:\n * {\n *   \"airtable_record_id\": \"rec....\",   // preferred\n *   \"mushroomprocess_product_id\": \"PROD-....\", // optional alternative lookup\n * }\n */\nconst body = $json.body || $json;\nconst airtable_record_id = body.airtable_record_id;\nconst mushroomprocess_product_id = body.mushroomprocess_product_id;\n\nif (!airtable_record_id && !mushroomprocess_product_id) {\n  throw new Error(\"Missing airtable_record_id or mushroomprocess_product_id\");\n}\n\nreturn [{ json: { airtable_record_id, mushroomprocess_product_id } }];"
-      },
-      "id": "2eb5783d-2183-4f0a-a773-3058bfb3d608",
+      "id": "c63ad42e-7e7c-426b-96a4-1cac703c71a6",
       "name": "Code - Validate Input",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -33,9 +16,9 @@
     },
     {
       "parameters": {
-        "jsCode": "// Input 0: Airtable - List Locations\n// Input 1: AirtableFindProduct (optional fallback)\nconst location = $('Airtable - Find Location Shipped').first()?.json;\n\n// Each item should look like { id: \"rec...\", fields: { name: \"Shipped\", ... } }\nconst shippedLocId = location?.id;\n\nif (!shippedLocId) {\n  throw new Error(\n    `Could not find 'Shipped' location. Sample names: ${location.slice(0,10).map(r => r.fields?.name).join(\", \")}`\n  );\n}\n\nlet prodId = $('Code - Validate Input').first().json.mushroomprocess_product_id;\nconst prod = $('Airtable - Find Product by product_id').first()?.json; // AirtableFindProduct\nconst prodRecId = prod?.id;\n\nif (!prodId) throw new Error(\"Could not resolve product Airtable product_id.\");\n\nreturn [{ json: { id: prodRecId,  product_id: prodId, storage_location: shippedLocId } }];\n"
+        "jsCode": "// Input 0: Airtable - List Locations\n// Input 1: AirtableFindProduct (optional fallback)\nconst location = $('Airtable - Find Target Location').first()?.json;\n\n// Each item should look like { id: \"rec...\", fields: { name: \"Shipped\", ... } }\nconst targetLocId = location?.id;\n\nif (!targetLocId) {\n  throw new Error(\n    `Could not find 'Shipped' location. Sample names: ${location.slice(0,10).map(r => r.fields?.name).join(\", \")}`\n  );\n}\n\nlet prodId = $('Code - Validate Input').first().json.mushroomprocess_product_id;\nconst prod = $('Airtable - Find Product by product_id').first()?.json; // AirtableFindProduct\nconst prodRecId = prod?.id;\n\nif (!prodId) throw new Error(\"Could not resolve product Airtable product_id.\");\n\nreturn [{ json: { id: prodRecId,  product_id: prodId, storage_location: targetLocId } }];\n"
       },
-      "id": "e2ac0746-4969-4527-a29d-a69713b76221",
+      "id": "987d6bfa-72d2-4134-a358-a9b097b2e881",
       "name": "Code - Resolve IDs",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -50,7 +33,7 @@
         "responseBody": "={{ { ok: true, updated_product_record_id: $('HTTP Request').item.json.id } }}",
         "options": {}
       },
-      "id": "4c5896f1-3cc2-460a-9ef6-584dd1802d4e",
+      "id": "54892188-2395-4cb2-b09a-6077e66e8030",
       "name": "Respond",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
@@ -75,44 +58,13 @@
         "filterByFormula": "={product_id} = '{{ $('Code - Validate Input').item.json.mushroomprocess_product_id }}'",
         "options": {}
       },
-      "id": "482180a0-fcf6-4d5c-ab8c-1931cd6ce79f",
+      "id": "ba4f3aab-1f0d-4e80-bbd5-fa2049257a07",
       "name": "Airtable - Find Product by product_id",
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2,
       "position": [
         -64,
         0
-      ],
-      "credentials": {
-        "airtableTokenApi": {
-          "id": "vgt8hbjfh9CbsaQA",
-          "name": "Airtable Personal Access Token account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "search",
-        "base": {
-          "__rl": true,
-          "value": "=appxJ59Wmyd96jXMm",
-          "mode": "id"
-        },
-        "table": {
-          "__rl": true,
-          "value": "tbl2QYDX1lLDyrpcm",
-          "mode": "id"
-        },
-        "filterByFormula": "{name} = 'Shipped'",
-        "options": {}
-      },
-      "id": "6568099d-952f-4417-baf6-77df07e03b26",
-      "name": "Airtable - Find Location Shipped",
-      "type": "n8n-nodes-base.airtable",
-      "typeVersion": 2,
-      "position": [
-        64,
-        208
       ],
       "credentials": {
         "airtableTokenApi": {
@@ -138,7 +90,7 @@
         368,
         128
       ],
-      "id": "ccb134d9-2e62-44d6-88ba-04312e0316df",
+      "id": "1219b534-2a1a-4424-90aa-40787142fa2f",
       "name": "HTTP Request",
       "credentials": {
         "httpHeaderAuth": {
@@ -149,6 +101,54 @@
           "id": "gSlk2xHftMApxRZA",
           "name": "Airtable account"
         },
+        "airtableTokenApi": {
+          "id": "vgt8hbjfh9CbsaQA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signaturegate/airtable/products/mark_unshipped",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a177957c-45c6-4262-94a0-8f792b89183a",
+      "name": "Webhook - Mark UnShipped",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        80
+      ],
+      "webhookId": "18356563-0c25-46d5-8827-6f55ff939030"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "=appxJ59Wmyd96jXMm",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl2QYDX1lLDyrpcm",
+          "mode": "id"
+        },
+        "filterByFormula": "={name} = '{{ $('Code - Validate Input').item.json.storage_location }}'",
+        "options": {}
+      },
+      "id": "a0a98467-28f5-461f-99b4-390b70b0b22a",
+      "name": "Airtable - Find Target Location",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        64,
+        208
+      ],
+      "credentials": {
         "airtableTokenApi": {
           "id": "vgt8hbjfh9CbsaQA",
           "name": "Airtable Personal Access Token account"
@@ -177,7 +177,7 @@
             },
             {
               "column": "action",
-              "value": "product.shipped"
+              "value": "product.unshipped"
             },
             {
               "column": "entity_type",
@@ -189,20 +189,20 @@
             },
             {
               "column": "details",
-              "value": "={{ JSON.stringify({ airtable_record_id: $json.id, product_id: $json.product_id, storage_location: 'Shipped' }) }}"
+              "value": "={{ JSON.stringify({airtable_record_id: $json.id, product_id: $json.product_id, storage_location: $('Code - Validate Input').item.json.storage_location}) }}"
             }
           ]
         },
         "options": {}
       },
-      "name": "PG - Audit product shipped",
+      "name": "PG - Audit product unshipped",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
         528,
         -96
       ],
-      "id": "f7e7f57d-47cc-4a0d-b082-d9f0c4bd2376",
+      "id": "5e0e8baf-af1f-436f-aadd-56ba8f04ab6e",
       "credentials": {
         "postgres": {
           "id": "r1oDpLoZSVIIOWRS",
@@ -213,17 +213,6 @@
   ],
   "pinData": {},
   "connections": {
-    "Webhook - Mark Shipped": {
-      "main": [
-        [
-          {
-            "node": "Code - Validate Input",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Code - Validate Input": {
       "main": [
         [
@@ -246,22 +235,11 @@
         ]
       ]
     },
-    "Airtable - Find Location Shipped": {
-      "main": [
-        [
-          {
-            "node": "Code - Resolve IDs",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Airtable - Find Product by product_id": {
       "main": [
         [
           {
-            "node": "Airtable - Find Location Shipped",
+            "node": "Airtable - Find Target Location",
             "type": "main",
             "index": 0
           }
@@ -272,14 +250,36 @@
       "main": [
         [
           {
-            "node": "PG - Audit product shipped",
+            "node": "PG - Audit product unshipped",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "PG - Audit product shipped": {
+    "Webhook - Mark UnShipped": {
+      "main": [
+        [
+          {
+            "node": "Code - Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Find Target Location": {
+      "main": [
+        [
+          {
+            "node": "Code - Resolve IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Audit product unshipped": {
       "main": [
         [
           {
@@ -296,11 +296,11 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "ac1dfaac-00ba-44ff-ae42-7d4130b8982e",
+  "versionId": "97ff790d-4937-43ae-9740-99324c2e2005",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
-  "id": "OMIv5C1iUbxZEZ8o",
+  "id": "sPFn38hbLG8Pdf7B",
   "tags": []
 }
