@@ -123,18 +123,63 @@ Appsmith → n8n → Airtable
 n8n → SignatureGate
   Insert sacrament_release record
 
-## Audit logging intent
+## Audit Logging Model
 
 Audit logging in SignatureGate is designed to be:
 - authoritative
 - durable
 - legally defensible
 
-Not all audits live in one layer:
-- Appsmith audits user intent
-- n8n audits external completion
+Audit logging is split by responsibility:
+- **Appsmith** records user intent and operator actions
+- **n8n** records completion of external or irreversible workflows
 
 Future changes must preserve this split.
 
+All audit records are append-only and retained indefinitely.
 
+## Donations Architecture
 
+Donations are tracked as first-class records within SignatureGate and are intentionally separated from sacrament release logic.
+
+### Donation Sources
+- **Cash**: entered manually by facilitators
+- **Givebutter**: ingested automatically via webhook
+
+### Processing Model
+- Cash donations require reviewer verification
+- Givebutter donations are verified automatically on receipt
+- Donations are never used as gating criteria for sacrament release
+
+### Webhook Flow (Givebutter)
+
+Givebutter → n8n webhook → SignatureGate Postgres
+
+n8n responsibilities:
+- Validate webhook
+- Normalize donor identity
+- Match or create member
+- Insert donation (verified)
+- Write audit log entry
+
+## Donations & External Funding Sources
+
+Donations are modeled as first-class records in SignatureGate but are intentionally
+decoupled from sacrament release logic.
+
+### Sources
+- Manual cash entry (facilitator → reviewer workflow)
+- Automated Givebutter ingestion via n8n webhook
+
+### Givebutter Webhook Flow
+
+Givebutter → n8n → SignatureGate (Postgres)
+
+n8n responsibilities:
+- Validate webhook (optional shared secret)
+- Normalize donor identity
+- Match or create member by email
+- Insert donation as verified
+- Write audit log entry
+
+Donations do not participate in release gating logic.

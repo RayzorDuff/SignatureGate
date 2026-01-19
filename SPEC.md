@@ -4,7 +4,7 @@
 
 **SignatureGate** is an open-source compliance, agreement, and controlled-distribution system designed for nonprofit, membership-based organizations that distribute regulated or sensitive items, activities, or experiences.
 
-SignatureGate is used by **Rooted Psyche Church** to ensure that:
+SignatureGate is used by **Rooted Psyche** to ensure that:
 - All members have executed required legal and doctrinal agreements
 - Agreements are versioned, auditable, and provable (paper or digital)
 - Regulated items received from a third-party producer (Dank Mushrooms) are only released to eligible members
@@ -53,7 +53,7 @@ SignatureGate is intentionally **separate but interoperable** with upstream inve
 
 - **n8n**
   - Workflow orchestration
-  - Webhooks (OpenSign, GiveButter, internal enforcement)
+  - Webhooks (Documenso, GiveButter, internal enforcement)
 
 - **Appsmith**
   - Operator & facilitator UI
@@ -135,7 +135,7 @@ Execution evidence for agreements.
 - signature_status
   - required | sent | signed | declined | expired
 - signature_method
-  - paper | opensign | other
+  - paper | documenso | other
 - signed_at
 - document_url
 - verified_by
@@ -235,8 +235,8 @@ A release **MUST NOT** be recorded unless:
 
 ## n8n Event Specifications
 
-### OpenSign → Agreement Signed
-- Trigger: OpenSign webhook
+### Documenso → Agreement Signed
+- Trigger: Documenso webhook
 - Actions:
   - Match member by email
   - Update `member_agreements`

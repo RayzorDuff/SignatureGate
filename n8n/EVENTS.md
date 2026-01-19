@@ -44,12 +44,12 @@ This is the minimum automation set for SignatureGate.
 
 6. **Givebutter donation received**
    - Trigger: Givebutter webhook (or polling)
-   - Actions: create `donations` row; link to member by email if possible; audit_log.
+   - ✔️Actions: create `donations` row; link to member by email if possible; audit_log.
 
 ## Audit logging in n8n workflows
 
 Some n8n workflows write directly to `audit_log` when handling:
-	- Documenso signing callbacks
-	- Final product shipment updates
+	- ✔️Documenso signing callbacks
+	- ✔️Final product shipment updates
 
 These audit writes must remain in n8n because the triggering event occurs outside Appsmith.

@@ -205,6 +205,26 @@ ensure that an audit entry is written using the shared audit helper.
 
 Audit logging must never block the primary workflow, but it must not be removed or bypassed.
 
+When adding or modifying Appsmith workflows:
+- Any action that changes legal, financial, or sacramental state **must** write an audit log entry
+
+## Donations Workflow
+
+### Cash Donations
+1. Facilitator creates a cash donation entry (pending_review)
+2. Donations reviewer verifies or rejects
+3. Audit log records both actions
+
+### Givebutter Donations
+- Automatically ingested via n8n webhook
+- Automatically verified
+- Member is matched or created by email
+- Audit entry written on receipt
+
+### Permissions
+- `is_facilitator`: create cash donations
+- `is_donations_reviewer`: verify donations, see full member list
+
 ## Contributing
 
 Appsmith exports the json for the project in a single line text file.  To convert this file, 

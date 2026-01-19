@@ -1,28 +1,29 @@
 # SignatureGate
 
-SignatureGate is an open-source, self-hosted membership + agreement + sacrament-release tracking system for **Rooted Psyche**.
+SignatureGate is an open-source, self-hosted membership, agreement, sacrament-release **and donation tracking** system for **Rooted Psyche**.
 
-It is designed to stay **separate but interoperable** with the MushroomProcess inventory/workflow system used by Dank Mushrooms, by linking to MushroomProcess lot IDs (and/or packaged product IDs) without requiring a shared database.
+It is designed to stay **separate but interoperable** with the MushroomProcess inventory/workflow system, while preserving legal, spiritual, and operational boundaries.
 
 ## What this solves
 
-- Track **members** and their contact info
-- Track **agreements** (paper, OpenSign, etc.) and ensure the correct agreement(s) are signed **before** a sacrament release
-- Track **sacrament releases** to members with **traceability back to MushroomProcess lot_id**
-- Track **events** (ceremony, retreat, sweat lodge, etc.) and tie agreements + releases to a specific event
-- Track **voluntary donations** (cash, Givebutter) without treating them as payment for sacrament
+- Track **members** and contact information
+- Track **agreements** (paper, Documenso, etc.) and enforce signing before sacrament release
+- Track **sacrament releases** with traceability to MushroomProcess `product_id`
+- Track **events** (ceremonies, retreats)
+- Track **voluntary donations** (cash and Givebutter) without treating them as payment for sacrament
+- Maintain a **centralized, append-only audit log** of all significant actions
 
-> Rooted Psyche packet language: sacraments are not sold; donations are voluntary. See `docs/policy-notes.md`. 
+> Donations are voluntary and not payment for sacrament. See `docs/POLICY-NOTES.md`.
 
 ## Architecture (high level)
 
-- **Postgres #1**: `signaturegate_db` (this project’s core data)
-- **Postgres #2**: `mushroomprocess_bridge_db` (optional; either a replica/readonly mirror of MushroomProcess tables, or a small “bridge” schema for caching lot metadata)
-- **NocoDB**: admin UI for both DBs (separate Bases / data sources)
-- **n8n**: automation + sync between systems (OpenSign/Givebutter/email/etc.)
-- **Appsmith**: operator-facing app (check-in, releases, scanning QR/lot IDs)
+- **Postgres**: SignatureGate core data (members, agreements, releases, donations, audit_log)
+- **Appsmith**: Operator-facing UI (facilitators, reviewers)
+- **n8n**: Orchestration and external integrations (Documenso, Givebutter, Airtable)
+- **NocoDB**: Attachment and document storage
+- **MushroomProcess**: External inventory source (linked by ID only)
 
-See: `docs/architecture.md`.
+See `docs/ARCHITECTURE.md` for details.
 
 ## Quick start (Docker Compose)
 
@@ -65,11 +66,14 @@ SignatureGate maintains a centralized, append-only audit trail in `public.audit_
 
 The audit log records all legally, spiritually, and operationally significant events, including:
 
-- Authentication outcomes
+- Authentication failures
 - Member creation and status changes
-- Agreement creation, signing, and evidence attachment
+- Agreement approval / rejection
 - Sacrament release issuance
-- Product shipment and final release completion
+- Donation creation and verification
+- External webhook-driven state changes
+
+Audit logging is legally and spiritually significant and must never be bypassed.
 
 ### Design principles
 
@@ -129,3 +133,15 @@ Two-party signing (Member + Facilitator) is implemented via n8n + Documenso.
 
 - Setup & workflows: `n8n/DOCUMENSO_INTEGRATION.md`
 - Certificate troubleshooting: `deploy/DOCUMENSO_CERT_TROUBLESHOOTING.md`
+
+## Donations (Cash & Givebutter)
+
+SignatureGate supports tracking **voluntary donations** independently of sacrament release.
+
+- **Cash donations** are entered manually by facilitators and require reviewer verification.
+- **Givebutter donations** are ingested automatically via webhook and marked verified on receipt.
+- Donations are **never** used as a prerequisite or gate for sacrament release.
+
+All donation lifecycle events are recorded in the audit log.
+
+

@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.1.3-beta] — 2026-01-19
+
+### Added
+- Agreement approval and rejection workflow for manually uploaded agreements
+- Role-based reviewer controls for agreements and donations
+- Cash donation entry and verification workflow
+- Automated Givebutter donation ingestion via webhook
+- Automatic member creation from Givebutter donor data
+- Case-insensitive email uniqueness enforcement for members
+- Comprehensive audit logging for agreement and donation lifecycle events
+
+### Changed
+- Donations schema expanded to support review status and verification metadata
+- Member selection visibility respects `is_donations_reviewer` role
+- SQL queries updated to use prepared statements for safety
+
+### Fixed
+- SQL injection risks in reviewer actions
+- Duplicate donation ingestion from repeated webhook events
+- Inconsistent reviewer visibility logic across pages
+
 ## [v0.1.2-beta] — 2026-01-17
 
 ### Added
