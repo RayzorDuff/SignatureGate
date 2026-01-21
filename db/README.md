@@ -44,6 +44,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # Rename sacrament_releases table to releases for use by other areas of the organization
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_rename_sacrament_releases_to_releases.sql
+
+# Store valid agreement types in DB
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_agreement_types.sql
 ```
 
 3) Verify tables exist:
