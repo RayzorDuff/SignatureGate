@@ -41,6 +41,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # Allow voiding releases
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_release_void.sql
+
+# Rename sacrament_releases table to releases for use by other areas of the organization
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_rename_sacrament_releases_to_releases.sql
 ```
 
 3) Verify tables exist:
@@ -55,7 +58,7 @@ sudo docker exec -it signaturegate-postgres psql -U signaturegate -d signaturega
 sudo docker exec -it signaturegate-postgres psql -U signaturegate -d signaturegate -c " \
 INSERT INTO agreement_templates (name, version, required_for, doc_url, active) \
 VALUES ('Member Acknowledgment & Liability Release', '2025-12-01', ARRAY['membership','sacrament_release'], \
-'OPENSIGN_TEMPLATE_OR_PDF_URL', true) ON CONFLICT DO NOTHING;"
+'DOCUMENSO_TEMPLATE_OR_PDF_URL', true) ON CONFLICT DO NOTHING;"
 ```
 
 5) Create the NocoDB base connected to signaturegate-postgres
@@ -97,13 +100,7 @@ Test & Save.
 
 
 ## Migration order
-After schema.sql run:
-- migrations_facilitator_review.sql
-- migrations_facilitator_authentication.sql
-- migrations_sacrament_release.sql
-- migrations_documenso_integration.sql
-- migrations_documenso_integration_1.sql
-- migrations_audit_log.sql
+After schema.sql run migrations in the order specified above.
 
 ## audit_log table
 
