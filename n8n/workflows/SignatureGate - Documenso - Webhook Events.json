@@ -33,9 +33,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE member_agreements\nSET\n  status = COALESCE($3, status),\n  documenso_document_id = COALESCE(documenso_document_id, $4)\nWHERE\n  ($1 IS NOT NULL AND member_agreement_id = $1::uuid)\n  OR ($2 IS NOT NULL AND documenso_external_id = $2);",
+        "query": "WITH updated AS (\n  UPDATE public.member_agreements\n  SET\n    status = COALESCE($3, status),\n    documenso_document_id = COALESCE(documenso_document_id, $4),\n    updated_at = now()\n  WHERE\n    ($1 IS NOT NULL AND member_agreement_id = $1::uuid)\n    OR ($2 IS NOT NULL AND documenso_external_id = $2)\n  RETURNING\n    member_agreement_id,\n    status,\n    documenso_external_id,\n    documenso_document_id\n),\naud AS (\n  INSERT INTO public.audit_log (actor, action, entity_type, entity_id, details)\n  SELECT\n    'documenso',\n    'member_agreement.' || COALESCE($3, updated.status),\n    'member_agreement',\n    updated.member_agreement_id::text,\n    jsonb_build_object(\n      'event', $5,\n      'eventRaw', $6,\n      'status', $3,\n      'externalId', $2,\n      'documenso_document_id', $4,\n      'createdAt', CASE WHEN $7 IS NULL OR $7 = '' THEN NULL ELSE $7::timestamptz END,\n      'documenso_external_id', updated.documenso_external_id,\n      'documenso_document_id_current', updated.documenso_document_id\n    )\n  FROM updated\n  RETURNING audit_log_id\n)\nSELECT\n  (SELECT member_agreement_id FROM updated) AS member_agreement_id,\n  (SELECT audit_log_id FROM aud)            AS audit_log_id;\n",
         "options": {
-          "queryReplacement": "={{ $json.member_agreement_id }},{{ $json.externalId }},{{ $json.status }},{{ $json.documenso_document_id }}"
+          "queryReplacement": "={{ $json.member_agreement_id }},\n{{ $json.externalId }},\n{{ $json.status }},\n{{ $json.documenso_document_id }},\n{{ $json.event }},\n{{ $json.eventRaw }},\n{{ $json.createdAt || null }}\n"
         }
       },
       "name": "PG - Update status",
@@ -66,14 +66,14 @@
             {
               "id": "94de839c-0c67-4962-9b92-75e7dbf136f7",
               "leftValue": "={{ $('Normalize Event').item.json.event }}",
-              "rightValue": "completed",
+              "rightValue": "=completed",
               "operator": {
                 "type": "string",
                 "operation": "contains"
               }
             }
           ],
-          "combinator": "and"
+          "combinator": "or"
         },
         "options": {
           "ignoreCase": true
@@ -430,7 +430,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "5305aa14-38ef-4f19-ac44-6ddc47b27ada",
+  "versionId": "d772d0ce-fe98-4b12-b27c-37ae61cc9485",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
