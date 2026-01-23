@@ -4,6 +4,19 @@ SignatureGate is an open-source, self-hosted membership, agreement, sacrament-re
 
 It is designed to stay **separate but interoperable** with the MushroomProcess inventory/workflow system, while preserving legal, spiritual, and operational boundaries.
 
+## v1.0.0 Scope
+
+SignatureGate v1.0.0 provides stable support for:
+
+- Member intake and profile management
+- Agreement templates and multi-template agreement types
+- Digital and manual agreement workflows
+- Sacrament release tracking
+- Donations (manual and Givebutter)
+- Centralized audit logging
+
+Event-day functionality is planned but not fully implemented in this release.
+
 ## What this solves
 
 - Track **members** and contact information

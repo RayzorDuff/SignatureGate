@@ -8,6 +8,14 @@ The packet includes a **Member Acknowledgment & Liability Release Form** and a *
 Operational implication:
 - The system should enforce: **no sacrament release** unless the required agreement(s) are signed (or verified by facilitator), and the release is recorded with date/time and lot reference.
 
+### Multiple Agreement Variants
+
+Multiple agreement templates may exist for the same agreement type
+(e.g. different languages or jurisdictions).
+
+Selection of a template does not change the nature of the agreement itself,
+only the presentation or language used to convey it.
+
 ## Donations
 
 Rooted Psyche explicitly treats sacrament as non-commercial and donations as voluntary.

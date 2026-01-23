@@ -19,6 +19,7 @@ This doc is written to help a new user get to the **same working point** as the 
    - DB name: `signaturegate`
 2. Apply the schema:
    - Run the repo’s `db/schema.sql` against that DB.
+   - Run any migrations.  See db/README.md
 3. Verify tables exist:
    - `members`
    - `agreement_templates`
@@ -57,17 +58,12 @@ Route Appsmith to NocoDB using the **internal docker hostname / local network pa
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:
    - `appsmith/Rooted Psyche Membership Ops.json` (repo)
-   - or the updated full export provided alongside this doc (if you generated/received one)
+   - or the updated full export provided alongside this doc 
 
 3. Update datasources in Appsmith:
    - Postgres datasource → point to your `signaturegate` DB.
    - Any NocoDB API datasource (if used) → point to NocoDB internal hostname.
 
-### If “partial import” fails
-If Appsmith partial import fails, use:
-
-- Full app import (recommended), or
-- Git Sync and commit the app JSON to a repo.
 
 ---
 
@@ -87,6 +83,43 @@ If Appsmith partial import fails, use:
 - Used to initiate agreement flows for an existing member (same logic as intake but with member_id already known)
 
 ---
+## Agreement Template Selection
+
+When issuing or sending a digital agreement, facilitators must explicitly select an agreement template.
+
+The system does not automatically choose a template based on type alone.
+This ensures correct handling of multiple templates (e.g. language variants).
+
+- Create your agreement template entries using the page Agreements - Templates.
+- You can get your envelopeId from Documenso.  After you have created the Agreement Template in Documenso,
+  find the envelopeID pattern in the URL.  For example:  
+  
+  https://documenso.danks.store/t/facilitators/templates/envelope_hyneotebbuzwfzly
+  
+  The envelopeID is envelope_hyneotebbuzwfzly
+- Issue the following command to determine the signers for the Template:
+```bash
+  curl -sS -X GET "https://documenso.danks.store/api/v2/envelope/envelope_hyneotebbuzwfzly" \
+  -H "Authorization: api_yourapiauthsecret" | jq '.recipients[] | {id,email,name,role,signingOrder}'
+
+{
+  "id": 5,
+  "email": "",
+  "name": "",
+  "role": "SIGNER",
+  "signingOrder": 1
+}
+{
+  "id": 6,
+  "email": "",
+  "name": "",
+  "role": "SIGNER",
+  "signingOrder": 2
+}
+```
+- In the above example, the first signer, id 5 is the MemberID and the second signer, id 6 is the FacilitatorID.
+
+---
 
 ## NocoDB attachments and evidence
 
@@ -94,8 +127,8 @@ In Postgres, `member_agreements.evidence` is stored as **jsonb** (array of file 
 
 In NocoDB UI you may set the field to “Attachment”. NocoDB still stores JSON behind the scenes, but:
 
-- your SQL should continue to treat it as `jsonb`
-- your upload flow should:
+- SQL should continue to treat it as `jsonb`
+- Upload flow should:
   1) upload file(s) to NocoDB storage (`/api/v2/storage/upload`)
   2) update `member_agreements.evidence` with the returned JSON objects
 
@@ -103,25 +136,16 @@ In NocoDB UI you may set the field to “Attachment”. NocoDB still stores JSON
 
 ## Where we go next
 
-1. **Agreements - Templates** page (manage templates & required_for tags)
-2. Manual-signature reviewer workflow (pending_review → signed/rejected)
-3. Release Workflow page (gate: only release if signed)
-4. Member information updates, unassigning sacraments and member removal
-5. Givebutter integration and tracking member donations
+1. Member information updates, unassigning sacraments and member removal
+2. Event Management
 
 ---
 
 ## Temporary Airtable integration for product_id inventory
 
-While MushroomProcess is still on Airtable, you can temporarily connect to it:
+While MushroomProcess is still on Airtable, N8N will temporarily connect to it:
 
 - n8n has Airtable nodes/connectors
-- Appsmith can call Airtable REST API
-
-Recommended pattern:
-
-- Use n8n to periodically sync `products.product_id` (and any metadata you need) into a local mirror table in Postgres.
-- This keeps SignatureGate fast and stable while you transition MushroomProcess to NocoDB.
 
 ---
 

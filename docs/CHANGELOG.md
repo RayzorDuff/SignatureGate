@@ -5,6 +5,87 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.0] — 2026-01-22
+
+### Overview
+This release marks the first stable, non-beta version of SignatureGate.  
+Core membership, agreement, release, donation, and audit-logging workflows are now fully implemented and internally consistent, with explicit support for multiple agreement types and templates.
+
+---
+
+### Added
+
+#### Agreement Templates & Types
+- Agreement Templates management interface
+- Support for multiple agreement templates per agreement type
+- Database-backed agreement types (e.g. `sacrament_release`, `membership`, `retreat`, `sweat_lodge`)
+- Templates may be scoped to one or more agreement types
+- Support for multiple language variants of the same agreement type (e.g. English / Spanish)
+- Documenso integration fields stored on agreement templates:
+  - `documenso_template_envelope_id`
+  - `documenso_member_recipient_id`
+  - `documenso_facilitator_recipient_id`
+
+#### Agreement Lifecycle
+- Explicit selection of agreement template when issuing or sending agreements
+- Agreement Review Queue showing all pending agreements across members
+- Reviewer approval / rejection with audit logging
+- Deterministic agreement selection (no “latest template wins” behavior)
+
+#### Member Management
+- Member profile edit form allowing updates to:
+  - Name
+  - Email
+  - Phone
+  - Date of birth
+  - Notes
+  - Status
+- All member updates are audit logged with field-level change tracking
+
+#### Donations
+- Manual cash donation entry and verification workflow
+- Automated Givebutter donation ingestion via webhook
+- Case-insensitive email matching for donor → member association
+- Automatic member creation from Givebutter donations when no match exists
+- Donation lifecycle audit logging
+
+#### Audit Logging
+- Centralized, append-only audit log for:
+  - Member updates
+  - Agreement creation, approval, rejection
+  - Agreement status changes from Documenso (including cancelled events)
+  - Donation creation and verification
+- Audit log visibility scoped by role:
+  - Document reviewers may see all entries
+  - Other facilitators see only entries relevant to their actions
+
+---
+
+### Changed
+
+- Agreement issuance now requires explicit template selection
+- Agreement types are no longer implicit or UI-hardcoded
+- Member agreement creation no longer relies on template creation order
+- Documenso webhook handling now records non-terminal events (e.g. cancellations) in the audit log
+- Member profile updates use prepared SQL statements and structured audit entries
+
+---
+
+### Fixed
+
+- Removed ambiguous agreement selection when multiple templates exist
+- Prevented invalid agreement type values at the database level
+- Resolved JSON binding issues in webhook-driven audit logging
+- Correct handling of date-only fields (e.g. date of birth)
+
+---
+
+### Known Limitations
+
+- Events functionality (creation, check-in, roster) is currently stubbed and non-functional
+- Audit log UI is read-only and minimal by design
+- Event-day workflows will be expanded in a future release
+
 ## [v0.1.3-beta] — 2026-01-19
 
 ### Added

@@ -75,6 +75,18 @@ SignatureGate uses Documenso for two-party signing (Member + Facilitator).
 The UI triggers signing via an n8n webhook, and Documenso webhooks update agreement status back into Postgres.
 See `n8n/DOCUMENSO_INTEGRATION.md`.
 
+### Agreement Types
+
+Agreement types (e.g. `sacrament_release`, `membership`, `retreat`) are stored as
+first-class records in the database and act as the canonical source of truth for:
+
+- Which agreements apply to which workflows
+- Which templates may be selected by facilitators
+- Validation of agreement templates
+
+Agreement templates may reference one or more agreement types and may exist in
+multiple variants (e.g. language versions).
+
 ## End-to-End Flows
 
 ### Digital Agreement Flow
