@@ -1,42 +1,33 @@
 ---
-title: Home
-body_classes: title-center title-h1h2
+title: 'Rooted Psyche'
+media_order: qr.png
+customhtml: '<script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=AuYLMcoSt1X5PvLu&p=other"></script>'
 ---
 
-# Say Hello to Grav!
-## installation successful...
+## Mission
+At Rooted Psyche, our mission is to cultivate spiritual growth, emotional healing, and communal connection through reverence for nature, sacred ceremony, and intentional integration. We support individuals on their path toward inner transformation through education, ritual practice, and guided exploration of natural wisdom traditions.
 
-Congratulations!!! You have installed the **Base Grav Package** that provides a **simple page** and the default **Quark** theme to get you started.
+## Vision
+We envision a world where people reconnect with their inner truth, heal in community, and live in harmony with the natural world. Rooted Psyche seeks to be a sanctuary for those exploring consciousness, fostering a culture of compassion, spiritual empowerment, and ecological reverence.
 
-!! If you see a **404 Error** when you click `Typography` in the menu, please refer to the [troubleshooting guide](http://learn.getgrav.org/troubleshooting/page-not-found).
+## Core Values
 
-### Find out all about Grav
+### Sacred Connection
+We honor the spiritual relationship between humans and the natural world, recognizing nature as a source of healing, insight, and divine guidance.
 
-* Learn about **Grav** by checking out our dedicated [Learn Grav](http://learn.getgrav.org) site.
-* Download **plugins**, **themes**, as well as other Grav **skeleton** packages from the [Grav Downloads](http://getgrav.org/downloads) page.
-* Check out our [Grav Development Blog](http://getgrav.org/blog) to find out the latest goings on in the Grav-verse.
+### Community Healing
+We believe healing happens best in relationship—with others, with spirit, and with self. We foster inclusive, supportive spaces where all are welcome to grow and transform.
 
-!!! If you want a more **full-featured** base install, you should check out [**Skeleton** packages available in the downloads](http://getgrav.org/downloads).
+### Integrity and Intention
+We approach our practices with humility, mindfulness, and ethical responsibility, holding ourselves accountable to the highest standards of care.
 
-### Edit this Page
+### Spiritual Freedom
+We affirm each individual’s right to seek their own truth and cultivate their own connection to the divine through direct experience and personal exploration.
 
-To edit this page, simply navigate to the folder you installed **Grav** into, and then browse to the `user/pages/01.home` folder and open the `default.md` file in your [editor of choice](http://learn.getgrav.org/basics/requirements).  You will see the content of this page in [Markdown format](http://learn.getgrav.org/content/markdown).
+### Integration and Wisdom
+We guide individuals in meaning-making, ensuring that spiritual experiences are woven into daily life in grounded, life-affirming ways.
 
-### Create a New Page
+![QR](qr.png)
 
-Creating a new page is a simple affair in **Grav**.  Simply follow these simple steps:
+<givebutter-widget id="gJeP4L"></givebutter-widget>
 
-1. Navigate to your pages folder: `user/pages/` and create a new folder.  In this example, we will use [explicit default ordering](http://learn.getgrav.org/content/content-pages) and call the folder `03.mypage`.
-2. Launch your text editor and paste in the following sample code:
-
-        ---
-        title: My New Page
-        ---
-        # My New Page!
-
-        This is the body of **my new page** and I can easily use _Markdown_ syntax here.
-
-3. Save this file in the `user/pages/03.mypage/` folder as `default.md`. This will tell **Grav** to render the page using the **default** template.
-4. That is it! Reload your browser to see your new page in the menu.
-
-! NOTE: The page will automatically show up in the Menu after the "Typography" menu item. If you wish to change the name that shows up in the Menu, simple add: `menu: My Page` between the dashes in the page content. This is called the YAML front matter, and it is where you configure page-specific options.
