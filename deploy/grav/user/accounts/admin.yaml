@@ -1,0 +1,11 @@
+state: enabled
+email: ray@edanks.com
+fullname: 'Raymond Danks'
+title: Administrator
+access:
+  admin:
+    login: true
+    super: true
+  site:
+    login: true
+hashed_password: $2y$10$.TDw/5EYJPLYa8n4oC9aJuM8Lk5yVMMzyrKG2YhX6bboylgnBym/6
