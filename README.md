@@ -159,11 +159,10 @@ SignatureGate supports tracking **voluntary donations** independently of sacrame
 
 All donation lifecycle events are recorded in the audit log.
 
-
-
 ## ERPNext / Frappe HR
 
 The deployment stack now includes an optional ERPNext + Frappe HR installation path for bookkeeping, expense tracking, payroll, and contractor / employee administration.
+The ERPNext image is built locally with HRMS included so payroll and HR features survive container restarts and remain available across backend, worker, scheduler, websocket, and frontend services.
 
 - Long-running ERPNext services live in `deploy/docker/docker-compose.yml`.
 - One-time site creation and HRMS installation are handled by `deploy/docker/erpnext-bootstrap.sh`.
