@@ -34,6 +34,7 @@ Event-day functionality is planned but not fully implemented in this release.
 - **Appsmith**: Operator-facing UI (facilitators, reviewers)
 - **n8n**: Orchestration and external integrations (Documenso, Givebutter, Airtable)
 - **NocoDB**: Attachment and document storage
+- **ERPNext + Frappe HR**: Accounting, purchasing, expense tracking, HR, payroll, and multi-company books for Dank Mushrooms and Rooted Psyche
 - **MushroomProcess**: External inventory source (linked by ID only)
 
 See `docs/ARCHITECTURE.md` for details.
@@ -52,6 +53,7 @@ See `docs/ARCHITECTURE.md` for details.
    - NocoDB: http://localhost:8080
    - n8n: http://localhost:5678
    - Appsmith: http://localhost:8081
+   - ERPNext: http://localhost:8086
 
 ## License
 
@@ -158,3 +160,14 @@ SignatureGate supports tracking **voluntary donations** independently of sacrame
 All donation lifecycle events are recorded in the audit log.
 
 
+
+## ERPNext / Frappe HR
+
+The deployment stack now includes an optional ERPNext + Frappe HR installation path for bookkeeping, expense tracking, payroll, and contractor / employee administration.
+
+- Long-running ERPNext services live in `deploy/docker/docker-compose.yml`.
+- One-time site creation and HRMS installation are handled by `deploy/docker/erpnext-bootstrap.sh`.
+- Reverse proxying is provided by `deploy/nginx/erpnext.conf`.
+- Host-level setup is documented in `deploy/LINODE_SETUP.md`.
+
+Recommended use: keep both businesses as separate ERPNext Companies within one ERPNext site, while leaving SignatureGate and MushroomProcess on their own application databases.
