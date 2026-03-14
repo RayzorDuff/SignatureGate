@@ -1,5 +1,15 @@
 # Architecture & interoperability
 
+## Repository boundaries
+
+This repository contains the SignatureGate application definition:
+- database schema and migrations
+- Appsmith assets
+- integration and workflow documentation
+
+Shared infrastructure and deployment architecture are maintained in the separate RootedOps repository.
+That includes host provisioning, reverse proxy, container orchestration, ERPNext deployment, Grav deployment, and backup operations.
+
 ## Goals
 
 1. Keep Nonprofit membership/legal agreements **separate** from MushroomProcess inventory.

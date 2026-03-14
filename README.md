@@ -34,26 +34,22 @@ Event-day functionality is planned but not fully implemented in this release.
 - **Appsmith**: Operator-facing UI (facilitators, reviewers)
 - **n8n**: Orchestration and external integrations (Documenso, Givebutter, Airtable)
 - **NocoDB**: Attachment and document storage
-- **ERPNext + Frappe HR**: Accounting, purchasing, expense tracking, HR, payroll, and multi-company books for Dank Mushrooms and Rooted Psyche
 - **MushroomProcess**: External inventory source (linked by ID only)
+- **Shared deployment architecture**: maintained separately in the RootedOps repository
 
 See `docs/ARCHITECTURE.md` for details.
 
-## Quick start (Docker Compose)
+## Deployment
 
-1. Copy environment file:
-   ```bash
-   cp .env.example .env
-   ```
-2. Start services:
-   ```bash
-   docker compose -f deploy/docker/docker-compose.yml up -d
-   ```
-3. Open:
-   - NocoDB: http://localhost:8080
-   - n8n: http://localhost:5678
-   - Appsmith: http://localhost:8081
-   - ERPNext: http://localhost:8086
+SignatureGate no longer carries the full production deployment stack in this repository.
+
+Production infrastructure, reverse proxy, ERPNext, Grav, backups, and host-level deployment are maintained in the separate **RootedOps** repository.
+
+This repository focuses on:
+- database schema and migrations
+- Appsmith application assets
+- integration documentation
+- workflow specifications
 
 ## License
 
@@ -159,14 +155,3 @@ SignatureGate supports tracking **voluntary donations** independently of sacrame
 
 All donation lifecycle events are recorded in the audit log.
 
-## ERPNext / Frappe HR
-
-The deployment stack now includes an optional ERPNext + Frappe HR installation path for bookkeeping, expense tracking, payroll, and contractor / employee administration.
-The ERPNext image is built locally with HRMS included so payroll and HR features survive container restarts and remain available across backend, worker, scheduler, websocket, and frontend services.
-
-- Long-running ERPNext services live in `deploy/docker/docker-compose.yml`.
-- One-time site creation and HRMS installation are handled by `deploy/docker/erpnext-bootstrap.sh`.
-- Reverse proxying is provided by `deploy/nginx/erpnext.conf`.
-- Host-level setup is documented in `deploy/LINODE_SETUP.md`.
-
-Recommended use: keep both businesses as separate ERPNext Companies within one ERPNext site, while leaving SignatureGate and MushroomProcess on their own application databases.

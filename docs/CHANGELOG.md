@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.1] — 2026-03-14
+
+### Changed
+- Removed production deployment architecture from this repository.
+- Deployment, reverse proxy, backup, Grav, and ERPNext stack assets are now maintained in the separate RootedOps repository.
+- Documentation updated to clarify repository boundaries between SignatureGate application assets and shared business infrastructure.
+
+### Notes
+- SignatureGate continues to own its database schema, migrations, Appsmith assets, and application/integration documentation.
+- Shared deployment architecture is no longer versioned in this repository.
+
 ## [v1.0.0] — 2026-01-22
 
 ### Overview
