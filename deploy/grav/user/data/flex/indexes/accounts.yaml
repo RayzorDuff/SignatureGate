@@ -1,9 +1,0 @@
-version: '1.2'
-timestamp: 1770254382
-count: 1
-index:
-  admin:
-    storage_key: admin
-    storage_timestamp: 1770254382
-    key: admin
-    email: ray@edanks.com
