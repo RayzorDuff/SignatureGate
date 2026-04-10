@@ -22,12 +22,12 @@
         "operation": "search",
         "base": {
           "__rl": true,
-          "value": "=appxJ59Wmyd96jXMm",
+          "value": "={{ $env.AIRTABLE_BASE_ID }}",
           "mode": "id"
         },
         "table": {
           "__rl": true,
-          "value": "tbl51zhGGDuaL2Sm4",
+          "value": "={{ $env.AIRTABLE_PRODUCTS_TABLE_ID }}",
           "mode": "id"
         },
         "filterByFormula": "={{ \n  (() => {\n    const loc = ($json?.query?.storage_location || \"\").trim();\n    const base = \"AND({origin_strain_regulated}, {item_category} = 'freezedriedmushrooms', NOT(OR({storage_location} = 'Shipped', {storage_location} = 'Consumed', {storage_location} = 'Expired')))\";\n    if (!loc) return \"=\" + base;\n    return \"=AND(\" + base + \", {storage_location} = '\" + loc.replace(/'/g, \"\\\\'\") + \"')\";\n  })()\n}}\n",
@@ -60,12 +60,12 @@
         "operation": "search",
         "base": {
           "__rl": true,
-          "value": "appxJ59Wmyd96jXMm",
+          "value": "={{ $env.AIRTABLE_BASE_ID }}",
           "mode": "id"
         },
         "table": {
           "__rl": true,
-          "value": "tbl2QYDX1lLDyrpcm",
+          "value": "={{ $env.AIRTABLE_LOCATIONS_TABLE_ID }}",
           "mode": "id"
         },
         "options": {}
@@ -166,7 +166,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "ea72981f-304a-4410-814f-a0a8dcdb20eb",
+  "versionId": "5a63e097-bc7b-481f-b7d0-dc358eac6400",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"

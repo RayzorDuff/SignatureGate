@@ -47,12 +47,12 @@
         "operation": "search",
         "base": {
           "__rl": true,
-          "value": "appxJ59Wmyd96jXMm",
+          "value": "={{ $env.AIRTABLE_BASE_ID }}",
           "mode": "id"
         },
         "table": {
           "__rl": true,
-          "value": "tbl51zhGGDuaL2Sm4",
+          "value": "={{ $env.AIRTABLE_PRODUCTS_TABLE_ID }}",
           "mode": "id"
         },
         "filterByFormula": "={product_id} = '{{ $('Code - Validate Input').item.json.mushroomprocess_product_id }}'",
@@ -76,7 +76,7 @@
     {
       "parameters": {
         "method": "PATCH",
-        "url": "=https://api.airtable.com/v0/appxJ59Wmyd96jXMm/tbl51zhGGDuaL2Sm4/{{$json.id}}",
+        "url": "=https://api.airtable.com/v0/{{ $env.AIRTABLE_BASE_ID }}/{{ $env.AIRTABLE_PRODUCTS_TABLE_ID }}/{{$json.id}}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "airtableTokenApi",
         "sendBody": true,
@@ -129,12 +129,12 @@
         "operation": "search",
         "base": {
           "__rl": true,
-          "value": "=appxJ59Wmyd96jXMm",
+          "value": "={{ $env.AIRTABLE_BASE_ID }}",
           "mode": "id"
         },
         "table": {
           "__rl": true,
-          "value": "tbl2QYDX1lLDyrpcm",
+          "value": "={{ $env.AIRTABLE_LOCATIONS_TABLE_ID }}",
           "mode": "id"
         },
         "filterByFormula": "={name} = '{{ $('Code - Validate Input').item.json.storage_location }}'",
@@ -296,7 +296,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "97ff790d-4937-43ae-9740-99324c2e2005",
+  "versionId": "745a6940-7718-4b5d-9712-f41a0c5cbba9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
