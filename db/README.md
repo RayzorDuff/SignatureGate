@@ -47,6 +47,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # Store valid agreement types in DB
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_agreement_types.sql
+
+# Store facilitator assignments in a separate table
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_facilitators.sql
 ```
 
 3) Verify tables exist:
