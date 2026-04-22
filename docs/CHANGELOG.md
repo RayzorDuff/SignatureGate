@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.2] — 2026-04-22
+
+### Added
+- `member_facilitators` table and migration to support explicit many-to-many facilitator-to-member assignments.
+- Backfill logic in the facilitator assignment migration to preserve existing relationships from historical member, agreement, release, and donation records where those columns exist.
+- Members - Profile interface controls for assigning additional facilitators to a member and deactivating facilitator assignments.
+- Donation reassignment workflow in the Members - Profile page for donations reviewers.
+- `n8n/GIVEBUTTER_INTEGRATION.md` documenting the Givebutter webhook endpoint, processing flow, duplicate handling, and optional shared-secret validation.
+
+### Changed
+- Member visibility and access control now resolve through `member_facilitators` rather than relying only on older single-facilitator relationship paths.
+- Members directory, member profile access checks, member releases, and member donations queries were updated to respect active facilitator assignments.
+- Member profile refresh behavior now loads assigned facilitators alongside agreements, releases, donations, and available facilitators.
+- Airtable-oriented n8n workflows now use `AIRTABLE_*` environment variables for base and table identifiers instead of hard-coded Airtable IDs.
+- Repository contents were further narrowed to SignatureGate-owned assets by removing `.env.example`, which belongs in RootedOps.
+
+### Fixed
+- Fixed stale references to the old `release.sacrement_release_id` column after the rename to `releases.release_id`.
+- Fixed inability to associate more than one facilitator with a member in the primary Appsmith workflow.
+- Fixed facilitator scoping gaps so assigned facilitators can see the members, donations, and releases they are responsible for.
+- Fixed donation administration workflow by allowing authorized users to reassign a donation to the correct member from the UI.
+- Fixed Airtable workflow portability issues caused by environment-specific hard-coded base and table IDs.
+
+### Notes
+- This release introduces a new database migration: `db/migrations_member_facilitators.sql`.
+- Existing installations should apply the migration before deploying the updated Appsmith interface.
+
 ## [v1.0.1] — 2026-03-14
 
 ### Changed
