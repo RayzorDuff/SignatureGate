@@ -2958,7 +2958,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  me.is_document_reviewer = TRUE\n  OR EXISTS (\n    SELECT 1\n    FROM public.member_facilitators mf\n    WHERE mf.member_id = m.member_id\n      AND mf.facilitator_id = me.member_id\n      AND mf.status = 'active'\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -9741,7 +9741,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  me.is_document_reviewer = TRUE\n  OR EXISTS (\n    SELECT 1\n    FROM public.member_facilitators mf\n    WHERE mf.member_id = m.member_id\n      AND mf.facilitator_id = me.member_id\n      AND mf.status = 'active'\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -11543,7 +11543,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_donations_reviewer, FALSE) AS is_donations_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  me.is_donations_reviewer = TRUE\n  OR EXISTS (\n    SELECT 1\n    FROM public.member_facilitators mf\n    WHERE mf.member_id = m.member_id\n      AND mf.facilitator_id = me.member_id\n      AND mf.status = 'active'\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -14528,6 +14528,24 @@
         },
         "headers": [],
         "queryParameters": [],
+        "url": "https://n8n.danks.store"
+      },
+      "deleted": false,
+      "gitSyncId": "69546c473d3106150e1d4544_1cd9eb89-bda6-4e67-a7f8-20e14ff7a422",
+      "isAutoGenerated": false,
+      "messages": [],
+      "name": "N8N",
+      "pluginId": "restapi-plugin"
+    },
+    {
+      "datasourceConfiguration": {
+        "connection": {
+          "ssl": {
+            "authType": "DEFAULT"
+          }
+        },
+        "headers": [],
+        "queryParameters": [],
         "url": "https://nocodb.danks.store"
       },
       "deleted": false,
@@ -14553,24 +14571,6 @@
       "isAutoGenerated": false,
       "messages": [],
       "name": "NocoDB danks.store",
-      "pluginId": "restapi-plugin"
-    },
-    {
-      "datasourceConfiguration": {
-        "connection": {
-          "ssl": {
-            "authType": "DEFAULT"
-          }
-        },
-        "headers": [],
-        "queryParameters": [],
-        "url": "https://n8n.danks.store"
-      },
-      "deleted": false,
-      "gitSyncId": "69546c473d3106150e1d4544_1cd9eb89-bda6-4e67-a7f8-20e14ff7a422",
-      "isAutoGenerated": false,
-      "messages": [],
-      "name": "N8N",
       "pluginId": "restapi-plugin"
     },
     {
