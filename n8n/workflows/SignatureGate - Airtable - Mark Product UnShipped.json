@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "jsCode": "/**\n * Expected body JSON:\n * {\n *   \"mushroomprocess_product_id\": \"PROD-....\", \n * }\n */\nconst body = $json.body || $json;\nconst mushroomprocess_product_id = body.mushroomprocess_product_id;\nconst storage_location = body.storage_location;\n\nif ( !mushroomprocess_product_id) {\n  throw new Error(\"Missing mushroomprocess_product_id\");\n}\n\nif (!storage_location) {\n  throw new Error(\"Missing storage_location\");\n}\n\nreturn [{ json: { mushroomprocess_product_id, storage_location } }];"
+        "jsCode": "/**\n * Expected body JSON:\n * {\n *   \"mushroomprocess_product_id\": \"PROD-....\",\n *   \"storage_location_name\": \"Location Name\"\n * }\n */\nconst body = $json.body || $json;\n\nconst mushroomprocess_product_id = body.mushroomprocess_product_id;\nconst storage_location =\n  body.storage_location_name ||\n  body.storage_location;\n\nif (!mushroomprocess_product_id) {\n  throw new Error(\"Missing mushroomprocess_product_id\");\n}\n\nif (!storage_location) {\n  throw new Error(\"Missing storage_location_name\");\n}\n\nreturn [{\n  json: {\n    mushroomprocess_product_id,\n    storage_location\n  }\n}];"
       },
       "id": "c63ad42e-7e7c-426b-96a4-1cac703c71a6",
       "name": "Code - Validate Input",
@@ -16,7 +16,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Input 0: Airtable - List Locations\n// Input 1: AirtableFindProduct (optional fallback)\nconst location = $('Airtable - Find Target Location').first()?.json;\n\n// Each item should look like { id: \"rec...\", fields: { name: \"Shipped\", ... } }\nconst targetLocId = location?.id;\n\nif (!targetLocId) {\n  throw new Error(\n    `Could not find 'Shipped' location. Sample names: ${location.slice(0,10).map(r => r.fields?.name).join(\", \")}`\n  );\n}\n\nlet prodId = $('Code - Validate Input').first().json.mushroomprocess_product_id;\nconst prod = $('Airtable - Find Product by product_id').first()?.json; // AirtableFindProduct\nconst prodRecId = prod?.id;\n\nif (!prodId) throw new Error(\"Could not resolve product Airtable product_id.\");\n\nreturn [{ json: { id: prodRecId,  product_id: prodId, storage_location: targetLocId } }];\n"
+        "jsCode": "const location = $('Airtable - Find Target Location').first()?.json;\nconst targetLocId = location?.id;\n\nif (!targetLocId) {\n  const requestedLocation = $('Code - Validate Input').first().json.storage_location;\n  throw new Error(`Could not find target storage location: ${requestedLocation}`);\n}\n\nconst prodId = $('Code - Validate Input').first().json.mushroomprocess_product_id;\nconst prod = $('Airtable - Find Product by product_id').first()?.json;\nconst prodRecId = prod?.id;\n\nif (!prodId) {\n  throw new Error(\"Could not resolve product mushroomprocess_product_id.\");\n}\n\nif (!prodRecId) {\n  throw new Error(`Could not find Airtable product for product_id: ${prodId}`);\n}\n\nreturn [{\n  json: {\n    id: prodRecId,\n    product_id: prodId,\n    storage_location: targetLocId\n  }\n}];"
       },
       "id": "987d6bfa-72d2-4134-a358-a9b097b2e881",
       "name": "Code - Resolve IDs",
@@ -137,7 +137,7 @@
           "value": "={{ $env.AIRTABLE_LOCATIONS_TABLE_ID }}",
           "mode": "id"
         },
-        "filterByFormula": "={name} = '{{ $('Code - Validate Input').item.json.storage_location }}'",
+        "filterByFormula": "={name} = '{{ $('Code - Validate Input').first().json.storage_location }}'",
         "options": {}
       },
       "id": "a0a98467-28f5-461f-99b4-390b70b0b22a",
@@ -294,9 +294,10 @@
   "active": true,
   "settings": {
     "executionOrder": "v1",
+    "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "745a6940-7718-4b5d-9712-f41a0c5cbba9",
+  "versionId": "88ae39cb-db90-4224-a3c8-81c499c3026f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"

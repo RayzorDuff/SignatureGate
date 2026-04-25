@@ -75,8 +75,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2,
       "position": [
-        128,
-        64
+        96,
+        112
       ],
       "credentials": {
         "airtableTokenApi": {
@@ -87,15 +87,15 @@
     },
     {
       "parameters": {
-        "jsCode": "const products =  $('Airtable - List Products').all().map(i => i.json);\nconst locations = $('Airtable - List Locations').all().map(i => i.json);\n\nfunction asArray(v) {\n  if (v == null) return [];\n  return Array.isArray(v) ? v : [v];\n}\n\nfunction stripIndexPrefix(x) {\n  if (x == null) return null;\n  const s = String(x);\n  const m = s.match(/^\\d+:(rec[a-zA-Z0-9]+)/);\n  return m ? m[1] : s;\n}\n\nconst locById = new Map();\nfor (const rec of locations) {\n  const f = rec.fields ?? rec;\n  const name = (f.name ?? '').toString().trim();\n  if (rec.id) locById.set(rec.id, name);\n}\n\nconst EXCLUDE_LOCATIONS = new Set(['Shipped','Consumed','Expired']);\n\nconst out = [];\nfor (const rec of products) {\n  const f = rec.fields ?? rec;\n  const product_id = f.product_id;\n  if (!product_id) continue;\n\n  const locIds = asArray(f.storage_location)\n    .map(stripIndexPrefix)\n    .filter(x => x && x !== \"undefined\");\n\n  const locNames = locIds.map(id => locById.get(id)).filter(Boolean);\n\n  if (locNames.some(n => EXCLUDE_LOCATIONS.has(n))) continue;\n\n  out.push({\n    airtable_record_id: rec.id,\n    mushroomprocess_product_id: product_id,\n    item_name: (asArray(f.name)[0] ?? null),\n    strain: (asArray(f.species_strain)[0] ?? null),\n    net_weight_g: f.net_weight_g ?? null,\n    unit: \"g\",\n    storage_location: locNames[0] ?? null,\n  });\n}\n\nlet filtered = out;\nconst req = $('Webhook - List Products').first().json;\n\nconst requestedLoc = (req?.query?.storage_location || \"\").trim();\nif (requestedLoc) {\n  filtered = out.filter(p => (p.storage_location || \"\").trim() === requestedLoc);\n}\n\nreturn [{ json: { ok: true, data: filtered } }];"
+        "jsCode": "const products = $('Airtable - List Products').all().map(i => i.json);\nconst locations = $('Airtable - List Locations').all().map(i => i.json);\nconst req = $('Webhook - List Products').first().json;\n\nfunction asArray(v) {\n  if (v == null) return [];\n  return Array.isArray(v) ? v : [v];\n}\n\nfunction stripIndexPrefix(x) {\n  if (x == null) return null;\n  const s = String(x);\n  const m = s.match(/^\\d+:(rec[a-zA-Z0-9]+)/);\n  return m ? m[1] : s;\n}\n\nfunction parseAllowedLocations(req) {\n  const q = req?.query || {};\n\n  // New version: storage_locations_json=[\"Loc A\",\"Loc B\"]\n  if (q.storage_locations_json) {\n    try {\n      const parsed = JSON.parse(q.storage_locations_json);\n      return asArray(parsed).map(x => String(x).trim()).filter(Boolean);\n    } catch (e) {\n      // Fall through to legacy handling\n    }\n  }\n\n  // Optional comma-separated version: storage_locations=Loc A,Loc B\n  if (q.storage_locations) {\n    return String(q.storage_locations)\n      .split(\",\")\n      .map(x => x.trim())\n      .filter(Boolean);\n  }\n\n  // Legacy version: storage_location=Loc A\n  if (q.storage_location) {\n    return [String(q.storage_location).trim()].filter(Boolean);\n  }\n\n  // Empty means no location filter, preserving reviewer/broad legacy behavior.\n  return [];\n}\n\nconst allowedLocations = parseAllowedLocations(req);\nconst allowedLocationSet = new Set(allowedLocations.map(x => x.toLowerCase()));\n\nconst locById = new Map();\nfor (const rec of locations) {\n  const f = rec.fields ?? rec;\n  const name = (f.name ?? \"\").toString().trim();\n  if (rec.id && name) locById.set(rec.id, name);\n}\n\nconst EXCLUDE_LOCATIONS = new Set([\"Shipped\", \"Consumed\", \"Expired\"]);\n\nconst out = [];\n\nfor (const rec of products) {\n  const f = rec.fields ?? rec;\n  const product_id = f.product_id;\n  if (!product_id) continue;\n\n  const locIds = asArray(f.storage_location)\n    .map(stripIndexPrefix)\n    .filter(x => x && x !== \"undefined\");\n\n  const locNames = locIds\n    .map(id => locById.get(id))\n    .filter(Boolean);\n\n  if (locNames.some(n => EXCLUDE_LOCATIONS.has(n))) continue;\n\n  const primaryLocation = locNames[0] ?? null;\n\n  // If allowed locations were supplied, product must be in at least one of them.\n  if (\n    allowedLocationSet.size > 0 &&\n    !locNames.some(n => allowedLocationSet.has(String(n).trim().toLowerCase()))\n  ) {\n    continue;\n  }\n\n  out.push({\n    airtable_record_id: rec.id,\n    mushroomprocess_product_id: product_id,\n    item_name: asArray(f.name)[0] ?? null,\n    strain: asArray(f.species_strain)[0] ?? null,\n    net_weight_g: f.net_weight_g ?? null,\n    unit: \"g\",\n    storage_location: primaryLocation,\n    storage_locations: locNames,\n  });\n}\n\nreturn [{\n  json: {\n    ok: true,\n    data: out,\n    filter: {\n      storage_locations: allowedLocations\n    }\n  }\n}];"
       },
       "id": "180f217a-ea2f-4c43-af7f-9b2ed98a8062",
       "name": "Code - Filter & Normalize",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        432,
-        64
+        464,
+        112
       ]
     },
     {
@@ -164,9 +164,10 @@
   "active": true,
   "settings": {
     "executionOrder": "v1",
+    "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "5a63e097-bc7b-481f-b7d0-dc358eac6400",
+  "versionId": "c7a3b12d-6e93-4064-821e-db7fe8383f9c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
