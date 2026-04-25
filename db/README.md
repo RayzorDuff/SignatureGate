@@ -50,6 +50,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # Store facilitator assignments in a separate table
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_facilitators.sql
+
+# Allow facilitators to pull releases from multiple storage locations
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_facilitator_storage_location_access.sql
 ```
 
 3) Verify tables exist:
