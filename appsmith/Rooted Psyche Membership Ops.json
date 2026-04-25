@@ -4367,7 +4367,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  me.is_document_reviewer = TRUE\n  OR EXISTS (\n    SELECT 1\n    FROM public.member_facilitators mf\n    WHERE mf.member_id = m.member_id\n      AND mf.facilitator_id = me.member_id\n      AND mf.status = 'active'\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -4411,7 +4411,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  me.is_document_reviewer = TRUE\n  OR EXISTS (\n    SELECT 1\n    FROM public.member_facilitators mf\n    WHERE mf.member_id = m.member_id\n      AND mf.facilitator_id = me.member_id\n      AND mf.status = 'active'\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND 'sacrament_release' = ANY(at.required_for)\n    ORDER BY ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.members m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name, m.first_name\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -14502,24 +14502,6 @@
             "authType": "DEFAULT"
           }
         },
-        "headers": [],
-        "queryParameters": [],
-        "url": "https://n8n.danks.store"
-      },
-      "deleted": false,
-      "gitSyncId": "69546c473d3106150e1d4544_1cd9eb89-bda6-4e67-a7f8-20e14ff7a422",
-      "isAutoGenerated": false,
-      "messages": [],
-      "name": "N8N",
-      "pluginId": "restapi-plugin"
-    },
-    {
-      "datasourceConfiguration": {
-        "connection": {
-          "ssl": {
-            "authType": "DEFAULT"
-          }
-        },
         "headers": [
           {
             "key": "content-type",
@@ -14571,6 +14553,24 @@
       "isAutoGenerated": false,
       "messages": [],
       "name": "NocoDB danks.store",
+      "pluginId": "restapi-plugin"
+    },
+    {
+      "datasourceConfiguration": {
+        "connection": {
+          "ssl": {
+            "authType": "DEFAULT"
+          }
+        },
+        "headers": [],
+        "queryParameters": [],
+        "url": "https://n8n.danks.store"
+      },
+      "deleted": false,
+      "gitSyncId": "69546c473d3106150e1d4544_1cd9eb89-bda6-4e67-a7f8-20e14ff7a422",
+      "isAutoGenerated": false,
+      "messages": [],
+      "name": "N8N",
       "pluginId": "restapi-plugin"
     },
     {
@@ -23600,14 +23600,14 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 403,
+                  "bottomRow": 413,
                   "boxShadow": "none",
                   "canEscapeKeyClose": true,
                   "canOutsideClickClose": true,
                   "children": [
                     {
                       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                      "bottomRow": 240,
+                      "bottomRow": 250,
                       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
                       "canExtend": true,
                       "children": [
@@ -23658,7 +23658,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 5,
+                          "bottomRow": 4,
                           "dynamicBindingPathList": [
                             {
                               "key": "truncateButtonColor"
@@ -23696,7 +23696,7 @@
                           "text": "Reassign Donation",
                           "textAlign": "LEFT",
                           "textColor": "#231F20",
-                          "topRow": 1,
+                          "topRow": 0,
                           "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "type": "TEXT_WIDGET",
                           "version": 1,
@@ -23706,7 +23706,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 21,
+                          "bottomRow": 23,
                           "boxShadow": "none",
                           "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "buttonStyle": "PRIMARY",
@@ -23738,8 +23738,8 @@
                           "mobileTopRow": 18,
                           "needsErrorInfo": false,
                           "onClick": "{{closeModal(ReassignModal.name);}}",
-                          "originalBottomRow": 21,
-                          "originalTopRow": 17,
+                          "originalBottomRow": 24,
+                          "originalTopRow": 20,
                           "parentId": "vlzz1vgpdr",
                           "placement": "CENTER",
                           "recaptchaType": "V3",
@@ -23748,7 +23748,7 @@
                           "responsiveBehavior": "hug",
                           "rightColumn": 47,
                           "text": "Close",
-                          "topRow": 17,
+                          "topRow": 19,
                           "type": "BUTTON_WIDGET",
                           "version": 1,
                           "widgetId": "upgl76yn5x",
@@ -23757,7 +23757,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 21,
+                          "bottomRow": 23,
                           "boxShadow": "none",
                           "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "buttonStyle": "PRIMARY_BUTTON",
@@ -23800,8 +23800,8 @@
                           "mobileTopRow": 18,
                           "needsErrorInfo": false,
                           "onClick": "{{ memberProfile.reassignDonation() }}",
-                          "originalBottomRow": 21,
-                          "originalTopRow": 17,
+                          "originalBottomRow": 24,
+                          "originalTopRow": 20,
                           "parentId": "vlzz1vgpdr",
                           "placement": "CENTER",
                           "recaptchaType": "V3",
@@ -23810,7 +23810,7 @@
                           "responsiveBehavior": "hug",
                           "rightColumn": 63,
                           "text": "Reassign",
-                          "topRow": 17,
+                          "topRow": 19,
                           "type": "BUTTON_WIDGET",
                           "version": 1,
                           "widgetId": "1o445p0d9f",
@@ -23819,7 +23819,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 9,
+                          "bottomRow": 12,
                           "dynamicBindingPathList": [
                             {
                               "key": "truncateButtonColor"
@@ -23839,7 +23839,7 @@
                           "isLoading": false,
                           "isVisible": true,
                           "key": "2avjn91p9h",
-                          "leftColumn": 2,
+                          "leftColumn": 0,
                           "maxDynamicHeight": 9000,
                           "minDynamicHeight": 4,
                           "minWidth": 450,
@@ -23848,20 +23848,20 @@
                           "mobileRightColumn": 17,
                           "mobileTopRow": 5,
                           "needsErrorInfo": false,
-                          "originalBottomRow": 10,
-                          "originalTopRow": 5,
+                          "originalBottomRow": 13,
+                          "originalTopRow": 8,
                           "overflow": "NONE",
                           "parentColumnSpace": 6.9375,
                           "parentId": "vlzz1vgpdr",
                           "parentRowSpace": 10,
                           "renderMode": "CANVAS",
                           "responsiveBehavior": "fill",
-                          "rightColumn": 64,
+                          "rightColumn": 62,
                           "shouldTruncate": false,
                           "text": "",
                           "textAlign": "LEFT",
                           "textColor": "#231F20",
-                          "topRow": 5,
+                          "topRow": 8,
                           "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "type": "TEXT_WIDGET",
                           "version": 1,
@@ -23872,7 +23872,7 @@
                           "accentColor": "{{appsmith.theme.colors.primaryColor}}",
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 17,
+                          "bottomRow": 19,
                           "boxShadow": "none",
                           "defaultOptionValue": "GREEN",
                           "dynamicBindingPathList": [
@@ -23921,8 +23921,8 @@
                           "needsErrorInfo": false,
                           "optionLabel": "{{selReassignDonationMember.sourceData.map((item) => ( item.first_name + \" \" + item.last_name + (item.email ? \" (\"+item.email+\")\" : \"\") ))}}",
                           "optionValue": "member_id",
-                          "originalBottomRow": 17,
-                          "originalTopRow": 10,
+                          "originalBottomRow": 20,
+                          "originalTopRow": 13,
                           "parentColumnSpace": 6.9375,
                           "parentId": "vlzz1vgpdr",
                           "parentRowSpace": 10,
@@ -23932,7 +23932,7 @@
                           "rightColumn": 62,
                           "serverSideFiltering": false,
                           "sourceData": "{{qMembersDirectory.data}}",
-                          "topRow": 10,
+                          "topRow": 12,
                           "type": "SELECT_WIDGET",
                           "version": 1,
                           "widgetId": "kycyhg6hc4",
@@ -23941,7 +23941,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 9,
+                          "bottomRow": 8,
                           "dynamicBindingPathList": [
                             {
                               "key": "truncateButtonColor"
@@ -23954,6 +23954,7 @@
                             }
                           ],
                           "dynamicHeight": "AUTO_HEIGHT",
+                          "dynamicPropertyPathList": [],
                           "dynamicTriggerPathList": [],
                           "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
                           "fontSize": "1rem",
@@ -23971,19 +23972,19 @@
                           "mobileTopRow": 5,
                           "needsErrorInfo": false,
                           "originalBottomRow": 9,
-                          "originalTopRow": 5,
+                          "originalTopRow": 4,
                           "overflow": "NONE",
                           "parentColumnSpace": 6.9375,
                           "parentId": "vlzz1vgpdr",
                           "parentRowSpace": 10,
                           "renderMode": "CANVAS",
                           "responsiveBehavior": "fill",
-                          "rightColumn": 2,
+                          "rightColumn": 62,
                           "shouldTruncate": false,
                           "text": "",
                           "textAlign": "LEFT",
                           "textColor": "#231F20",
-                          "topRow": 5,
+                          "topRow": 4,
                           "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "type": "TEXT_WIDGET",
                           "version": 1,
@@ -24037,14 +24038,14 @@
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
-                  "height": 240,
+                  "height": 250,
                   "isCanvas": true,
                   "isLoading": false,
                   "key": "j3po2ddmbg",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 24,
-                  "minHeight": 240,
+                  "minHeight": 250,
                   "mobileBottomRow": 187,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 19,
@@ -26114,7 +26115,7 @@
                   "isLoading": false,
                   "isVisible": "{{ appsmith.store.facilitator_is_reviewer && qMemberById.data?.[0]?.is_facilitator }}",
                   "key": "ax5nzwquzc",
-                  "leftColumn": 22,
+                  "leftColumn": 21,
                   "minWidth": 120,
                   "mobileBottomRow": 269,
                   "mobileLeftColumn": 20,
@@ -30680,14 +30681,14 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 403,
+                  "bottomRow": 413,
                   "boxShadow": "none",
                   "canEscapeKeyClose": true,
                   "canOutsideClickClose": true,
                   "children": [
                     {
                       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                      "bottomRow": 240,
+                      "bottomRow": 250,
                       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
                       "canExtend": true,
                       "children": [
@@ -30738,7 +30739,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 5,
+                          "bottomRow": 4,
                           "dynamicBindingPathList": [
                             {
                               "key": "truncateButtonColor"
@@ -30776,7 +30777,7 @@
                           "text": "Reassign Donation",
                           "textAlign": "LEFT",
                           "textColor": "#231F20",
-                          "topRow": 1,
+                          "topRow": 0,
                           "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "type": "TEXT_WIDGET",
                           "version": 1,
@@ -30786,7 +30787,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 21,
+                          "bottomRow": 23,
                           "boxShadow": "none",
                           "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "buttonStyle": "PRIMARY",
@@ -30818,8 +30819,8 @@
                           "mobileTopRow": 18,
                           "needsErrorInfo": false,
                           "onClick": "{{closeModal(ReassignModal.name);}}",
-                          "originalBottomRow": 21,
-                          "originalTopRow": 17,
+                          "originalBottomRow": 24,
+                          "originalTopRow": 20,
                           "parentId": "vlzz1vgpdr",
                           "placement": "CENTER",
                           "recaptchaType": "V3",
@@ -30828,7 +30829,7 @@
                           "responsiveBehavior": "hug",
                           "rightColumn": 47,
                           "text": "Close",
-                          "topRow": 17,
+                          "topRow": 19,
                           "type": "BUTTON_WIDGET",
                           "version": 1,
                           "widgetId": "upgl76yn5x",
@@ -30837,7 +30838,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 21,
+                          "bottomRow": 23,
                           "boxShadow": "none",
                           "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "buttonStyle": "PRIMARY_BUTTON",
@@ -30880,8 +30881,8 @@
                           "mobileTopRow": 18,
                           "needsErrorInfo": false,
                           "onClick": "{{ memberProfile.reassignDonation() }}",
-                          "originalBottomRow": 21,
-                          "originalTopRow": 17,
+                          "originalBottomRow": 24,
+                          "originalTopRow": 20,
                           "parentId": "vlzz1vgpdr",
                           "placement": "CENTER",
                           "recaptchaType": "V3",
@@ -30890,7 +30891,7 @@
                           "responsiveBehavior": "hug",
                           "rightColumn": 63,
                           "text": "Reassign",
-                          "topRow": 17,
+                          "topRow": 19,
                           "type": "BUTTON_WIDGET",
                           "version": 1,
                           "widgetId": "1o445p0d9f",
@@ -30899,7 +30900,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 9,
+                          "bottomRow": 12,
                           "dynamicBindingPathList": [
                             {
                               "key": "truncateButtonColor"
@@ -30919,7 +30920,7 @@
                           "isLoading": false,
                           "isVisible": true,
                           "key": "2avjn91p9h",
-                          "leftColumn": 2,
+                          "leftColumn": 0,
                           "maxDynamicHeight": 9000,
                           "minDynamicHeight": 4,
                           "minWidth": 450,
@@ -30928,20 +30929,20 @@
                           "mobileRightColumn": 17,
                           "mobileTopRow": 5,
                           "needsErrorInfo": false,
-                          "originalBottomRow": 10,
-                          "originalTopRow": 5,
+                          "originalBottomRow": 13,
+                          "originalTopRow": 8,
                           "overflow": "NONE",
                           "parentColumnSpace": 6.9375,
                           "parentId": "vlzz1vgpdr",
                           "parentRowSpace": 10,
                           "renderMode": "CANVAS",
                           "responsiveBehavior": "fill",
-                          "rightColumn": 64,
+                          "rightColumn": 62,
                           "shouldTruncate": false,
                           "text": "",
                           "textAlign": "LEFT",
                           "textColor": "#231F20",
-                          "topRow": 5,
+                          "topRow": 8,
                           "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "type": "TEXT_WIDGET",
                           "version": 1,
@@ -30952,7 +30953,7 @@
                           "accentColor": "{{appsmith.theme.colors.primaryColor}}",
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 17,
+                          "bottomRow": 19,
                           "boxShadow": "none",
                           "defaultOptionValue": "GREEN",
                           "dynamicBindingPathList": [
@@ -31001,8 +31002,8 @@
                           "needsErrorInfo": false,
                           "optionLabel": "{{selReassignDonationMember.sourceData.map((item) => ( item.first_name + \" \" + item.last_name + (item.email ? \" (\"+item.email+\")\" : \"\") ))}}",
                           "optionValue": "member_id",
-                          "originalBottomRow": 17,
-                          "originalTopRow": 10,
+                          "originalBottomRow": 20,
+                          "originalTopRow": 13,
                           "parentColumnSpace": 6.9375,
                           "parentId": "vlzz1vgpdr",
                           "parentRowSpace": 10,
@@ -31012,7 +31013,7 @@
                           "rightColumn": 62,
                           "serverSideFiltering": false,
                           "sourceData": "{{qMembersDirectory.data}}",
-                          "topRow": 10,
+                          "topRow": 12,
                           "type": "SELECT_WIDGET",
                           "version": 1,
                           "widgetId": "kycyhg6hc4",
@@ -31021,7 +31022,7 @@
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 9,
+                          "bottomRow": 8,
                           "dynamicBindingPathList": [
                             {
                               "key": "truncateButtonColor"
@@ -31034,6 +31035,7 @@
                             }
                           ],
                           "dynamicHeight": "AUTO_HEIGHT",
+                          "dynamicPropertyPathList": [],
                           "dynamicTriggerPathList": [],
                           "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
                           "fontSize": "1rem",
@@ -31051,19 +31053,19 @@
                           "mobileTopRow": 5,
                           "needsErrorInfo": false,
                           "originalBottomRow": 9,
-                          "originalTopRow": 5,
+                          "originalTopRow": 4,
                           "overflow": "NONE",
                           "parentColumnSpace": 6.9375,
                           "parentId": "vlzz1vgpdr",
                           "parentRowSpace": 10,
                           "renderMode": "CANVAS",
                           "responsiveBehavior": "fill",
-                          "rightColumn": 2,
+                          "rightColumn": 62,
                           "shouldTruncate": false,
                           "text": "",
                           "textAlign": "LEFT",
                           "textColor": "#231F20",
-                          "topRow": 5,
+                          "topRow": 4,
                           "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "type": "TEXT_WIDGET",
                           "version": 1,
@@ -31117,14 +31119,14 @@
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
-                  "height": 240,
+                  "height": 250,
                   "isCanvas": true,
                   "isLoading": false,
                   "key": "j3po2ddmbg",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 24,
-                  "minHeight": 240,
+                  "minHeight": 250,
                   "mobileBottomRow": 187,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 19,
@@ -33194,7 +33196,7 @@
                   "isLoading": false,
                   "isVisible": "{{ appsmith.store.facilitator_is_reviewer && qMemberById.data?.[0]?.is_facilitator }}",
                   "key": "ax5nzwquzc",
-                  "leftColumn": 22,
+                  "leftColumn": 21,
                   "minWidth": 120,
                   "mobileBottomRow": 269,
                   "mobileLeftColumn": 20,
