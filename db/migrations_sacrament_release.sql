@@ -18,6 +18,11 @@ ALTER TABLE sacrament_releases
   ADD COLUMN IF NOT EXISTS release_type text NOT NULL DEFAULT 'sacrament_release',
   ADD COLUMN IF NOT EXISTS member_agreement_id uuid NULL REFERENCES member_agreements(member_agreement_id);
 
+-- Agreement templates are required for digital agreements, but paper/manual
+-- agreement uploads may be recorded without a template selection.
+ALTER TABLE member_agreements
+  ALTER COLUMN agreement_template_id DROP NOT NULL;
+
 -- Reviewer override support: releases may be assigned before the release agreement is signed.
 ALTER TABLE sacrament_releases
   ALTER COLUMN member_agreement_id DROP NOT NULL;

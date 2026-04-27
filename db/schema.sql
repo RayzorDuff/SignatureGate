@@ -130,7 +130,7 @@ ALTER TABLE public.events OWNER TO signaturegate;
 CREATE TABLE public.member_agreements (
     member_agreement_id uuid DEFAULT public.uuid_generate_v4(),
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    agreement_template_id uuid NOT NULL,
+    agreement_template_id uuid,
     signed_at timestamp with time zone,
     signature_method text NOT NULL,
     evidence_url text,
