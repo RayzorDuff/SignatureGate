@@ -128,7 +128,7 @@ ALTER TABLE public.events OWNER TO signaturegate;
 --
 
 CREATE TABLE public.member_agreements (
-    member_agreement_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    member_agreement_id uuid DEFAULT public.uuid_generate_v4(),
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     agreement_template_id uuid NOT NULL,
     signed_at timestamp with time zone,
@@ -185,9 +185,18 @@ CREATE TABLE public.sacrament_releases (
     quantity numeric(12,3) DEFAULT 0 NOT NULL,
     unit text DEFAULT 'g'::text NOT NULL,
     released_by text,
-    notes text
+    notes text,
+    facilitator_id uuid,
+    net_weight_g integer,
+    strain text,
+    release_type text DEFAULT 'sacrament_release'::text NOT NULL,
+    member_agreement_id uuid,
+    storage_location_name text,
+    status text DEFAULT 'issued'::text NOT NULL,
+    voided_at timestamp with time zone,
+    voided_by uuid,
+    void_reason text
 );
-
 
 ALTER TABLE public.sacrament_releases OWNER TO signaturegate;
 
@@ -251,8 +260,29 @@ b94c0644-3278-4ecc-9f27-4b8ba917cd9d	2026-01-01 17:00:51.667932+00	2026-01-01 17
 -- Data for Name: sacrament_releases; Type: TABLE DATA; Schema: public; Owner: signaturegate
 --
 
-COPY public.sacrament_releases (sacrament_release_id, created_at, released_at, member_id, event_id, mushroomprocess_product_id, item_name, quantity, unit, released_by, notes) FROM stdin;
-\.
+COPY public.sacrament_releases (
+  sacrament_release_id,
+  created_at,
+  released_at,
+  member_id,
+  event_id,
+  mushroomprocess_product_id,
+  item_name,
+  quantity,
+  unit,
+  released_by,
+  notes,
+  facilitator_id,
+  net_weight_g,
+  strain,
+  release_type,
+  member_agreement_id,
+  storage_location_name,
+  status,
+  voided_at,
+  voided_by,
+  void_reason
+) FROM stdin;
 
 
 --
@@ -325,6 +355,22 @@ CREATE INDEX idx_member_agreements_facilitator ON public.member_agreements USING
 CREATE INDEX idx_members_facilitator_active ON public.members USING btree (is_facilitator, status);
 
 
+CREATE INDEX idx_member_agreements_member_status
+  ON public.member_agreements (member_id, status);
+
+CREATE INDEX idx_sacrament_releases_product_id
+  ON public.sacrament_releases (mushroomprocess_product_id);
+
+CREATE INDEX idx_sacrament_releases_member_id
+  ON public.sacrament_releases (member_id);
+
+CREATE INDEX idx_sacrament_releases_release_type
+  ON public.sacrament_releases (release_type);
+
+CREATE INDEX idx_sacrament_releases_status
+  ON public.sacrament_releases (status);
+
+
 --
 -- Name: members trg_members_updated_at; Type: TRIGGER; Schema: public; Owner: signaturegate
 --
@@ -338,6 +384,21 @@ CREATE TRIGGER trg_members_updated_at BEFORE UPDATE ON public.members FOR EACH R
 
 ALTER TABLE ONLY public.donations
     ADD CONSTRAINT donations_member_id_fkey FOREIGN KEY (member_id) REFERENCES public.members(member_id);
+
+ALTER TABLE ONLY public.sacrament_releases
+  ADD CONSTRAINT sacrament_releases_facilitator_id_fkey
+  FOREIGN KEY (facilitator_id)
+  REFERENCES public.members(member_id);
+
+ALTER TABLE ONLY public.sacrament_releases
+  ADD CONSTRAINT sacrament_releases_member_agreement_id_fkey
+  FOREIGN KEY (member_agreement_id)
+  REFERENCES public.member_agreements(member_agreement_id);
+
+ALTER TABLE ONLY public.sacrament_releases
+  ADD CONSTRAINT sacrament_releases_voided_by_fkey
+  FOREIGN KEY (voided_by)
+  REFERENCES public.members(member_id);
 
 
 --
