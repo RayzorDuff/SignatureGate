@@ -36,9 +36,6 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_donations_review.sql
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_is_donation_reviewer.sql
 
-# Givebutter - ensure unique email
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_givebutter_email_unique.sql
-
 # Allow voiding releases
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_release_void.sql
 
@@ -53,6 +50,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # Allow facilitators to pull releases from multiple storage locations
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_facilitator_storage_location_access.sql
+
+# Allow members to have multiple email, phone or address
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_contact_methods.sql
 ```
 
 3) Verify tables exist:
