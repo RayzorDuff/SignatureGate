@@ -142,24 +142,66 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\t\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n      qAuditLogList.run(),\n    ]);\t\n  },\n\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n    this.refresh();\n\t\t\n\t},\n}",
+        "body": "export default {\n\tDOCUMENSO_BASE_URL: \"https://documenso.danks.store/t/facilitators\",\n\tGIVEBUTTER_BASE_URL: \"https://givebutter.com\",\n\tGIVEBUTTER_DASHBOARD_BASE_URL: \"https://dashboard.givebutter.com\",\n\tAPPSMITH_MEMBER_PROFILE_PAGE: \"Members - Profile\",\n\tNOCODB_BASE_URL: \"https://nocodb.danks.store\",\n\t\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n      qAuditLogList.run(),\n    ]);\t\n  },\n\n\tformatDetails(row) {\n\t\tconst details = typeof row.details_json === \"string\"\n\t\t\t? JSON.parse(row.details_json || \"{}\")\n\t\t\t: (row.details_json || row.details || {});\n\n\t\tconst html = [];\n\n\t\tconst memberId = details.member_id || row.detail_member_id;\n\t\tconst memberName = row.detail_member_name || memberId;\n\n\t\tif (memberId) {\n\t\t\t//html.push(`<b>Member:</b> <a href=\"javascript:void(0)\" onclick=\"appsmith.triggerEvent('openMemberProfile', '${memberId}')\">${memberName}</a>`);\n\t\t\thtml.push(`<b>Member:</b> ${memberName}`);\n\t\t}\n\n\t\tconst facilitatorId = details.facilitator_id || row.detail_facilitator_id;\n\t\tconst facilitatorName = row.detail_facilitator_name || facilitatorId;\n\n\t\tif (facilitatorId) {\n\t\t\t//html.push(`<b>Facilitator:</b> <a href=\"javascript:void(0)\" onclick=\"appsmith.triggerEvent('openMemberProfile', '${facilitatorId}')\">${facilitatorName}</a>`);\n\t\t\thtml.push(`<b>Facilitator:</b> ${facilitatorName}`);\n\t\t}\n\n\t\tif (details.documenso_document_id) {\n\t\t\thtml.push(`<b>Documenso:</b> <a target=\"_blank\" href=\"${this.DOCUMENSO_BASE_URL}/documents/${details.documenso_document_id}\">${details.documenso_document_id}</a>`);\n\t\t}\n\n\t\tif (details.externalId) {\n\t\t\thtml.push(`<b>Documenso External ID:</b> ${details.externalId}`);\n\t\t}\n\n\t\tif (details.createdAt) {\n\t\t\thtml.push(`<b>Created:</b> ${new Date(details.createdAt).toLocaleString()}`);\n\t\t}\n\n\t\tif (details.url && details.name) {\n\t\t\thtml.push(`<b>Agreement:</b> <a target=\"_blank\" href=\"${details.url}\">${details.name}</a>`);\n\t\t}\n\n\t\tif (Array.isArray(details.evidence)) {\n\t\t\tdetails.evidence.forEach(file => {\n\t\t\t\tconst title = file.title || file.name || \"Attachment\";\n\t\t\t\tconst path = file.signedPath || file.path || file.url;\n\t\t\t\tif (path) {\n\t\t\t\t\thtml.push(`<b>Attachment:</b> <a target=\"_blank\" href=\"${this.NOCODB_BASE_URL}/${path}\">${title}</a>`);\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t\t\n\t\tconst gb = details.data || {};\n\t\tconst transactionId = gb.number || gb.transactions?.[0]?.id || gb.id;\n\t\tconst contactId = gb.contact_id;\n\t\tconst campaignId = gb.campaign_id;\n\t\tconst campaignCode = gb.campaign_code;\n\n\t\tif (details.event?.startsWith(\"transaction.\") || transactionId) {\n\t\t\thtml.push(`<h4>Givebutter</h4>`);\n\n\t\t\tif (gb.first_name || gb.last_name) {\n\t\t\t\thtml.push(`<b>Donor:</b> ${gb.first_name || \"\"} ${gb.last_name || \"\"}`);\n\t\t\t}\n\n\t\t\tif (gb.email) html.push(`<b>Email:</b> ${gb.email}`);\n\t\t\tif (gb.phone) html.push(`<b>Phone:</b> ${gb.phone}`);\n\n\t\t\tif (gb.amount != null) {\n\t\t\t\thtml.push(`<b>Amount:</b> $${Number(gb.amount).toFixed(2)} ${gb.currency || \"\"}`);\n\t\t\t}\n\n\t\t\tif (gb.status) html.push(`<b>Status:</b> ${gb.status}`);\n\n\t\t\tif (gb.transacted_at || gb.created_at) {\n\t\t\t\thtml.push(`<b>Transacted:</b> ${new Date(gb.transacted_at || gb.created_at).toLocaleString()}`);\n\t\t\t}\n\n\t\t\tif (campaignId) {\n\t\t\t\thtml.push(`<b>Campaign:</b> ${gb.campaign_title || campaignId}`);\n\t\t\t}\n\n\t\t\tif (campaignCode) {\n\t\t\t\thtml.push(`<b>Public Campaign:</b> <a target=\"_blank\" href=\"https://givebutter.com/${campaignCode}\">${campaignCode}</a>`);\n\t\t\t}\n\n\t\t\tif (contactId) {\n\t\t\t\thtml.push(`<b>Givebutter Contact:</b> <a target=\"_blank\" href=\"${this.GIVEBUTTER_DASHBOARD_BASE_URL}/contacts/${contactId}\">${contactId}</a>`);\n\t\t\t}\n\n\t\t\tif (transactionId) {\n\t\t\t\thtml.push(`<b>Givebutter Transaction:</b> <a target=\"_blank\" href=\"${this.GIVEBUTTER_DASHBOARD_BASE_URL}/transactions/${transactionId}\">${transactionId}</a>`);\n\t\t\t}\n\t\t}\t\t\n\n\t\treturn html.length\n\t\t\t? html.join(\"<br>\")\n\t\t    : \"\";\n//\t\t\t: `<pre>${JSON.stringify(details, null, 2)}</pre>`;\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n    this.refresh();\n\t\t\n\t},\n}",
         "name": "auditLogFlows",
         "pageId": "Audit Log",
         "pluginId": "js-plugin",
         "pluginType": "JS",
         "userPermissions": [],
-        "variables": []
+        "variables": [
+          {
+            "name": "DOCUMENSO_BASE_URL",
+            "value": "\"https://documenso.danks.store/t/facilitators\""
+          },
+          {
+            "name": "GIVEBUTTER_BASE_URL",
+            "value": "\"https://givebutter.com\""
+          },
+          {
+            "name": "GIVEBUTTER_DASHBOARD_BASE_URL",
+            "value": "\"https://dashboard.givebutter.com\""
+          },
+          {
+            "name": "APPSMITH_MEMBER_PROFILE_PAGE",
+            "value": "\"Members - Profile\""
+          },
+          {
+            "name": "NOCODB_BASE_URL",
+            "value": "\"https://nocodb.danks.store\""
+          }
+        ]
       },
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\t\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n      qAuditLogList.run(),\n    ]);\t\n  },\n\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n    this.refresh();\n\t\t\n\t},\n}",
+        "body": "export default {\n\tDOCUMENSO_BASE_URL: \"https://documenso.danks.store/t/facilitators\",\n\tGIVEBUTTER_BASE_URL: \"https://givebutter.com\",\n\tGIVEBUTTER_DASHBOARD_BASE_URL: \"https://dashboard.givebutter.com\",\n\tAPPSMITH_MEMBER_PROFILE_PAGE: \"Members - Profile\",\n\tNOCODB_BASE_URL: \"https://nocodb.danks.store\",\n\t\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n      qAuditLogList.run(),\n    ]);\t\n  },\n\n\tformatDetails(row) {\n\t\tconst details = typeof row.details_json === \"string\"\n\t\t\t? JSON.parse(row.details_json || \"{}\")\n\t\t\t: (row.details_json || row.details || {});\n\n\t\tconst html = [];\n\n\t\tconst memberId = details.member_id || row.detail_member_id;\n\t\tconst memberName = row.detail_member_name || memberId;\n\n\t\tif (memberId) {\n\t\t\t//html.push(`<b>Member:</b> <a href=\"javascript:void(0)\" onclick=\"appsmith.triggerEvent('openMemberProfile', '${memberId}')\">${memberName}</a>`);\n\t\t\thtml.push(`<b>Member:</b> ${memberName}`);\n\t\t}\n\n\t\tconst facilitatorId = details.facilitator_id || row.detail_facilitator_id;\n\t\tconst facilitatorName = row.detail_facilitator_name || facilitatorId;\n\n\t\tif (facilitatorId) {\n\t\t\t//html.push(`<b>Facilitator:</b> <a href=\"javascript:void(0)\" onclick=\"appsmith.triggerEvent('openMemberProfile', '${facilitatorId}')\">${facilitatorName}</a>`);\n\t\t\thtml.push(`<b>Facilitator:</b> ${facilitatorName}`);\n\t\t}\n\n\t\tif (details.documenso_document_id) {\n\t\t\thtml.push(`<b>Documenso:</b> <a target=\"_blank\" href=\"${this.DOCUMENSO_BASE_URL}/documents/${details.documenso_document_id}\">${details.documenso_document_id}</a>`);\n\t\t}\n\n\t\tif (details.externalId) {\n\t\t\thtml.push(`<b>Documenso External ID:</b> ${details.externalId}`);\n\t\t}\n\n\t\tif (details.createdAt) {\n\t\t\thtml.push(`<b>Created:</b> ${new Date(details.createdAt).toLocaleString()}`);\n\t\t}\n\n\t\tif (details.url && details.name) {\n\t\t\thtml.push(`<b>Agreement:</b> <a target=\"_blank\" href=\"${details.url}\">${details.name}</a>`);\n\t\t}\n\n\t\tif (Array.isArray(details.evidence)) {\n\t\t\tdetails.evidence.forEach(file => {\n\t\t\t\tconst title = file.title || file.name || \"Attachment\";\n\t\t\t\tconst path = file.signedPath || file.path || file.url;\n\t\t\t\tif (path) {\n\t\t\t\t\thtml.push(`<b>Attachment:</b> <a target=\"_blank\" href=\"${this.NOCODB_BASE_URL}/${path}\">${title}</a>`);\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t\t\n\t\tconst gb = details.data || {};\n\t\tconst transactionId = gb.number || gb.transactions?.[0]?.id || gb.id;\n\t\tconst contactId = gb.contact_id;\n\t\tconst campaignId = gb.campaign_id;\n\t\tconst campaignCode = gb.campaign_code;\n\n\t\tif (details.event?.startsWith(\"transaction.\") || transactionId) {\n\t\t\thtml.push(`<h4>Givebutter</h4>`);\n\n\t\t\tif (gb.first_name || gb.last_name) {\n\t\t\t\thtml.push(`<b>Donor:</b> ${gb.first_name || \"\"} ${gb.last_name || \"\"}`);\n\t\t\t}\n\n\t\t\tif (gb.email) html.push(`<b>Email:</b> ${gb.email}`);\n\t\t\tif (gb.phone) html.push(`<b>Phone:</b> ${gb.phone}`);\n\n\t\t\tif (gb.amount != null) {\n\t\t\t\thtml.push(`<b>Amount:</b> $${Number(gb.amount).toFixed(2)} ${gb.currency || \"\"}`);\n\t\t\t}\n\n\t\t\tif (gb.status) html.push(`<b>Status:</b> ${gb.status}`);\n\n\t\t\tif (gb.transacted_at || gb.created_at) {\n\t\t\t\thtml.push(`<b>Transacted:</b> ${new Date(gb.transacted_at || gb.created_at).toLocaleString()}`);\n\t\t\t}\n\n\t\t\tif (campaignId) {\n\t\t\t\thtml.push(`<b>Campaign:</b> ${gb.campaign_title || campaignId}`);\n\t\t\t}\n\n\t\t\tif (campaignCode) {\n\t\t\t\thtml.push(`<b>Public Campaign:</b> <a target=\"_blank\" href=\"https://givebutter.com/${campaignCode}\">${campaignCode}</a>`);\n\t\t\t}\n\n\t\t\tif (contactId) {\n\t\t\t\thtml.push(`<b>Givebutter Contact:</b> <a target=\"_blank\" href=\"${this.GIVEBUTTER_DASHBOARD_BASE_URL}/contacts/${contactId}\">${contactId}</a>`);\n\t\t\t}\n\n\t\t\tif (transactionId) {\n\t\t\t\thtml.push(`<b>Givebutter Transaction:</b> <a target=\"_blank\" href=\"${this.GIVEBUTTER_DASHBOARD_BASE_URL}/transactions/${transactionId}\">${transactionId}</a>`);\n\t\t\t}\n\t\t}\t\t\n\n\t\treturn html.length\n\t\t\t? html.join(\"<br>\")\n\t\t    : \"\";\n//\t\t\t: `<pre>${JSON.stringify(details, null, 2)}</pre>`;\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n    this.refresh();\n\t\t\n\t},\n}",
         "name": "auditLogFlows",
         "pageId": "Audit Log",
         "pluginId": "js-plugin",
         "pluginType": "JS",
         "userPermissions": [],
-        "variables": []
+        "variables": [
+          {
+            "name": "DOCUMENSO_BASE_URL",
+            "value": "\"https://documenso.danks.store/t/facilitators\""
+          },
+          {
+            "name": "GIVEBUTTER_BASE_URL",
+            "value": "\"https://givebutter.com\""
+          },
+          {
+            "name": "GIVEBUTTER_DASHBOARD_BASE_URL",
+            "value": "\"https://dashboard.givebutter.com\""
+          },
+          {
+            "name": "APPSMITH_MEMBER_PROFILE_PAGE",
+            "value": "\"Members - Profile\""
+          },
+          {
+            "name": "NOCODB_BASE_URL",
+            "value": "\"https://nocodb.danks.store\""
+          }
+        ]
       }
     },
     {
@@ -11867,7 +11909,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    lower(email) AS email,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT\n  al.*\nFROM public.audit_log al\nCROSS JOIN me\nWHERE\n  me.is_document_reviewer = TRUE\n  OR (\n    me.is_document_reviewer = FALSE\n    AND (\n      -- Most common: actor stored as facilitator email\n      lower(al.actor) = me.email\n\n      -- If you ever store member_id as actor or include facilitator_id in details,\n      -- this keeps the list useful for non-reviewers:\n      -- OR al.actor = me.member_id::text\n      -- OR (al.details ? 'facilitator_id' AND al.details->>'facilitator_id' = me.member_id::text)\n      -- OR (al.details ? 'actor_member_id' AND al.details->>'actor_member_id' = me.member_id::text)\n    )\n  )\nORDER BY al.created_at DESC\nLIMIT 500;\n",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    lower(email) AS email,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT\n  al.*,\n\n  actor_m.first_name || ' ' || actor_m.last_name AS actor_member_name,\n\n  member_m.member_id AS detail_member_id,\n  member_m.first_name || ' ' || member_m.last_name AS detail_member_name,\n\n  facilitator_m.member_id AS detail_facilitator_id,\n  facilitator_m.first_name || ' ' || facilitator_m.last_name AS detail_facilitator_name\n\nFROM public.audit_log al\nCROSS JOIN me\n\nLEFT JOIN public.members actor_m\n  ON lower(actor_m.email) = lower(al.actor)\n\nLEFT JOIN public.members member_m\n  ON member_m.member_id = NULLIF(al.details::jsonb->>'member_id', '')::uuid\n\nLEFT JOIN public.members facilitator_m\n  ON facilitator_m.member_id = NULLIF(al.details::jsonb->>'facilitator_id', '')::uuid\n\nWHERE\n  me.is_document_reviewer = TRUE\n  OR lower(al.actor) = me.email\n\nORDER BY al.created_at DESC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -11913,7 +11955,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    lower(email) AS email,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT\n  al.*\nFROM public.audit_log al\nCROSS JOIN me\nWHERE\n  me.is_document_reviewer = TRUE\n  OR (\n    me.is_document_reviewer = FALSE\n    AND (\n      -- Most common: actor stored as facilitator email\n      lower(al.actor) = me.email\n\n      -- If you ever store member_id as actor or include facilitator_id in details,\n      -- this keeps the list useful for non-reviewers:\n      -- OR al.actor = me.member_id::text\n      -- OR (al.details ? 'facilitator_id' AND al.details->>'facilitator_id' = me.member_id::text)\n      -- OR (al.details ? 'actor_member_id' AND al.details->>'actor_member_id' = me.member_id::text)\n    )\n  )\nORDER BY al.created_at DESC\nLIMIT 500;\n",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    lower(email) AS email,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT\n  al.*,\n\n  actor_m.first_name || ' ' || actor_m.last_name AS actor_member_name,\n\n  member_m.member_id AS detail_member_id,\n  member_m.first_name || ' ' || member_m.last_name AS detail_member_name,\n\n  facilitator_m.member_id AS detail_facilitator_id,\n  facilitator_m.first_name || ' ' || facilitator_m.last_name AS detail_facilitator_name\n\nFROM public.audit_log al\nCROSS JOIN me\n\nLEFT JOIN public.members actor_m\n  ON lower(actor_m.email) = lower(al.actor)\n\nLEFT JOIN public.members member_m\n  ON member_m.member_id = NULLIF(al.details::jsonb->>'member_id', '')::uuid\n\nLEFT JOIN public.members facilitator_m\n  ON facilitator_m.member_id = NULLIF(al.details::jsonb->>'facilitator_id', '')::uuid\n\nWHERE\n  me.is_document_reviewer = TRUE\n  OR lower(al.actor) = me.email\n\nORDER BY al.created_at DESC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -12442,6 +12484,103 @@
         ],
         "messages": [],
         "name": "qAuditLogInsert",
+        "pageId": "Audit Log",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696e976bef6f963f4d13cbc6_0694b020-38f9-4c3a-a8a0-b7fda2653f85",
+      "id": "Audit Log_auditLogFlows.formatDetails",
+      "pluginId": "js-plugin",
+      "pluginType": "JS",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "function (row) {\n  const details = typeof row.details_json === \"string\" ? JSON.parse(row.details_json || \"{}\") : row.details_json || row.details || ({});\n  const html = [];\n  const memberId = details.member_id || row.detail_member_id;\n  const memberName = row.detail_member_name || memberId;\n  if (memberId) {\n    html.push(`<b>Member:</b> ${memberName}`);\n  }\n  const facilitatorId = details.facilitator_id || row.detail_facilitator_id;\n  const facilitatorName = row.detail_facilitator_name || facilitatorId;\n  if (facilitatorId) {\n    html.push(`<b>Facilitator:</b> ${facilitatorName}`);\n  }\n  if (details.documenso_document_id) {\n    html.push(`<b>Documenso:</b> <a target=\"_blank\" href=\"${auditLogFlows.DOCUMENSO_BASE_URL}/documents/${details.documenso_document_id}\">${details.documenso_document_id}</a>`);\n  }\n  if (details.externalId) {\n    html.push(`<b>Documenso External ID:</b> ${details.externalId}`);\n  }\n  if (details.createdAt) {\n    html.push(`<b>Created:</b> ${new Date(details.createdAt).toLocaleString()}`);\n  }\n  if (details.url && details.name) {\n    html.push(`<b>Agreement:</b> <a target=\"_blank\" href=\"${details.url}\">${details.name}</a>`);\n  }\n  if (Array.isArray(details.evidence)) {\n    details.evidence.forEach(file => {\n      const title = file.title || file.name || \"Attachment\";\n      const path = file.signedPath || file.path || file.url;\n      if (path) {\n        html.push(`<b>Attachment:</b> <a target=\"_blank\" href=\"${auditLogFlows.NOCODB_BASE_URL}/${path}\">${title}</a>`);\n      }\n    });\n  }\n  const gb = details.data || ({});\n  const transactionId = gb.number || gb.transactions?.[0]?.id || gb.id;\n  const contactId = gb.contact_id;\n  const campaignId = gb.campaign_id;\n  const campaignCode = gb.campaign_code;\n  if (details.event?.startsWith(\"transaction.\") || transactionId) {\n    html.push(`<h4>Givebutter</h4>`);\n    if (gb.first_name || gb.last_name) {\n      html.push(`<b>Donor:</b> ${gb.first_name || \"\"} ${gb.last_name || \"\"}`);\n    }\n    if (gb.email) html.push(`<b>Email:</b> ${gb.email}`);\n    if (gb.phone) html.push(`<b>Phone:</b> ${gb.phone}`);\n    if (gb.amount != null) {\n      html.push(`<b>Amount:</b> $${Number(gb.amount).toFixed(2)} ${gb.currency || \"\"}`);\n    }\n    if (gb.status) html.push(`<b>Status:</b> ${gb.status}`);\n    if (gb.transacted_at || gb.created_at) {\n      html.push(`<b>Transacted:</b> ${new Date(gb.transacted_at || gb.created_at).toLocaleString()}`);\n    }\n    if (campaignId) {\n      html.push(`<b>Campaign:</b> ${gb.campaign_title || campaignId}`);\n    }\n    if (campaignCode) {\n      html.push(`<b>Public Campaign:</b> <a target=\"_blank\" href=\"https://givebutter.com/${campaignCode}\">${campaignCode}</a>`);\n    }\n    if (contactId) {\n      html.push(`<b>Givebutter Contact:</b> <a target=\"_blank\" href=\"${auditLogFlows.GIVEBUTTER_DASHBOARD_BASE_URL}/contacts/${contactId}\">${contactId}</a>`);\n    }\n    if (transactionId) {\n      html.push(`<b>Givebutter Transaction:</b> <a target=\"_blank\" href=\"${auditLogFlows.GIVEBUTTER_DASHBOARD_BASE_URL}/transactions/${transactionId}\">${transactionId}</a>`);\n    }\n  }\n  return html.length ? html.join(\"<br>\") : \"\";\n}",
+          "encodeParamsToggle": true,
+          "jsArguments": [
+            {
+              "name": "row"
+            }
+          ],
+          "paginationType": "NONE",
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "collectionId": "Audit Log_auditLogFlows",
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-05-01T00:35:05Z",
+        "datasource": {
+          "deleted": false,
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "UNUSED_DATASOURCE",
+          "pluginId": "js-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "fullyQualifiedName": "auditLogFlows.formatDetails",
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          "function (row) {\n  const details = typeof row.details_json === \"string\" ? JSON.parse(row.details_json || \"{}\") : row.details_json || row.details || ({});\n  const html = [];\n  const memberId = details.member_id || row.detail_member_id;\n  const memberName = row.detail_member_name || memberId;\n  if (memberId) {\n    html.push(`<b>Member:</b> ${memberName}`);\n  }\n  const facilitatorId = details.facilitator_id || row.detail_facilitator_id;\n  const facilitatorName = row.detail_facilitator_name || facilitatorId;\n  if (facilitatorId) {\n    html.push(`<b>Facilitator:</b> ${facilitatorName}`);\n  }\n  if (details.documenso_document_id) {\n    html.push(`<b>Documenso:</b> <a target=\"_blank\" href=\"${auditLogFlows.DOCUMENSO_BASE_URL}/documents/${details.documenso_document_id}\">${details.documenso_document_id}</a>`);\n  }\n  if (details.externalId) {\n    html.push(`<b>Documenso External ID:</b> ${details.externalId}`);\n  }\n  if (details.createdAt) {\n    html.push(`<b>Created:</b> ${new Date(details.createdAt).toLocaleString()}`);\n  }\n  if (details.url && details.name) {\n    html.push(`<b>Agreement:</b> <a target=\"_blank\" href=\"${details.url}\">${details.name}</a>`);\n  }\n  if (Array.isArray(details.evidence)) {\n    details.evidence.forEach(file => {\n      const title = file.title || file.name || \"Attachment\";\n      const path = file.signedPath || file.path || file.url;\n      if (path) {\n        html.push(`<b>Attachment:</b> <a target=\"_blank\" href=\"${auditLogFlows.NOCODB_BASE_URL}/${path}\">${title}</a>`);\n      }\n    });\n  }\n  const gb = details.data || ({});\n  const transactionId = gb.number || gb.transactions?.[0]?.id || gb.id;\n  const contactId = gb.contact_id;\n  const campaignId = gb.campaign_id;\n  const campaignCode = gb.campaign_code;\n  if (details.event?.startsWith(\"transaction.\") || transactionId) {\n    html.push(`<h4>Givebutter</h4>`);\n    if (gb.first_name || gb.last_name) {\n      html.push(`<b>Donor:</b> ${gb.first_name || \"\"} ${gb.last_name || \"\"}`);\n    }\n    if (gb.email) html.push(`<b>Email:</b> ${gb.email}`);\n    if (gb.phone) html.push(`<b>Phone:</b> ${gb.phone}`);\n    if (gb.amount != null) {\n      html.push(`<b>Amount:</b> $${Number(gb.amount).toFixed(2)} ${gb.currency || \"\"}`);\n    }\n    if (gb.status) html.push(`<b>Status:</b> ${gb.status}`);\n    if (gb.transacted_at || gb.created_at) {\n      html.push(`<b>Transacted:</b> ${new Date(gb.transacted_at || gb.created_at).toLocaleString()}`);\n    }\n    if (campaignId) {\n      html.push(`<b>Campaign:</b> ${gb.campaign_title || campaignId}`);\n    }\n    if (campaignCode) {\n      html.push(`<b>Public Campaign:</b> <a target=\"_blank\" href=\"https://givebutter.com/${campaignCode}\">${campaignCode}</a>`);\n    }\n    if (contactId) {\n      html.push(`<b>Givebutter Contact:</b> <a target=\"_blank\" href=\"${auditLogFlows.GIVEBUTTER_DASHBOARD_BASE_URL}/contacts/${contactId}\">${contactId}</a>`);\n    }\n    if (transactionId) {\n      html.push(`<b>Givebutter Transaction:</b> <a target=\"_blank\" href=\"${auditLogFlows.GIVEBUTTER_DASHBOARD_BASE_URL}/transactions/${transactionId}\">${transactionId}</a>`);\n    }\n  }\n  return html.length ? html.join(\"<br>\") : \"\";\n}"
+        ],
+        "messages": [],
+        "name": "formatDetails",
+        "pageId": "Audit Log",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "function (row) {\n  const details = typeof row.details_json === \"string\" ? JSON.parse(row.details_json || \"{}\") : row.details_json || row.details || ({});\n  const html = [];\n  const memberId = details.member_id || row.detail_member_id;\n  const memberName = row.detail_member_name || memberId;\n  if (memberId) {\n    html.push(`<b>Member:</b> ${memberName}`);\n  }\n  const facilitatorId = details.facilitator_id || row.detail_facilitator_id;\n  const facilitatorName = row.detail_facilitator_name || facilitatorId;\n  if (facilitatorId) {\n    html.push(`<b>Facilitator:</b> ${facilitatorName}`);\n  }\n  if (details.documenso_document_id) {\n    html.push(`<b>Documenso:</b> <a target=\"_blank\" href=\"${auditLogFlows.DOCUMENSO_BASE_URL}/documents/${details.documenso_document_id}\">${details.documenso_document_id}</a>`);\n  }\n  if (details.externalId) {\n    html.push(`<b>Documenso External ID:</b> ${details.externalId}`);\n  }\n  if (details.createdAt) {\n    html.push(`<b>Created:</b> ${new Date(details.createdAt).toLocaleString()}`);\n  }\n  if (details.url && details.name) {\n    html.push(`<b>Agreement:</b> <a target=\"_blank\" href=\"${details.url}\">${details.name}</a>`);\n  }\n  if (Array.isArray(details.evidence)) {\n    details.evidence.forEach(file => {\n      const title = file.title || file.name || \"Attachment\";\n      const path = file.signedPath || file.path || file.url;\n      if (path) {\n        html.push(`<b>Attachment:</b> <a target=\"_blank\" href=\"${auditLogFlows.NOCODB_BASE_URL}/${path}\">${title}</a>`);\n      }\n    });\n  }\n  const gb = details.data || ({});\n  const transactionId = gb.number || gb.transactions?.[0]?.id || gb.id;\n  const contactId = gb.contact_id;\n  const campaignId = gb.campaign_id;\n  const campaignCode = gb.campaign_code;\n  if (details.event?.startsWith(\"transaction.\") || transactionId) {\n    html.push(`<h4>Givebutter</h4>`);\n    if (gb.first_name || gb.last_name) {\n      html.push(`<b>Donor:</b> ${gb.first_name || \"\"} ${gb.last_name || \"\"}`);\n    }\n    if (gb.email) html.push(`<b>Email:</b> ${gb.email}`);\n    if (gb.phone) html.push(`<b>Phone:</b> ${gb.phone}`);\n    if (gb.amount != null) {\n      html.push(`<b>Amount:</b> $${Number(gb.amount).toFixed(2)} ${gb.currency || \"\"}`);\n    }\n    if (gb.status) html.push(`<b>Status:</b> ${gb.status}`);\n    if (gb.transacted_at || gb.created_at) {\n      html.push(`<b>Transacted:</b> ${new Date(gb.transacted_at || gb.created_at).toLocaleString()}`);\n    }\n    if (campaignId) {\n      html.push(`<b>Campaign:</b> ${gb.campaign_title || campaignId}`);\n    }\n    if (campaignCode) {\n      html.push(`<b>Public Campaign:</b> <a target=\"_blank\" href=\"https://givebutter.com/${campaignCode}\">${campaignCode}</a>`);\n    }\n    if (contactId) {\n      html.push(`<b>Givebutter Contact:</b> <a target=\"_blank\" href=\"${auditLogFlows.GIVEBUTTER_DASHBOARD_BASE_URL}/contacts/${contactId}\">${contactId}</a>`);\n    }\n    if (transactionId) {\n      html.push(`<b>Givebutter Transaction:</b> <a target=\"_blank\" href=\"${auditLogFlows.GIVEBUTTER_DASHBOARD_BASE_URL}/transactions/${transactionId}\">${transactionId}</a>`);\n    }\n  }\n  return html.length ? html.join(\"<br>\") : \"\";\n}",
+          "encodeParamsToggle": true,
+          "jsArguments": [
+            {
+              "name": "row"
+            }
+          ],
+          "paginationType": "NONE",
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "collectionId": "Audit Log_auditLogFlows",
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-05-01T00:35:05Z",
+        "datasource": {
+          "deleted": false,
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "UNUSED_DATASOURCE",
+          "pluginId": "js-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "fullyQualifiedName": "auditLogFlows.formatDetails",
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          "function (row) {\n  const details = typeof row.details_json === \"string\" ? JSON.parse(row.details_json || \"{}\") : row.details_json || row.details || ({});\n  const html = [];\n  const memberId = details.member_id || row.detail_member_id;\n  const memberName = row.detail_member_name || memberId;\n  if (memberId) {\n    html.push(`<b>Member:</b> ${memberName}`);\n  }\n  const facilitatorId = details.facilitator_id || row.detail_facilitator_id;\n  const facilitatorName = row.detail_facilitator_name || facilitatorId;\n  if (facilitatorId) {\n    html.push(`<b>Facilitator:</b> ${facilitatorName}`);\n  }\n  if (details.documenso_document_id) {\n    html.push(`<b>Documenso:</b> <a target=\"_blank\" href=\"${auditLogFlows.DOCUMENSO_BASE_URL}/documents/${details.documenso_document_id}\">${details.documenso_document_id}</a>`);\n  }\n  if (details.externalId) {\n    html.push(`<b>Documenso External ID:</b> ${details.externalId}`);\n  }\n  if (details.createdAt) {\n    html.push(`<b>Created:</b> ${new Date(details.createdAt).toLocaleString()}`);\n  }\n  if (details.url && details.name) {\n    html.push(`<b>Agreement:</b> <a target=\"_blank\" href=\"${details.url}\">${details.name}</a>`);\n  }\n  if (Array.isArray(details.evidence)) {\n    details.evidence.forEach(file => {\n      const title = file.title || file.name || \"Attachment\";\n      const path = file.signedPath || file.path || file.url;\n      if (path) {\n        html.push(`<b>Attachment:</b> <a target=\"_blank\" href=\"${auditLogFlows.NOCODB_BASE_URL}/${path}\">${title}</a>`);\n      }\n    });\n  }\n  const gb = details.data || ({});\n  const transactionId = gb.number || gb.transactions?.[0]?.id || gb.id;\n  const contactId = gb.contact_id;\n  const campaignId = gb.campaign_id;\n  const campaignCode = gb.campaign_code;\n  if (details.event?.startsWith(\"transaction.\") || transactionId) {\n    html.push(`<h4>Givebutter</h4>`);\n    if (gb.first_name || gb.last_name) {\n      html.push(`<b>Donor:</b> ${gb.first_name || \"\"} ${gb.last_name || \"\"}`);\n    }\n    if (gb.email) html.push(`<b>Email:</b> ${gb.email}`);\n    if (gb.phone) html.push(`<b>Phone:</b> ${gb.phone}`);\n    if (gb.amount != null) {\n      html.push(`<b>Amount:</b> $${Number(gb.amount).toFixed(2)} ${gb.currency || \"\"}`);\n    }\n    if (gb.status) html.push(`<b>Status:</b> ${gb.status}`);\n    if (gb.transacted_at || gb.created_at) {\n      html.push(`<b>Transacted:</b> ${new Date(gb.transacted_at || gb.created_at).toLocaleString()}`);\n    }\n    if (campaignId) {\n      html.push(`<b>Campaign:</b> ${gb.campaign_title || campaignId}`);\n    }\n    if (campaignCode) {\n      html.push(`<b>Public Campaign:</b> <a target=\"_blank\" href=\"https://givebutter.com/${campaignCode}\">${campaignCode}</a>`);\n    }\n    if (contactId) {\n      html.push(`<b>Givebutter Contact:</b> <a target=\"_blank\" href=\"${auditLogFlows.GIVEBUTTER_DASHBOARD_BASE_URL}/contacts/${contactId}\">${contactId}</a>`);\n    }\n    if (transactionId) {\n      html.push(`<b>Givebutter Transaction:</b> <a target=\"_blank\" href=\"${auditLogFlows.GIVEBUTTER_DASHBOARD_BASE_URL}/transactions/${transactionId}\">${transactionId}</a>`);\n    }\n  }\n  return html.length ? html.join(\"<br>\") : \"\";\n}"
+        ],
+        "messages": [],
+        "name": "formatDetails",
         "pageId": "Audit Log",
         "policyMap": {},
         "runBehaviour": "MANUAL",
@@ -14605,24 +14744,6 @@
     {
       "datasourceConfiguration": {
         "connection": {
-          "ssl": {
-            "authType": "DEFAULT"
-          }
-        },
-        "headers": [],
-        "queryParameters": [],
-        "url": "http://nocodb:8080"
-      },
-      "deleted": false,
-      "gitSyncId": "69546c473d3106150e1d4544_9e674e2b-c3af-46be-935b-ec6cb0340832",
-      "isAutoGenerated": false,
-      "messages": [],
-      "name": "NocoDB danks.store",
-      "pluginId": "restapi-plugin"
-    },
-    {
-      "datasourceConfiguration": {
-        "connection": {
           "mode": "READ_WRITE",
           "ssl": {
             "authType": "DEFAULT"
@@ -14650,6 +14771,30 @@
             "authType": "DEFAULT"
           }
         },
+        "headers": [
+          {
+            "key": "content-type",
+            "value": "application/json"
+          }
+        ],
+        "queryParameters": [],
+        "url": "https://www.googleapis.com"
+      },
+      "deleted": false,
+      "gitSyncId": "61b6d49e33c6ae6163af2716_62134ff435ae9d523dbe700f",
+      "isAutoGenerated": false,
+      "isTemplate": true,
+      "messages": [],
+      "name": "Google Calendar",
+      "pluginId": "restapi-plugin"
+    },
+    {
+      "datasourceConfiguration": {
+        "connection": {
+          "ssl": {
+            "authType": "DEFAULT"
+          }
+        },
         "headers": [],
         "queryParameters": [],
         "url": "https://nocodb.danks.store"
@@ -14668,21 +14813,15 @@
             "authType": "DEFAULT"
           }
         },
-        "headers": [
-          {
-            "key": "content-type",
-            "value": "application/json"
-          }
-        ],
+        "headers": [],
         "queryParameters": [],
-        "url": "https://www.googleapis.com"
+        "url": "http://nocodb:8080"
       },
       "deleted": false,
-      "gitSyncId": "61b6d49e33c6ae6163af2716_62134ff435ae9d523dbe700f",
+      "gitSyncId": "69546c473d3106150e1d4544_9e674e2b-c3af-46be-935b-ec6cb0340832",
       "isAutoGenerated": false,
-      "isTemplate": true,
       "messages": [],
-      "name": "Google Calendar",
+      "name": "NocoDB danks.store",
       "pluginId": "restapi-plugin"
     }
   ],
@@ -15108,10 +15247,10 @@
                               "key": "borderRadius"
                             },
                             {
-                              "key": "regex"
+                              "key": "isRequired"
                             },
                             {
-                              "key": "isRequired"
+                              "key": "validation"
                             }
                           ],
                           "dynamicHeight": "FIXED",
@@ -15148,7 +15287,7 @@
                           "parentColumnSpace": 10.25,
                           "parentId": "td6u8eudjb",
                           "parentRowSpace": 10,
-                          "regex": "{{\n  !inpPhone.text ||\n  /^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$/.test(inpPhone.text)\n}}",
+                          "regex": "",
                           "renderMode": "CANVAS",
                           "resetOnSubmit": true,
                           "responsiveBehavior": "fill",
@@ -15156,7 +15295,7 @@
                           "tooltip": "Please input a phone number or if not, then add Notes",
                           "topRow": 0,
                           "type": "PHONE_INPUT_WIDGET",
-                          "validation": "",
+                          "validation": "{{\n  !inpPhone.text ||\n  /^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$/.test(inpPhone.text)\n}}",
                           "version": 1,
                           "widgetId": "yee34zzow1",
                           "widgetName": "inpPhone"
@@ -15178,9 +15317,6 @@
                             },
                             {
                               "key": "validation"
-                            },
-                            {
-                              "key": "regex"
                             },
                             {
                               "key": "isRequired"
@@ -15221,7 +15357,7 @@
                           "parentColumnSpace": 10.25,
                           "parentId": "td6u8eudjb",
                           "parentRowSpace": 10,
-                          "regex": "{{\n  !inpEmail.text ||\n  /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@(([0-9]{1,3}\\.){3}[0-9]{1,3}|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/.test(inpEmail.text)\n}}",
+                          "regex": "",
                           "renderMode": "CANVAS",
                           "resetOnSubmit": true,
                           "responsiveBehavior": "fill",
@@ -15231,7 +15367,7 @@
                           "tooltip": "Enter a valid email address when sending a digital release",
                           "topRow": 7,
                           "type": "INPUT_WIDGET_V2",
-                          "validation": "{{inpEmail.text.length > 0}}",
+                          "validation": "{{\n  !inpEmail.text ||\n  /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@(([0-9]{1,3}\\.){3}[0-9]{1,3}|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/.test(inpEmail.text)\n}}",
                           "version": 2,
                           "widgetId": "mhhvvpg5qc",
                           "widgetName": "inpEmail"
@@ -16428,10 +16564,10 @@
                               "key": "borderRadius"
                             },
                             {
-                              "key": "regex"
+                              "key": "isRequired"
                             },
                             {
-                              "key": "isRequired"
+                              "key": "validation"
                             }
                           ],
                           "dynamicHeight": "FIXED",
@@ -16468,7 +16604,7 @@
                           "parentColumnSpace": 10.25,
                           "parentId": "td6u8eudjb",
                           "parentRowSpace": 10,
-                          "regex": "{{\n  !inpPhone.text ||\n  /^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$/.test(inpPhone.text)\n}}",
+                          "regex": "",
                           "renderMode": "CANVAS",
                           "resetOnSubmit": true,
                           "responsiveBehavior": "fill",
@@ -16476,7 +16612,7 @@
                           "tooltip": "Please input a phone number or if not, then add Notes",
                           "topRow": 0,
                           "type": "PHONE_INPUT_WIDGET",
-                          "validation": "",
+                          "validation": "{{\n  !inpPhone.text ||\n  /^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$/.test(inpPhone.text)\n}}",
                           "version": 1,
                           "widgetId": "yee34zzow1",
                           "widgetName": "inpPhone"
@@ -16498,9 +16634,6 @@
                             },
                             {
                               "key": "validation"
-                            },
-                            {
-                              "key": "regex"
                             },
                             {
                               "key": "isRequired"
@@ -16541,7 +16674,7 @@
                           "parentColumnSpace": 10.25,
                           "parentId": "td6u8eudjb",
                           "parentRowSpace": 10,
-                          "regex": "{{\n  !inpEmail.text ||\n  /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@(([0-9]{1,3}\\.){3}[0-9]{1,3}|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/.test(inpEmail.text)\n}}",
+                          "regex": "",
                           "renderMode": "CANVAS",
                           "resetOnSubmit": true,
                           "responsiveBehavior": "fill",
@@ -16551,7 +16684,7 @@
                           "tooltip": "Enter a valid email address when sending a digital release",
                           "topRow": 7,
                           "type": "INPUT_WIDGET_V2",
-                          "validation": "{{inpEmail.text.length > 0}}",
+                          "validation": "{{\n  !inpEmail.text ||\n  /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@(([0-9]{1,3}\\.){3}[0-9]{1,3}|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/.test(inpEmail.text)\n}}",
                           "version": 2,
                           "widgetId": "mhhvvpg5qc",
                           "widgetName": "inpEmail"
@@ -23208,10 +23341,10 @@
                               "key": "defaultText"
                             },
                             {
-                              "key": "regex"
+                              "key": "isRequired"
                             },
                             {
-                              "key": "isRequired"
+                              "key": "validation"
                             }
                           ],
                           "dynamicHeight": "FIXED",
@@ -23251,7 +23384,7 @@
                           "parentColumnSpace": 10.25,
                           "parentId": "l1lf93ut0w",
                           "parentRowSpace": 10,
-                          "regex": "{{\n  !inpPhone.text ||\n  /^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$/.test(inpPhone.text)\n}}",
+                          "regex": "",
                           "renderMode": "CANVAS",
                           "resetOnSubmit": true,
                           "responsiveBehavior": "fill",
@@ -23259,7 +23392,7 @@
                           "tooltip": "Please input a phone number or if not, then add Notes",
                           "topRow": 7,
                           "type": "PHONE_INPUT_WIDGET",
-                          "validation": "",
+                          "validation": "{{\n  !inpPhone.text ||\n  /^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$/.test(inpPhone.text)\n}}",
                           "version": 1,
                           "widgetId": "xx6ojpm46f",
                           "widgetName": "inpPhone"
@@ -23618,9 +23751,6 @@
                             },
                             {
                               "key": "validation"
-                            },
-                            {
-                              "key": "regex"
                             }
                           ],
                           "dynamicHeight": "FIXED",
@@ -23658,7 +23788,7 @@
                           "parentColumnSpace": 10.25,
                           "parentId": "l1lf93ut0w",
                           "parentRowSpace": 10,
-                          "regex": "{{\n  !inpEmail.text ||\n  /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@(([0-9]{1,3}\\.){3}[0-9]{1,3}|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/.test(inpEmail.text)\n}}",
+                          "regex": "",
                           "renderMode": "CANVAS",
                           "resetOnSubmit": false,
                           "responsiveBehavior": "fill",
@@ -23668,7 +23798,7 @@
                           "tooltip": "A valid email address is required when sending a digital release",
                           "topRow": 7,
                           "type": "INPUT_WIDGET_V2",
-                          "validation": "{{inpEmail.text.length > 0}}",
+                          "validation": "{{\n  !inpEmail.text ||\n  /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@(([0-9]{1,3}\\.){3}[0-9]{1,3}|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/.test(inpEmail.text)\n}}",
                           "version": 2,
                           "widgetId": "c8hepzqw5m",
                           "widgetName": "inpEmail"
@@ -30301,10 +30431,10 @@
                               "key": "defaultText"
                             },
                             {
-                              "key": "regex"
+                              "key": "isRequired"
                             },
                             {
-                              "key": "isRequired"
+                              "key": "validation"
                             }
                           ],
                           "dynamicHeight": "FIXED",
@@ -30344,7 +30474,7 @@
                           "parentColumnSpace": 10.25,
                           "parentId": "l1lf93ut0w",
                           "parentRowSpace": 10,
-                          "regex": "{{\n  !inpPhone.text ||\n  /^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$/.test(inpPhone.text)\n}}",
+                          "regex": "",
                           "renderMode": "CANVAS",
                           "resetOnSubmit": true,
                           "responsiveBehavior": "fill",
@@ -30352,7 +30482,7 @@
                           "tooltip": "Please input a phone number or if not, then add Notes",
                           "topRow": 7,
                           "type": "PHONE_INPUT_WIDGET",
-                          "validation": "",
+                          "validation": "{{\n  !inpPhone.text ||\n  /^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$/.test(inpPhone.text)\n}}",
                           "version": 1,
                           "widgetId": "xx6ojpm46f",
                           "widgetName": "inpPhone"
@@ -30711,9 +30841,6 @@
                             },
                             {
                               "key": "validation"
-                            },
-                            {
-                              "key": "regex"
                             }
                           ],
                           "dynamicHeight": "FIXED",
@@ -30751,7 +30878,7 @@
                           "parentColumnSpace": 10.25,
                           "parentId": "l1lf93ut0w",
                           "parentRowSpace": 10,
-                          "regex": "{{\n  !inpEmail.text ||\n  /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@(([0-9]{1,3}\\.){3}[0-9]{1,3}|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/.test(inpEmail.text)\n}}",
+                          "regex": "",
                           "renderMode": "CANVAS",
                           "resetOnSubmit": false,
                           "responsiveBehavior": "fill",
@@ -30761,7 +30888,7 @@
                           "tooltip": "A valid email address is required when sending a digital release",
                           "topRow": 7,
                           "type": "INPUT_WIDGET_V2",
-                          "validation": "{{inpEmail.text.length > 0}}",
+                          "validation": "{{\n  !inpEmail.text ||\n  /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@(([0-9]{1,3}\\.){3}[0-9]{1,3}|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/.test(inpEmail.text)\n}}",
                           "version": 2,
                           "widgetId": "c8hepzqw5m",
                           "widgetName": "inpEmail"
@@ -37302,17 +37429,22 @@
                   },
                   "columnOrder": [
                     "created_at",
+                    "actor_member_name",
                     "actor",
                     "action",
                     "entity_type",
                     "entity_id",
                     "customColumn1",
                     "details",
-                    "audit_log_id"
+                    "audit_log_id",
+                    "detail_member_id",
+                    "detail_member_name",
+                    "detail_facilitator_id",
+                    "detail_facilitator_name"
                   ],
-                  "columnUpdatedAt": 1769011855323,
+                  "columnUpdatedAt": 1777597557098,
                   "columnWidthMap": {
-                    "action": 283,
+                    "action": 164,
                     "customColumn1": 106,
                     "customColumn3": 127,
                     "is_facilitator": 116,
@@ -37377,6 +37509,21 @@
                     },
                     {
                       "key": "primaryColumns.customColumn1.buttonColor"
+                    },
+                    {
+                      "key": "primaryColumns.actor_member_name.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.detail_member_id.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.detail_member_name.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.detail_facilitator_id.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.detail_facilitator_name.computedValue"
                     }
                   ],
                   "dynamicPropertyPathList": [
@@ -37385,6 +37532,12 @@
                     },
                     {
                       "key": "primaryColumns.customColumn1.onClick"
+                    },
+                    {
+                      "key": "onSearchTextChanged"
+                    },
+                    {
+                      "key": "onSort"
                     }
                   ],
                   "dynamicTriggerPathList": [
@@ -37431,8 +37584,8 @@
                   "onAddNewRowSave": "{{Insert_public_members1.run(() => {\n            showAlert(\"Successfully created!\");\n            Select_public_members1.run()\n          }, () => {\n            showAlert(\"Unable to create!\");\n          })}}",
                   "onPageChange": "{{\n            Select_public_members1.run();\n            Total_record_public_members1.run()\n          }}",
                   "onRowSelected": "",
-                  "onSearchTextChanged": "{{\n            Select_public_members1.run();\n            Total_record_public_members1.run()\n          }}",
-                  "onSort": "{{\n            Select_public_members1.run();\n            Total_record_public_members1.run()\n          }}",
+                  "onSearchTextChanged": "{{\n            qAuditLogList.run();\n           \n          }}",
+                  "onSort": "{{\n            qAuditLogList.run();\n          }}",
                   "originalBottomRow": 61,
                   "originalTopRow": 15,
                   "parentColumnSpace": 10.25,
@@ -37492,10 +37645,44 @@
                       "isEditable": false,
                       "isSaveVisible": true,
                       "isVisible": true,
-                      "label": "Actor",
+                      "label": "Actor/Email",
                       "notation": "standard",
                       "originalId": "actor",
                       "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "actor_member_name": {
+                      "alias": "actor_member_name",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"actor_member_name\"])) : actor_member_name })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "actor_member_name",
+                      "index": 7,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Actor/Name",
+                      "notation": "standard",
+                      "originalId": "actor_member_name",
+                      "sticky": "",
+                      "textColor": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,
                       "validation": {},
@@ -37599,9 +37786,145 @@
                       "label": "Details",
                       "labelColor": "#FFFFFF",
                       "notation": "standard",
-                      "onClick": "{{showModal(Modal1.name);}}",
+                      "onClick": "{{showModal(mdlAuditDetails.name);}}",
                       "originalId": "customColumn1",
                       "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "detail_facilitator_id": {
+                      "alias": "detail_facilitator_id",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"detail_facilitator_id\"])) : detail_facilitator_id })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "detail_facilitator_id",
+                      "index": 10,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "detail_facilitator_id",
+                      "notation": "standard",
+                      "originalId": "detail_facilitator_id",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "detail_facilitator_name": {
+                      "alias": "detail_facilitator_name",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"detail_facilitator_name\"])) : detail_facilitator_name })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "detail_facilitator_name",
+                      "index": 11,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "detail_facilitator_name",
+                      "notation": "standard",
+                      "originalId": "detail_facilitator_name",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "detail_member_id": {
+                      "alias": "detail_member_id",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"detail_member_id\"])) : detail_member_id })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "detail_member_id",
+                      "index": 8,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "detail_member_id",
+                      "notation": "standard",
+                      "originalId": "detail_member_id",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "detail_member_name": {
+                      "alias": "detail_member_name",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"detail_member_name\"])) : detail_member_name })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "detail_member_name",
+                      "index": 9,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "detail_member_name",
+                      "notation": "standard",
+                      "originalId": "detail_member_name",
+                      "sticky": "",
+                      "textColor": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,
                       "validation": {},
@@ -37830,14 +38153,14 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 433,
+                  "bottomRow": 393,
                   "boxShadow": "none",
                   "canEscapeKeyClose": true,
                   "canOutsideClickClose": true,
                   "children": [
                     {
                       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                      "bottomRow": 410,
+                      "bottomRow": 370,
                       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
                       "canExtend": true,
                       "children": [
@@ -37874,7 +38197,7 @@
                           "mobileRightColumn": 64,
                           "mobileTopRow": 0,
                           "needsErrorInfo": false,
-                          "onClick": "{{closeModal(Modal1.name);}}",
+                          "onClick": "{{closeModal(mdlAuditDetails.name);}}",
                           "parentId": "x4vd3ykqyk",
                           "renderMode": "CANVAS",
                           "responsiveBehavior": "hug",
@@ -37883,12 +38206,12 @@
                           "type": "ICON_BUTTON_WIDGET",
                           "version": 1,
                           "widgetId": "2fff6ecxvj",
-                          "widgetName": "modal1Close"
+                          "widgetName": "auditClose"
                         },
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 5,
+                          "bottomRow": 7,
                           "dynamicBindingPathList": [
                             {
                               "key": "truncateButtonColor"
@@ -37898,6 +38221,9 @@
                             },
                             {
                               "key": "borderRadius"
+                            },
+                            {
+                              "key": "text"
                             }
                           ],
                           "dynamicHeight": "AUTO_HEIGHT",
@@ -37925,7 +38251,7 @@
                           "responsiveBehavior": "fill",
                           "rightColumn": 41,
                           "shouldTruncate": false,
-                          "text": "Audit Details",
+                          "text": "{{ tblAuditLog.triggeredRow.action + \" — \" + new Date(tblAuditLog.triggeredRow.created_at).toLocaleString() }}",
                           "textAlign": "LEFT",
                           "textColor": "#231F20",
                           "topRow": 1,
@@ -37933,12 +38259,12 @@
                           "type": "TEXT_WIDGET",
                           "version": 1,
                           "widgetId": "z6jflo0z2y",
-                          "widgetName": "modal1Heading"
+                          "widgetName": "txtAuditHeading"
                         },
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 39,
+                          "bottomRow": 15,
                           "boxShadow": "none",
                           "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "buttonStyle": "PRIMARY",
@@ -37969,9 +38295,9 @@
                           "mobileRightColumn": 47,
                           "mobileTopRow": 18,
                           "needsErrorInfo": false,
-                          "onClick": "{{closeModal(Modal1.name);}}",
-                          "originalBottomRow": 39,
-                          "originalTopRow": 35,
+                          "onClick": "{{closeModal(mdlAuditDetails.name);}}",
+                          "originalBottomRow": 13,
+                          "originalTopRow": 9,
                           "parentId": "x4vd3ykqyk",
                           "placement": "CENTER",
                           "recaptchaType": "V3",
@@ -37980,7 +38306,7 @@
                           "responsiveBehavior": "hug",
                           "rightColumn": 63,
                           "text": "Close",
-                          "topRow": 35,
+                          "topRow": 11,
                           "type": "BUTTON_WIDGET",
                           "version": 1,
                           "widgetId": "6jsl1ak4bg",
@@ -37991,7 +38317,7 @@
                           "animateLoading": true,
                           "autoFocus": false,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 33,
+                          "bottomRow": 35,
                           "boxShadow": "none",
                           "defaultText": "{{ JSON.stringify(tblAuditLog.triggeredRow.details, null, 2) }}",
                           "dynamicBindingPathList": [
@@ -38030,21 +38356,202 @@
                           "mobileTopRow": 7,
                           "needsErrorInfo": false,
                           "originalBottomRow": 33,
-                          "originalTopRow": 6,
+                          "originalTopRow": 13,
                           "parentColumnSpace": 6.9375,
                           "parentId": "x4vd3ykqyk",
                           "parentRowSpace": 10,
                           "renderMode": "CANVAS",
                           "resetOnSubmit": true,
                           "responsiveBehavior": "fill",
-                          "rightColumn": 63,
+                          "rightColumn": 64,
                           "shouldAllowAutofill": false,
                           "showStepArrows": false,
-                          "topRow": 6,
+                          "topRow": 15,
                           "type": "INPUT_WIDGET_V2",
                           "version": 2,
                           "widgetId": "r0tmn7o09h",
-                          "widgetName": "Input1"
+                          "widgetName": "inpRawJSON"
+                        },
+                        {
+                          "animateLoading": true,
+                          "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                          "bottomRow": 11,
+                          "dynamicBindingPathList": [
+                            {
+                              "key": "truncateButtonColor"
+                            },
+                            {
+                              "key": "fontFamily"
+                            },
+                            {
+                              "key": "borderRadius"
+                            },
+                            {
+                              "key": "text"
+                            }
+                          ],
+                          "dynamicHeight": "AUTO_HEIGHT",
+                          "dynamicTriggerPathList": [],
+                          "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                          "fontSize": "1rem",
+                          "fontStyle": "BOLD",
+                          "isLoading": false,
+                          "isVisible": true,
+                          "key": "8enprrfcf3",
+                          "leftColumn": 0,
+                          "maxDynamicHeight": 9000,
+                          "minDynamicHeight": 4,
+                          "minWidth": 450,
+                          "mobileBottomRow": 43,
+                          "mobileLeftColumn": 43,
+                          "mobileRightColumn": 59,
+                          "mobileTopRow": 39,
+                          "needsErrorInfo": false,
+                          "originalBottomRow": 9,
+                          "originalTopRow": 5,
+                          "overflow": "NONE",
+                          "parentColumnSpace": 6.9375,
+                          "parentId": "x4vd3ykqyk",
+                          "parentRowSpace": 10,
+                          "renderMode": "CANVAS",
+                          "responsiveBehavior": "fill",
+                          "rightColumn": 64,
+                          "shouldTruncate": false,
+                          "text": "{{ auditLogFlows.formatDetails(tblAuditLog.triggeredRow) }}",
+                          "textAlign": "LEFT",
+                          "textColor": "#231F20",
+                          "topRow": 7,
+                          "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                          "type": "TEXT_WIDGET",
+                          "version": 1,
+                          "widgetId": "efy3lvb1x2",
+                          "widgetName": "txtAuditDetails"
+                        },
+                        {
+                          "animateLoading": true,
+                          "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                          "bottomRow": 15,
+                          "boxShadow": "none",
+                          "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                          "buttonVariant": "PRIMARY",
+                          "disabledWhenInvalid": false,
+                          "dynamicBindingPathList": [
+                            {
+                              "key": "buttonColor"
+                            },
+                            {
+                              "key": "borderRadius"
+                            },
+                            {
+                              "key": "isVisible"
+                            }
+                          ],
+                          "dynamicPropertyPathList": [
+                            {
+                              "key": "isVisible"
+                            },
+                            {
+                              "key": "onClick"
+                            }
+                          ],
+                          "dynamicTriggerPathList": [
+                            {
+                              "key": "onClick"
+                            }
+                          ],
+                          "isDefaultClickDisabled": true,
+                          "isDisabled": false,
+                          "isLoading": false,
+                          "isVisible": "{{ !!tblAuditLog.triggeredRow.detail_member_id }}",
+                          "key": "i92dh8ymzd",
+                          "leftColumn": 1,
+                          "minWidth": 120,
+                          "mobileBottomRow": 32,
+                          "mobileLeftColumn": 1,
+                          "mobileRightColumn": 17,
+                          "mobileTopRow": 28,
+                          "needsErrorInfo": false,
+                          "onClick": "{{ navigateTo(\"Members - Profile\", { member_id: tblAuditLog.triggeredRow.detail_member_id }, \"SAME_WINDOW\") }}",
+                          "originalBottomRow": 13,
+                          "originalTopRow": 9,
+                          "parentColumnSpace": 6.9375,
+                          "parentId": "x4vd3ykqyk",
+                          "parentRowSpace": 10,
+                          "placement": "CENTER",
+                          "recaptchaType": "V3",
+                          "renderMode": "CANVAS",
+                          "resetFormOnClick": false,
+                          "responsiveBehavior": "hug",
+                          "rightColumn": 20,
+                          "text": "Member Profile",
+                          "topRow": 11,
+                          "type": "BUTTON_WIDGET",
+                          "version": 1,
+                          "widgetId": "tthjy1iut0",
+                          "widgetName": "btnOpenMember"
+                        },
+                        {
+                          "animateLoading": true,
+                          "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                          "bottomRow": 15,
+                          "boxShadow": "none",
+                          "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                          "buttonVariant": "PRIMARY",
+                          "disabledWhenInvalid": false,
+                          "dynamicBindingPathList": [
+                            {
+                              "key": "buttonColor"
+                            },
+                            {
+                              "key": "borderRadius"
+                            },
+                            {
+                              "key": "isVisible"
+                            }
+                          ],
+                          "dynamicPropertyPathList": [
+                            {
+                              "key": "isVisible"
+                            },
+                            {
+                              "key": "onClick"
+                            }
+                          ],
+                          "dynamicTriggerPathList": [
+                            {
+                              "key": "onClick"
+                            }
+                          ],
+                          "isDefaultClickDisabled": true,
+                          "isDisabled": false,
+                          "isLoading": false,
+                          "isVisible": "{{ !!tblAuditLog.triggeredRow.detail_facilitator_id }}",
+                          "key": "i92dh8ymzd",
+                          "leftColumn": 20,
+                          "minWidth": 120,
+                          "mobileBottomRow": 32,
+                          "mobileLeftColumn": 18,
+                          "mobileRightColumn": 34,
+                          "mobileTopRow": 28,
+                          "needsErrorInfo": false,
+                          "onClick": "{{ navigateTo(\"Members - Profile\", { member_id: tblAuditLog.triggeredRow.detail_facilitator_id }, \"SAME_WINDOW\") }}",
+                          "originalBottomRow": 13,
+                          "originalTopRow": 9,
+                          "parentColumnSpace": 6.9375,
+                          "parentId": "x4vd3ykqyk",
+                          "parentRowSpace": 10,
+                          "placement": "CENTER",
+                          "recaptchaType": "V3",
+                          "renderMode": "CANVAS",
+                          "resetFormOnClick": false,
+                          "responsiveBehavior": "hug",
+                          "rightColumn": 41,
+                          "text": "Facilitator Profile",
+                          "topRow": 11,
+                          "type": "BUTTON_WIDGET",
+                          "version": 1,
+                          "widgetId": "w81mds40rd",
+                          "widgetName": "btnOpenFacilitator"
                         }
                       ],
                       "detachFromLayout": true,
@@ -38093,14 +38600,14 @@
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
-                  "height": 410,
+                  "height": 370,
                   "isCanvas": true,
                   "isLoading": false,
                   "key": "6m6439u4mr",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 24,
-                  "minHeight": 410,
+                  "minHeight": 370,
                   "mobileBottomRow": 47,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 14,
@@ -38116,7 +38623,7 @@
                   "type": "MODAL_WIDGET",
                   "version": 2,
                   "widgetId": "sng8dbbkye",
-                  "widgetName": "Modal1",
+                  "widgetName": "mdlAuditDetails",
                   "width": 456
                 }
               ],
@@ -38223,17 +38730,22 @@
                   },
                   "columnOrder": [
                     "created_at",
+                    "actor_member_name",
                     "actor",
                     "action",
                     "entity_type",
                     "entity_id",
                     "customColumn1",
                     "details",
-                    "audit_log_id"
+                    "audit_log_id",
+                    "detail_member_id",
+                    "detail_member_name",
+                    "detail_facilitator_id",
+                    "detail_facilitator_name"
                   ],
-                  "columnUpdatedAt": 1769011855323,
+                  "columnUpdatedAt": 1777597557098,
                   "columnWidthMap": {
-                    "action": 283,
+                    "action": 164,
                     "customColumn1": 106,
                     "customColumn3": 127,
                     "is_facilitator": 116,
@@ -38298,6 +38810,21 @@
                     },
                     {
                       "key": "primaryColumns.customColumn1.buttonColor"
+                    },
+                    {
+                      "key": "primaryColumns.actor_member_name.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.detail_member_id.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.detail_member_name.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.detail_facilitator_id.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.detail_facilitator_name.computedValue"
                     }
                   ],
                   "dynamicPropertyPathList": [
@@ -38306,6 +38833,12 @@
                     },
                     {
                       "key": "primaryColumns.customColumn1.onClick"
+                    },
+                    {
+                      "key": "onSearchTextChanged"
+                    },
+                    {
+                      "key": "onSort"
                     }
                   ],
                   "dynamicTriggerPathList": [
@@ -38352,8 +38885,8 @@
                   "onAddNewRowSave": "{{Insert_public_members1.run(() => {\n            showAlert(\"Successfully created!\");\n            Select_public_members1.run()\n          }, () => {\n            showAlert(\"Unable to create!\");\n          })}}",
                   "onPageChange": "{{\n            Select_public_members1.run();\n            Total_record_public_members1.run()\n          }}",
                   "onRowSelected": "",
-                  "onSearchTextChanged": "{{\n            Select_public_members1.run();\n            Total_record_public_members1.run()\n          }}",
-                  "onSort": "{{\n            Select_public_members1.run();\n            Total_record_public_members1.run()\n          }}",
+                  "onSearchTextChanged": "{{\n            qAuditLogList.run();\n           \n          }}",
+                  "onSort": "{{\n            qAuditLogList.run();\n          }}",
                   "originalBottomRow": 61,
                   "originalTopRow": 15,
                   "parentColumnSpace": 10.25,
@@ -38413,10 +38946,44 @@
                       "isEditable": false,
                       "isSaveVisible": true,
                       "isVisible": true,
-                      "label": "Actor",
+                      "label": "Actor/Email",
                       "notation": "standard",
                       "originalId": "actor",
                       "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "actor_member_name": {
+                      "alias": "actor_member_name",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"actor_member_name\"])) : actor_member_name })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "actor_member_name",
+                      "index": 7,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Actor/Name",
+                      "notation": "standard",
+                      "originalId": "actor_member_name",
+                      "sticky": "",
+                      "textColor": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,
                       "validation": {},
@@ -38520,9 +39087,145 @@
                       "label": "Details",
                       "labelColor": "#FFFFFF",
                       "notation": "standard",
-                      "onClick": "{{showModal(Modal1.name);}}",
+                      "onClick": "{{showModal(mdlAuditDetails.name);}}",
                       "originalId": "customColumn1",
                       "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "detail_facilitator_id": {
+                      "alias": "detail_facilitator_id",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"detail_facilitator_id\"])) : detail_facilitator_id })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "detail_facilitator_id",
+                      "index": 10,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "detail_facilitator_id",
+                      "notation": "standard",
+                      "originalId": "detail_facilitator_id",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "detail_facilitator_name": {
+                      "alias": "detail_facilitator_name",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"detail_facilitator_name\"])) : detail_facilitator_name })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "detail_facilitator_name",
+                      "index": 11,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "detail_facilitator_name",
+                      "notation": "standard",
+                      "originalId": "detail_facilitator_name",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "detail_member_id": {
+                      "alias": "detail_member_id",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"detail_member_id\"])) : detail_member_id })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "detail_member_id",
+                      "index": 8,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "detail_member_id",
+                      "notation": "standard",
+                      "originalId": "detail_member_id",
+                      "sticky": "",
+                      "textColor": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "detail_member_name": {
+                      "alias": "detail_member_name",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "cellBackground": "",
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblAuditLog.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"detail_member_name\"])) : detail_member_name })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "fontStyle": "",
+                      "horizontalAlignment": "LEFT",
+                      "id": "detail_member_name",
+                      "index": 9,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": false,
+                      "label": "detail_member_name",
+                      "notation": "standard",
+                      "originalId": "detail_member_name",
+                      "sticky": "",
+                      "textColor": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,
                       "validation": {},
@@ -38751,14 +39454,14 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 433,
+                  "bottomRow": 393,
                   "boxShadow": "none",
                   "canEscapeKeyClose": true,
                   "canOutsideClickClose": true,
                   "children": [
                     {
                       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                      "bottomRow": 410,
+                      "bottomRow": 370,
                       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
                       "canExtend": true,
                       "children": [
@@ -38795,7 +39498,7 @@
                           "mobileRightColumn": 64,
                           "mobileTopRow": 0,
                           "needsErrorInfo": false,
-                          "onClick": "{{closeModal(Modal1.name);}}",
+                          "onClick": "{{closeModal(mdlAuditDetails.name);}}",
                           "parentId": "x4vd3ykqyk",
                           "renderMode": "CANVAS",
                           "responsiveBehavior": "hug",
@@ -38804,12 +39507,12 @@
                           "type": "ICON_BUTTON_WIDGET",
                           "version": 1,
                           "widgetId": "2fff6ecxvj",
-                          "widgetName": "modal1Close"
+                          "widgetName": "auditClose"
                         },
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 5,
+                          "bottomRow": 7,
                           "dynamicBindingPathList": [
                             {
                               "key": "truncateButtonColor"
@@ -38819,6 +39522,9 @@
                             },
                             {
                               "key": "borderRadius"
+                            },
+                            {
+                              "key": "text"
                             }
                           ],
                           "dynamicHeight": "AUTO_HEIGHT",
@@ -38846,7 +39552,7 @@
                           "responsiveBehavior": "fill",
                           "rightColumn": 41,
                           "shouldTruncate": false,
-                          "text": "Audit Details",
+                          "text": "{{ tblAuditLog.triggeredRow.action + \" — \" + new Date(tblAuditLog.triggeredRow.created_at).toLocaleString() }}",
                           "textAlign": "LEFT",
                           "textColor": "#231F20",
                           "topRow": 1,
@@ -38854,12 +39560,12 @@
                           "type": "TEXT_WIDGET",
                           "version": 1,
                           "widgetId": "z6jflo0z2y",
-                          "widgetName": "modal1Heading"
+                          "widgetName": "txtAuditHeading"
                         },
                         {
                           "animateLoading": true,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 39,
+                          "bottomRow": 15,
                           "boxShadow": "none",
                           "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                           "buttonStyle": "PRIMARY",
@@ -38890,9 +39596,9 @@
                           "mobileRightColumn": 47,
                           "mobileTopRow": 18,
                           "needsErrorInfo": false,
-                          "onClick": "{{closeModal(Modal1.name);}}",
-                          "originalBottomRow": 39,
-                          "originalTopRow": 35,
+                          "onClick": "{{closeModal(mdlAuditDetails.name);}}",
+                          "originalBottomRow": 13,
+                          "originalTopRow": 9,
                           "parentId": "x4vd3ykqyk",
                           "placement": "CENTER",
                           "recaptchaType": "V3",
@@ -38901,7 +39607,7 @@
                           "responsiveBehavior": "hug",
                           "rightColumn": 63,
                           "text": "Close",
-                          "topRow": 35,
+                          "topRow": 11,
                           "type": "BUTTON_WIDGET",
                           "version": 1,
                           "widgetId": "6jsl1ak4bg",
@@ -38912,7 +39618,7 @@
                           "animateLoading": true,
                           "autoFocus": false,
                           "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                          "bottomRow": 33,
+                          "bottomRow": 35,
                           "boxShadow": "none",
                           "defaultText": "{{ JSON.stringify(tblAuditLog.triggeredRow.details, null, 2) }}",
                           "dynamicBindingPathList": [
@@ -38951,21 +39657,202 @@
                           "mobileTopRow": 7,
                           "needsErrorInfo": false,
                           "originalBottomRow": 33,
-                          "originalTopRow": 6,
+                          "originalTopRow": 13,
                           "parentColumnSpace": 6.9375,
                           "parentId": "x4vd3ykqyk",
                           "parentRowSpace": 10,
                           "renderMode": "CANVAS",
                           "resetOnSubmit": true,
                           "responsiveBehavior": "fill",
-                          "rightColumn": 63,
+                          "rightColumn": 64,
                           "shouldAllowAutofill": false,
                           "showStepArrows": false,
-                          "topRow": 6,
+                          "topRow": 15,
                           "type": "INPUT_WIDGET_V2",
                           "version": 2,
                           "widgetId": "r0tmn7o09h",
-                          "widgetName": "Input1"
+                          "widgetName": "inpRawJSON"
+                        },
+                        {
+                          "animateLoading": true,
+                          "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                          "bottomRow": 11,
+                          "dynamicBindingPathList": [
+                            {
+                              "key": "truncateButtonColor"
+                            },
+                            {
+                              "key": "fontFamily"
+                            },
+                            {
+                              "key": "borderRadius"
+                            },
+                            {
+                              "key": "text"
+                            }
+                          ],
+                          "dynamicHeight": "AUTO_HEIGHT",
+                          "dynamicTriggerPathList": [],
+                          "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                          "fontSize": "1rem",
+                          "fontStyle": "BOLD",
+                          "isLoading": false,
+                          "isVisible": true,
+                          "key": "8enprrfcf3",
+                          "leftColumn": 0,
+                          "maxDynamicHeight": 9000,
+                          "minDynamicHeight": 4,
+                          "minWidth": 450,
+                          "mobileBottomRow": 43,
+                          "mobileLeftColumn": 43,
+                          "mobileRightColumn": 59,
+                          "mobileTopRow": 39,
+                          "needsErrorInfo": false,
+                          "originalBottomRow": 9,
+                          "originalTopRow": 5,
+                          "overflow": "NONE",
+                          "parentColumnSpace": 6.9375,
+                          "parentId": "x4vd3ykqyk",
+                          "parentRowSpace": 10,
+                          "renderMode": "CANVAS",
+                          "responsiveBehavior": "fill",
+                          "rightColumn": 64,
+                          "shouldTruncate": false,
+                          "text": "{{ auditLogFlows.formatDetails(tblAuditLog.triggeredRow) }}",
+                          "textAlign": "LEFT",
+                          "textColor": "#231F20",
+                          "topRow": 7,
+                          "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                          "type": "TEXT_WIDGET",
+                          "version": 1,
+                          "widgetId": "efy3lvb1x2",
+                          "widgetName": "txtAuditDetails"
+                        },
+                        {
+                          "animateLoading": true,
+                          "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                          "bottomRow": 15,
+                          "boxShadow": "none",
+                          "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                          "buttonVariant": "PRIMARY",
+                          "disabledWhenInvalid": false,
+                          "dynamicBindingPathList": [
+                            {
+                              "key": "buttonColor"
+                            },
+                            {
+                              "key": "borderRadius"
+                            },
+                            {
+                              "key": "isVisible"
+                            }
+                          ],
+                          "dynamicPropertyPathList": [
+                            {
+                              "key": "isVisible"
+                            },
+                            {
+                              "key": "onClick"
+                            }
+                          ],
+                          "dynamicTriggerPathList": [
+                            {
+                              "key": "onClick"
+                            }
+                          ],
+                          "isDefaultClickDisabled": true,
+                          "isDisabled": false,
+                          "isLoading": false,
+                          "isVisible": "{{ !!tblAuditLog.triggeredRow.detail_member_id }}",
+                          "key": "i92dh8ymzd",
+                          "leftColumn": 1,
+                          "minWidth": 120,
+                          "mobileBottomRow": 32,
+                          "mobileLeftColumn": 1,
+                          "mobileRightColumn": 17,
+                          "mobileTopRow": 28,
+                          "needsErrorInfo": false,
+                          "onClick": "{{ navigateTo(\"Members - Profile\", { member_id: tblAuditLog.triggeredRow.detail_member_id }, \"SAME_WINDOW\") }}",
+                          "originalBottomRow": 13,
+                          "originalTopRow": 9,
+                          "parentColumnSpace": 6.9375,
+                          "parentId": "x4vd3ykqyk",
+                          "parentRowSpace": 10,
+                          "placement": "CENTER",
+                          "recaptchaType": "V3",
+                          "renderMode": "CANVAS",
+                          "resetFormOnClick": false,
+                          "responsiveBehavior": "hug",
+                          "rightColumn": 20,
+                          "text": "Member Profile",
+                          "topRow": 11,
+                          "type": "BUTTON_WIDGET",
+                          "version": 1,
+                          "widgetId": "tthjy1iut0",
+                          "widgetName": "btnOpenMember"
+                        },
+                        {
+                          "animateLoading": true,
+                          "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                          "bottomRow": 15,
+                          "boxShadow": "none",
+                          "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                          "buttonVariant": "PRIMARY",
+                          "disabledWhenInvalid": false,
+                          "dynamicBindingPathList": [
+                            {
+                              "key": "buttonColor"
+                            },
+                            {
+                              "key": "borderRadius"
+                            },
+                            {
+                              "key": "isVisible"
+                            }
+                          ],
+                          "dynamicPropertyPathList": [
+                            {
+                              "key": "isVisible"
+                            },
+                            {
+                              "key": "onClick"
+                            }
+                          ],
+                          "dynamicTriggerPathList": [
+                            {
+                              "key": "onClick"
+                            }
+                          ],
+                          "isDefaultClickDisabled": true,
+                          "isDisabled": false,
+                          "isLoading": false,
+                          "isVisible": "{{ !!tblAuditLog.triggeredRow.detail_facilitator_id }}",
+                          "key": "i92dh8ymzd",
+                          "leftColumn": 20,
+                          "minWidth": 120,
+                          "mobileBottomRow": 32,
+                          "mobileLeftColumn": 18,
+                          "mobileRightColumn": 34,
+                          "mobileTopRow": 28,
+                          "needsErrorInfo": false,
+                          "onClick": "{{ navigateTo(\"Members - Profile\", { member_id: tblAuditLog.triggeredRow.detail_facilitator_id }, \"SAME_WINDOW\") }}",
+                          "originalBottomRow": 13,
+                          "originalTopRow": 9,
+                          "parentColumnSpace": 6.9375,
+                          "parentId": "x4vd3ykqyk",
+                          "parentRowSpace": 10,
+                          "placement": "CENTER",
+                          "recaptchaType": "V3",
+                          "renderMode": "CANVAS",
+                          "resetFormOnClick": false,
+                          "responsiveBehavior": "hug",
+                          "rightColumn": 41,
+                          "text": "Facilitator Profile",
+                          "topRow": 11,
+                          "type": "BUTTON_WIDGET",
+                          "version": 1,
+                          "widgetId": "w81mds40rd",
+                          "widgetName": "btnOpenFacilitator"
                         }
                       ],
                       "detachFromLayout": true,
@@ -39014,14 +39901,14 @@
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
-                  "height": 410,
+                  "height": 370,
                   "isCanvas": true,
                   "isLoading": false,
                   "key": "6m6439u4mr",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 24,
-                  "minHeight": 410,
+                  "minHeight": 370,
                   "mobileBottomRow": 47,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 14,
@@ -39037,7 +39924,7 @@
                   "type": "MODAL_WIDGET",
                   "version": 2,
                   "widgetId": "sng8dbbkye",
-                  "widgetName": "Modal1",
+                  "widgetName": "mdlAuditDetails",
                   "width": 456
                 }
               ],
