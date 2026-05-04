@@ -99,6 +99,11 @@ CREATE TABLE public.donations (
     amount_cents integer,
     currency text DEFAULT 'USD'::text,
     donated_at timestamp with time zone,
+    status text DEFAULT 'pending_review',
+    facilitator_id uuid,
+    reviewer_id uuid,
+    reviewed_at timestamptz,
+    review_notes text,
     notes text
 );
 
@@ -255,6 +260,17 @@ b94c0644-3278-4ecc-9f27-4b8ba917cd9d	2026-01-01 17:00:51.667932+00	2026-01-01 17
 5bde1e3d-d0d2-48b8-9601-1006af880ed6	2026-01-01 17:03:32.166004+00	2026-01-01 17:03:32.166004+00	active	Yet	Another	sales@danks.net	(333) 888-3373	\N	\N	f	f
 \.
 
+
+-- Data for email, phone, addresses
+
+COPY public.member_emails (member_email_id, created_at, updated_at, member_id, email, is_primary, is_verified, source, notes) FROM stdin;
+\.
+
+COPY public.member_phones (member_phone_id, created_at, updated_at, member_id, phone, is_primary, is_verified, source, notes) FROM stdin;
+\.
+
+COPY public.member_addresses (member_address_id, created_at, updated_at, member_id, address_type, address_1, address_2, city, state, postal_code, country, is_primary, source, notes) FROM stdin;
+\.
 
 --
 -- Data for Name: sacrament_releases; Type: TABLE DATA; Schema: public; Owner: signaturegate
