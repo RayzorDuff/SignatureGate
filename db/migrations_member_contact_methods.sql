@@ -47,6 +47,24 @@ CREATE TABLE IF NOT EXISTS public.member_addresses (
   notes text
 );
 
+ALTER TABLE public.member_emails
+  ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active',
+  ADD COLUMN IF NOT EXISTS archived_at timestamptz,
+  ADD COLUMN IF NOT EXISTS archived_by uuid REFERENCES public.members(member_id),
+  ADD COLUMN IF NOT EXISTS archive_reason text;
+
+ALTER TABLE public.member_phones
+  ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active',
+  ADD COLUMN IF NOT EXISTS archived_at timestamptz,
+  ADD COLUMN IF NOT EXISTS archived_by uuid REFERENCES public.members(member_id),
+  ADD COLUMN IF NOT EXISTS archive_reason text;
+
+ALTER TABLE public.member_addresses
+  ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active',
+  ADD COLUMN IF NOT EXISTS archived_at timestamptz,
+  ADD COLUMN IF NOT EXISTS archived_by uuid REFERENCES public.members(member_id),
+  ADD COLUMN IF NOT EXISTS archive_reason text;
+
 CREATE INDEX IF NOT EXISTS idx_member_emails_member_id
   ON public.member_emails(member_id);
 
