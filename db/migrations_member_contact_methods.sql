@@ -52,6 +52,10 @@ ALTER TABLE public.member_emails
   ADD COLUMN IF NOT EXISTS archived_at timestamptz,
   ADD COLUMN IF NOT EXISTS archived_by uuid REFERENCES public.members(member_id),
   ADD COLUMN IF NOT EXISTS archive_reason text;
+  ADD COLUMN IF NOT EXISTS verified_at timestamptz,
+  ADD COLUMN IF NOT EXISTS verified_by uuid REFERENCES public.members(member_id),
+  ADD COLUMN IF NOT EXISTS verification_source text,
+  ADD COLUMN IF NOT EXISTS verification_notes text;
 
 ALTER TABLE public.member_phones
   ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active',
@@ -64,6 +68,9 @@ ALTER TABLE public.member_addresses
   ADD COLUMN IF NOT EXISTS archived_at timestamptz,
   ADD COLUMN IF NOT EXISTS archived_by uuid REFERENCES public.members(member_id),
   ADD COLUMN IF NOT EXISTS archive_reason text;
+
+ALTER TABLE public.member_agreements
+  ADD COLUMN IF NOT EXISTS member_email_id uuid REFERENCES public.member_emails(member_email_id);
 
 CREATE INDEX IF NOT EXISTS idx_member_emails_member_id
   ON public.member_emails(member_id);
