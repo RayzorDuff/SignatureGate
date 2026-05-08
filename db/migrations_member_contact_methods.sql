@@ -51,7 +51,7 @@ ALTER TABLE public.member_emails
   ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active',
   ADD COLUMN IF NOT EXISTS archived_at timestamptz,
   ADD COLUMN IF NOT EXISTS archived_by uuid REFERENCES public.members(member_id),
-  ADD COLUMN IF NOT EXISTS archive_reason text;
+  ADD COLUMN IF NOT EXISTS archive_reason text,
   ADD COLUMN IF NOT EXISTS verified_at timestamptz,
   ADD COLUMN IF NOT EXISTS verified_by uuid REFERENCES public.members(member_id),
   ADD COLUMN IF NOT EXISTS verification_source text,
