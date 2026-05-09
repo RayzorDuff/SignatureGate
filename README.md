@@ -104,6 +104,72 @@ Audit writes are intentionally split this way to ensure:
 - correct actor attribution
 - durability even when external systems are involved
 
+## Member contact methods architecture
+
+SignatureGate no longer treats email or phone number as a single-field identity attribute.
+
+Members may now have:
+
+- Multiple email addresses
+- Multiple phone numbers
+- Multiple physical addresses
+
+These are stored in:
+
+- `member_emails`
+- `member_phones`
+- `member_addresses`
+
+The legacy `members.email` and `members.phone` fields remain for compatibility and display purposes only and should not be treated as authoritative identity sources.
+
+### Active vs archived contact methods
+
+Contact methods are append-only operational records.
+
+Incorrect assignments should generally be:
+
+- archived
+- or reassigned
+
+rather than deleted.
+
+Tables include:
+
+- `status`
+- `archived_at`
+- `archived_by`
+- `archive_reason`
+
+### Email verification
+
+`member_emails.is_verified` indicates that the organization has evidence the member controls the address.
+
+Verification occurs when:
+
+1. A document reviewer manually verifies the address
+2. A Documenso agreement sent to that address is signed successfully
+
+Verification metadata:
+
+- `verified_at`
+- `verified_by`
+- `verification_source`
+- `verification_notes`
+
+### Phone normalization
+
+Phone numbers are normalized using `normalize_us_phone()`.
+
+US numbers:
+
+- `(303) 555-1212`
+- `3035551212`
+- `+13035551212`
+
+normalize to the same canonical value.
+
+Duplicate active normalized phone numbers are prevented by a partial unique index.
+
 ## Authentication and role-based access (Appsmith)
 
 SignatureGate is intended to be deployed as a **private Appsmith app** (login required). The app reads the authenticated user identity from:
@@ -128,6 +194,43 @@ SignatureGate is intended to be deployed as a **private Appsmith app** (login re
 - Ensure the member row is `status='active'` and has the appropriate role flag(s).
 
 Implementation details and troubleshooting are in `appsmith/GETTING_STARTED.md`.
+
+## Multi-facilitator architecture
+
+Members may now be assigned to multiple facilitators simultaneously.
+
+Assignments are stored in:
+
+- `member_facilitators`
+
+This replaces the earlier single-facilitator relationship model.
+
+### Facilitator access
+
+Facilitators may:
+
+- manage member profile information
+- upload agreements
+- request digital agreements
+- issue releases
+- review donations (if reviewer)
+- manage storage location access (if reviewer)
+
+### Storage location access
+
+Storage locations are no longer implicitly tied to facilitator names.
+
+Access is controlled through:
+
+- `facilitator_storage_location_access`
+
+Multiple facilitators may access the same storage location.
+
+This architecture supports future separation between:
+
+- inventory ownership
+- physical custody
+- facilitator operational access
 
 ## Documenso signing
 
@@ -154,4 +257,38 @@ SignatureGate supports tracking **voluntary donations** independently of sacrame
 - Donations are **never** used as a prerequisite or gate for sacrament release.
 
 All donation lifecycle events are recorded in the audit log.
+
+## Givebutter donation review workflow
+
+Givebutter donations are no longer allowed to automatically create new members solely by email address matching.
+
+Incoming Givebutter donations now follow this flow:
+
+1. Attempt identity resolution using:
+   - member_emails
+   - member_phones
+   - legacy members.email
+   - legacy members.phone
+
+2. If no confident match exists:
+   - donation is inserted with:
+     - `status = 'pending_review'`
+     - `member_id = NULL`
+
+3. Donations reviewers may:
+   - assign donation to existing member
+   - ignore/delete donation
+   - create a new member from donation data
+
+### Donation-created members
+
+When a reviewer creates a member from a pending donation:
+
+- member record is created
+- emails are inserted into member_emails
+- phones are inserted into member_phones
+- addresses are inserted into member_addresses
+- donation is linked automatically
+
+All actions are audit logged.
 

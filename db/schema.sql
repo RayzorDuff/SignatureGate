@@ -261,13 +261,50 @@ b94c0644-3278-4ecc-9f27-4b8ba917cd9d	2026-01-01 17:00:51.667932+00	2026-01-01 17
 \.
 
 
--- Data for email, phone, addresses
+--
+-- member_emails
+--
+-- Stores multiple email addresses per member.
+--
+-- Email addresses may be:
+-- - active
+-- - archived
+-- - verified
+--
+-- Emails are used for:
+-- - Documenso delivery
+-- - Givebutter identity resolution
+-- - facilitator communications
+--
+-- `members.email` remains for compatibility only.
+--
 
 COPY public.member_emails (member_email_id, created_at, updated_at, member_id, email, is_primary, is_verified, source, notes) FROM stdin;
 \.
 
+--
+-- member_phones
+--
+-- Stores multiple phone numbers per member.
+--
+-- Phone numbers are normalized using normalize_us_phone().
+--
+-- Duplicate active normalized phone numbers are prevented.
+--
+
 COPY public.member_phones (member_phone_id, created_at, updated_at, member_id, phone, is_primary, is_verified, source, notes) FROM stdin;
 \.
+
+--
+-- member_addresses
+--
+-- Stores physical addresses associated with a member.
+--
+-- Addresses may originate from:
+-- - intake
+-- - Givebutter
+-- - manual review
+--
 
 COPY public.member_addresses (member_address_id, created_at, updated_at, member_id, address_type, address_1, address_2, city, state, postal_code, country, is_primary, source, notes) FROM stdin;
 \.

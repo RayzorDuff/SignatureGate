@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.3] - 2026-05-09
+
+## Added
+
+- Multi-facilitator member assignment architecture
+- Facilitator storage location access control
+- Member contact method normalization
+- Multiple email support
+- Multiple phone support
+- Multiple physical address support
+- Contact archival and reassignment workflows
+- Email verification support
+- Automatic Documenso email verification
+- Pending-review Givebutter donation workflow
+- Donation-to-member assignment UI
+- Create-member-from-donation workflow
+- Donation ignore/delete review workflow
+- Expanded audit logging coverage
+
+## Changed
+
+- Digital agreement sending now uses `member_emails`
+- Givebutter matching now uses normalized phones and multiple contact methods
+- Storage locations are no longer implicitly owned by a facilitator
+- `members.email` and `members.phone` are now compatibility fields only
+
+## Security / Compliance
+
+- Improved audit trail coverage
+- Improved identity verification evidence retention
+- Reduced risk of accidental duplicate member creation
+- Improved traceability of facilitator and reviewer actions
+
 ## [v1.0.2] — 2026-04-22
 
 ### Added
