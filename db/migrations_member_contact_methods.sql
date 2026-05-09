@@ -72,6 +72,9 @@ ALTER TABLE public.member_emails
   ADD COLUMN IF NOT EXISTS verification_notes text;
 
 ALTER TABLE public.member_phones
+  DROP COLUMN IF EXISTS phone_normalized;
+
+ALTER TABLE public.member_phones
   ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active',
   ADD COLUMN IF NOT EXISTS archived_at timestamptz,
   ADD COLUMN IF NOT EXISTS archived_by uuid REFERENCES public.members(member_id),
@@ -87,6 +90,36 @@ ALTER TABLE public.member_addresses
 
 ALTER TABLE public.member_agreements
   ADD COLUMN IF NOT EXISTS member_email_id uuid REFERENCES public.member_emails(member_email_id);
+
+WITH ranked AS (
+  SELECT
+    member_phone_id,
+    member_id,
+    phone,
+    phone_normalized,
+    is_primary,
+    created_at,
+    row_number() OVER (
+      PARTITION BY phone_normalized
+      ORDER BY
+        is_primary DESC,
+        created_at ASC,
+        member_phone_id ASC
+    ) AS rn
+  FROM public.member_phones
+  WHERE status = 'active'
+    AND phone_normalized IS NOT NULL
+    AND phone_normalized <> ''
+)
+UPDATE public.member_phones mp
+SET
+  status = 'archived',
+  archived_at = now(),
+  archive_reason = 'Archived duplicate phone during phone normalization migration',
+  updated_at = now()
+FROM ranked r
+WHERE mp.member_phone_id = r.member_phone_id
+  AND r.rn > 1;
 
 CREATE UNIQUE INDEX IF NOT EXISTS uq_member_phones_phone_normalized
   ON public.member_phones(phone_normalized)
@@ -125,13 +158,23 @@ FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 INSERT INTO public.member_emails (member_id, email, is_primary, source)
 SELECT member_id, email, true, 'members.email'
 FROM public.members
-WHERE email IS NOT NULL AND btrim(email) <> ''
-ON CONFLICT (email_normalized) DO NOTHING;
+WHERE email IS NOT NULL
+  AND btrim(email) <> ''
+ON CONFLICT (email_normalized)
+WHERE email_normalized IS NOT NULL
+  AND email_normalized <> ''
+  AND status = 'active'
+DO NOTHING;
 
 INSERT INTO public.member_phones (member_id, phone, is_primary, source)
 SELECT member_id, phone, true, 'members.phone'
 FROM public.members
-WHERE phone IS NOT NULL AND btrim(phone) <> ''
-ON CONFLICT (phone_normalized) DO NOTHING;
+WHERE phone IS NOT NULL
+  AND btrim(phone) <> ''
+ON CONFLICT (phone_normalized)
+WHERE phone_normalized IS NOT NULL
+  AND phone_normalized <> ''
+  AND status = 'active'
+DO NOTHING;
 
 COMMIT;
