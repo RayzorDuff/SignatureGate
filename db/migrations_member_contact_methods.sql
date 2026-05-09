@@ -2,6 +2,20 @@
 
 BEGIN;
 
+CREATE OR REPLACE FUNCTION public.normalize_us_phone(p_phone text)
+RETURNS text
+LANGUAGE sql
+IMMUTABLE
+AS $$
+  SELECT CASE
+    WHEN p_phone IS NULL THEN NULL
+    WHEN length(regexp_replace(p_phone, '\D', '', 'g')) = 11
+      AND left(regexp_replace(p_phone, '\D', '', 'g'), 1) = '1'
+      THEN right(regexp_replace(p_phone, '\D', '', 'g'), 10)
+    ELSE regexp_replace(p_phone, '\D', '', 'g')
+  END;
+$$;
+
 CREATE TABLE IF NOT EXISTS public.member_emails (
   member_email_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v4(),
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -51,7 +65,7 @@ ALTER TABLE public.member_emails
   ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active',
   ADD COLUMN IF NOT EXISTS archived_at timestamptz,
   ADD COLUMN IF NOT EXISTS archived_by uuid REFERENCES public.members(member_id),
-  ADD COLUMN IF NOT EXISTS archive_reason text;
+  ADD COLUMN IF NOT EXISTS archive_reason text,
   ADD COLUMN IF NOT EXISTS verified_at timestamptz,
   ADD COLUMN IF NOT EXISTS verified_by uuid REFERENCES public.members(member_id),
   ADD COLUMN IF NOT EXISTS verification_source text,
@@ -61,7 +75,9 @@ ALTER TABLE public.member_phones
   ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active',
   ADD COLUMN IF NOT EXISTS archived_at timestamptz,
   ADD COLUMN IF NOT EXISTS archived_by uuid REFERENCES public.members(member_id),
-  ADD COLUMN IF NOT EXISTS archive_reason text;
+  ADD COLUMN IF NOT EXISTS archive_reason text,
+  ADD COLUMN phone_normalized text
+  GENERATED ALWAYS AS (public.normalize_us_phone(phone)) STORED;
 
 ALTER TABLE public.member_addresses
   ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active',
@@ -71,6 +87,12 @@ ALTER TABLE public.member_addresses
 
 ALTER TABLE public.member_agreements
   ADD COLUMN IF NOT EXISTS member_email_id uuid REFERENCES public.member_emails(member_email_id);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_member_phones_phone_normalized
+  ON public.member_phones(phone_normalized)
+  WHERE phone_normalized IS NOT NULL
+    AND phone_normalized <> ''
+    AND status = 'active';
 
 CREATE INDEX IF NOT EXISTS idx_member_emails_member_id
   ON public.member_emails(member_id);
