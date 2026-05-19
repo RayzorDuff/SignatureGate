@@ -1,0 +1,109 @@
+{
+  "name": "SignatureGate - PGSQL - List Available Sacrament Products",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "signaturegate/pgsql/products/available",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook - List Products",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        0
+      ],
+      "id": "d1986240-ce77-48f4-8dac-d694c751506f"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ `\nSELECT\n  COALESCE(p.airtable_id, p.nocopk::text) AS airtable_record_id,\n  p.product_id AS mushroomprocess_product_id,\n  p.name_mat AS item_name,\n  s.species_strain AS strain,\n  p.net_weight_g,\n  'g'::text AS unit,\n  loc.name AS storage_location,\n  CASE WHEN loc.name IS NULL THEN ARRAY[]::text[] ELSE ARRAY[loc.name] END AS storage_locations\nFROM public.products p\nLEFT JOIN public.locations loc ON loc.nocopk = p.storage_location_id\nLEFT JOIN public.strains s ON s.nocopk = p.strain_id\nWHERE p.product_id IS NOT NULL\n  AND COALESCE(p.item_category_mat, '') = 'freezedriedmushrooms'\n  AND COALESCE(s.regulated, false) = true\n  AND COALESCE(loc.name, '') NOT IN ('Shipped', 'Consumed', 'Expired')\nORDER BY p.product_id;` }}",
+        "options": {}
+      },
+      "name": "PGSQL - List Available Products",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        0
+      ],
+      "id": "ef24bee1-9c8e-4e1a-85c5-fadafd0f13ba"
+    },
+    {
+      "parameters": {
+        "jsCode": "const products = $('PGSQL - List Available Products').all().map(i => i.json);\nconst req = $('Webhook - List Products').first().json;\n\nfunction asArray(v) {\n  if (v == null) return [];\n  return Array.isArray(v) ? v : [v];\n}\n\nfunction parseAllowedLocations(req) {\n  const q = req?.query || {};\n\n  if (q.storage_locations_json) {\n    try {\n      const parsed = JSON.parse(q.storage_locations_json);\n      return asArray(parsed).map(x => String(x).trim()).filter(Boolean);\n    } catch (e) {\n      // Fall through to legacy handling.\n    }\n  }\n\n  if (q.storage_locations) {\n    return String(q.storage_locations)\n      .split(',')\n      .map(x => x.trim())\n      .filter(Boolean);\n  }\n\n  if (q.storage_location) {\n    return [String(q.storage_location).trim()].filter(Boolean);\n  }\n\n  return [];\n}\n\nconst allowedLocations = parseAllowedLocations(req);\nconst allowedLocationSet = new Set(allowedLocations.map(x => x.toLowerCase()));\nconst excludeLocations = new Set(['shipped', 'consumed', 'expired']);\nconst out = [];\n\nfor (const p of products) {\n  const product_id = p.mushroomprocess_product_id;\n  if (!product_id) continue;\n\n  const locNames = asArray(p.storage_locations)\n    .map(x => String(x || '').trim())\n    .filter(Boolean);\n\n  if (locNames.some(n => excludeLocations.has(n.toLowerCase()))) continue;\n\n  if (\n    allowedLocationSet.size > 0 &&\n    !locNames.some(n => allowedLocationSet.has(String(n).trim().toLowerCase()))\n  ) {\n    continue;\n  }\n\n  out.push({\n    airtable_record_id: p.airtable_record_id,\n    mushroomprocess_product_id: product_id,\n    item_name: p.item_name ?? null,\n    strain: p.strain ?? null,\n    net_weight_g: p.net_weight_g ?? null,\n    unit: p.unit || 'g',\n    storage_location: locNames[0] ?? null,\n    storage_locations: locNames,\n  });\n}\n\nreturn [{\n  json: {\n    ok: true,\n    data: out,\n    filter: {\n      storage_locations: allowedLocations\n    }\n  }\n}];"
+      },
+      "name": "Code - Filter & Normalize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "d92bf89c-b38a-478e-8c5a-13d89949cc31"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        0
+      ],
+      "id": "d9340952-b6f5-4202-a99c-7b64b4e71e0b"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - List Products": {
+      "main": [
+        [
+          {
+            "node": "PGSQL - List Available Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PGSQL - List Available Products": {
+      "main": [
+        [
+          {
+            "node": "Code - Filter & Normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Filter & Normalize": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7ad6ca89-a944-4ef6-977e-12ca3354e187",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "ac2fdb85-76ce-41cd-96df-05676d1cc802",
+  "tags": []
+}

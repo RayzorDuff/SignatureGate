@@ -1,0 +1,136 @@
+{
+  "name": "SignatureGate - PGSQL - Mark Product Shipped",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signaturegate/pgsql/products/mark_shipped",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook - Mark Shipped",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        0
+      ],
+      "id": "69814aa4-aabb-4f54-ba37-6e5b0056b1c7"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Expected body JSON:\n * {\n *   \"airtable_record_id\": \"rec....\",                // legacy Appsmith field, still accepted\n *   \"mushroomprocess_product_id\": \"PROD-....\"      // preferred Postgres-era field\n * }\n */\nconst body = $json.body || $json;\nconst airtable_record_id = body.airtable_record_id || null;\nconst mushroomprocess_product_id = body.mushroomprocess_product_id || body.product_id || null;\n\nif (!airtable_record_id && !mushroomprocess_product_id) {\n  throw new Error('Missing airtable_record_id or mushroomprocess_product_id');\n}\n\nreturn [{ json: { airtable_record_id, mushroomprocess_product_id } }];"
+      },
+      "name": "Code - Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -520,
+        0
+      ],
+      "id": "831d6d6c-c669-4b4c-8f86-214902b59209"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ `WITH input AS (\n  SELECT\n    NULLIF('${String($json.airtable_record_id ?? '').replace(/'/g, \"''\")}', '') AS airtable_record_id,\n    NULLIF('${String($json.mushroomprocess_product_id ?? '').replace(/'/g, \"''\")}', '') AS product_id\n), shipped_location AS (\n  SELECT nocopk, name\n  FROM public.locations\n  WHERE lower(name) = 'shipped'\n  ORDER BY nocopk\n  LIMIT 1\n), target_product AS (\n  SELECT p.nocopk\n  FROM public.products p, input i\n  WHERE (i.product_id IS NOT NULL AND p.product_id = i.product_id)\n     OR (i.airtable_record_id IS NOT NULL AND COALESCE(p.airtable_id, p.nocopk::text) = i.airtable_record_id)\n     OR (i.airtable_record_id IS NOT NULL AND p.nocopk::text = i.airtable_record_id)\n  ORDER BY CASE WHEN p.product_id = (SELECT product_id FROM input) THEN 0 ELSE 1 END, p.nocopk\n  LIMIT 1\n), upd AS (\n  UPDATE public.products p\n  SET storage_location_id = shipped_location.nocopk,\n      nc_updated_at = now()\n  FROM shipped_location, target_product\n  WHERE p.nocopk = target_product.nocopk\n  RETURNING p.*\n)\nSELECT\n  true AS ok,\n  COALESCE(upd.airtable_id, upd.nocopk::text) AS updated_product_record_id,\n  upd.product_id AS mushroomprocess_product_id,\n  shipped_location.name AS storage_location\nFROM upd\nCROSS JOIN shipped_location;` }}",
+        "options": {}
+      },
+      "name": "PGSQL - Mark Product Shipped",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        0
+      ],
+      "id": "8c9af623-841a-462c-8844-a6f783ad5b9c"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ `INSERT INTO public.audit_log(actor, action, entity_type, entity_id, details)\nVALUES (\n  'n8n',\n  'product.shipped',\n  'product',\n  '${String($('PGSQL - Mark Product Shipped').first().json.mushroomprocess_product_id || $('PGSQL - Mark Product Shipped').first().json.updated_product_record_id || 'unknown').replace(/'/g, \"''\")}',\n  jsonb_build_object(\n    'product_id', '${String($('PGSQL - Mark Product Shipped').first().json.mushroomprocess_product_id || '').replace(/'/g, \"''\")}',\n    'record_id', '${String($('PGSQL - Mark Product Shipped').first().json.updated_product_record_id || '').replace(/'/g, \"''\")}',\n    'storage_location', 'Shipped',\n    'source', 'signaturegate_pgsql_workflow'\n  )\n)\nRETURNING audit_log_id;` }}",
+        "options": {}
+      },
+      "name": "PG - Audit product shipped",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        0
+      ],
+      "id": "ec7a19f3-fd4a-4fc5-9622-d667c037d68c"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, updated_product_record_id: $('PGSQL - Mark Product Shipped').first().json.updated_product_record_id, mushroomprocess_product_id: $('PGSQL - Mark Product Shipped').first().json.mushroomprocess_product_id, storage_location: $('PGSQL - Mark Product Shipped').first().json.storage_location } }}",
+        "options": {}
+      },
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        0
+      ],
+      "id": "33b622d3-ea83-4877-960e-308b4e3bf5d5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Mark Shipped": {
+      "main": [
+        [
+          {
+            "node": "Code - Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Validate Input": {
+      "main": [
+        [
+          {
+            "node": "PGSQL - Mark Product Shipped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PGSQL - Mark Product Shipped": {
+      "main": [
+        [
+          {
+            "node": "PG - Audit product shipped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Audit product shipped": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8d531e7b-0063-4821-b1f9-e0d9eb4faf16",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "9955b27b-6d10-42f6-a909-bbfc9ff960c3",
+  "tags": []
+}

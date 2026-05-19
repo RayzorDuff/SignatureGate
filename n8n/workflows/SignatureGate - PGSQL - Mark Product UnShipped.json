@@ -1,0 +1,136 @@
+{
+  "name": "SignatureGate - PGSQL - Mark Product UnShipped",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signaturegate/pgsql/products/mark_unshipped",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook - Mark UnShipped",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        0
+      ],
+      "id": "99a095db-e98e-453c-8ebf-3ae4a6e453b3"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Expected body JSON:\n * {\n *   \"mushroomprocess_product_id\": \"PROD-....\",\n *   \"storage_location_name\": \"Location Name\"\n * }\n */\nconst body = $json.body || $json;\nconst mushroomprocess_product_id = body.mushroomprocess_product_id || body.product_id || null;\nconst storage_location = body.storage_location_name || body.storage_location || null;\n\nif (!mushroomprocess_product_id) {\n  throw new Error('Missing mushroomprocess_product_id');\n}\n\nif (!storage_location) {\n  throw new Error('Missing storage_location_name');\n}\n\nreturn [{ json: { mushroomprocess_product_id, storage_location } }];"
+      },
+      "name": "Code - Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -520,
+        0
+      ],
+      "id": "65daf82e-a2a2-4f1d-b379-cbf622d2e0fa"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ `WITH input AS (\n  SELECT\n    NULLIF('${String($json.mushroomprocess_product_id ?? '').replace(/'/g, \"''\")}', '') AS product_id,\n    NULLIF('${String($json.storage_location ?? '').replace(/'/g, \"''\")}', '') AS storage_location\n), target_location AS (\n  SELECT l.nocopk, l.name\n  FROM public.locations l, input i\n  WHERE lower(l.name) = lower(i.storage_location)\n  ORDER BY l.nocopk\n  LIMIT 1\n), target_product AS (\n  SELECT p.nocopk\n  FROM public.products p, input i\n  WHERE p.product_id = i.product_id\n  LIMIT 1\n), upd AS (\n  UPDATE public.products p\n  SET storage_location_id = target_location.nocopk,\n      nc_updated_at = now()\n  FROM target_location, target_product\n  WHERE p.nocopk = target_product.nocopk\n  RETURNING p.*\n)\nSELECT\n  true AS ok,\n  COALESCE(upd.airtable_id, upd.nocopk::text) AS updated_product_record_id,\n  upd.product_id AS mushroomprocess_product_id,\n  target_location.name AS storage_location\nFROM upd\nCROSS JOIN target_location;` }}",
+        "options": {}
+      },
+      "name": "PGSQL - Mark Product UnShipped",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        0
+      ],
+      "id": "4780b3b4-67f6-4140-8857-12f453584a16"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ `INSERT INTO public.audit_log(actor, action, entity_type, entity_id, details)\nVALUES (\n  'n8n',\n  'product.unshipped',\n  'product',\n  '${String($('PGSQL - Mark Product UnShipped').first().json.mushroomprocess_product_id || $('PGSQL - Mark Product UnShipped').first().json.updated_product_record_id || 'unknown').replace(/'/g, \"''\")}',\n  jsonb_build_object(\n    'product_id', '${String($('PGSQL - Mark Product UnShipped').first().json.mushroomprocess_product_id || '').replace(/'/g, \"''\")}',\n    'record_id', '${String($('PGSQL - Mark Product UnShipped').first().json.updated_product_record_id || '').replace(/'/g, \"''\")}',\n    'storage_location', '${String($('PGSQL - Mark Product UnShipped').first().json.storage_location || '').replace(/'/g, \"''\")}',\n    'source', 'signaturegate_pgsql_workflow'\n  )\n)\nRETURNING audit_log_id;` }}",
+        "options": {}
+      },
+      "name": "PG - Audit product unshipped",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        0
+      ],
+      "id": "1aefd1b9-c484-47b6-b22d-2a5e0a0e83da"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, updated_product_record_id: $('PGSQL - Mark Product UnShipped').first().json.updated_product_record_id, mushroomprocess_product_id: $('PGSQL - Mark Product UnShipped').first().json.mushroomprocess_product_id, storage_location: $('PGSQL - Mark Product UnShipped').first().json.storage_location } }}",
+        "options": {}
+      },
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        0
+      ],
+      "id": "3ef648ec-03b5-4f4f-8f1a-48cbe7f60271"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Mark UnShipped": {
+      "main": [
+        [
+          {
+            "node": "Code - Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Validate Input": {
+      "main": [
+        [
+          {
+            "node": "PGSQL - Mark Product UnShipped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PGSQL - Mark Product UnShipped": {
+      "main": [
+        [
+          {
+            "node": "PG - Audit product unshipped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Audit product unshipped": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "227df9df-e792-4c85-82dd-f1d36c04f603",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "095d32a6-bedf-4755-b7fe-07c6d353a5ec",
+  "tags": []
+}
