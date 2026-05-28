@@ -53,6 +53,12 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # Allow members to have multiple email, phone or address
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_contact_methods.sql
+
+# Add support for Listmonk mailing list subscription management
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_listmonk_mailing_list.sql
+
+# And optionally subscribe all existing members to the mailing list
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_listmonk_mailing_list_upsert_existing.sql
 ```
 
 3) Verify tables exist:
