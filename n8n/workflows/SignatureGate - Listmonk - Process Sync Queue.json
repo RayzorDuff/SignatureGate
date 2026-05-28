@@ -1,0 +1,349 @@
+{
+  "name": "SignatureGate - Listmonk - Process Sync Queue",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "13f6a3ac-eaaf-47bd-977d-ab78ef8e1e57",
+      "name": "Schedule - Every Minute",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.listmonk_sync_queue q\nSET status = 'processing',\n    locked_at = now(),\n    attempts = attempts + 1,\n    updated_at = now()\nFROM (\n  SELECT listmonk_sync_queue_id\n  FROM public.listmonk_sync_queue\n  WHERE status IN ('pending', 'failed')\n    AND available_at <= now()\n  ORDER BY created_at\n  LIMIT 10\n  FOR UPDATE SKIP LOCKED\n) pick\nWHERE q.listmonk_sync_queue_id = pick.listmonk_sync_queue_id\nRETURNING q.*;"
+      },
+      "id": "d70d6ebf-76a1-4f1d-804d-e21bdcd7e658",
+      "name": "PG - Claim Pending Queue Rows",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const defaultListId = Number($env.LISTMONK_DEFAULT_LIST_ID || 0);\nreturn items.map((item) => {\n  const row = item.json;\n  const listId = Number(row.listmonk_list_id || defaultListId);\n  if (!listId) throw new Error('LISTMONK_DEFAULT_LIST_ID is required when queue row has no listmonk_list_id');\n  const name = [row.details?.first_name, row.details?.last_name].filter(Boolean).join(' ') || row.email_normalized;\n  const auth = `token ${$env.LISTMONK_API_USER}:${$env.LISTMONK_API_TOKEN}`;\n  return { json: { ...row, listId, auth, subscriberName: name } };\n});"
+      },
+      "id": "facaa843-1e41-4b68-acd9-ff55c00b9031",
+      "name": "Code - Prepare Listmonk Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ \"subscribers.email='\" + $json.email_normalized.replace(/'/g, \"''\") + \"'\" }}"
+            },
+            {
+              "name": "per_page",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.auth }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          },
+          "continueOnFail": true
+        }
+      },
+      "id": "620e4d88-7d20-42dd-ae31-769d497ae9db",
+      "name": "HTTP - Find Subscriber",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        720,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map((item) => {\n  const previous = $items('Code - Prepare Listmonk Request')[item.itemIndex].json;\n  const body = item.json.body || item.json;\n  const results = body?.data?.results || [];\n  const subscriber = results[0] || null;\n  return { json: { ...previous, subscriber, subscriberFound: !!subscriber } };\n});"
+      },
+      "id": "c8946395-93c1-4774-9971-f689ca41937f",
+      "name": "Code - Merge Subscriber Lookup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "event-subscribe",
+              "leftValue": "={{ $json.event_type }}",
+              "rightValue": "subscribe",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "24e3f15d-add9-4b00-961a-5d0634f0e517",
+      "name": "IF - Subscribe Event?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.auth }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { email: $json.email_normalized, name: $json.subscriberName, status: 'enabled', lists: [$json.listId], preconfirm_subscriptions: true, attribs: { signaturegate_member_email_id: $json.member_email_id, signaturegate_source: $json.source } } }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          },
+          "continueOnFail": true
+        }
+      },
+      "id": "168181fc-8999-4a09-a2ff-762f44d320b1",
+      "name": "HTTP - Create Subscriber",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1440,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers/lists' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.auth }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { ids: [$json.subscriber?.id || $json.listmonk_subscriber_id], action: 'unsubscribe', target_list_ids: [$json.listId] } }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          },
+          "continueOnFail": true
+        }
+      },
+      "id": "88fae5bc-18d8-43e6-86eb-f4657ce5ffeb",
+      "name": "HTTP - Unsubscribe Subscriber",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1440,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT public.listmonk_mark_sync_success(\n  '{{ $json.listmonk_sync_queue_id }}'::uuid,\n  NULLIF('{{ $json.body?.data?.id || $json.subscriber?.id || '' }}', '')::integer,\n  NULLIF('{{ $json.body?.data?.uuid || $json.subscriber?.uuid || '' }}', '')::uuid,\n  '{{ JSON.stringify($json.body || $json) }}'::jsonb\n);"
+      },
+      "id": "2d1b2f3b-4156-40cc-b6c0-d59286f51c6e",
+      "name": "PG - Mark Sync Success",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        1680,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT public.listmonk_mark_sync_failure(\n  '{{ $json.listmonk_sync_queue_id }}'::uuid,\n  {{ JSON.stringify($json.error?.message || $json.message || 'Listmonk HTTP request failed') }},\n  '{{ JSON.stringify($json.body || $json) }}'::jsonb\n);"
+      },
+      "id": "c57edc03-6c83-4505-ac49-a63d350f8e54",
+      "name": "PG - Mark Sync Failure",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        1680,
+        260
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule - Every Minute": {
+      "main": [
+        [
+          {
+            "node": "PG - Claim Pending Queue Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Claim Pending Queue Rows": {
+      "main": [
+        [
+          {
+            "node": "Code - Prepare Listmonk Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Prepare Listmonk Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Find Subscriber",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Find Subscriber": {
+      "main": [
+        [
+          {
+            "node": "Code - Merge Subscriber Lookup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Merge Subscriber Lookup": {
+      "main": [
+        [
+          {
+            "node": "IF - Subscribe Event?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Subscribe Event?": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Create Subscriber",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP - Unsubscribe Subscriber",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Create Subscriber": {
+      "main": [
+        [
+          {
+            "node": "PG - Mark Sync Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Unsubscribe Subscriber": {
+      "main": [
+        [
+          {
+            "node": "PG - Mark Sync Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "9ad70c43-0639-416e-b1da-7a7710dedf50",
+  "triggerCount": 0,
+  "tags": []
+}

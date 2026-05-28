@@ -109,3 +109,21 @@ These workflows assume the MushroomProcess database has these public objects fro
 - `strains.species_strain`
 - `strains.regulated`
 
+
+## Listmonk mailing-list sync
+
+The Listmonk integration is database-outbox driven. Apply `db/migrations_listmonk_mailing_list.sql`, then import:
+
+- `workflows/SignatureGate - Listmonk - Process Sync Queue.json`
+- `workflows/SignatureGate - Listmonk - Poll Unsubscribes.json`
+
+Set these n8n environment variables:
+
+```env
+LISTMONK_API_URL=http://listmonk:9000/api
+LISTMONK_API_USER=signaturegate-sync
+LISTMONK_API_TOKEN=<api-token>
+LISTMONK_DEFAULT_LIST_ID=<numeric-list-id>
+```
+
+Attach the SignatureGate Postgres credential to all Postgres nodes after import.

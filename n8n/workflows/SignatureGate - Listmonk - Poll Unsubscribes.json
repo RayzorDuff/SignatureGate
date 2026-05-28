@@ -1,0 +1,150 @@
+{
+  "name": "SignatureGate - Listmonk - Poll Unsubscribes",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "81ae1b33-1cd5-410e-afd2-93f416231a32",
+      "name": "Schedule - Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "list_id",
+              "value": "={{ $env.LISTMONK_DEFAULT_LIST_ID }}"
+            },
+            {
+              "name": "subscription_status",
+              "value": "unsubscribed"
+            },
+            {
+              "name": "per_page",
+              "value": "100"
+            },
+            {
+              "name": "order_by",
+              "value": "updated_at"
+            },
+            {
+              "name": "order",
+              "value": "DESC"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'token ' + $env.LISTMONK_API_USER + ':' + $env.LISTMONK_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "0ee36e93-6119-4969-835d-0cfff23ca4f2",
+      "name": "HTTP - Fetch Listmonk Unsubscribes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = items[0].json.body || items[0].json;\nconst results = body?.data?.results || [];\nreturn results.map((sub) => ({ json: sub }));"
+      },
+      "id": "f7007d82-e24f-4f2d-83a4-3377363c223d",
+      "name": "Code - One Item Per Subscriber",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT public.listmonk_record_external_unsubscribe(\n  {{ JSON.stringify($json.email) }},\n  {{ $json.id || 'NULL' }},\n  NULLIF('{{ $json.uuid || '' }}', '')::uuid,\n  'listmonk_unsubscribe_poll',\n  '{{ JSON.stringify($json) }}'::jsonb\n) AS updated_count;"
+      },
+      "id": "a5cdc134-1775-48bb-8dbe-26cba326f768",
+      "name": "PG - Record External Unsubscribe",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        720,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule - Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Fetch Listmonk Unsubscribes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Fetch Listmonk Unsubscribes": {
+      "main": [
+        [
+          {
+            "node": "Code - One Item Per Subscriber",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - One Item Per Subscriber": {
+      "main": [
+        [
+          {
+            "node": "PG - Record External Unsubscribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "acad9004-a32d-4e01-96ee-607de08e3a6a",
+  "triggerCount": 0,
+  "tags": []
+}
