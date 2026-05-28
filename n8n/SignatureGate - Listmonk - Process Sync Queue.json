@@ -1,0 +1,396 @@
+{
+  "name": "SignatureGate - Listmonk - Process Sync Queue",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "9213cc41-0ce6-4083-a113-40f05db241d9",
+      "name": "Schedule - Every Minute",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1440,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.listmonk_sync_queue q\nSET status = 'processing',\n    locked_at = now(),\n    attempts = attempts + 1,\n    updated_at = now()\nFROM (\n  SELECT listmonk_sync_queue_id\n  FROM public.listmonk_sync_queue\n  WHERE status IN ('pending', 'failed')\n    AND available_at <= now()\n  ORDER BY created_at\n  LIMIT 10\n  FOR UPDATE SKIP LOCKED\n) pick\nWHERE q.listmonk_sync_queue_id = pick.listmonk_sync_queue_id\nRETURNING q.*;",
+        "options": {}
+      },
+      "id": "c965bdfb-70c3-4ca6-a144-f9c46c057660",
+      "name": "PG - Claim Pending Queue Rows",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        -1200,
+        128
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const defaultListId = Number($env.LISTMONK_DEFAULT_LIST_ID || 0);\nreturn items.map((item) => {\n  const row = item.json;\n  const listId = Number(row.listmonk_list_id || defaultListId);\n  if (!listId) throw new Error('LISTMONK_DEFAULT_LIST_ID is required when queue row has no listmonk_list_id');\n  const name = [row.details?.first_name, row.details?.last_name].filter(Boolean).join(' ') || row.email_normalized;\n  const auth = `token ${$env.LISTMONK_API_USER}:${$env.LISTMONK_API_TOKEN}`;\n  return { json: { ...row, listId, auth, subscriberName: name } };\n});"
+      },
+      "id": "b9e82bf3-f9cd-4b27-9972-0e6172d2ff0e",
+      "name": "Code - Prepare Listmonk Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -960,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ \"subscribers.email='\" + $json.email_normalized.replace(/'/g, \"''\") + \"'\" }}"
+            },
+            {
+              "name": "per_page",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.auth }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "8fc5fa5f-259c-4ba0-a8f8-24925576707f",
+      "name": "HTTP - Find Subscriber",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -720,
+        128
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aW3RxSoGWoKi5Dkl",
+          "name": "Header Auth account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map((item) => {\n  const previous = $items('Code - Prepare Listmonk Request')[item.itemIndex].json;\n  const body = item.json.body || item.json;\n  const results = body?.data?.results || [];\n  const subscriber = results[0] || null;\n  return { json: { ...previous, subscriber, subscriberFound: !!subscriber } };\n});"
+      },
+      "id": "c10d2aef-4f5b-433f-b7c1-e8a58898eb49",
+      "name": "Code - Merge Subscriber Lookup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "event-subscribe",
+              "leftValue": "={{ $json.event_type }}",
+              "rightValue": "subscribe",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b3abe062-f5ca-4a39-93c0-1a41d1fea6f2",
+      "name": "IF - Subscribe Event?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.auth }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { email: $json.email_normalized, name: $json.subscriberName, status: 'enabled', lists: [$json.listId], preconfirm_subscriptions: true, attribs: { signaturegate_member_email_id: $json.member_email_id, signaturegate_source: $json.source } } }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "9bd520fc-e424-4658-8899-99d61c0290cc",
+      "name": "HTTP - Create Subscriber",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aW3RxSoGWoKi5Dkl",
+          "name": "Header Auth account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers/lists' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.auth }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { ids: [$json.subscriber?.id || $json.listmonk_subscriber_id], action: 'unsubscribe', target_list_ids: [$json.listId] } }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "ddcea89f-2d10-45a2-92d1-49a054c4cc37",
+      "name": "HTTP - Unsubscribe Subscriber",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        0,
+        288
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aW3RxSoGWoKi5Dkl",
+          "name": "Header Auth account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT public.listmonk_mark_sync_success(\n  '{{ $json.listmonk_sync_queue_id }}'::uuid,\n  NULLIF('{{ $json.body?.data?.id || $json.subscriber?.id || '' }}', '')::integer,\n  NULLIF('{{ $json.body?.data?.uuid || $json.subscriber?.uuid || '' }}', '')::uuid,\n  '{{ JSON.stringify($json.body || $json) }}'::jsonb\n);",
+        "options": {}
+      },
+      "id": "53c35ca1-7e4b-405d-8d7f-09e18d5d5313",
+      "name": "PG - Mark Sync Success",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        240,
+        128
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT public.listmonk_mark_sync_failure(\n  '{{ $json.listmonk_sync_queue_id }}'::uuid,\n  {{ JSON.stringify($json.error?.message || $json.message || 'Listmonk HTTP request failed') }},\n  '{{ JSON.stringify($json.body || $json) }}'::jsonb\n);",
+        "options": {}
+      },
+      "id": "fc93f75a-f2b1-49c4-90fc-06a051e966ed",
+      "name": "PG - Mark Sync Failure",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        240,
+        384
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule - Every Minute": {
+      "main": [
+        [
+          {
+            "node": "PG - Claim Pending Queue Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Claim Pending Queue Rows": {
+      "main": [
+        [
+          {
+            "node": "Code - Prepare Listmonk Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Prepare Listmonk Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Find Subscriber",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Find Subscriber": {
+      "main": [
+        [
+          {
+            "node": "Code - Merge Subscriber Lookup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Merge Subscriber Lookup": {
+      "main": [
+        [
+          {
+            "node": "IF - Subscribe Event?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Subscribe Event?": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Create Subscriber",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP - Unsubscribe Subscriber",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Create Subscriber": {
+      "main": [
+        [
+          {
+            "node": "PG - Mark Sync Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Unsubscribe Subscriber": {
+      "main": [
+        [
+          {
+            "node": "PG - Mark Sync Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4d3e02ff-9d06-4c0f-896a-5e153a7574f3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "tPbQ6U6ufJv7t3ZV",
+  "tags": []
+}

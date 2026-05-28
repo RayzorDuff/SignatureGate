@@ -1,0 +1,168 @@
+{
+  "name": "SignatureGate - Listmonk - Poll Unsubscribes",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "88360e82-ea1a-44f6-9cd1-3395325d04b6",
+      "name": "Schedule - Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "list_id",
+              "value": "={{ $env.LISTMONK_DEFAULT_LIST_ID }}"
+            },
+            {
+              "name": "subscription_status",
+              "value": "unsubscribed"
+            },
+            {
+              "name": "per_page",
+              "value": "100"
+            },
+            {
+              "name": "order_by",
+              "value": "updated_at"
+            },
+            {
+              "name": "order",
+              "value": "DESC"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'token ' + $env.LISTMONK_API_USER + ':' + $env.LISTMONK_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "7d185748-e358-4588-8e24-058cdb7c739e",
+      "name": "HTTP - Fetch Listmonk Unsubscribes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aW3RxSoGWoKi5Dkl",
+          "name": "Header Auth account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = items[0].json.body || items[0].json;\nconst results = body?.data?.results || [];\nreturn results.map((sub) => ({ json: sub }));"
+      },
+      "id": "2bf398a0-1038-4fb6-bd1a-ede56a4f1941",
+      "name": "Code - One Item Per Subscriber",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT public.listmonk_record_external_unsubscribe(\n  {{ JSON.stringify($json.email) }},\n  {{ $json.id || 'NULL' }},\n  NULLIF('{{ $json.uuid || '' }}', '')::uuid,\n  'listmonk_unsubscribe_poll',\n  '{{ JSON.stringify($json) }}'::jsonb\n) AS updated_count;",
+        "options": {}
+      },
+      "id": "2b5681bf-1c5f-4f80-a86d-89803b5b529d",
+      "name": "PG - Record External Unsubscribe",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        720,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule - Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Fetch Listmonk Unsubscribes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Fetch Listmonk Unsubscribes": {
+      "main": [
+        [
+          {
+            "node": "Code - One Item Per Subscriber",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - One Item Per Subscriber": {
+      "main": [
+        [
+          {
+            "node": "PG - Record External Unsubscribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0f6794d4-f2e6-4590-9522-ab0910f5f9c7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "f8CXUClKMk6Oz2Yf",
+  "tags": []
+}
