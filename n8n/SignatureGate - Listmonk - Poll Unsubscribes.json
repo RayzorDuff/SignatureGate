@@ -29,10 +29,6 @@
         "queryParameters": {
           "parameters": [
             {
-              "name": "list_id",
-              "value": "={{ $env.LISTMONK_DEFAULT_LIST_ID }}"
-            },
-            {
               "name": "subscription_status",
               "value": "unsubscribed"
             },
@@ -84,7 +80,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const body = items[0].json.body || items[0].json;\nconst results = body?.data?.results || [];\nreturn results.map((sub) => ({ json: sub }));"
+        "jsCode": "const body = items[0].json.body || items[0].json;\nconst results = body?.data?.results || body?.data || body?.results || [];\nreturn (Array.isArray(results) ? results : []).map((sub) => ({ json: sub }));"
       },
       "id": "2bf398a0-1038-4fb6-bd1a-ede56a4f1941",
       "name": "Code - One Item Per Subscriber",

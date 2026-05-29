@@ -45,7 +45,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const defaultListId = Number($env.LISTMONK_DEFAULT_LIST_ID || 1);\n\nconst rows = items.flatMap((item) => {\n  const j = item.json || {};\n\n  if (j.listmonk_sync_queue_id) return [j];\n  if (Array.isArray(j.rows)) return j.rows;\n  if (Array.isArray(j.result)) return j.result;\n  if (Array.isArray(j.data)) return j.data;\n\n  return [];\n});\n\nif (rows.length === 0) {\n  return [];\n}\n\nreturn rows.map((row) => {\n  const queueId = row.listmonk_sync_queue_id;\n\n  if (!queueId) {\n    throw new Error(\n      'Queue row is missing listmonk_sync_queue_id. Input was: ' +\n      JSON.stringify(row)\n    );\n  }\n\n  const listId = Number(row.listmonk_list_id || defaultListId);\n  if (!listId) throw new Error('LISTMONK_DEFAULT_LIST_ID is required');\n\n  const details =\n    typeof row.details === 'string'\n      ? JSON.parse(row.details || '{}')\n      : (row.details || {});\n\n  const name =\n    [details.first_name, details.last_name].filter(Boolean).join(' ') ||\n    row.email_normalized;\n\n  return {\n    json: {\n      ...row,\n      details,\n      queueId,\n      listId,\n      auth: `token ${$env.LISTMONK_API_USER}:${$env.LISTMONK_API_TOKEN}`,\n      subscriberName: name\n    }\n  };\n});"
+        "jsCode": "const newsletterListId = Number($env.LISTMONK_NEWSLETTER_LIST_ID || $env.LISTMONK_DEFAULT_LIST_ID || 1);\nconst memberCommunicationsListId = Number($env.LISTMONK_MEMBER_COMMUNICATIONS_LIST_ID || 2);\n\nconst rows = items.flatMap((item) => {\n  const j = item.json || {};\n\n  if (j.listmonk_sync_queue_id) return [j];\n  if (Array.isArray(j.rows)) return j.rows;\n  if (Array.isArray(j.result)) return j.result;\n  if (Array.isArray(j.data)) return j.data;\n\n  return [];\n});\n\nif (rows.length === 0) {\n  return [];\n}\n\nreturn rows.map((row) => {\n  const queueId = row.listmonk_sync_queue_id;\n\n  if (!queueId) {\n    throw new Error(\n      'Queue row is missing listmonk_sync_queue_id. Input was: ' +\n      JSON.stringify(row)\n    );\n  }\n\n  const primaryListId = Number(row.listmonk_list_id || newsletterListId);\n  if (!primaryListId) throw new Error('LISTMONK_NEWSLETTER_LIST_ID or LISTMONK_DEFAULT_LIST_ID is required');\n\n  const listIds = [...new Set([\n    primaryListId,\n    newsletterListId,\n    memberCommunicationsListId\n  ].filter((id) => Number.isFinite(Number(id)) && Number(id) > 0).map(Number))];\n\n  if (listIds.length === 0) throw new Error('At least one Listmonk list ID is required');\n\n  const details =\n    typeof row.details === 'string'\n      ? JSON.parse(row.details || '{}')\n      : (row.details || {});\n\n  const name =\n    [details.first_name, details.last_name].filter(Boolean).join(' ') ||\n    row.email_normalized;\n\n  return {\n    json: {\n      ...row,\n      details,\n      queueId,\n      listId: primaryListId,\n      listIds,\n      newsletterListId,\n      memberCommunicationsListId,\n      auth: `token ${$env.LISTMONK_API_USER}:${$env.LISTMONK_API_TOKEN}`,\n      subscriberName: name\n    }\n  };\n});"
       },
       "id": "dd223f3e-cee7-415a-b720-b868c4a43213",
       "name": "Code - Prepare Listmonk Request",
@@ -173,7 +173,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { email: $json.email_normalized, name: $json.subscriberName, status: 'enabled', lists: [$json.listId], preconfirm_subscriptions: true, attribs: { signaturegate_member_email_id: $json.member_email_id, signaturegate_source: $json.source } } }}",
+        "jsonBody": "={{ { email: $json.email_normalized, name: $json.subscriberName, status: 'enabled', lists: $json.listIds, preconfirm_subscriptions: true, attribs: { signaturegate_member_email_id: $json.member_email_id, signaturegate_source: $json.source, signaturegate_queue_id: $json.queueId } } }}",
         "options": {
           "response": {
             "response": {
@@ -219,7 +219,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { ids: [$json.subscriber?.id || $json.listmonk_subscriber_id], action: 'unsubscribe', target_list_ids: [$json.listId] } }}",
+        "jsonBody": "={{ { ids: [$json.subscriber?.id || $json.listmonk_subscriber_id], action: 'unsubscribe', target_list_ids: $json.listIds } }}",
         "options": {
           "response": {
             "response": {

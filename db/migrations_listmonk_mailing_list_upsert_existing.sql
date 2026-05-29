@@ -1,5 +1,7 @@
--- Subscribes existing SignatureGate email addresses
+-- Enqueues existing SignatureGate email addresses for Listmonk subscription sync.
 -- Apply after migrations_listmonk_mailing_list.sql.
+-- n8n expands each queued row to LISTMONK_NEWSLETTER_LIST_ID and
+-- LISTMONK_MEMBER_COMMUNICATIONS_LIST_ID at sync time.
 
 BEGIN;
 
