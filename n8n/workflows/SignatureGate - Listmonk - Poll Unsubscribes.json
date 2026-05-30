@@ -6,13 +6,12 @@
         "rule": {
           "interval": [
             {
-              "field": "minutes",
-              "minutesInterval": 5
+              "field": "minutes"
             }
           ]
         }
       },
-      "id": "81ae1b33-1cd5-410e-afd2-93f416231a32",
+      "id": "f3130a84-c6c3-4ff5-8ddb-145772132646",
       "name": "Schedule - Every 5 Minutes",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -23,15 +22,12 @@
     },
     {
       "parameters": {
-        "method": "GET",
         "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
-            {
-              "name": "list_id",
-              "value": "={{ $env.LISTMONK_DEFAULT_LIST_ID }}"
-            },
             {
               "name": "subscription_status",
               "value": "unsubscribed"
@@ -67,21 +63,27 @@
           }
         }
       },
-      "id": "0ee36e93-6119-4969-835d-0cfff23ca4f2",
+      "id": "e3f61ff5-3ab0-4f4d-89dc-d593fb6d7dc4",
       "name": "HTTP - Fetch Listmonk Unsubscribes",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
         240,
         0
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aW3RxSoGWoKi5Dkl",
+          "name": "Header Auth account 4"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "const body = items[0].json.body || items[0].json;\nconst results = body?.data?.results || [];\nreturn results.map((sub) => ({ json: sub }));"
+        "jsCode": "const body = items[0]?.json?.body || items[0]?.json || {};\nconst results = body?.data?.results || body?.data || body?.results || [];\n\nreturn (Array.isArray(results) ? results : [])\n  .filter((sub) => {\n    const subscriberStatus = String(sub.status || '').toLowerCase();\n    const subscriberUnsubscribed = ['unsubscribed', 'disabled', 'blacklisted'].includes(subscriberStatus);\n\n    const listUnsubscribed = Array.isArray(sub.lists) && sub.lists.some((list) => {\n      return String(list.subscription_status || '').toLowerCase() === 'unsubscribed';\n    });\n\n    return subscriberUnsubscribed || listUnsubscribed;\n  })\n  .map((sub) => ({\n    json: {\n      ...sub,\n      unsubscribed_lists: Array.isArray(sub.lists)\n        ? sub.lists.filter((list) => String(list.subscription_status || '').toLowerCase() === 'unsubscribed')\n        : []\n    }\n  }));"
       },
-      "id": "f7007d82-e24f-4f2d-83a4-3377363c223d",
-      "name": "Code - One Item Per Subscriber",
+      "id": "adae2326-08b1-494c-813d-f244b4849194",
+      "name": "Code - Filter Actual Unsubscribes",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -92,18 +94,26 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT public.listmonk_record_external_unsubscribe(\n  {{ JSON.stringify($json.email) }},\n  {{ $json.id || 'NULL' }},\n  NULLIF('{{ $json.uuid || '' }}', '')::uuid,\n  'listmonk_unsubscribe_poll',\n  '{{ JSON.stringify($json) }}'::jsonb\n) AS updated_count;"
+        "query": "SELECT public.listmonk_record_external_unsubscribe(\n  '{{ String($json.email || \"\").replace(/'/g, \"''\") }}',\n  NULLIF('{{ $json.id || \"\" }}', '')::integer,\n  NULLIF('{{ $json.uuid || \"\" }}', '')::uuid,\n  'listmonk_unsubscribe_poll',\n  '{{ JSON.stringify($json).replace(/'/g, \"''\") }}'::jsonb\n) AS updated_count;",
+        "options": {}
       },
-      "id": "a5cdc134-1775-48bb-8dbe-26cba326f768",
+      "id": "2538cf6c-892d-4074-9fd4-83c1d72eea1a",
       "name": "PG - Record External Unsubscribe",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.4,
       "position": [
         720,
         0
-      ]
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
     }
   ],
+  "pinData": {},
   "connections": {
     "Schedule - Every 5 Minutes": {
       "main": [
@@ -120,14 +130,14 @@
       "main": [
         [
           {
-            "node": "Code - One Item Per Subscriber",
+            "node": "Code - Filter Actual Unsubscribes",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code - One Item Per Subscriber": {
+    "Code - Filter Actual Unsubscribes": {
       "main": [
         [
           {
@@ -139,12 +149,15 @@
       ]
     }
   },
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
-  "staticData": null,
-  "pinData": {},
-  "versionId": "acad9004-a32d-4e01-96ee-607de08e3a6a",
-  "triggerCount": 0,
+  "versionId": "90a58813-aa34-4b04-a057-00eb35e79dbf",
+  "meta": {
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "ZmP43z5LP2bevTbU",
   "tags": []
 }
