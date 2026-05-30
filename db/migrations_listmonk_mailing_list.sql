@@ -244,6 +244,68 @@ BEGIN
 END;
 $$;
 
+
+CREATE OR REPLACE FUNCTION public.member_email_request_mailing_subscribe(
+  p_member_email_id uuid,
+  p_actor text DEFAULT NULL,
+  p_source text DEFAULT 'signaturegate_interface',
+  p_reason text DEFAULT NULL,
+  p_raw jsonb DEFAULT '{}'::jsonb,
+  p_enqueue_listmonk boolean DEFAULT true
+)
+RETURNS public.member_emails
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  v_email public.member_emails%ROWTYPE;
+BEGIN
+  UPDATE public.member_emails
+  SET mailing_subscription_status = 'subscribed',
+      mailing_subscription_source = COALESCE(NULLIF(p_source, ''), 'signaturegate_interface'),
+      mailing_unsubscribed_at = NULL,
+      mailing_unsubscribe_source = NULL,
+      mailing_unsubscribe_reason = NULL,
+      listmonk_sync_status = CASE WHEN p_enqueue_listmonk THEN 'pending' ELSE 'synced' END,
+      listmonk_sync_error = NULL,
+      updated_at = now()
+  WHERE member_email_id = p_member_email_id
+  RETURNING * INTO v_email;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'member_email_id % not found', p_member_email_id;
+  END IF;
+
+  INSERT INTO public.audit_log (actor, action, entity_type, entity_id, details)
+  VALUES (
+    NULLIF(lower(btrim(p_actor)), ''),
+    'mailing.subscribe_recorded',
+    'member_email',
+    v_email.member_email_id::text,
+    jsonb_build_object(
+      'member_id', v_email.member_id,
+      'email', v_email.email,
+      'email_normalized', v_email.email_normalized,
+      'source', COALESCE(NULLIF(p_source, ''), 'signaturegate_interface'),
+      'reason', NULLIF(p_reason, ''),
+      'enqueue_listmonk', p_enqueue_listmonk,
+      'raw', COALESCE(p_raw, '{}'::jsonb)
+    )
+  );
+
+  IF p_enqueue_listmonk THEN
+    PERFORM public.enqueue_listmonk_email_sync(
+      v_email.member_email_id,
+      'subscribe',
+      COALESCE(NULLIF(p_source, ''), 'signaturegate_interface'),
+      p_actor,
+      jsonb_build_object('reason', NULLIF(p_reason, ''), 'raw', COALESCE(p_raw, '{}'::jsonb))
+    );
+  END IF;
+
+  RETURN v_email;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION public.listmonk_mark_sync_success(
   p_queue_id uuid,
   p_listmonk_subscriber_id integer DEFAULT NULL,
