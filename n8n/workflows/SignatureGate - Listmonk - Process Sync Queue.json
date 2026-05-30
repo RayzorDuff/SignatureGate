@@ -12,13 +12,13 @@
           ]
         }
       },
-      "id": "7956e55b-e00a-4dd5-8318-ca831778cfbe",
+      "id": "19168774-4ea9-421f-921b-5f7c9fb1fcec",
       "name": "Schedule - Every Minute",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1920,
-        624
+        -2160,
+        688
       ]
     },
     {
@@ -27,13 +27,13 @@
         "query": "WITH picked AS (\n  SELECT listmonk_sync_queue_id\n  FROM public.listmonk_sync_queue\n  WHERE status IN ('pending', 'failed')\n    AND available_at <= now()\n  ORDER BY created_at\n  LIMIT 10\n  FOR UPDATE SKIP LOCKED\n),\nupdated AS (\n  UPDATE public.listmonk_sync_queue q\n  SET status = 'processing',\n      locked_at = now(),\n      attempts = attempts + 1,\n      updated_at = now()\n  FROM picked\n  WHERE q.listmonk_sync_queue_id = picked.listmonk_sync_queue_id\n  RETURNING\n    q.listmonk_sync_queue_id,\n    q.event_type,\n    q.member_email_id,\n    q.email_normalized,\n    q.listmonk_list_id,\n    q.source,\n    q.details,\n    q.status,\n    q.attempts\n)\nSELECT\n  listmonk_sync_queue_id::text AS listmonk_sync_queue_id,\n  event_type,\n  member_email_id::text AS member_email_id,\n  email_normalized,\n  listmonk_list_id,\n  source,\n  details,\n  status,\n  attempts\nFROM updated;",
         "options": {}
       },
-      "id": "9477bf21-5163-4ec4-9af0-57711cdca9b6",
+      "id": "39c98d85-5714-49c5-9e7b-21144a09db5b",
       "name": "PG - Claim Pending Queue Rows",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.4,
       "position": [
-        -1680,
-        624
+        -1920,
+        688
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -47,13 +47,13 @@
       "parameters": {
         "jsCode": "const newsletterListId = Number($env.LISTMONK_NEWSLETTER_LIST_ID || $env.LISTMONK_DEFAULT_LIST_ID || 1);\nconst memberCommunicationsListId = Number($env.LISTMONK_MEMBER_COMMUNICATIONS_LIST_ID || 2);\n\nconst rows = items.flatMap((item) => {\n  const j = item.json || {};\n\n  if (j.listmonk_sync_queue_id) return [j];\n  if (Array.isArray(j.rows)) return j.rows;\n  if (Array.isArray(j.result)) return j.result;\n  if (Array.isArray(j.data)) return j.data;\n\n  return [];\n});\n\nif (rows.length === 0) {\n  return [];\n}\n\nreturn rows.map((row) => {\n  const queueId = row.listmonk_sync_queue_id;\n\n  if (!queueId) {\n    throw new Error(\n      'Queue row is missing listmonk_sync_queue_id. Input was: ' +\n      JSON.stringify(row)\n    );\n  }\n\n  const primaryListId = Number(row.listmonk_list_id || newsletterListId);\n  if (!primaryListId) throw new Error('LISTMONK_NEWSLETTER_LIST_ID or LISTMONK_DEFAULT_LIST_ID is required');\n\n  const listIds = [...new Set([\n    primaryListId,\n    newsletterListId,\n    memberCommunicationsListId\n  ].filter((id) => Number.isFinite(Number(id)) && Number(id) > 0).map(Number))];\n\n  if (listIds.length === 0) throw new Error('At least one Listmonk list ID is required');\n\n  const details =\n    typeof row.details === 'string'\n      ? JSON.parse(row.details || '{}')\n      : (row.details || {});\n\n  const name =\n    [details.first_name, details.last_name].filter(Boolean).join(' ') ||\n    row.email_normalized;\n\n  return {\n    json: {\n      ...row,\n      details,\n      queueId,\n      listId: primaryListId,\n      listIds,\n      newsletterListId,\n      memberCommunicationsListId,\n      auth: `token ${$env.LISTMONK_API_USER}:${$env.LISTMONK_API_TOKEN}`,\n      subscriberName: name\n    }\n  };\n});"
       },
-      "id": "f78d70f8-362d-40f1-bb35-bae6d4732fd6",
+      "id": "f2ec5128-3775-418b-9f85-043e57297526",
       "name": "Code - Prepare Listmonk Request",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1440,
-        624
+        -1680,
+        688
       ]
     },
     {
@@ -91,13 +91,13 @@
           }
         }
       },
-      "id": "288f190d-9b4f-49a1-bcbf-a7b4b4e5a708",
+      "id": "f54466c9-9b94-4f79-a3e9-a50e5c55dbc8",
       "name": "HTTP - Find Subscriber",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -1200,
-        624
+        -1440,
+        688
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -111,13 +111,13 @@
       "parameters": {
         "jsCode": "const preparedItems = $items('Code - Prepare Listmonk Request');\n\nreturn items.map((item, itemIndex) => {\n  const pairedIndex = item.pairedItem?.item ?? itemIndex;\n  const previous =\n    preparedItems[pairedIndex]?.json ||\n    preparedItems[itemIndex]?.json ||\n    preparedItems[0]?.json ||\n    {};\n\n  const body = item.json.body || item.json;\n  const statusCode = item.json.statusCode || body?.statusCode || null;\n  const httpFailed = !!item.json.error || (statusCode !== null && Number(statusCode) >= 400);\n\n  if (httpFailed) {\n    return {\n      json: {\n        ...previous,\n        lookupBody: body,\n        body,\n        error: item.json.error || body?.error || body?.message || 'Listmonk subscriber lookup failed',\n        httpStatusCode: statusCode,\n        httpFailed: true,\n        subscriberFound: false\n      }\n    };\n  }\n\n  const results =\n    body?.data?.results ||\n    body?.data ||\n    body?.results ||\n    [];\n\n  const subscriber = Array.isArray(results) ? (results[0] || null) : null;\n\n  return {\n    json: {\n      ...previous,\n      lookupBody: body,\n      body,\n      httpStatusCode: statusCode,\n      subscriber,\n      subscriberFound: !!subscriber,\n      httpFailed: false\n    }\n  };\n});"
       },
-      "id": "b786393a-e573-4a2c-8b29-5b1f30eb2718",
+      "id": "6b4c7ebd-a15d-43af-a21c-37869c2d0a3b",
       "name": "Code - Merge Subscriber Lookup",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -960,
-        624
+        -1200,
+        688
       ]
     },
     {
@@ -143,13 +143,13 @@
         },
         "options": {}
       },
-      "id": "3725cd74-ca4e-4ab3-9015-545f73db6593",
+      "id": "5b6ed81a-b5d7-405e-aa27-8eb85687a5ba",
       "name": "IF - Subscribe Event?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -480,
-        464
+        -720,
+        528
       ]
     },
     {
@@ -182,13 +182,13 @@
           }
         }
       },
-      "id": "5251c136-4004-4dd3-89dd-a277c2256e30",
+      "id": "bfb607a2-b860-4396-a7d6-e9cd1aee9e2f",
       "name": "HTTP - Create Subscriber",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        0,
-        192
+        -240,
+        256
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -228,13 +228,13 @@
           }
         }
       },
-      "id": "733ba84f-b01f-47aa-a5f6-186fe8b7a5fc",
+      "id": "ce239f5f-2579-4041-8a72-8ff582e90e24",
       "name": "HTTP - Unsubscribe Subscriber",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -240,
-        480
+        -480,
+        544
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -250,13 +250,13 @@
         "query": "SELECT public.listmonk_mark_sync_success(\n  NULLIF('{{ $json.queueId || $json.listmonk_sync_queue_id || \"\" }}', '')::uuid,\n  NULLIF('{{ $json.body?.data?.id || $json.subscriber?.id || $json.id || \"\" }}', '')::integer,\n  NULLIF('{{ $json.body?.data?.uuid || $json.subscriber?.uuid || $json.uuid || \"\" }}', '')::uuid,\n  '{{ JSON.stringify($json.body || $json).replace(/'/g, \"''\") }}'::jsonb\n);",
         "options": {}
       },
-      "id": "60114dcf-dacf-4aa9-8e87-8c434f3b22ca",
+      "id": "e2d4599f-e281-4ed8-9bdd-7bcd43c50398",
       "name": "PG - Mark Sync Success",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.4,
       "position": [
-        720,
-        192
+        960,
+        256
       ],
       "credentials": {
         "postgres": {
@@ -271,13 +271,13 @@
         "query": "SELECT public.listmonk_mark_sync_failure(\n  NULLIF('{{ $json.queueId || $json.listmonk_sync_queue_id || \"\" }}', '')::uuid,\n  '{{ String($json.error?.message || $json.error || $json.message || \"Listmonk sync failed\").replace(/'/g, \"''\") }}',\n  '{{ JSON.stringify($json.body || $json).replace(/'/g, \"''\") }}'::jsonb\n);",
         "options": {}
       },
-      "id": "7c6eb740-7d69-4e06-b2ef-476127be184d",
+      "id": "aa59f8b1-5159-4b64-b8ed-4a1cdfa954b9",
       "name": "PG - Mark Sync Failure",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.4,
       "position": [
-        624,
-        640
+        864,
+        704
       ],
       "credentials": {
         "postgres": {
@@ -310,39 +310,39 @@
         },
         "options": {}
       },
-      "id": "1ca77b7a-7481-4e83-a024-fd5b5ea279e2",
+      "id": "98a8a87f-1a1f-4e3c-9938-51c908586bab",
       "name": "IF - Lookup Succeeded?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -720,
-        624
+        -960,
+        688
       ]
     },
     {
       "parameters": {
         "jsCode": "const sourceItems = $items('Code - Merge Subscriber Lookup');\n\nreturn items.map((item, itemIndex) => {\n  const pairedIndex = item.pairedItem?.item ?? itemIndex;\n  const previous =\n    sourceItems[pairedIndex]?.json ||\n    sourceItems[itemIndex]?.json ||\n    sourceItems[0]?.json ||\n    {};\n\n  const body = item.json.body || item.json;\n  const statusCode = item.json.statusCode || body?.statusCode || null;\n  const httpFailed = !!item.json.error || (statusCode !== null && Number(statusCode) >= 400);\n\n  return {\n    json: {\n      ...previous,\n      body,\n      httpStatusCode: statusCode,\n      error: item.json.error || body?.error || body?.message || null,\n      httpFailed,\n      subscriber: body?.data?.id ? body.data : previous.subscriber || null\n    }\n  };\n});"
       },
-      "id": "f2621802-4298-4326-89b8-6d896205bb3e",
+      "id": "8263fcf8-8e80-4ed0-b210-72d82908b7c9",
       "name": "Code - Merge Create Subscriber Response",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        240,
-        96
+        0,
+        160
       ]
     },
     {
       "parameters": {
         "jsCode": "const sourceItems = $items('Code - Merge Subscriber Lookup');\n\nreturn items.map((item, itemIndex) => {\n  const pairedIndex = item.pairedItem?.item ?? itemIndex;\n  const previous =\n    sourceItems[pairedIndex]?.json ||\n    sourceItems[itemIndex]?.json ||\n    sourceItems[0]?.json ||\n    {};\n\n  const body = item.json.body || item.json;\n  const statusCode = item.json.statusCode || body?.statusCode || null;\n  const httpFailed = !!item.json.error || (statusCode !== null && Number(statusCode) >= 400);\n\n  return {\n    json: {\n      ...previous,\n      body,\n      httpStatusCode: statusCode,\n      error: item.json.error || body?.error || body?.message || null,\n      httpFailed,\n      subscriber: previous.subscriber || null\n    }\n  };\n});"
       },
-      "id": "88f8779e-bdf4-4e32-be98-4b217db3a69c",
+      "id": "46ad9f01-5997-4d99-8684-f7a31a1a53c8",
       "name": "Code - Merge Unsubscribe Subscriber Response",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        0,
-        480
+        -240,
+        544
       ]
     },
     {
@@ -369,13 +369,13 @@
         },
         "options": {}
       },
-      "id": "e8162fa8-0d83-4ab4-affb-979401ef31c2",
+      "id": "c7b1fb55-9fc6-421d-9ef7-1619cacbd3cf",
       "name": "IF - HTTP Succeeded?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        480,
-        320
+        720,
+        384
       ]
     },
     {
@@ -402,13 +402,13 @@
         },
         "options": {}
       },
-      "id": "de7bb561-c3bc-49e1-886d-719dd64fa67d",
+      "id": "dbf04295-2437-45bc-bff9-de37f1645cd8",
       "name": "IF - Subscriber Found?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -256,
-        96
+        -496,
+        160
       ]
     },
     {
@@ -441,12 +441,71 @@
           }
         }
       },
-      "id": "3411fdd4-bbe6-4c80-95d6-d0e9f328c7f9",
+      "id": "a38e7211-1e5c-4bc3-80fd-10928e8bc74e",
       "name": "HTTP - Update Subscriber",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
+        -240,
+        64
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aW3RxSoGWoKi5Dkl",
+          "name": "Header Auth account 4"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const sourceItems = $items('Code - Merge Subscriber Lookup');\n\nreturn items.map((item, itemIndex) => {\n  const pairedIndex = item.pairedItem?.item ?? itemIndex;\n  const previous =\n    sourceItems[pairedIndex]?.json ||\n    sourceItems[itemIndex]?.json ||\n    sourceItems[0]?.json ||\n    {};\n\n  const body = item.json.body || item.json;\n  const statusCode = item.json.statusCode || body?.statusCode || null;\n  const httpFailed = !!item.json.error || (statusCode !== null && Number(statusCode) >= 400);\n\n  return {\n    json: {\n      ...previous,\n      body,\n      updateBody: body,\n      httpStatusCode: statusCode,\n      error: item.json.error || body?.error || body?.message || null,\n      httpFailed,\n      subscriber: body?.data?.id ? body.data : previous.subscriber || null\n    }\n  };\n});"
+      },
+      "id": "19023e79-4dda-4b44-a918-c07985fb5fc6",
+      "name": "Code - Merge Update Subscriber Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
         0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers/lists' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.auth }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  ids: [$json.subscriber?.id || $json.listmonk_subscriber_id],\n  action: \"add\",\n  target_list_ids: $json.listIds,\n  status: \"confirmed\"\n} }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "8c203a85-7811-43b1-969f-da89e441c97b",
+      "name": "HTTP - Resubscribe Subscriber Lists",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        240,
         0
       ],
       "credentials": {
@@ -456,6 +515,19 @@
         }
       },
       "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const sourceItems = $items('Code - Merge Update Subscriber Response');\n\nreturn items.map((item, itemIndex) => {\n  const pairedIndex = item.pairedItem?.item ?? itemIndex;\n  const previous =\n    sourceItems[pairedIndex]?.json ||\n    sourceItems[itemIndex]?.json ||\n    sourceItems[0]?.json ||\n    {};\n\n  const body = item.json.body || item.json;\n  const statusCode = item.json.statusCode || body?.statusCode || null;\n  const httpFailed = !!item.json.error || (statusCode !== null && Number(statusCode) >= 400);\n\n  return {\n    json: {\n      ...previous,\n      body,\n      resubscribeBody: body,\n      httpStatusCode: statusCode,\n      error: item.json.error || body?.error || body?.message || null,\n      httpFailed,\n      subscriber: previous.subscriber || null\n    }\n  };\n});"
+      },
+      "id": "b4a9a959-505a-4ef2-be95-12ed19168736",
+      "name": "Code - Merge Resubscribe Subscriber Lists Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
     }
   ],
   "pinData": {},
@@ -635,7 +707,40 @@
       "main": [
         [
           {
-            "node": "Code - Merge Create Subscriber Response",
+            "node": "Code - Merge Update Subscriber Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Merge Update Subscriber Response": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Resubscribe Subscriber Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Resubscribe Subscriber Lists": {
+      "main": [
+        [
+          {
+            "node": "Code - Merge Resubscribe Subscriber Lists Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Merge Resubscribe Subscriber Lists Response": {
+      "main": [
+        [
+          {
+            "node": "IF - HTTP Succeeded?",
             "type": "main",
             "index": 0
           }
@@ -643,15 +748,15 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "840c9036-4a0d-4ad0-b9af-29a59fbae698",
+  "versionId": "7cda4491-260f-460f-9f42-11c80885a8db",
   "meta": {
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
-  "id": "02g1OikQBfetNzMb",
+  "id": "0Dwi6BRPXxTyTbcI",
   "tags": []
 }
