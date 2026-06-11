@@ -102,7 +102,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.4,
       "position": [
-        720,
+        1440,
         0
       ],
       "credentials": {
@@ -111,6 +111,74 @@
           "name": "Postgres account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  me.member_email_id::text AS member_email_id,\n  me.email_normalized,\n  COALESCE(me.mailing_subscription_status, '') AS mailing_subscription_status,\n  me.mailing_unsubscribed_at,\n  me.mailing_unsubscribe_source,\n  me.listmonk_subscriber_id,\n  me.listmonk_subscriber_uuid::text AS listmonk_subscriber_uuid\nFROM public.member_emails me\nWHERE\n  lower(me.email_normalized) = lower('{{ String($json.email || \"\").replace(/'/g, \"''\") }}')\n  OR lower(me.email) = lower('{{ String($json.email || \"\").replace(/'/g, \"''\") }}')\n  OR me.listmonk_subscriber_id = NULLIF('{{ $json.id || \"\" }}', '')::integer\n  OR me.listmonk_subscriber_uuid = NULLIF('{{ $json.uuid || \"\" }}', '')::uuid\nORDER BY\n  CASE\n    WHEN me.listmonk_subscriber_id = NULLIF('{{ $json.id || \"\" }}', '')::integer THEN 0\n    WHEN me.listmonk_subscriber_uuid = NULLIF('{{ $json.uuid || \"\" }}', '')::uuid THEN 1\n    ELSE 2\n  END,\n  me.updated_at DESC\nLIMIT 1;",
+        "options": {}
+      },
+      "id": "4dfe0e5b-4b3a-4149-a3ac-1fb08710d00a",
+      "name": "PG - Check SignatureGate Mailing Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        720,
+        0
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const sourceItems = $items('Code - Filter Actual Unsubscribes');\n\nreturn items.map((item, itemIndex) => {\n  const pairedIndex = item.pairedItem?.item ?? itemIndex;\n  const previous =\n    sourceItems[pairedIndex]?.json ||\n    sourceItems[itemIndex]?.json ||\n    sourceItems[0]?.json ||\n    {};\n\n  const statusRow = item.json || {};\n  const memberEmailId = statusRow.member_email_id || null;\n  const currentStatus = String(statusRow.mailing_subscription_status || '').toLowerCase();\n\n  // Only record an external/Listmonk unsubscribe once. If SignatureGate already\n  // knows this email is unsubscribed, do not call the audit/update function again.\n  const recordExternalUnsubscribe = !!memberEmailId && currentStatus !== 'unsubscribed';\n\n  return {\n    json: {\n      ...previous,\n      signaturegateStatus: statusRow,\n      signaturegateMemberEmailId: memberEmailId,\n      signaturegateMailingStatus: currentStatus || null,\n      recordExternalUnsubscribe\n    }\n  };\n});"
+      },
+      "id": "54e7ae18-87f9-45a1-a4a4-2d6e150ad8e3",
+      "name": "Code - Merge SignatureGate Status",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "record-needed",
+              "leftValue": "={{ $json.recordExternalUnsubscribe === true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6e4fb06f-1986-4848-aee8-caf46e501953",
+      "name": "IF - New External Unsubscribe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ]
     }
   ],
   "pinData": {},
@@ -141,11 +209,45 @@
       "main": [
         [
           {
-            "node": "PG - Record External Unsubscribe",
+            "node": "PG - Check SignatureGate Mailing Status",
             "type": "main",
             "index": 0
           }
         ]
+      ]
+    },
+    "PG - Check SignatureGate Mailing Status": {
+      "main": [
+        [
+          {
+            "node": "Code - Merge SignatureGate Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Merge SignatureGate Status": {
+      "main": [
+        [
+          {
+            "node": "IF - New External Unsubscribe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - New External Unsubscribe?": {
+      "main": [
+        [
+          {
+            "node": "PG - Record External Unsubscribe",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
       ]
     }
   },

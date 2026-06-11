@@ -54,6 +54,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Allow members to have multiple email, phone or address
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_contact_methods.sql
 
+# Support setting primary email for members
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_email_primary_selection.sql
+
 # Add support for Listmonk mailing list subscription management.
 # n8n can add a SignatureGate opt-in to both LISTMONK_NEWSLETTER_LIST_ID and
 # LISTMONK_MEMBER_COMMUNICATIONS_LIST_ID. The DB queue keeps one primary list ID

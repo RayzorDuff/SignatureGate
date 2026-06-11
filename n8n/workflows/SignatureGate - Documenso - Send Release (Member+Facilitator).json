@@ -15,14 +15,14 @@
         0,
         0
       ],
-      "id": "216938db-605a-41f0-b1d9-4b1672cea7f9",
+      "id": "4de348ff-0f19-413c-889c-0cda85f3d522",
       "webhookId": "6931cbca-92b9-45c6-b8a3-30e494a2bd34",
       "alwaysOutputData": true
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  ma.member_agreement_id,\n  ma.member_id,\n  ma.facilitator_id,\n  ma.agreement_template_id,\n  ma.member_email_id,\n  at.documenso_template_envelope_id,\n  at.documenso_member_recipient_id,\n  at.documenso_facilitator_recipient_id,\n  m.first_name AS member_first_name,\n  m.last_name  AS member_last_name,\n  COALESCE(me_used.email, me_primary.email, m.email) AS member_email,\n  COALESCE(me_used.member_email_id, me_primary.member_email_id) AS resolved_member_email_id,\n  f.first_name AS facilitator_first_name,\n  f.last_name  AS facilitator_last_name,\n  COALESCE(fe_primary.email, f.email) AS facilitator_email,\n  fe_primary.member_email_id AS resolved_facilitator_email_id\nFROM member_agreements ma\nJOIN agreement_templates at ON at.agreement_template_id = ma.agreement_template_id\nJOIN members m ON m.member_id = ma.member_id\nJOIN members f ON f.member_id = ma.facilitator_id\nLEFT JOIN member_emails me_used\n  ON me_used.member_email_id = ma.member_email_id\n AND COALESCE(me_used.status, 'active') = 'active'\nLEFT JOIN LATERAL (\n  SELECT member_email_id, email\n  FROM member_emails\n  WHERE member_id = m.member_id\n    AND COALESCE(status, 'active') = 'active'\n  ORDER BY is_verified DESC, is_primary DESC, created_at DESC\n  LIMIT 1\n) me_primary ON true\nLEFT JOIN LATERAL (\n  SELECT member_email_id, email\n  FROM member_emails\n  WHERE member_id = f.member_id\n    AND COALESCE(status, 'active') = 'active'\n  ORDER BY is_verified DESC, is_primary DESC, created_at DESC\n  LIMIT 1\n) fe_primary ON true\nWHERE ma.member_agreement_id = $1::uuid\nLIMIT 1;",
+        "query": "SELECT\n  ma.member_agreement_id,\n  ma.member_id,\n  ma.facilitator_id,\n  ma.agreement_template_id,\n  ma.member_email_id,\n  at.documenso_template_envelope_id,\n  at.documenso_member_recipient_id,\n  at.documenso_facilitator_recipient_id,\n  m.first_name AS member_first_name,\n  m.last_name  AS member_last_name,\n  COALESCE(me_used.email, me_primary.email, m.email) AS member_email,\n  COALESCE(me_used.member_email_id, me_primary.member_email_id) AS resolved_member_email_id,\n  f.first_name AS facilitator_first_name,\n  f.last_name  AS facilitator_last_name,\n  COALESCE(fe_primary.email, f.email) AS facilitator_email,\n  fe_primary.member_email_id AS resolved_facilitator_email_id\nFROM member_agreements ma\nJOIN agreement_templates at ON at.agreement_template_id = ma.agreement_template_id\nJOIN members m ON m.member_id = ma.member_id\nJOIN members f ON f.member_id = ma.facilitator_id\nLEFT JOIN member_emails me_used\n  ON me_used.member_email_id = ma.member_email_id\n AND COALESCE(me_used.status, 'active') = 'active'\nLEFT JOIN LATERAL (\n  SELECT member_email_id, email\n  FROM member_emails\n  WHERE member_id = m.member_id\n    AND COALESCE(status, 'active') = 'active'\n  ORDER BY is_primary DESC, is_verified DESC, created_at DESC\n  LIMIT 1\n) me_primary ON true\nLEFT JOIN LATERAL (\n  SELECT member_email_id, email\n  FROM member_emails\n  WHERE member_id = f.member_id\n    AND COALESCE(status, 'active') = 'active'\n  ORDER BY is_primary DESC, is_verified DESC, created_at DESC\n  LIMIT 1\n) fe_primary ON true\nWHERE ma.member_agreement_id = $1::uuid\nLIMIT 1;",
         "options": {
           "queryReplacement": "={{ $json.body.member_agreement_id }}"
         }
@@ -34,7 +34,7 @@
         272,
         0
       ],
-      "id": "6f4cb7ee-9375-43cd-83f5-a89689c8211f",
+      "id": "8c04489c-e2bd-4d5c-91ed-a38edd42e44c",
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
@@ -45,7 +45,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\n\nif (!items || items.length === 0 || !items[0].json) {\n  throw new Error('No input items found for member_agreement_id');\n}\n\nconst row = items[0].json;\n\nif (!row.member_agreement_id) {\n  throw new Error('member_agreement_id is missing from the row data');\n}\nif (!row.documenso_template_envelope_id) {\n  throw new Error('Missing agreement_templates.documenso_template_envelope_id. Run db/migrations_documenso_integration.sql and seed the template row.');\n}\nif (!row.documenso_member_recipient_id || !row.documenso_facilitator_recipient_id) {\n  throw new Error('Missing agreement_templates Documenso recipient IDs (member/facilitator).');\n}\n\nconst memberEmail = (row.member_email || '').trim();\nconst facilitatorEmail = (row.facilitator_email || '').trim();\nconst emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n\nif (!emailRe.test(memberEmail)) {\n  throw new Error(`Invalid/missing member_email: \"${memberEmail}\"`);\n}\nif (!emailRe.test(facilitatorEmail)) {\n  throw new Error(`Invalid/missing facilitator_email: \"${facilitatorEmail}\"`);\n}\n\nconst externalId = $('Webhook').first().json.body.externalId || `ma:${row.member_agreement_id}`;\n\nreturn [{\n  json: {\n    member_agreement_id: row.member_agreement_id,\n    member_id: row.member_id,\n    facilitator_id: row.facilitator_id,\n    member_email_id: row.resolved_member_email_id || row.member_email_id || null,\n    facilitator_email_id: row.resolved_facilitator_email_id || null,\n    member_email: memberEmail,\n    facilitator_email: facilitatorEmail,\n    externalId,\n    payload: {\n      envelopeId: row.documenso_template_envelope_id,\n      distributeDocument: true,\n      externalId,\n      recipients: [\n        {\n          id: row.documenso_member_recipient_id,\n          email: memberEmail,\n          name: `${row.member_first_name ?? ''} ${row.member_last_name ?? ''}`.trim()\n        },\n        {\n          id: row.documenso_facilitator_recipient_id,\n          email: facilitatorEmail,\n          name: `${row.facilitator_first_name ?? ''} ${row.facilitator_last_name ?? ''}`.trim()\n        }\n      ]\n    }\n  }\n}];\n"
+        "jsCode": "const items = $input.all();\n\nif (!items || items.length === 0 || !items[0].json) {\n  throw new Error('No input items found for member_agreement_id');\n}\n\nconst row = items[0].json;\n\nif (!row.member_agreement_id) {\n  throw new Error('member_agreement_id is missing from the row data');\n}\nif (!row.documenso_template_envelope_id) {\n  throw new Error('Missing agreement_templates.documenso_template_envelope_id. Run db/migrations_documenso_integration.sql and seed the template row.');\n}\nif (!row.documenso_member_recipient_id || !row.documenso_facilitator_recipient_id) {\n  throw new Error('Missing agreement_templates Documenso recipient IDs (member/facilitator).');\n}\n\nconst memberEmail = (row.member_email || '').trim();\nconst facilitatorEmail = (row.facilitator_email || '').trim();\nconst emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n\nif (!emailRe.test(memberEmail)) {\n  throw new Error(`Invalid/missing member_email: \"${memberEmail}\"`);\n}\nif (!emailRe.test(facilitatorEmail)) {\n  throw new Error(`Invalid/missing facilitator_email: \"${facilitatorEmail}\"`);\n}\n\nconst externalId = $('Webhook').first().json.body.externalId || `ma:${row.member_agreement_id}`;\n\n// Prefer the member_email_id selected by Appsmith on member_agreements. If it is not set,\n// the SQL query resolves the current primary active email, then verified/newest as fallback.\n\nreturn [{\n  json: {\n    member_agreement_id: row.member_agreement_id,\n    member_id: row.member_id,\n    facilitator_id: row.facilitator_id,\n    member_email_id: row.resolved_member_email_id || row.member_email_id || null,\n    facilitator_email_id: row.resolved_facilitator_email_id || null,\n    member_email: memberEmail,\n    facilitator_email: facilitatorEmail,\n    externalId,\n    payload: {\n      envelopeId: row.documenso_template_envelope_id,\n      distributeDocument: true,\n      externalId,\n      recipients: [\n        {\n          id: row.documenso_member_recipient_id,\n          email: memberEmail,\n          name: `${row.member_first_name ?? ''} ${row.member_last_name ?? ''}`.trim()\n        },\n        {\n          id: row.documenso_facilitator_recipient_id,\n          email: facilitatorEmail,\n          name: `${row.facilitator_first_name ?? ''} ${row.facilitator_last_name ?? ''}`.trim()\n        }\n      ]\n    }\n  }\n}];\n"
       },
       "name": "Build Documenso Payload",
       "type": "n8n-nodes-base.code",
@@ -54,7 +54,7 @@
         512,
         0
       ],
-      "id": "db65756f-1373-4687-9471-2b1e9863554a",
+      "id": "3f10c71d-5fe0-416b-906c-ea9dd3459145",
       "alwaysOutputData": true
     },
     {
@@ -81,7 +81,7 @@
         768,
         0
       ],
-      "id": "fb3d9c28-3175-4d10-8cce-6a3bb61be010",
+      "id": "4a4a8e9b-15ab-4a1f-bba2-0e757fbd83eb",
       "alwaysOutputData": true,
       "credentials": {
         "httpHeaderAuth": {
@@ -101,7 +101,7 @@
         992,
         0
       ],
-      "id": "73ae532f-569a-4aba-ad41-4414a3c821aa",
+      "id": "e1b5946a-c292-4a95-b2dd-d47d65374ecb",
       "alwaysOutputData": true
     },
     {
@@ -119,7 +119,7 @@
         1232,
         0
       ],
-      "id": "2566d7ee-fed2-40f0-a7fd-852d9cd64fb7",
+      "id": "818063a3-59b8-45b3-8c31-1710679d506a",
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
@@ -139,7 +139,7 @@
         1440,
         0
       ],
-      "id": "52b7717e-3747-4f20-934b-7d0de7505592"
+      "id": "7f9ff476-1caf-490a-a8e4-72791bc0d006"
     }
   ],
   "pinData": {},
@@ -214,14 +214,12 @@
   "active": true,
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate",
-    "availableInMCP": false
+    "binaryMode": "separate"
   },
-  "versionId": "1dad226e-ff1b-466f-b677-28fdb97c336e",
+  "versionId": "307dc1e1-2fc0-49e1-bb2a-be9efd7464d6",
   "meta": {
-    "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
-  "id": "ZfAbXioeWeZgiVUS",
+  "id": "3Q0lgM2txWVN6gj8",
   "tags": []
 }
