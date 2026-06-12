@@ -26,6 +26,7 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_integration.sql
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_integration_1.sql
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_cancel_agreement.sql
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_template_discovery.sql
 
 # Audit Log - See below for details
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_audit_log.sql

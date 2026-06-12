@@ -1,0 +1,146 @@
+{
+  "name": "SignatureGate - Documenso - List Templates",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "signaturegate/documenso/templates",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b1db5b35-1b43-4c63-9828-0342f089949e",
+      "webhookId": "68e2e1d5-ae9a-4aec-bb7b-e2b9727b721b"
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.DOCUMENSO_BASE_URL || 'https://documenso.danks.store' }}/api/v2/template",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "={{ $json.query?.page || 1 }}"
+            },
+            {
+              "name": "perPage",
+              "value": "={{ $json.query?.perPage || 100 }}"
+            },
+            {
+              "name": "orderByColumn",
+              "value": "createdAt"
+            },
+            {
+              "name": "orderByDirection",
+              "value": "desc"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "name": "HTTP - Documenso List Templates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        320,
+        0
+      ],
+      "id": "ad36f3e8-e6d9-44c3-bb57-972c8b1a9c4a",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "u9hUDEIBmKAUCQnU",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const full = $json;\nconst body = full.body ?? full;\nconst rows = Array.isArray(body.data) ? body.data : [];\n\nfunction asInt(value) {\n  if (value === null || value === undefined || value === '') return null;\n  const n = Number(value);\n  return Number.isFinite(n) ? Math.trunc(n) : null;\n}\n\nfunction normalizeTemplate(t) {\n  const recipients = Array.isArray(t.recipients) ? t.recipients.slice() : [];\n  const signerRecipients = recipients\n    .filter(r => String(r.role || '').toUpperCase() === 'SIGNER' || r.signingOrder)\n    .sort((a, b) => (asInt(a.signingOrder) ?? 999) - (asInt(b.signingOrder) ?? 999));\n\n  const memberRecipient = signerRecipients.find(r => asInt(r.signingOrder) === 1) || signerRecipients[0] || null;\n  const facilitatorRecipient = signerRecipients.find(r => asInt(r.signingOrder) === 2) || signerRecipients[1] || null;\n\n  return {\n    id: asInt(t.id),\n    templateId: asInt(t.id),\n    envelopeId: t.envelopeId || '',\n    title: t.title || '',\n    type: t.type || '',\n    visibility: t.visibility || '',\n    externalId: t.externalId || null,\n    createdAt: t.createdAt || null,\n    updatedAt: t.updatedAt || null,\n    recipientCount: recipients.length,\n    memberRecipientId: asInt(memberRecipient?.id),\n    facilitatorRecipientId: asInt(facilitatorRecipient?.id),\n    recipients\n  };\n}\n\nreturn [{\n  json: {\n    data: rows.map(normalizeTemplate).filter(t => t.envelopeId),\n    pagination: body.pagination || {},\n    source: 'documenso'\n  }\n}];"
+      },
+      "name": "Normalize Template List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        0
+      ],
+      "id": "b5448190-1bd6-4a05-9e53-6750aa413b1d"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        960,
+        0
+      ],
+      "id": "a28b1a3f-b775-4c28-9389-aba2c4917de8"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Documenso List Templates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Documenso List Templates": {
+      "main": [
+        [
+          {
+            "node": "Normalize Template List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Template List": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1810aaf5-bd18-4c99-9bc8-f864ed6a103d",
+  "meta": {
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "uC1Xix6PE2cGXqc1",
+  "tags": []
+}
