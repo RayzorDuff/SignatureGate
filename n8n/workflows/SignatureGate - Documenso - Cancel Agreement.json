@@ -1,0 +1,262 @@
+{
+  "name": "SignatureGate - Documenso - Cancel Agreement",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signaturegate/documenso/cancel",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ad2d680a-2760-418b-9de4-6f19483ea516",
+      "webhookId": "9a73514f-ecd9-48fb-884a-2ef38eb67ec9",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  ma.member_agreement_id,\n  ma.member_id,\n  ma.facilitator_id,\n  ma.status,\n  ma.signature_method,\n  ma.documenso_document_id,\n  ma.documenso_external_id,\n  ma.review_notes,\n  ma.canceled_at,\n  ma.cancel_reason\nFROM public.member_agreements ma\nWHERE ma.member_agreement_id = $1::uuid\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $json.body.member_agreement_id }}"
+        }
+      },
+      "name": "PG - Load Agreement Context",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        272,
+        0
+      ],
+      "id": "632fe6d3-e055-44f0-b645-09fcb606f5c2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (!items || items.length === 0 || !items[0].json) {\n  throw new Error('No agreement found for the supplied member_agreement_id');\n}\n\nconst row = items[0].json;\nconst body = $('Webhook').first().json.body || {};\n\nif (!row.member_agreement_id) {\n  throw new Error('member_agreement_id is missing from the loaded agreement row');\n}\n\nif (row.status === 'canceled') {\n  throw new Error(`Agreement ${row.member_agreement_id} is already canceled.`);\n}\n\nif (row.signature_method !== 'documenso') {\n  throw new Error(`Only Documenso agreements can be canceled by this workflow. Current signature_method: ${row.signature_method}`);\n}\n\nif (row.status !== 'pending_signature') {\n  throw new Error(`Only pending_signature Documenso agreements can be canceled. Current status: ${row.status}`);\n}\n\nif (!row.documenso_document_id) {\n  throw new Error('Agreement is missing documenso_document_id; there is no Documenso envelope to cancel.');\n}\n\nconst reason = String(body.reason ?? row.review_notes ?? '').trim();\nif (!reason) {\n  throw new Error('Cancel reason is required. Populate Review/Cancel Notes before canceling.');\n}\n\nconst actorMemberId = String(body.actor_member_id ?? '').trim();\n\nreturn [{\n  json: {\n    member_agreement_id: row.member_agreement_id,\n    member_id: row.member_id,\n    actor_member_id: actorMemberId,\n    reason,\n    reason_b64: Buffer.from(reason, 'utf8').toString('base64'),\n    documenso_document_id: row.documenso_document_id,\n    documenso_external_id: row.documenso_external_id || null,\n    payload: {\n      envelopeId: row.documenso_document_id\n    }\n  }\n}];"
+      },
+      "name": "Validate Cancelability",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        0
+      ],
+      "id": "29bbfc34-cdfa-49fe-ac15-d2c832d34cc7",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.DOCUMENSO_BASE_URL || 'https://documenso.danks.store' }}/api/v2/envelope/delete",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.payload }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "name": "HTTP - Documenso Delete Envelope",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        768,
+        0
+      ],
+      "id": "b8d5691d-9a06-4a3f-920f-1cff2400028c",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "u9hUDEIBmKAUCQnU",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const cancel = $('Validate Cancelability').first().json;\nconst full = $json;\nconst responseForDb = {\n  statusCode: full.statusCode ?? full.status ?? null,\n  body: full.body ?? full\n};\n\nreturn [{\n  json: {\n    ...cancel,\n    documenso_cancel_response_b64: Buffer\n      .from(JSON.stringify(responseForDb), 'utf8')\n      .toString('base64')\n  }\n}];"
+      },
+      "name": "Build DB Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        0
+      ],
+      "id": "1486eef4-e316-4fc7-9d02-c4ba4f5835f4",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.member_agreements\nSET\n  status = 'canceled',\n  canceled_at = now(),\n  canceled_by = NULLIF($2, '')::uuid,\n  cancel_reason = NULLIF(convert_from(decode($3, 'base64'), 'UTF8'), ''),\n  review_notes = NULLIF(convert_from(decode($3, 'base64'), 'UTF8'), ''),\n  documenso_cancel_response = convert_from(decode($4, 'base64'), 'UTF8')::jsonb,\n  updated_at = now()\nWHERE member_agreement_id = $1::uuid\n  AND status = 'pending_signature'\n  AND signature_method = 'documenso'\nRETURNING\n  member_agreement_id,\n  member_id,\n  status,\n  canceled_at,\n  canceled_by,\n  cancel_reason,\n  documenso_document_id;",
+        "options": {
+          "queryReplacement": "={{ $json.member_agreement_id }},{{ $json.actor_member_id || '' }},{{ $json.reason_b64 }},{{ $json.documenso_cancel_response_b64 }}"
+        }
+      },
+      "name": "PG - Mark Agreement Canceled",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        0
+      ],
+      "id": "4bcabcd7-5128-4e7c-9155-969e7b76146e",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.audit_log (\n  actor,\n  action,\n  entity_type,\n  entity_id,\n  details\n)\nVALUES (\n  COALESCE(NULLIF($2, ''), 'unknown'),\n  'agreement.documenso_canceled',\n  'member_agreement',\n  $1,\n  jsonb_build_object(\n    'member_id', NULLIF($3, ''),\n    'reason', NULLIF(convert_from(decode($4, 'base64'), 'UTF8'), ''),\n    'documenso_document_id', NULLIF($5, ''),\n    'documenso_external_id', NULLIF($6, ''),\n    'page', 'Members - Profile'\n  )\n)\nRETURNING audit_log_id;",
+        "options": {
+          "queryReplacement": "={{ $('Build DB Update').first().json.member_agreement_id }},{{ $('Build DB Update').first().json.actor_member_id || '' }},{{ $('Build DB Update').first().json.member_id || '' }},{{ $('Build DB Update').first().json.reason_b64 }},{{ $('Build DB Update').first().json.documenso_document_id || '' }},{{ $('Build DB Update').first().json.documenso_external_id || '' }}"
+        }
+      },
+      "name": "PG - Audit Cancellation",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        0
+      ],
+      "id": "9feb93e3-c6f1-462f-af3d-44f11c81c3db",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, member_agreement_id: $('Build DB Update').first().json.member_agreement_id, status: 'canceled' } }}",
+        "options": {}
+      },
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        0
+      ],
+      "id": "0608b2c4-0199-4de6-8b8e-aaca776e11c6"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "PG - Load Agreement Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Load Agreement Context": {
+      "main": [
+        [
+          {
+            "node": "Validate Cancelability",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Cancelability": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Documenso Delete Envelope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Documenso Delete Envelope": {
+      "main": [
+        [
+          {
+            "node": "Build DB Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build DB Update": {
+      "main": [
+        [
+          {
+            "node": "PG - Mark Agreement Canceled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Mark Agreement Canceled": {
+      "main": [
+        [
+          {
+            "node": "PG - Audit Cancellation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PG - Audit Cancellation": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "fd85a7db-6f20-487c-a765-3410c760ad17",
+  "meta": {
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "JRO1xFApAPKDp60u",
+  "tags": []
+}
