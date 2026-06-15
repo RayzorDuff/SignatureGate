@@ -12,10 +12,11 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -760,
+        0,
         0
       ],
-      "id": "99a095db-e98e-453c-8ebf-3ae4a6e453b3"
+      "id": "684bf900-3f0a-4512-814f-f91458485972",
+      "webhookId": "69d0c0b2-b493-45a1-a580-dff418706bf0"
     },
     {
       "parameters": {
@@ -25,55 +26,80 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -520,
+        240,
         0
       ],
-      "id": "65daf82e-a2a2-4f1d-b379-cbf622d2e0fa"
+      "id": "373d9416-dddd-49d4-9198-aa323b8162e7"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "={{ `WITH input AS (\n  SELECT\n    NULLIF('${String($json.mushroomprocess_product_id ?? '').replace(/'/g, \"''\")}', '') AS product_id,\n    NULLIF('${String($json.storage_location ?? '').replace(/'/g, \"''\")}', '') AS storage_location\n), target_location AS (\n  SELECT l.nocopk, l.name\n  FROM public.locations l, input i\n  WHERE lower(l.name) = lower(i.storage_location)\n  ORDER BY l.nocopk\n  LIMIT 1\n), target_product AS (\n  SELECT p.nocopk\n  FROM public.products p, input i\n  WHERE p.product_id = i.product_id\n  LIMIT 1\n), upd AS (\n  UPDATE public.products p\n  SET storage_location_id = target_location.nocopk,\n      nc_updated_at = now()\n  FROM target_location, target_product\n  WHERE p.nocopk = target_product.nocopk\n  RETURNING p.*\n)\nSELECT\n  true AS ok,\n  COALESCE(upd.airtable_id, upd.nocopk::text) AS updated_product_record_id,\n  upd.product_id AS mushroomprocess_product_id,\n  target_location.name AS storage_location\nFROM upd\nCROSS JOIN target_location;` }}",
+        "query": "{{ `WITH input AS (\n  SELECT\n    NULLIF('${String($json.mushroomprocess_product_id ?? '').replace(/'/g, \"''\")}', '') AS product_id,\n    NULLIF('${String($json.storage_location ?? '').replace(/'/g, \"''\")}', '') AS storage_location\n), target_location AS (\n  SELECT l.nocopk, l.name\n  FROM public.locations l, input i\n  WHERE lower(l.name) = lower(i.storage_location)\n  ORDER BY l.nocopk\n  LIMIT 1\n), target_product AS (\n  SELECT p.nocopk, p.product_id, COALESCE(p.airtable_id, p.nocopk::text) AS record_id\n  FROM public.products p, input i\n  WHERE p.product_id = i.product_id\n  LIMIT 1\n), upd AS (\n  UPDATE public.products p\n  SET storage_location_id = target_location.nocopk,\n      nc_updated_at = now()\n  FROM target_location, target_product\n  WHERE p.nocopk = target_product.nocopk\n  RETURNING p.*\n)\nSELECT\n  (upd.nocopk IS NOT NULL) AS ok,\n  CASE\n    WHEN target_location.nocopk IS NULL THEN 'missing_target_location'\n    WHEN target_product.nocopk IS NULL THEN 'missing_product'\n    WHEN upd.nocopk IS NULL THEN 'not_updated'\n    ELSE NULL\n  END AS error,\n  input.product_id AS requested_mushroomprocess_product_id,\n  input.storage_location AS requested_storage_location,\n  COALESCE(upd.airtable_id, upd.nocopk::text) AS updated_product_record_id,\n  upd.product_id AS mushroomprocess_product_id,\n  target_location.name AS storage_location\nFROM input\nLEFT JOIN target_location ON true\nLEFT JOIN target_product ON true\nLEFT JOIN upd ON true;` }}",
         "options": {}
       },
       "name": "PGSQL - Mark Product UnShipped",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        -280,
+        480,
         0
       ],
-      "id": "4780b3b4-67f6-4140-8857-12f453584a16"
+      "id": "9820f1a3-01da-4b16-8d1d-084c00e467da",
+      "credentials": {
+        "postgres": {
+          "id": "r064ogulZ44Ose76",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "={{ `INSERT INTO public.audit_log(actor, action, entity_type, entity_id, details)\nVALUES (\n  'n8n',\n  'product.unshipped',\n  'product',\n  '${String($('PGSQL - Mark Product UnShipped').first().json.mushroomprocess_product_id || $('PGSQL - Mark Product UnShipped').first().json.updated_product_record_id || 'unknown').replace(/'/g, \"''\")}',\n  jsonb_build_object(\n    'product_id', '${String($('PGSQL - Mark Product UnShipped').first().json.mushroomprocess_product_id || '').replace(/'/g, \"''\")}',\n    'record_id', '${String($('PGSQL - Mark Product UnShipped').first().json.updated_product_record_id || '').replace(/'/g, \"''\")}',\n    'storage_location', '${String($('PGSQL - Mark Product UnShipped').first().json.storage_location || '').replace(/'/g, \"''\")}',\n    'source', 'signaturegate_pgsql_workflow'\n  )\n)\nRETURNING audit_log_id;` }}",
+        "query": "{{ `INSERT INTO public.audit_log(actor, action, entity_type, entity_id, details)\nVALUES (\n  'n8n',\n  'product.unshipped',\n  'product',\n  '${String($('Code - Assert Product UnShipped').first().json.mushroomprocess_product_id || $('Code - Assert Product UnShipped').first().json.updated_product_record_id || 'unknown').replace(/'/g, \"''\")}',\n  jsonb_build_object(\n    'product_id', '${String($('Code - Assert Product UnShipped').first().json.mushroomprocess_product_id || '').replace(/'/g, \"''\")}',\n    'record_id', '${String($('Code - Assert Product UnShipped').first().json.updated_product_record_id || '').replace(/'/g, \"''\")}',\n    'storage_location', '${String($('Code - Assert Product UnShipped').first().json.storage_location || '').replace(/'/g, \"''\")}',\n    'source', 'signaturegate_pgsql_workflow'\n  )\n)\nRETURNING audit_log_id;` }}",
         "options": {}
       },
       "name": "PG - Audit product unshipped",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        -40,
-        0
+        800,
+        80
       ],
-      "id": "1aefd1b9-c484-47b6-b22d-2a5e0a0e83da"
+      "id": "164ae544-8641-42c5-9df2-edde40ef3213",
+      "credentials": {
+        "postgres": {
+          "id": "r064ogulZ44Ose76",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { ok: true, updated_product_record_id: $('PGSQL - Mark Product UnShipped').first().json.updated_product_record_id, mushroomprocess_product_id: $('PGSQL - Mark Product UnShipped').first().json.mushroomprocess_product_id, storage_location: $('PGSQL - Mark Product UnShipped').first().json.storage_location } }}",
+        "responseBody": "={{ { ok: true, updated_product_record_id: $('Code - Assert Product UnShipped').first().json.updated_product_record_id, mushroomprocess_product_id: $('Code - Assert Product UnShipped').first().json.mushroomprocess_product_id, storage_location: $('Code - Assert Product UnShipped').first().json.storage_location } }}",
         "options": {}
       },
       "name": "Respond",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        200,
+        960,
         0
       ],
-      "id": "3ef648ec-03b5-4f4f-8f1a-48cbe7f60271"
+      "id": "2cd04d2b-2205-4e79-8e1e-c5e2a92f5f33"
+    },
+    {
+      "parameters": {
+        "jsCode": "const row = $json || {};\nif (row.ok !== true) {\n  const error = row.error || 'product_update_failed';\n  const details = [\n    row.mushroomprocess_product_id ? `product_id=${row.mushroomprocess_product_id}` : null,\n    row.requested_storage_location ? `requested_storage_location=${row.requested_storage_location}` : null,\n    row.airtable_record_id ? `airtable_record_id=${row.airtable_record_id}` : null\n  ].filter(Boolean).join(', ');\n  throw new Error(`Postgres product update failed: ${error}${details ? ' (' + details + ')' : ''}`);\n}\nreturn [{ json: row }];"
+      },
+      "id": "b49c0d37-6320-4471-a243-a3d099795f64",
+      "name": "Code - Assert Product UnShipped",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -96
+      ]
     }
   ],
   "pinData": {},
@@ -104,7 +130,7 @@
       "main": [
         [
           {
-            "node": "PG - Audit product unshipped",
+            "node": "Code - Assert Product UnShipped",
             "type": "main",
             "index": 0
           }
@@ -121,16 +147,29 @@
           }
         ]
       ]
+    },
+    "Code - Assert Product UnShipped": {
+      "main": [
+        [
+          {
+            "node": "PG - Audit product unshipped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
-  "versionId": "227df9df-e792-4c85-82dd-f1d36c04f603",
+  "versionId": "246f6560-d156-4881-9be9-f203b962dbad",
   "meta": {
-    "templateCredsSetupCompleted": false
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
-  "id": "095d32a6-bedf-4755-b7fe-07c6d353a5ec",
+  "id": "hCgzhnL3CkcmyR44",
   "tags": []
 }
