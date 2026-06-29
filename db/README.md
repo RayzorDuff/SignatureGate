@@ -70,6 +70,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_listmonk_mailing_list_upsert_existing.sql
 ```
 
+# Reporting indexes
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_reporting_indexes.sql
+
 3) Verify tables exist:
 
 ```bash
