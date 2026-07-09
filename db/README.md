@@ -73,6 +73,9 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Reporting indexes
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_reporting_indexes.sql
 
+# harden member identity contact handling
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_identity_hardening.sql
+
 3) Verify tables exist:
 
 ```bash
