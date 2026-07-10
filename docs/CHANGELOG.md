@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.4] - 2026-07-09
+
+## Added
+
+- Added normalized address fingerprints and per-member active address de-duplication for Givebutter and Appsmith contact creation flows.
+- Added Documenso expiration support, including `expired_at` tracking and webhook mapping for expired agreement events.
+- Add a Reports page to display graph and table data for new members, signed agreements, releases, dontations, and dollars contributed over time.
+
+## Changed
+
+- Members Directory and member-selection dropdowns now sort by last name and include active email, phone, and address contact data in searchable row data.
+- Member Intake duplicate detection now uses explicit current form parameters instead of stale widget/query state and reports the matched member and field that triggered the duplicate result.
+- Archived/inactive members no longer reserve active email, phone, or address contact rows; email can be reused after the old contact row is archived.
+- Shared phone numbers are treated as duplicate warnings instead of hard failures.
+- Givebutter donation matching only uses a phone number for automatic verification when that phone resolves to exactly one active member.
+
+## Fixed
+
+- Fixed duplicate addresses being created from Givebutter contribution processing when casing or minor formatting varies. Fixes #10.
+- Fixed Documenso-expired agreements remaining effectively pending in SignatureGate/Appsmith after expiration webhooks. Fixes #11.
+- Fixed same-browser-session Member Intake duplicate failures after creating one member by passing fresh form values and clearing stale duplicate state on success. Fixes #12.
+- Fixed cancellation audit log actor display by passing the Appsmith user email through the cancellation workflow while retaining the actor member ID in audit details. Fixes #13.
+- Fixed unclear inactive-member email conflicts by archiving contact rows attached to inactive members and returning field-specific duplicate details. Fixes #14.
+- Fixed Members Directory search gaps so email, phone, and address fields are searchable without adding new Appsmith widgets. Fixes #9.
+
+## Notes
+
+- Apply `db/migrations_v1_0_4_member_identity_hardening.sql` before deploying the Appsmith and Givebutter workflow changes.
+- Apply `db/migrations_v1_0_4_documenso_expiration.sql` before deploying the Documenso webhook changes.
+
 ## [v1.0.3] - 2026-05-09
 
 ## Added
