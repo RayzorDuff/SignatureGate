@@ -7440,7 +7440,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT\n  ma.member_agreement_id,\n  ma.created_at,\n  ma.status,\n  ma.signature_method,\n  ma.member_signed_at,\n  ma.facilitator_signed_at,\n  ma.opensign_document_id,\n  COALESCE(at.name, 'Paper Agreement - No Template') AS template_name,\n  ma.facilitator_id,\n  ma.evidence,\n  ma.review_notes,\n\tma.documenso_document_id,\n\tma.documenso_external_id,\n\tma.canceled_at,\n\tma.canceled_by,\n\tma.cancel_reason\t\nFROM public.member_agreements ma\nLEFT JOIN public.agreement_templates at\n  ON at.agreement_template_id = ma.agreement_template_id\nCROSS JOIN me\nWHERE ma.member_id = {{ appsmith.store.member_id }}::uuid\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = ma.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY ma.created_at DESC;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT\n  ma.member_agreement_id,\n  ma.created_at,\n  ma.status,\n  ma.signature_method,\n  ma.member_signed_at,\n  ma.facilitator_signed_at,\n  ma.opensign_document_id,\n  COALESCE(at.name, 'Paper Agreement - No Template') AS template_name,\n  ma.facilitator_id,\n  ma.evidence,\n  ma.review_notes,\n\tma.documenso_document_id,\n\tma.documenso_external_id,\n\tma.canceled_at,\n\tma.canceled_by,\n\tma.cancel_reason,\n\tma.expired_at\t\nFROM public.member_agreements ma\nLEFT JOIN public.agreement_templates at\n  ON at.agreement_template_id = ma.agreement_template_id\nCROSS JOIN me\nWHERE ma.member_id = {{ appsmith.store.member_id }}::uuid\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = ma.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY ma.created_at DESC;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -7485,7 +7485,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT\n  ma.member_agreement_id,\n  ma.created_at,\n  ma.status,\n  ma.signature_method,\n  ma.member_signed_at,\n  ma.facilitator_signed_at,\n  ma.opensign_document_id,\n  COALESCE(at.name, 'Paper Agreement - No Template') AS template_name,\n  ma.facilitator_id,\n  ma.evidence,\n  ma.review_notes,\n\tma.documenso_document_id,\n\tma.documenso_external_id,\n\tma.canceled_at,\n\tma.canceled_by,\n\tma.cancel_reason\t\nFROM public.member_agreements ma\nLEFT JOIN public.agreement_templates at\n  ON at.agreement_template_id = ma.agreement_template_id\nCROSS JOIN me\nWHERE ma.member_id = {{ appsmith.store.member_id }}::uuid\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = ma.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY ma.created_at DESC;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.members\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT\n  ma.member_agreement_id,\n  ma.created_at,\n  ma.status,\n  ma.signature_method,\n  ma.member_signed_at,\n  ma.facilitator_signed_at,\n  ma.opensign_document_id,\n  COALESCE(at.name, 'Paper Agreement - No Template') AS template_name,\n  ma.facilitator_id,\n  ma.evidence,\n  ma.review_notes,\n\tma.documenso_document_id,\n\tma.documenso_external_id,\n\tma.canceled_at,\n\tma.canceled_by,\n\tma.cancel_reason,\n\tma.expired_at\t\nFROM public.member_agreements ma\nLEFT JOIN public.agreement_templates at\n  ON at.agreement_template_id = ma.agreement_template_id\nCROSS JOIN me\nWHERE ma.member_id = {{ appsmith.store.member_id }}::uuid\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = ma.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY ma.created_at DESC;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -12998,7 +12998,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"member_agreement_id\": \"{{ this.params.member_agreement_id }}\",\n  \"actor_member_id\": \"{{ appsmith.store.facilitator_id }}\",\n  \"reason\": \"{{ this.params.reason || '' }}\"\n}",
+          "body": "{\n  \"member_agreement_id\": \"{{ this.params.member_agreement_id }}\",\n  \"actor_member_id\": \"{{ appsmith.store.facilitator_id }}\",\n  \"actor_email\": \"{{ (appsmith.user.email || '').trim().toLowerCase() }}\",\n  \"reason\": \"{{ this.params.reason || '' }}\"\n}",
           "bodyFormData": [],
           "encodeParamsToggle": true,
           "formData": {
@@ -13059,7 +13059,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"member_agreement_id\": \"{{ this.params.member_agreement_id }}\",\n  \"actor_member_id\": \"{{ appsmith.store.facilitator_id }}\",\n  \"reason\": \"{{ this.params.reason || '' }}\"\n}",
+          "body": "{\n  \"member_agreement_id\": \"{{ this.params.member_agreement_id }}\",\n  \"actor_member_id\": \"{{ appsmith.store.facilitator_id }}\",\n  \"actor_email\": \"{{ (appsmith.user.email || '').trim().toLowerCase() }}\",\n  \"reason\": \"{{ this.params.reason || '' }}\"\n}",
           "bodyFormData": [],
           "encodeParamsToggle": true,
           "formData": {
@@ -19573,7 +19573,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "SELECT\n  ma.member_agreement_id,\n  ma.created_at,\n  ma.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  ma.agreement_template_id,\n  t.name AS template_name,\n  t.version AS template_version,\n  ma.status,\n  ma.review_notes,\n  ma.evidence\nFROM public.member_agreements ma\nJOIN public.members m ON m.member_id = ma.member_id\nLEFT JOIN public.agreement_templates t ON t.agreement_template_id = ma.agreement_template_id\nWHERE ma.status = 'pending_review' OR ma.status = 'pending_signature'\nORDER BY ma.created_at ASC\nLIMIT 500;",
+          "body": "SELECT\n  ma.member_agreement_id,\n  ma.created_at,\n  ma.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  ma.agreement_template_id,\n  t.name AS template_name,\n  t.version AS template_version,\n  ma.status,\n  ma.review_notes,\n  ma.evidence\nFROM public.member_agreements ma\nJOIN public.members m ON m.member_id = ma.member_id\nLEFT JOIN public.agreement_templates t ON t.agreement_template_id = ma.agreement_template_id\nWHERE ma.status IN ('pending_review', 'pending_signature')\nORDER BY ma.created_at ASC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -19613,7 +19613,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "SELECT\n  ma.member_agreement_id,\n  ma.created_at,\n  ma.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  ma.agreement_template_id,\n  t.name AS template_name,\n  t.version AS template_version,\n  ma.status,\n  ma.review_notes,\n  ma.evidence\nFROM public.member_agreements ma\nJOIN public.members m ON m.member_id = ma.member_id\nLEFT JOIN public.agreement_templates t ON t.agreement_template_id = ma.agreement_template_id\nWHERE ma.status = 'pending_review' OR ma.status = 'pending_signature'\nORDER BY ma.created_at ASC\nLIMIT 500;",
+          "body": "SELECT\n  ma.member_agreement_id,\n  ma.created_at,\n  ma.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  ma.agreement_template_id,\n  t.name AS template_name,\n  t.version AS template_version,\n  ma.status,\n  ma.review_notes,\n  ma.evidence\nFROM public.member_agreements ma\nJOIN public.members m ON m.member_id = ma.member_id\nLEFT JOIN public.agreement_templates t ON t.agreement_template_id = ma.agreement_template_id\nWHERE ma.status IN ('pending_review', 'pending_signature')\nORDER BY ma.created_at ASC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
