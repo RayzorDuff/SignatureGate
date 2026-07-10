@@ -68,7 +68,6 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Optional one-time backfill: enqueue existing active member emails for Listmonk sync.
 # The n8n workflow will subscribe each queued email to both configured lists.
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_listmonk_mailing_list_upsert_existing.sql
-```
 
 # Reporting indexes
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_reporting_indexes.sql
@@ -78,6 +77,7 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
+```
 
 3) Verify tables exist:
 
