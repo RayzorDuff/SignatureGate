@@ -75,6 +75,10 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # db: harden member identity contact handling
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_identity_hardening.sql
 
+# Install the serialized Member Intake creation helper and active-email guard.
+# Apply this before importing the matching Appsmith export.
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_intake_duplicate_scope.sql
+
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
 ```
