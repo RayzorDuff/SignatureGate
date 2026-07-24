@@ -135,6 +135,7 @@ Appsmith → n8n → Airtable
   List products WHERE:
     item_category = freezedriedmushrooms
     origin_strain_regulated = true
+    package_class != Sample
     storage_location NOT IN (Shipped, Consumed, Expired)
 
 User selects product

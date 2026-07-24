@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Fixed unclear inactive-member email conflicts by archiving contact rows attached to inactive members and returning field-specific duplicate details. Fixes #14.
 - Fixed Members Directory search gaps so email, phone, and address fields are searchable without adding new Appsmith widgets. Fixes #9.
 - Fixed the confusing and privacy-leaking duplicate message shown when a facilitator attempts to create a member managed by another facilitator.
+- Excluded products with `package_class = Sample` from both Airtable-backed and PostgreSQL-backed sacrament release inventory lists. Fixes #15.
 
 ## Notes
 
