@@ -22894,9 +22894,6 @@
                               "key": "isDisabled"
                             },
                             {
-                              "key": "optionLabel"
-                            },
-                            {
                               "key": "isRequired"
                             }
                           ],
@@ -24232,9 +24229,6 @@
                             },
                             {
                               "key": "isDisabled"
-                            },
-                            {
-                              "key": "optionLabel"
                             },
                             {
                               "key": "isRequired"
@@ -39446,9 +39440,6 @@
                     },
                     {
                       "key": "defaultOptionValue"
-                    },
-                    {
-                      "key": "isRequired"
                     }
                   ],
                   "dynamicHeight": "FIXED",
@@ -52617,9 +52608,6 @@
                     },
                     {
                       "key": "defaultOptionValue"
-                    },
-                    {
-                      "key": "isRequired"
                     }
                   ],
                   "dynamicHeight": "FIXED",
