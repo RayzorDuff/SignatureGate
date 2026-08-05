@@ -79,6 +79,11 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Apply this before importing the matching Appsmith export.
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_intake_duplicate_scope.sql
 
+# Block Member Intake when an exact normalized phone belongs to an active member.
+# Apply this after migrations_v1_0_4_member_intake_duplicate_scope.sql and before
+# importing the matching Appsmith export.
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_intake_exact_phone_block.sql
+
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
 ```

@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Member Intake duplicate results now distinguish accessible members from records managed by another facilitator, redact inaccessible member details, and direct facilitators to request reviewer access or reassignment.
 - Member creation now uses a serialized database helper that rechecks hard duplicate identifiers at insert time, plus an active-email uniqueness guard for concurrent submissions.
 - Archived/inactive members no longer reserve active email, phone, or address contact rows; email can be reused after the old contact row is archived.
-- Shared phone numbers are treated as duplicate warnings instead of hard failures.
+- Shared phone numbers remain representable in the contact model, but an exact active phone match now blocks Member Intake and requires reviewer intervention.
 - Givebutter donation matching only uses a phone number for automatic verification when that phone resolves to exactly one active member.
 
 ## Fixed
@@ -32,12 +32,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Fixed unclear inactive-member email conflicts by archiving contact rows attached to inactive members and returning field-specific duplicate details. Fixes #14.
 - Fixed Members Directory search gaps so email, phone, and address fields are searchable without adding new Appsmith widgets. Fixes #9.
 - Fixed the confusing and privacy-leaking duplicate message shown when a facilitator attempts to create a member managed by another facilitator.
+- Fixed Member Intake allowing a probable duplicate when an exact normalized phone number already belonged to an active member.
 - Excluded products with `package_class = Sample` from both Airtable-backed and PostgreSQL-backed sacrament release inventory lists. Fixes #15.
 
 ## Notes
 
 - Apply `db/migrations_v1_0_4_member_identity_hardening.sql` before deploying the Appsmith and Givebutter workflow changes.
 - Apply `db/migrations_v1_0_4_member_intake_duplicate_scope.sql` before importing the updated Appsmith export.
+- Apply `db/migrations_member_intake_exact_phone_block.sql` after the duplicate-scope migration and before importing the updated Appsmith export.
 - Apply `db/migrations_v1_0_4_documenso_expiration.sql` before deploying the Documenso webhook changes.
 
 ## [v1.0.3] - 2026-05-09
