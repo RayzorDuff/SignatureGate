@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.1.0] - 2026-08-13
+
+### Added
+
+- Cross-system specification for provider-neutral commerce, payment processing, Givebutter donation reporting, ERPNext accounting/purchasing, and ERPNext-to-MushroomProcess inventory integration.
+- Release metadata, versioned release notes, and repeatable local preparation/validation commands.
+
+### Changed
+
+- Hardened paper agreement uploads and synchronized the generated Members Profile actions.
+- Hid rejected profile donations by default.
+- Clarified duplicate-member responses when an existing member is outside a facilitator's access scope.
+- Recorded SignatureGate's future role as the controlled member/donation interface while ERPNext becomes the accounting authority.
+
+### Fixed
+
+- Repaired Agreement Type and facilitator-list initialization on Members Intake.
+- Blocked Member Intake when an exact normalized phone matches an active member.
+- Excluded Sample-class MushroomProcess products from release inventory.
+
+### Notes
+
+- The cross-system specification describes the next architecture; this release does not claim that ERPNext posting, cash-deposit processing, or official Givebutter reporting is deployed.
+- Apply `db/migrations_member_intake_exact_phone_block.sql` after the v1.0.4 identity migrations and before importing the Appsmith export.
+- Coordinated with MushroomProcess `v1.2.0`, RootedOps `v1.1.0`, and BookWorks `bookworks-v3.3.0`.
+
 ## [v1.0.4] - 2026-07-09
 
 ## Added

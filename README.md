@@ -1,12 +1,16 @@
 # SignatureGate
 
+Current version: **1.1.0**.
+
+See [`docs/RELEASE_PROCESS.md`](docs/RELEASE_PROCESS.md) for the repeatable release workflow.
+
 SignatureGate is an open-source, self-hosted membership, agreement, sacrament-release **and donation tracking** system for **Rooted Psyche**.
 
 It is designed to stay **separate but interoperable** with the MushroomProcess inventory/workflow system, while preserving legal, spiritual, and operational boundaries.
 
-## v1.0.0 Scope
+## Current scope
 
-SignatureGate v1.0.0 provides stable support for:
+SignatureGate provides stable support for:
 
 - Member intake and profile management
 - Agreement templates and multi-template agreement types
@@ -291,4 +295,3 @@ When a reviewer creates a member from a pending donation:
 - donation is linked automatically
 
 All actions are audit logged.
-
