@@ -23,12 +23,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Repaired Agreement Type and facilitator-list initialization on Members Intake.
 - Blocked Member Intake when an exact normalized phone matches an active member.
+- Repaired the remaining active Issue #10 address duplicates and added a physical-address identity key that tolerates state, city, address-type, common street-suffix, unit-label, country-alias, and US ZIP+4 variations without merging different units.
+- Routed manual profile, pending-donation, manually linked Givebutter, and webhook Givebutter address writes through one database upsert function.
 - Excluded Sample-class MushroomProcess products from release inventory.
 
 ### Notes
 
 - The cross-system specification describes the next architecture; this release does not claim that ERPNext posting, cash-deposit processing, or official Givebutter reporting is deployed.
 - Apply `db/migrations_member_intake_exact_phone_block.sql` after the v1.0.4 identity migrations and before importing the Appsmith export.
+- Apply `db/repair_issue_10_address_duplicates_20260920.sql`, then `db/migrations_v1_1_0_member_address_identity_hardening.sql`, before importing the matching Appsmith export or activating the matching Givebutter workflow.
 - Coordinated with MushroomProcess `v1.2.0`, RootedOps `v1.1.0`, and BookWorks `bookworks-v3.3.0`.
 
 ## [v1.0.4] - 2026-07-09

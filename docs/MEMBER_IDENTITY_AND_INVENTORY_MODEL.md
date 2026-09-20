@@ -118,6 +118,18 @@ Addresses are informational and may originate from:
 
 Addresses are not currently treated as authoritative identity proof.
 
+Active addresses are de-duplicated within a member by a physical-address
+identity key. The key uses normalized street, unit, postal code, and country.
+City, state, and address type are intentionally excluded because provider data
+may abbreviate or truncate them. Unit information remains part of the key, so
+different apartments or suites are not merged.
+
+All Appsmith and Givebutter address writes use
+`public.upsert_member_address(...)`. Manual address text is preserved when a
+provider submits an equivalent address. Provider-managed rows may be enriched
+when a later provider payload contains a more complete component, such as
+`Fort Collins` after an earlier `Fort` value.
+
 ---
 
 # Contact Reassignment and Archival
