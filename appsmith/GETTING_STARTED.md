@@ -235,9 +235,11 @@ When adding or modifying Appsmith workflows:
 ## Donations Workflow
 
 ### Cash Donations
-1. Facilitator creates a cash donation entry (pending_review)
-2. Donations reviewer verifies or rejects
-3. Audit log records both actions
+1. Facilitator selects a member or the explicit `Anonymous cash donor` option
+2. Facilitator creates a cash donation entry (`pending_review`)
+3. Anonymous cash retains `member_id = NULL`; no synthetic member is created
+4. Donations reviewer verifies or rejects the entry
+5. Audit log records both actions
 
 ### Givebutter Donations
 - Automatically ingested via n8n webhook
@@ -257,4 +259,3 @@ prior to commit or manipulation with a merge tool, run:
 ```bash
 node pretty-json.mjs --in "Rooted Psyche Membership Ops - your-export.json" --out "Rooted Psyche Membership Ops.json" --sort-keys
 ```
-

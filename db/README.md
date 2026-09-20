@@ -75,16 +75,15 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # db: harden member identity contact handling
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_identity_hardening.sql
 
-# One-time Issue #10 production repair for the confirmed 215 E Oak St and
-# 4412 E Mulberry St duplicate rows. This is idempotent and verifies that the
-# already-archived 715 N 7th Ct history still has exactly one active row.
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/repair_issue_10_address_duplicates_20260920.sql
-
 # Add the stronger physical-address identity key and centralized address upsert.
-# Apply this after the v1.0.4 identity migration and the one-time repair, and
-# before importing the matching Appsmith workflow or activating the matching
-# Givebutter n8n workflow.
+# Apply this after the v1.0.4 identity migration and before importing the
+# matching Appsmith workflow or activating the matching Givebutter n8n workflow.
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_1_0_member_address_identity_hardening.sql
+
+# Add explicit member/anonymous/unresolved donor identity and the controlled
+# anonymous-cash creation and donation-review functions for Issue #17.
+# Apply before importing the matching Appsmith and Givebutter workflow exports.
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_issue_17_anonymous_cash_donations.sql
 
 # Install the serialized Member Intake creation helper and active-email guard.
 # Apply this before importing the matching Appsmith export.

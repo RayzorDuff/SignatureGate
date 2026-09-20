@@ -154,6 +154,20 @@ Tables therefore include:
 
 # Donation Identity Resolution
 
+Every donation has an explicit donor identity state:
+
+- `member`: linked to a real member; `member_id` is required
+- `anonymous`: deliberately anonymous cash; `member_id` must remain null
+- `unresolved`: provider import awaiting identity review; `member_id` remains null
+
+Anonymous cash does not create an “Anonymous” member and does not participate
+in membership or sacrament-release eligibility. The identity state is separate
+from donation review status and from the future deposit-custody lifecycle.
+
+Changing an unresolved provider donation to `member` occurs through the
+audited reviewer-link workflow. Anonymous cash is not silently converted to a
+member-linked contribution.
+
 ## Givebutter workflow
 
 Givebutter donations may arrive before:

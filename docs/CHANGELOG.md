@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Added explicit `member`, `anonymous`, and `unresolved` donation identity states for Issue #17.
+- Added anonymous cash intake and reviewer verification/rejection without creating a synthetic member.
+
+### Changed
+
+- Expanded the Donations review queue to include member-linked and anonymous pending cash donations alongside unresolved Givebutter imports.
+- Added compatibility enforcement to every Appsmith and n8n donation identity transition.
+- Added report metrics that separate member-linked and anonymous donation counts and dollar amounts while preserving the existing totals.
+
 ## [v1.1.0] - 2026-08-13
 
 ### Added
@@ -31,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - The cross-system specification describes the next architecture; this release does not claim that ERPNext posting, cash-deposit processing, or official Givebutter reporting is deployed.
 - Apply `db/migrations_member_intake_exact_phone_block.sql` after the v1.0.4 identity migrations and before importing the Appsmith export.
-- Apply `db/repair_issue_10_address_duplicates_20260920.sql`, then `db/migrations_v1_1_0_member_address_identity_hardening.sql`, before importing the matching Appsmith export or activating the matching Givebutter workflow.
+- Apply `db/migrations_v1_1_0_member_address_identity_hardening.sql` before importing the matching Appsmith export or activating the matching Givebutter workflow. The production-only Issue #10 repair was executed separately and is intentionally not retained as a repository migration.
 - Coordinated with MushroomProcess `v1.2.0`, RootedOps `v1.1.0`, and BookWorks `bookworks-v3.3.0`.
 
 ## [v1.0.4] - 2026-07-09

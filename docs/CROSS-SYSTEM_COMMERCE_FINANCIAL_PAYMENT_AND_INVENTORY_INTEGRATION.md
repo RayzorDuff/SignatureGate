@@ -338,6 +338,19 @@ Pending Review
  -> Bank Reconciled
 ```
 
+Donor identity is independent from both review status and cash custody:
+
+- `member` contributions reference a real SignatureGate member.
+- `anonymous` is an explicit, deliberate classification for cash and retains
+  `member_id = NULL`; it never creates a synthetic member.
+- `unresolved` is reserved for provider imports awaiting identity review and
+  is not used for manual cash intake.
+
+Anonymous and member-linked cash may eventually share the same deposit batch
+while remaining distinct contribution records with their original audit
+history. Anonymous cash does not produce donor-specific receipt data and does
+not participate in membership or sacrament-release eligibility.
+
 SignatureGate owns the operational cash queue and deposit batch. After
 physical deposit confirmation, SignatureGate sends an idempotent
 business event to RootedOps.
