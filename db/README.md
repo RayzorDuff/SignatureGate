@@ -98,6 +98,19 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 # matching Givebutter n8n workflow.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_ingestion.sql
 
+# Issue #19: shared person and organization identities under the existing
+# member/contributor APIs. Apply after BOTH preceding Issue #19 migrations.
+# This is a one-time migration: back up the DB and do not rerun it.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_shared_identity.sql
+
+# Optional smoke test after the migration. It creates temporary identities,
+# exercises donor-to-member linking and name/contact projection, then ROLLBACKs.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_shared_identity.sql
+
+# Review previously differing names; contact values are shown through the
+# v_person_emails / v_person_phones / v_person_addresses read views.
+sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -c "SELECT person_id, member_id, contributor_id, member_name, contributor_name FROM public.person_identity_review WHERE resolved_at IS NULL ORDER BY created_at;"
+
 # Install the serialized Member Intake creation helper and active-email guard.
 # Apply this before importing the matching Appsmith export.
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_intake_duplicate_scope.sql

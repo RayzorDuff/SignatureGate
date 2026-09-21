@@ -173,6 +173,37 @@ identified contribution.
 
 ## Contributors and members
 
+Issue #19 shared identity migration adds `people` and `organizations`. Every
+member is linked to exactly one person through `members.person_id`, and every
+individual contributor is linked through `contributors.person_id`. Organization
+contributors use `contributors.organization_id`. An individual can be a member,
+donor, ceremony participant, practitioner, or minister without another person
+identity. Anonymous gifts have neither a person nor an organization identity.
+
+`members` remains the membership-specific record (agreements and releases retain
+their existing member IDs). `contributors` remains the donor-party interface for
+Givebutter and Appsmith during the transition. Names and date of birth are
+projected between these records and the shared person identity by database
+triggers. When an existing contributor becomes a member, the existing person ID
+is retained; when a member first gives, the member's person ID is retained.
+The migration stores conflicting pre-existing names in `person_identity_review`
+before choosing the member name for a linked person. Contact methods continue
+in legacy member/contributor tables; the `v_person_emails`, `v_person_phones`,
+and `v_person_addresses` views provide a deduplicated read surface for the
+future UI, but contact edits still need a unified write API. Contact values
+alone never merge two people.
+
+Membership is not a permission to operate Appsmith. An Appsmith account and its
+document/donation reviewer grants must eventually be modeled independently of
+membership. Ceremony participation belongs to a particular ceremony, while a
+practitioner/minister appointment needs its own effective dates and status.
+Those UI and domain tables will follow the shared identity migration; no new
+permission or release entitlement is conferred by a person or organization row.
+
+Starting a contributor/member link does not retag earlier gifts with a member
+ID. Historical `donations.member_id` values remain as previously recorded;
+ending the link does not automatically end membership or rewrite gift history.
+
 `contributors` is the donation-party domain. A contributor may be:
 
 - an individual who is not a member

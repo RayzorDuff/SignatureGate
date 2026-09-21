@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added shared person/organization identities under Issue #19 member and contributor APIs, with identity reconciliation review and combined read views for individual contact methods.
 - Added explicit `member`, `anonymous`, and `unresolved` donation identity states for Issue #17.
 - Added anonymous cash intake and reviewer verification/rejection without creating a synthetic member.
 - Added contributor identities for individuals and organizations, contributor contact/provider identities, and auditable contributor-to-member relationship history for Issue #19.
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Preserved a person's identity when linking an individual contributor to a member, and stopped retroactively adding member IDs to the person's older donations.
 - Expanded the Donations review queue to include member-linked and anonymous pending cash donations alongside unresolved Givebutter imports.
 - Added compatibility enforcement to every Appsmith and n8n donation identity transition.
 - Added report metrics that separate member-linked and anonymous donation counts and dollar amounts while preserving the existing totals.
