@@ -54,6 +54,13 @@ Route Appsmith to NocoDB using the **internal docker hostname / local network pa
 
 ## Import the Appsmith app
 
+For the Issue #19 canonical-identity export, first apply
+`db/migrations_issue_19_canonical_people.sql` and run its rollback-only smoke
+test as described in `db/README.md`. Its member/contributor queries read the
+`member_profiles` and `contributor_profiles` views. The Release - Issue and
+Members - Profile product actions use the MushroomProcess `/pgsql/` n8n
+webhooks; those three PGSQL workflows must be active in n8n.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:

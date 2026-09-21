@@ -181,12 +181,16 @@ donor, ceremony participant, practitioner, or minister without another person
 identity. Anonymous gifts have neither a person nor an organization identity.
 
 `members` remains the membership-specific record (agreements and releases retain
-their existing member IDs). `contributors` remains the donor-party interface for
-Givebutter and Appsmith during the transition. Names and date of birth are
-projected between these records and the shared person identity by database
-triggers. When an existing contributor becomes a member, the existing person ID
-is retained; when a member first gives, the member's person ID is retained.
-The migration stores conflicting pre-existing names in `person_identity_review`
+their existing member IDs). `contributors` remains the donor-party record for
+Givebutter and Appsmith. After `migrations_issue_19_canonical_people.sql`,
+individual names and birth dates are stored only on `people`, and organization
+names only on `organizations`. `member_profiles` and `contributor_profiles` are
+read views for existing UI fields, not additional copies. New records write
+their identity first, followed by the domain record with its person or
+organization ID. When an existing contributor becomes a member, the existing
+person ID is retained; when a member first gives, the member's person ID is
+retained.
+The shared-identity migration stores conflicting pre-existing names in `person_identity_review`
 before choosing the member name for a linked person. Contact methods continue
 in legacy member/contributor tables; the `v_person_emails`, `v_person_phones`,
 and `v_person_addresses` views provide a deduplicated read surface for the

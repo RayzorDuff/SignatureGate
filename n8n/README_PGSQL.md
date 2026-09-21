@@ -90,7 +90,7 @@ Updates `products.storage_location_id` to the named target location.
 5. Test the `/webhook-test/signaturegate/pgsql/products/available` endpoint first.
 6. Test mark shipped against a non-production or reversible product row.
 7. Test mark unshipped with the original storage location.
-8. Update Appsmith webhook URLs from `/airtable/` to `/pgsql/` once validated.
+8. Import the current SignatureGate Appsmith export, which calls the `/pgsql/` webhook paths for product availability, mark shipped, and mark unshipped.
 
 ## Known assumptions
 

@@ -103,8 +103,8 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 # This is a one-time migration: back up the DB and do not rerun it.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_shared_identity.sql
 
-# Optional smoke test after the migration. It creates temporary identities,
-# exercises donor-to-member linking and name/contact projection, then ROLLBACKs.
+# Optional smoke test for the transitional shared-identity schema. Run BEFORE
+# the canonical-people migration below; it exercises the old name projections.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_shared_identity.sql
 
 # Review previously differing names; contact values are shown through the
@@ -119,6 +119,15 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Apply this after migrations_v1_0_4_member_intake_duplicate_scope.sql and before
 # importing the matching Appsmith export.
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_intake_exact_phone_block.sql
+
+# Issue #19: move person names and birth dates, and organization names, out of
+# role tables. Run ONCE after backing up the database, during a brief write
+# pause; import the matching Appsmith export next. Existing role IDs remain.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_canonical_people.sql
+
+# Optional end-to-end smoke test. Synthetic rows are rolled back even when
+# checks pass. Run after the canonical migration, before importing Appsmith.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_canonical_people.sql
 
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
