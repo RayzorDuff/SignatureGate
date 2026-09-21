@@ -8,13 +8,88 @@ import re
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
+def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]) -> None:
+    """Catch drift between Appsmith JS actions and their combined JS objects."""
+    if not {"actionList", "actionCollectionList", "pageList"}.issubset(data):
+        return
+
+    collections = {
+        collection.get("id"): collection
+        for collection in data.get("actionCollectionList", [])
+    }
+    relative_path = path.relative_to(ROOT)
+
+    for collection in collections.values():
+        published = collection.get("publishedCollection", {})
+        unpublished = collection.get("unpublishedCollection", {})
+        if published.get("body") != unpublished.get("body"):
+            failures.append(
+                f"{relative_path}: published/unpublished JS collection drift for "
+                f"{unpublished.get('pageId')}/{unpublished.get('name')}"
+            )
+
+    for action in data.get("actionList", []):
+        if action.get("pluginType") != "JS":
+            continue
+
+        published = action.get("publishedAction", {})
+        unpublished = action.get("unpublishedAction", {})
+        page_id = unpublished.get("pageId")
+        name = unpublished.get("name")
+        collection_id = unpublished.get("collectionId")
+        published_body = published.get("actionConfiguration", {}).get("body")
+        unpublished_body = unpublished.get("actionConfiguration", {}).get("body")
+
+        if published_body != unpublished_body:
+            failures.append(
+                f"{relative_path}: published/unpublished JS action drift for "
+                f"{page_id}/{name}"
+            )
+
+        for label, variant, body in (
+            ("published", published, published_body),
+            ("unpublished", unpublished, unpublished_body),
+        ):
+            if body and variant.get("jsonPathKeys") != [body]:
+                failures.append(
+                    f"{relative_path}: stale {label} JS metadata for {page_id}/{name}"
+                )
+
+        if not collection_id:
+            continue
+        collection = collections.get(collection_id)
+        if not collection:
+            failures.append(
+                f"{relative_path}: missing JS collection {collection_id} for "
+                f"{page_id}/{name}"
+            )
+            continue
+
+        method_pattern = re.compile(
+            rf"^[ \t]*(?:async[ \t]+)?{re.escape(str(name))}[ \t]*\(",
+            re.MULTILINE,
+        )
+        for label, variant_name in (
+            ("published", "publishedCollection"),
+            ("unpublished", "unpublishedCollection"),
+        ):
+            collection_body = collection.get(variant_name, {}).get("body", "")
+            if not method_pattern.search(collection_body):
+                failures.append(
+                    f"{relative_path}: {label} JS collection is missing method "
+                    f"{page_id}/{name}"
+                )
+
+
 def validate_assets() -> None:
     failures = []
     for path in sorted(ROOT.rglob("*.json")):
         if ".git" in path.parts:
             continue
         try:
-            json.loads(path.read_text(encoding="utf-8"))
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                validate_appsmith_export(path, data, failures)
         except Exception as exc:
             failures.append(f"{path.relative_to(ROOT)}: {exc}")
     if failures:

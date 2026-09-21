@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Made Members - Profile load its accessible member selector before running member-scoped queries and ignore stale or malformed stored member IDs.
 - Expanded Audit Log visibility to activity for members assigned to the current facilitator, including releases recorded by another facilitator.
 - Removed stale generated-query callbacks from client-paginated Appsmith tables and corrected release audit entries to store `release_id`.
+- Restored the complete Members - Profile JS object after a generated-export update dropped donation, agreement, upload, and release methods; this also restores facilitator selector loading.
+- Added release validation that rejects missing Appsmith JS methods, published/unpublished JS drift, and stale JS action metadata.
 
 ## [v1.1.0] - 2026-08-13
 
