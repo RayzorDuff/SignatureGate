@@ -341,8 +341,14 @@ Pending Review
 Donor identity is independent from both review status and cash custody:
 
 - `member` contributions reference a real SignatureGate member.
+- `identified` contributions reference an individual or organization
+  `contributor_id`; membership is an optional, separately audited relationship.
 - `anonymous` is an explicit, deliberate classification for cash and retains
-  `member_id = NULL`; it never creates a synthetic member.
+  both `contributor_id = NULL` and `member_id = NULL`; it never creates a
+  synthetic contributor or member.
+- `unresolved` is reserved for provider imports awaiting contributor review.
+- organizations remain contributors and are never represented as synthetic
+  people in `members`.
 - `unresolved` is reserved for provider imports awaiting identity review and
   is not used for manual cash intake.
 

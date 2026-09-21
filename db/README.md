@@ -85,6 +85,14 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Apply before importing the matching Appsmith and Givebutter workflow exports.
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_issue_17_anonymous_cash_donations.sql
 
+# Decouple identified contributors from membership for Issue #19. This adds
+# individual/organization contributors, auditable contributor-member links,
+# contributor contact/provider identities, donation backfill, and compatibility
+# functions for a staged Appsmith/n8n rollout.
+# Apply after the Issue #17 migration and before importing the matching
+# Appsmith export or activating the matching Givebutter workflow.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_identity.sql
+
 # Install the serialized Member Intake creation helper and active-email guard.
 # Apply this before importing the matching Appsmith export.
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_intake_duplicate_scope.sql

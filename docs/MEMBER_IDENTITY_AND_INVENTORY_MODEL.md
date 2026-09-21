@@ -156,17 +156,40 @@ Tables therefore include:
 
 Every donation has an explicit donor identity state:
 
-- `member`: linked to a real member; `member_id` is required
-- `anonymous`: deliberately anonymous cash; `member_id` must remain null
-- `unresolved`: provider import awaiting identity review; `member_id` remains null
+- `identified`: linked to an active individual or organization contributor;
+  `contributor_id` is required
+- `anonymous`: deliberately anonymous cash; `contributor_id` and `member_id`
+  remain null
+- `unresolved`: provider import awaiting identity review; `contributor_id` and
+  `member_id` remain null
 
 Anonymous cash does not create an “Anonymous” member and does not participate
 in membership or sacrament-release eligibility. The identity state is separate
 from donation review status and from the future deposit-custody lifecycle.
 
-Changing an unresolved provider donation to `member` occurs through the
-audited reviewer-link workflow. Anonymous cash is not silently converted to a
-member-linked contribution.
+Changing an unresolved provider donation to `identified` occurs through the
+audited reviewer workflow. Anonymous cash is not silently converted to an
+identified contribution.
+
+## Contributors and members
+
+`contributors` is the donation-party domain. A contributor may be:
+
+- an individual who is not a member
+- an individual linked to a member
+- an organization, which is never itself a member
+
+Contributor email, phone, mailing-address, and provider identity records are
+stored independently from member contact records. `contributor_member_links`
+records the current and historical relationship between an individual
+contributor and a member. Starting or ending that relationship does not delete
+or merge either identity and does not rewrite donation history.
+
+For compatibility during migration, `donations.member_id` is populated when an
+identified contributor has an active member link. New donation logic treats
+`donations.contributor_id` as authoritative. Membership agreements, facilitator
+assignment, and sacrament-release eligibility continue to use `member_id` and
+are not granted merely because a contributor exists.
 
 ## Givebutter workflow
 
@@ -180,9 +203,10 @@ The system therefore uses staged identity resolution.
 
 Matching attempts may use:
 
-- verified email
-- normalized phone
-- legacy member fields
+- provider contact identity
+- contributor email
+- a unique normalized contributor phone
+- member contact identity as a compatibility fallback
 - reviewer intervention
 
 ---
@@ -193,11 +217,13 @@ If a donation cannot be confidently matched:
 
 - donation is inserted with:
   - `status = 'pending_review'`
+  - `contributor_id = NULL`
   - `member_id = NULL`
 
 A donations reviewer may then:
 
-- assign donation to existing member
+- assign the donation to an existing contributor or member
+- create an individual or organization contributor from the provider payload
 - ignore/delete donation
 - create new member from donation
 
@@ -209,7 +235,10 @@ When creating a member from a donation:
 
 The system may automatically create:
 
+- individual contributor record
 - member record
+- contributor-member link
+- contributor contact and provider-identity records
 - member_emails records
 - member_phones records
 - member_addresses records
