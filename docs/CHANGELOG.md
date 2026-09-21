@@ -25,6 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Updated the existing Appsmith Donations page—without adding pages or widgets—to select contributors, create individual/organization contributors during review, create a linked member, and record contributor cash donations.
 - Updated donation reassignment and reports for the `identified` donor state while retaining member-linked reporting as the identified subset with a `member_id`.
 
+### Fixed
+
+- Prevented contributor/member selector values on Donations from overwriting the global member-profile UUID.
+- Made Members - Profile load its accessible member selector before running member-scoped queries and ignore stale or malformed stored member IDs.
+- Expanded Audit Log visibility to activity for members assigned to the current facilitator, including releases recorded by another facilitator.
+- Removed stale generated-query callbacks from client-paginated Appsmith tables and corrected release audit entries to store `release_id`.
+
 ## [v1.1.0] - 2026-08-13
 
 ### Added

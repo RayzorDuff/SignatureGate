@@ -235,7 +235,7 @@ When adding or modifying Appsmith workflows:
 ## Donations Workflow
 
 ### Cash Donations
-1. Facilitator selects a member or the explicit `Anonymous cash donor` option
+1. Facilitator selects a contributor/member identity or the explicit `Anonymous cash donor` option
 2. Facilitator creates a cash donation entry (`pending_review`)
 3. Anonymous cash retains `member_id = NULL`; no synthetic member is created
 4. Donations reviewer verifies or rejects the entry
@@ -253,9 +253,17 @@ agreement or grant sacrament-release eligibility.
 The contributor/member selector uses prefixed values (`contributor:<uuid>` and
 `member:<uuid>`) so the database can preserve compatibility while treating
 `contributor_id` as the authoritative donation identity.
+
+The current export creates individual or organization contributors only while
+resolving an unresolved Givebutter donation. Standalone contributor creation,
+contact maintenance, and starting or ending a contributor-member link require
+the planned contributor administration UI; they are not exposed by the current
+Donations page.
+
 - Automatically ingested via n8n webhook
 - Automatically verified
-- Member is matched or created by email
+- Contributor is matched by provider identity or a unique email/phone, with a
+  member-contact compatibility fallback
 - Audit entry written on receipt
 
 ### Permissions
