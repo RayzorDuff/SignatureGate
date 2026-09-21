@@ -242,6 +242,17 @@ When adding or modifying Appsmith workflows:
 5. Audit log records both actions
 
 ### Givebutter Donations
+
+Issue #19 makes contributor identity independent of membership. In the pending
+review queue, a donations reviewer can assign a Givebutter donation to an
+existing contributor or member, create a new individual contributor, create a
+new organization contributor, or create a new member with a linked individual
+contributor. Creating or selecting a contributor does not create a membership
+agreement or grant sacrament-release eligibility.
+
+The contributor/member selector uses prefixed values (`contributor:<uuid>` and
+`member:<uuid>`) so the database can preserve compatibility while treating
+`contributor_id` as the authoritative donation identity.
 - Automatically ingested via n8n webhook
 - Automatically verified
 - Member is matched or created by email

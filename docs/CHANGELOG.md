@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Added anonymous cash intake and reviewer verification/rejection without creating a synthetic member.
 - Added contributor identities for individuals and organizations, contributor contact/provider identities, and auditable contributor-to-member relationship history for Issue #19.
 - Added controlled database operations to resolve provider donations to contributors, create contributors or members from pending donations, and start/end contributor-member links.
+- Added contributor-first provider matching and idempotent Givebutter ingestion using provider contact identity, unique contributor email/phone, and member-contact fallback.
 
 ### Changed
 
@@ -21,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Added report metrics that separate member-linked and anonymous donation counts and dollar amounts while preserving the existing totals.
 - Migrated donation identity from the transitional `member` state to `identified`; `member_id` remains a compatibility projection while `contributor_id` is authoritative for identified donations.
 - Preserved staged deployment compatibility so the Issue #17 Appsmith and n8n exports can continue writing member-linked donations while Issue #19 UI/workflow changes are deployed.
+- Updated the existing Appsmith Donations page—without adding pages or widgets—to select contributors, create individual/organization contributors during review, create a linked member, and record contributor cash donations.
+- Updated donation reassignment and reports for the `identified` donor state while retaining member-linked reporting as the identified subset with a `member_id`.
 
 ## [v1.1.0] - 2026-08-13
 

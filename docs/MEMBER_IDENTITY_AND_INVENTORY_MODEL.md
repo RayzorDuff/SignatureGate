@@ -209,6 +209,17 @@ Matching attempts may use:
 - member contact identity as a compatibility fallback
 - reviewer intervention
 
+Provider ingestion is idempotent on `(provider, provider_reference)`. Matching
+is performed by database functions rather than duplicated in the webhook:
+
+1. exact provider contact identity
+2. exactly one active contributor email
+3. exactly one active member email (with lazy contributor creation)
+4. exactly one active contributor phone
+5. exactly one active member phone (with lazy contributor creation)
+
+Ambiguous shared email or phone values do not auto-match and remain in review.
+
 ---
 
 ## Pending-review donations

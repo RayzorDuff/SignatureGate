@@ -257,7 +257,7 @@ Two-party signing (Member + Facilitator) is implemented via n8n + Documenso.
 SignatureGate supports tracking **voluntary donations** independently of sacrament release.
 
 - **Cash donations** are entered manually by facilitators and require reviewer verification.
-- **Givebutter donations** are ingested automatically via webhook and marked verified on receipt.
+- **Givebutter donations** are ingested automatically via webhook; confident contributor matches are verified and ambiguous identities enter review.
 - Donations are **never** used as a prerequisite or gate for sacrament release.
 
 All donation lifecycle events are recorded in the audit log.
@@ -269,26 +269,30 @@ Givebutter donations are no longer allowed to automatically create new members s
 Incoming Givebutter donations now follow this flow:
 
 1. Attempt identity resolution using:
-   - member_emails
-   - member_phones
-   - legacy members.email
-   - legacy members.phone
+   - Givebutter contact identity
+   - a unique contributor email or normalized phone
+   - a unique member email or normalized phone as a compatibility fallback
 
 2. If no confident match exists:
    - donation is inserted with:
      - `status = 'pending_review'`
+     - `contributor_id = NULL`
      - `member_id = NULL`
 
 3. Donations reviewers may:
-   - assign donation to existing member
+   - assign donation to an existing contributor or member
+   - create a new individual contributor
+   - create a new organization contributor
    - ignore/delete donation
-   - create a new member from donation data
+   - create a new member and linked individual contributor from donation data
 
 ### Donation-created members
 
 When a reviewer creates a member from a pending donation:
 
 - member record is created
+- contributor record and contributor-member link are created
+- contributor contact and provider identities are retained
 - emails are inserted into member_emails
 - phones are inserted into member_phones
 - addresses are inserted into member_addresses

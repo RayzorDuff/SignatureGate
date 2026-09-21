@@ -93,6 +93,11 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Appsmith export or activating the matching Givebutter workflow.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_identity.sql
 
+# Install contributor-first matching and the idempotent provider-ingestion API.
+# Apply after the Issue #19 identity migration and before activating the
+# matching Givebutter n8n workflow.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_ingestion.sql
+
 # Install the serialized Member Intake creation helper and active-email guard.
 # Apply this before importing the matching Appsmith export.
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_intake_duplicate_scope.sql

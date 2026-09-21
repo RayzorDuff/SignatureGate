@@ -171,7 +171,7 @@ Donations are tracked as first-class records within SignatureGate and are intent
 
 ### Processing Model
 - Cash donations require reviewer verification
-- Givebutter donations are verified automatically on receipt
+- Givebutter donations with a confident contributor match are verified automatically; ambiguous identities enter review
 - Donations are never used as gating criteria for sacrament release
 
 ### Webhook Flow (Givebutter)
@@ -181,9 +181,8 @@ Givebutter → n8n webhook → SignatureGate Postgres
 n8n responsibilities:
 - Validate webhook
 - Normalize donor identity
-- Match or create member
-- Insert donation (verified)
-- Write audit log entry
+- Call the contributor-first, idempotent database ingestion API
+- Return the resulting verified or pending-review status
 
 ## Donations & External Funding Sources
 
@@ -201,8 +200,7 @@ Givebutter → n8n → SignatureGate (Postgres)
 n8n responsibilities:
 - Validate webhook (optional shared secret)
 - Normalize donor identity
-- Match or create member by email
-- Insert donation as verified
-- Write audit log entry
+- Submit provider identity, transaction identity, and raw payload to Postgres
+- Let database functions match a contributor or retain the donation for review
 
 Donations do not participate in release gating logic.

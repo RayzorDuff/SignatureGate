@@ -349,6 +349,9 @@ Donor identity is independent from both review status and cash custody:
 - `unresolved` is reserved for provider imports awaiting contributor review.
 - organizations remain contributors and are never represented as synthetic
   people in `members`.
+- provider-native contributor IDs and provider transaction references are
+  retained separately; transaction references are idempotency keys, while
+  contact identities are reusable donor-matching keys.
 - `unresolved` is reserved for provider imports awaiting identity review and
   is not used for manual cash intake.
 
