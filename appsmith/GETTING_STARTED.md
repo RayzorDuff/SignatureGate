@@ -92,8 +92,19 @@ contact blank only when the contributor is known to be distinct. A person
 already present in Individual Profile can be enabled as a contributor by a
 directory manager who is also a donations reviewer. Both operations require
 a reason and write an audit entry. Neither grants membership or release
-eligibility. This phase does not add company-contact editing or membership
-enrollment to the new profiles.
+eligibility. The contributor intake phase does not add company-contact editing
+or membership enrollment to the new profiles.
+
+After applying `db/migrations_issue_19_contributor_contacts.sql` and its
+rollback-only verification, import the newer Appsmith export. A donations
+reviewer can then add or archive contributor-purpose email and phone contacts
+from either Individual Profile or Company Profile. Adding a contact makes it
+primary for its type; archiving the primary promotes the oldest remaining
+active contact. Each action requires a reason and is audited. A contact
+already owned by a different person or company is refused until that shared
+contact has been reviewed. Member-purpose email and phone records remain on
+the existing Members - Profile workflow; these contributor controls never
+edit those membership contacts.
 
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.

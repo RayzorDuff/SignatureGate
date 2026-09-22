@@ -171,6 +171,15 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 # and company creation, contact synchronization, enrollment, and auditing.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_directory_intake.sql
 
+# Issue #19 contributor-purpose contact maintenance on Individual and Company
+# Profile. Apply after directory intake, before importing the matching export.
+# Member-purpose contacts retain their existing edit path.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_contacts.sql
+
+# Rollback-only checks for permissions, contact ownership, primary selection,
+# legacy-to-party synchronization, archiving, and audit entries.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_contacts.sql
+
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
 ```

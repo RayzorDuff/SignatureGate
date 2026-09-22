@@ -302,7 +302,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -313,7 +313,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -329,7 +329,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qCompanyProfile.run(), qCompanyContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19CompanyProfileFlows",
         "pageId": "Company Profile",
         "pluginId": "js-plugin",
@@ -340,7 +340,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qCompanyProfile.run(), qCompanyContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19CompanyProfileFlows",
         "pageId": "Company Profile",
         "pluginId": "js-plugin",
@@ -22232,7 +22232,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22261,7 +22261,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22273,7 +22273,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22302,7 +22302,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22321,7 +22321,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qCompanyProfile.run(), qCompanyContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22350,7 +22350,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qCompanyProfile.run(), qCompanyContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22362,7 +22362,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qCompanyProfile.run(), qCompanyContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22391,7 +22391,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qCompanyProfile.run(), qCompanyContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -23287,6 +23287,802 @@
         "messages": [],
         "name": "qEnableProfileContributor",
         "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_5f9160dd-bd2d-4b3a-b827-e59a91e35cf7",
+      "id": "Individual Profile_qIndividualCanEditDonorContacts",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'donations_reviewer') AS can_edit;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qIndividualCanEditDonorContacts",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'donations_reviewer') AS can_edit;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qIndividualCanEditDonorContacts",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_3ee22e63-8a17-4f74-9542-48456a9c6081",
+      "id": "Individual Profile_qIndividualDonorContacts",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT contact_id::text AS contact_id, contact_kind, contact_value, is_primary, is_verified FROM public.issue19_contributor_contacts({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid) ORDER BY contact_kind, is_primary DESC, contact_value;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualDonorContacts",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT contact_id::text AS contact_id, contact_kind, contact_value, is_primary, is_verified FROM public.issue19_contributor_contacts({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid) ORDER BY contact_kind, is_primary DESC, contact_value;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualDonorContacts",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_41535a7c-ddb0-47bc-b2b9-d0c93d322cea",
+      "id": "Individual Profile_qAddIndividualDonorContact",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_add_contributor_contact({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.kind }}, {{ this.params.value }}, {{ this.params.reason }})::text AS contact_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.kind ",
+          " this.params.value ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qAddIndividualDonorContact",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_add_contributor_contact({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.kind }}, {{ this.params.value }}, {{ this.params.reason }})::text AS contact_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.kind ",
+          " this.params.value ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qAddIndividualDonorContact",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_30c821ed-5e8c-46dc-95b5-f278df5ae64d",
+      "id": "Individual Profile_qArchiveIndividualDonorContact",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_archive_contributor_contact({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.kind }}, {{ this.params.id }}::uuid, {{ this.params.reason }}) AS archived;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.kind ",
+          " this.params.id ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qArchiveIndividualDonorContact",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_archive_contributor_contact({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.kind }}, {{ this.params.id }}::uuid, {{ this.params.reason }}) AS archived;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.kind ",
+          " this.params.id ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qArchiveIndividualDonorContact",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_eeb50746-c6ca-4907-b2f4-11bdb4fdf65d",
+      "id": "Company Profile_qCompanyCanEditDonorContacts",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'donations_reviewer') AS can_edit;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qCompanyCanEditDonorContacts",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'donations_reviewer') AS can_edit;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qCompanyCanEditDonorContacts",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_8b82a421-7282-486d-bf20-3887758362d1",
+      "id": "Company Profile_qCompanyDonorContacts",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT contact_id::text AS contact_id, contact_kind, contact_value, is_primary, is_verified FROM public.issue19_contributor_contacts({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid) ORDER BY contact_kind, is_primary DESC, contact_value;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qCompanyDonorContacts",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT contact_id::text AS contact_id, contact_kind, contact_value, is_primary, is_verified FROM public.issue19_contributor_contacts({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid) ORDER BY contact_kind, is_primary DESC, contact_value;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qCompanyDonorContacts",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_d69474fb-2fef-4ab3-85a6-6738c86bfed3",
+      "id": "Company Profile_qAddCompanyDonorContact",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_add_contributor_contact({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.kind }}, {{ this.params.value }}, {{ this.params.reason }})::text AS contact_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null ",
+          " this.params.kind ",
+          " this.params.value ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qAddCompanyDonorContact",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_add_contributor_contact({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.kind }}, {{ this.params.value }}, {{ this.params.reason }})::text AS contact_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null ",
+          " this.params.kind ",
+          " this.params.value ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qAddCompanyDonorContact",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_45da7139-038d-4ec2-8c37-5e0ad1a5b04c",
+      "id": "Company Profile_qArchiveCompanyDonorContact",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_archive_contributor_contact({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.kind }}, {{ this.params.id }}::uuid, {{ this.params.reason }}) AS archived;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null ",
+          " this.params.kind ",
+          " this.params.id ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qArchiveCompanyDonorContact",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_archive_contributor_contact({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.kind }}, {{ this.params.id }}::uuid, {{ this.params.reason }}) AS archived;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null ",
+          " this.params.kind ",
+          " this.params.id ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qArchiveCompanyDonorContact",
+        "pageId": "Company Profile",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -74445,7 +75241,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 97,
+              "bottomRow": 132,
               "canExtend": true,
               "children": [
                 {
@@ -75689,6 +76485,529 @@
                       "key": "isVisible"
                     }
                   ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 104,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "9b79996757",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 104,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 100,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 104,
+                  "originalTopRow": 100,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Contributor contacts (email and phone)",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 100,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "2aee778aae",
+                  "widgetName": "txtIndividualDonorContactsHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 108,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "a88013f642",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 108,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 104,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 108,
+                  "originalTopRow": 104,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "New contacts become primary for contributions. Membership contacts are managed separately.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 104,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "d785bf96d2",
+                  "widgetName": "txtIndividualDonorContactsNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 115,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "email",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "f5d3402f9a",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contact type",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 115,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 109,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 115,
+                  "originalTopRow": 109,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": [
+                    {
+                      "label": "Email",
+                      "value": "email"
+                    },
+                    {
+                      "label": "Phone",
+                      "value": "phone"
+                    }
+                  ],
+                  "topRow": 109,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "d7210bf859",
+                  "widgetName": "selIndividualDonorContactKind"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 115,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "413efd9c13",
+                  "label": "Contact value",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 115,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 109,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 115,
+                  "originalTopRow": 109,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 109,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "c00e73dca0",
+                  "widgetName": "inpIndividualDonorContactValue",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 122,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "1893bc63db",
+                  "label": "Reason for contact change",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 122,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 116,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 122,
+                  "originalTopRow": 116,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 116,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "552545a574",
+                  "widgetName": "inpIndividualDonorContactReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 121,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAddIndividualDonorContact.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "d352fbe99b",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 121,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 117,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpIndividualDonorContactReason.text?.trim(); const value = inpIndividualDonorContactValue.text?.trim(); if (!reason || !value) { showAlert('Enter a contact and reason.', 'warning'); return; } const result = await qAddIndividualDonorContact.run({ kind: selIndividualDonorContactKind.selectedOptionValue, value, reason }); if (!result?.[0]?.contact_id) throw new Error('No contact was returned.'); await Promise.all([qIndividualDonorContacts.run(), qIndividualContacts.run(), qIndividualProfile.run()]); showAlert('Contributor contact added.', 'success'); } catch (e) { showAlert('Contact change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 121,
+                  "originalTopRow": 117,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Add contact",
+                  "topRow": 117,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "60c5cb966a",
+                  "widgetName": "btnAddIndividualDonorContact"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 129,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "2b179a5037",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contributor contact to archive",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 129,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 123,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 129,
+                  "originalTopRow": 123,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "serverSideFiltering": false,
+                  "sourceData": "{{ (qIndividualDonorContacts.data || []).map(c => ({label: (c.contact_kind === 'email' ? 'Email: ' : 'Phone: ') + c.contact_value + (c.is_primary ? ' (primary)' : ''), value: c.contact_id})) }}",
+                  "topRow": 123,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "f0efb783a2",
+                  "widgetName": "selIndividualDonorContactToArchive"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 128,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qArchiveIndividualDonorContact.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "d999787ad5",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 128,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 124,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpIndividualDonorContactReason.text?.trim(); const id = selIndividualDonorContactToArchive.selectedOptionValue; if (!reason || !id) { showAlert('Select a contact and enter a reason.', 'warning'); return; } const entry = (qIndividualDonorContacts.data || []).find(c => c.contact_id === id); if (!entry) throw new Error('Refresh the profile and select the contact again.'); const result = await qArchiveIndividualDonorContact.run({ kind: entry.contact_kind, id, reason }); if (!result?.[0]?.archived) throw new Error('The contact was not archived.'); await Promise.all([qIndividualDonorContacts.run(), qIndividualContacts.run(), qIndividualProfile.run()]); showAlert('Contributor contact archived.', 'success'); } catch (e) { showAlert('Contact archive failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 128,
+                  "originalTopRow": 124,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Archive contact",
+                  "topRow": 124,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "2fb90efbe9",
+                  "widgetName": "btnArchiveIndividualDonorContact"
                 }
               ],
               "containerStyle": "none",
@@ -75743,7 +77062,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 97,
+              "bottomRow": 132,
               "canExtend": true,
               "children": [
                 {
@@ -76987,6 +78306,529 @@
                       "key": "isVisible"
                     }
                   ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 104,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "9b79996757",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 104,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 100,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 104,
+                  "originalTopRow": 100,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Contributor contacts (email and phone)",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 100,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "2aee778aae",
+                  "widgetName": "txtIndividualDonorContactsHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 108,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "a88013f642",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 108,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 104,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 108,
+                  "originalTopRow": 104,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "New contacts become primary for contributions. Membership contacts are managed separately.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 104,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "d785bf96d2",
+                  "widgetName": "txtIndividualDonorContactsNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 115,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "email",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "f5d3402f9a",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contact type",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 115,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 109,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 115,
+                  "originalTopRow": 109,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": [
+                    {
+                      "label": "Email",
+                      "value": "email"
+                    },
+                    {
+                      "label": "Phone",
+                      "value": "phone"
+                    }
+                  ],
+                  "topRow": 109,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "d7210bf859",
+                  "widgetName": "selIndividualDonorContactKind"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 115,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "413efd9c13",
+                  "label": "Contact value",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 115,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 109,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 115,
+                  "originalTopRow": 109,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 109,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "c00e73dca0",
+                  "widgetName": "inpIndividualDonorContactValue",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 122,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "1893bc63db",
+                  "label": "Reason for contact change",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 122,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 116,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 122,
+                  "originalTopRow": 116,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 116,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "552545a574",
+                  "widgetName": "inpIndividualDonorContactReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 121,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAddIndividualDonorContact.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "d352fbe99b",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 121,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 117,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpIndividualDonorContactReason.text?.trim(); const value = inpIndividualDonorContactValue.text?.trim(); if (!reason || !value) { showAlert('Enter a contact and reason.', 'warning'); return; } const result = await qAddIndividualDonorContact.run({ kind: selIndividualDonorContactKind.selectedOptionValue, value, reason }); if (!result?.[0]?.contact_id) throw new Error('No contact was returned.'); await Promise.all([qIndividualDonorContacts.run(), qIndividualContacts.run(), qIndividualProfile.run()]); showAlert('Contributor contact added.', 'success'); } catch (e) { showAlert('Contact change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 121,
+                  "originalTopRow": 117,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Add contact",
+                  "topRow": 117,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "60c5cb966a",
+                  "widgetName": "btnAddIndividualDonorContact"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 129,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "2b179a5037",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contributor contact to archive",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 129,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 123,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 129,
+                  "originalTopRow": 123,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "serverSideFiltering": false,
+                  "sourceData": "{{ (qIndividualDonorContacts.data || []).map(c => ({label: (c.contact_kind === 'email' ? 'Email: ' : 'Phone: ') + c.contact_value + (c.is_primary ? ' (primary)' : ''), value: c.contact_id})) }}",
+                  "topRow": 123,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "f0efb783a2",
+                  "widgetName": "selIndividualDonorContactToArchive"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 128,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qArchiveIndividualDonorContact.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "d999787ad5",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 128,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 124,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpIndividualDonorContactReason.text?.trim(); const id = selIndividualDonorContactToArchive.selectedOptionValue; if (!reason || !id) { showAlert('Select a contact and enter a reason.', 'warning'); return; } const entry = (qIndividualDonorContacts.data || []).find(c => c.contact_id === id); if (!entry) throw new Error('Refresh the profile and select the contact again.'); const result = await qArchiveIndividualDonorContact.run({ kind: entry.contact_kind, id, reason }); if (!result?.[0]?.archived) throw new Error('The contact was not archived.'); await Promise.all([qIndividualDonorContacts.run(), qIndividualContacts.run(), qIndividualProfile.run()]); showAlert('Contributor contact archived.', 'success'); } catch (e) { showAlert('Contact archive failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 128,
+                  "originalTopRow": 124,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Archive contact",
+                  "topRow": 124,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "2fb90efbe9",
+                  "widgetName": "btnArchiveIndividualDonorContact"
                 }
               ],
               "containerStyle": "none",
@@ -77045,7 +78887,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 45,
+              "bottomRow": 79,
               "canExtend": true,
               "children": [
                 {
@@ -77567,6 +79409,529 @@
                   "version": 1,
                   "widgetId": "bca6595150",
                   "widgetName": "btnBackToDirectory"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 51,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "122e3b690c",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 51,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 47,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 51,
+                  "originalTopRow": 47,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Contributor contacts (email and phone)",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 47,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "bdf42d1b17",
+                  "widgetName": "txtCompanyDonorContactsHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 55,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "102d6998b8",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 55,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 51,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 55,
+                  "originalTopRow": 51,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "New contacts become primary for contributions. Membership contacts are managed separately.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 51,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "6fea0e3fbc",
+                  "widgetName": "txtCompanyDonorContactsNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 62,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "email",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "f51d4ca24f",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contact type",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 62,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 56,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 62,
+                  "originalTopRow": 56,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": [
+                    {
+                      "label": "Email",
+                      "value": "email"
+                    },
+                    {
+                      "label": "Phone",
+                      "value": "phone"
+                    }
+                  ],
+                  "topRow": 56,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "37d24ab3fd",
+                  "widgetName": "selCompanyDonorContactKind"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 62,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "9483364084",
+                  "label": "Contact value",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 62,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 56,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 62,
+                  "originalTopRow": 56,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 56,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "141ac7c7ea",
+                  "widgetName": "inpCompanyDonorContactValue",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 69,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "7ad4e45658",
+                  "label": "Reason for contact change",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 69,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 63,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 69,
+                  "originalTopRow": 63,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 63,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "0ce215418d",
+                  "widgetName": "inpCompanyDonorContactReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 68,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAddCompanyDonorContact.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "bf397b0bb9",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 68,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 64,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpCompanyDonorContactReason.text?.trim(); const value = inpCompanyDonorContactValue.text?.trim(); if (!reason || !value) { showAlert('Enter a contact and reason.', 'warning'); return; } const result = await qAddCompanyDonorContact.run({ kind: selCompanyDonorContactKind.selectedOptionValue, value, reason }); if (!result?.[0]?.contact_id) throw new Error('No contact was returned.'); await Promise.all([qCompanyDonorContacts.run(), qCompanyContacts.run(), qCompanyProfile.run()]); showAlert('Contributor contact added.', 'success'); } catch (e) { showAlert('Contact change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 68,
+                  "originalTopRow": 64,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Add contact",
+                  "topRow": 64,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "15f3b9e9e1",
+                  "widgetName": "btnAddCompanyDonorContact"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 76,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "7ac886e503",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contributor contact to archive",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 76,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 70,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 76,
+                  "originalTopRow": 70,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "serverSideFiltering": false,
+                  "sourceData": "{{ (qCompanyDonorContacts.data || []).map(c => ({label: (c.contact_kind === 'email' ? 'Email: ' : 'Phone: ') + c.contact_value + (c.is_primary ? ' (primary)' : ''), value: c.contact_id})) }}",
+                  "topRow": 70,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "5fc0f94737",
+                  "widgetName": "selCompanyDonorContactToArchive"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 75,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qArchiveCompanyDonorContact.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "c7238955eb",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 75,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 71,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpCompanyDonorContactReason.text?.trim(); const id = selCompanyDonorContactToArchive.selectedOptionValue; if (!reason || !id) { showAlert('Select a contact and enter a reason.', 'warning'); return; } const entry = (qCompanyDonorContacts.data || []).find(c => c.contact_id === id); if (!entry) throw new Error('Refresh the profile and select the contact again.'); const result = await qArchiveCompanyDonorContact.run({ kind: entry.contact_kind, id, reason }); if (!result?.[0]?.archived) throw new Error('The contact was not archived.'); await Promise.all([qCompanyDonorContacts.run(), qCompanyContacts.run(), qCompanyProfile.run()]); showAlert('Contributor contact archived.', 'success'); } catch (e) { showAlert('Contact archive failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 75,
+                  "originalTopRow": 71,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Archive contact",
+                  "topRow": 71,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "b15b6981cb",
+                  "widgetName": "btnArchiveCompanyDonorContact"
                 }
               ],
               "containerStyle": "none",
@@ -77621,7 +79986,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 45,
+              "bottomRow": 79,
               "canExtend": true,
               "children": [
                 {
@@ -78143,6 +80508,529 @@
                   "version": 1,
                   "widgetId": "bca6595150",
                   "widgetName": "btnBackToDirectory"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 51,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "122e3b690c",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 51,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 47,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 51,
+                  "originalTopRow": 47,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Contributor contacts (email and phone)",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 47,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "bdf42d1b17",
+                  "widgetName": "txtCompanyDonorContactsHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 55,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "102d6998b8",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 55,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 51,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 55,
+                  "originalTopRow": 51,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "New contacts become primary for contributions. Membership contacts are managed separately.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 51,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "6fea0e3fbc",
+                  "widgetName": "txtCompanyDonorContactsNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 62,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "email",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "f51d4ca24f",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contact type",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 62,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 56,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 62,
+                  "originalTopRow": 56,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": [
+                    {
+                      "label": "Email",
+                      "value": "email"
+                    },
+                    {
+                      "label": "Phone",
+                      "value": "phone"
+                    }
+                  ],
+                  "topRow": 56,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "37d24ab3fd",
+                  "widgetName": "selCompanyDonorContactKind"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 62,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "9483364084",
+                  "label": "Contact value",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 62,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 56,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 62,
+                  "originalTopRow": 56,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 56,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "141ac7c7ea",
+                  "widgetName": "inpCompanyDonorContactValue",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 69,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "7ad4e45658",
+                  "label": "Reason for contact change",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 69,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 63,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 69,
+                  "originalTopRow": 63,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 63,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "0ce215418d",
+                  "widgetName": "inpCompanyDonorContactReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 68,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAddCompanyDonorContact.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "bf397b0bb9",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 68,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 64,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpCompanyDonorContactReason.text?.trim(); const value = inpCompanyDonorContactValue.text?.trim(); if (!reason || !value) { showAlert('Enter a contact and reason.', 'warning'); return; } const result = await qAddCompanyDonorContact.run({ kind: selCompanyDonorContactKind.selectedOptionValue, value, reason }); if (!result?.[0]?.contact_id) throw new Error('No contact was returned.'); await Promise.all([qCompanyDonorContacts.run(), qCompanyContacts.run(), qCompanyProfile.run()]); showAlert('Contributor contact added.', 'success'); } catch (e) { showAlert('Contact change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 68,
+                  "originalTopRow": 64,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Add contact",
+                  "topRow": 64,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "15f3b9e9e1",
+                  "widgetName": "btnAddCompanyDonorContact"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 76,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "7ac886e503",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contributor contact to archive",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 76,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 70,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 76,
+                  "originalTopRow": 70,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "serverSideFiltering": false,
+                  "sourceData": "{{ (qCompanyDonorContacts.data || []).map(c => ({label: (c.contact_kind === 'email' ? 'Email: ' : 'Phone: ') + c.contact_value + (c.is_primary ? ' (primary)' : ''), value: c.contact_id})) }}",
+                  "topRow": 70,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "5fc0f94737",
+                  "widgetName": "selCompanyDonorContactToArchive"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 75,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qArchiveCompanyDonorContact.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "c7238955eb",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 75,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 71,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpCompanyDonorContactReason.text?.trim(); const id = selCompanyDonorContactToArchive.selectedOptionValue; if (!reason || !id) { showAlert('Select a contact and enter a reason.', 'warning'); return; } const entry = (qCompanyDonorContacts.data || []).find(c => c.contact_id === id); if (!entry) throw new Error('Refresh the profile and select the contact again.'); const result = await qArchiveCompanyDonorContact.run({ kind: entry.contact_kind, id, reason }); if (!result?.[0]?.archived) throw new Error('The contact was not archived.'); await Promise.all([qCompanyDonorContacts.run(), qCompanyContacts.run(), qCompanyProfile.run()]); showAlert('Contributor contact archived.', 'success'); } catch (e) { showAlert('Contact archive failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 75,
+                  "originalTopRow": 71,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Archive contact",
+                  "topRow": 71,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "b15b6981cb",
+                  "widgetName": "btnArchiveCompanyDonorContact"
                 }
               ],
               "containerStyle": "none",

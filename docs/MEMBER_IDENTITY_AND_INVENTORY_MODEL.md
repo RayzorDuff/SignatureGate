@@ -245,6 +245,16 @@ the reviewer investigates; shared contacts can be added through a later
 explicit contact workflow. Both actions require a reason, write to audit_log,
 and do not create a member or agreement.
 
+`migrations_issue_19_contributor_contacts.sql` adds contributor-purpose email
+and phone maintenance to Individual and Company Profile. The functions write
+the contributor contact source rows, whose triggers project contact changes
+into `party_contacts` for the owning person or organization. Donor reviewers
+may add or archive these contacts with an audit reason. Newly added contacts
+become primary; archiving a primary promotes the oldest remaining active
+contact of its kind. Existing member-purpose contacts retain their separate
+agreement and mailing-list path. An active contact owned by another party
+requires explicit review before it can be shared.
+
 Membership is not a permission to operate Appsmith. Person-owned reviewer
 roles and Appsmith account ownership are now separate from membership; older
 operational pages and APIs still need to adopt those permissions. Ceremony
