@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Restored visible Directory and profile contact columns in Appsmith and corrected the Individual Profile role selector's option keys (#19).
+
 ### Added
 
 - Added person-owned practitioner/reviewer roles, explicit Appsmith account ownership, audited directory-manager role controls on Individual Profile, and rollback-only permission checks for Issue #19.
