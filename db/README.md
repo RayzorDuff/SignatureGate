@@ -129,6 +129,17 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 # checks pass. Run after the canonical migration, before importing Appsmith.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_canonical_people.sql
 
+# Issue #19 contact foundation: backfill person/organization-owned email, phone,
+# and address records, and synchronize the existing member/contributor contact
+# writes. Apply ONCE after canonical_people.sql, before the Directory UI phase.
+# Keep the legacy contact tables: agreement and mailing-list rows still point
+# at member_email_id and the current Appsmith/n8n workflows write those tables.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_party_contacts.sql
+
+# Rollback-only integration check for shared, separate, archived, edited, and
+# reassigned contact owners; run after the contact foundation migration.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_party_contacts.sql
+
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
 ```

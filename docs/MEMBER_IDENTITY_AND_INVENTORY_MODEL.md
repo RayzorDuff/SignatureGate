@@ -197,6 +197,21 @@ and `v_person_addresses` views provide a deduplicated read surface for the
 future UI, but contact edits still need a unified write API. Contact values
 alone never merge two people.
 
+The next Issue #19 migration, `migrations_issue_19_party_contacts.sql`,
+backfills `party_contacts` and `party_contact_sources` and keeps them current
+when the existing member/contributor contact workflows write, archive, or
+reassign a row. Each contact belongs to exactly one person or organization;
+identical values owned by different parties remain separate. Identical
+member/contributor contacts for the *same* person share a canonical contact
+with distinct source preferences. The new `v_party_contacts` view is the
+directory/profile read surface. Member/contributor contact tables remain
+temporarily writable with copied contact values because agreement and
+Listmonk foreign keys depend on member email IDs and current Appsmith/n8n
+workflows still use those IDs. Moving all consumers and editing directly
+through a controlled party-contact API is a later phase; the existing
+`v_person_emails`/`v_person_phones`/`v_person_addresses` views still reflect
+the legacy source rows in this phase.
+
 Membership is not a permission to operate Appsmith. An Appsmith account and its
 document/donation reviewer grants must eventually be modeled independently of
 membership. Ceremony participation belongs to a particular ceremony, while a

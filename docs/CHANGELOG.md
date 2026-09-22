@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added Issue #19 person/organization-owned contact records and source mappings, plus a rollback-only integration check for matching, archiving, and owner changes.
 - Added canonical person and organization identity migration and role profile views, with a rollback-only integration smoke test.
 - Added shared person/organization identities under Issue #19 member and contributor APIs, with identity reconciliation review and combined read views for individual contact methods.
 - Added explicit `member`, `anonymous`, and `unresolved` donation identity states for Issue #17.
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Existing member and contributor contact writes now feed the shared party-contact read model; agreement and Listmonk references retain their existing member email IDs during the UI migration.
 - Stored individual names and dates of birth only in `people` and organization names only in `organizations`; Appsmith and the Documenso release workflow read the role profile views.
 - Switched Appsmith product availability and shipment endpoints to the existing MushroomProcess PGSQL n8n workflows.
 - Preserved a person's identity when linking an individual contributor to a member, and stopped retroactively adding member IDs to the person's older donations.
