@@ -289,6 +289,17 @@ Individual Profile and Company Profile. Donation attribution continues to use
 `contributor_id`; profile display does not recreate a member relationship or
 change any donation, contact, or provider identity.
 
+`migrations_issue_19_contributor_status.sql` lets a directory manager who is
+also a donations reviewer archive or reactivate an individual or organization
+contributor. The status change requires a reason and writes an audit record.
+Archiving removes the contributor from active intake and identity matching;
+the person or organization, contributor contacts, external identities,
+donations, and contributor/member identity links are retained. An individual's
+membership status is independent and is not changed. Archived contributors
+remain visible only to authorized contributor managers so the profile history
+can be reviewed and the contributor can be reactivated. Merged contributors
+remain immutable through this lifecycle action.
+
 `migrations_issue_19_existing_person_membership.sql` adds a member-specific
 record to an existing person after a directory manager who is also a document
 reviewer confirms first and last names. Missing structured name fields can be

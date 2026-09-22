@@ -177,6 +177,17 @@ profile itself is available; their database functions continue to enforce
 contribution visibility. The contributor mailing-address apartment/suite field
 is optional.
 
+After `db/migrations_issue_19_contributor_status.sql` and its rollback-only
+verification, import the matching Appsmith export. A directory manager who is
+also a donations reviewer can archive or reactivate an individual or company
+contributor from its profile. Every change requires a reason and is audited.
+Archiving stops the contributor from active intake and matching but preserves
+the party, contacts, provider identities, donations, and any separate
+membership. Archived contributors remain in Directory for those authorized
+managers so that their history can be reviewed and they can be reactivated.
+Contributor contact controls remain unavailable while the contributor is
+archived.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:
