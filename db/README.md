@@ -186,6 +186,12 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_contact_guard_fix.sql
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_contacts.sql
 
+# Issue #19: create membership for a selected existing person without a second
+# person record, an automatic agreement, or a rewrite of prior donations.
+# Apply AFTER the contact guard repair and its passing verification.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_existing_person_membership.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_existing_person_membership.sql
+
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
 ```

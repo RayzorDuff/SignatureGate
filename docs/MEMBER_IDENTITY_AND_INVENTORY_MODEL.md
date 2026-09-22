@@ -255,6 +255,16 @@ contact of its kind. Existing member-purpose contacts retain their separate
 agreement and mailing-list path. An active contact owned by another party
 requires explicit review before it can be shared.
 
+`migrations_issue_19_existing_person_membership.sql` adds a member-specific
+record to an existing person after a directory manager who is also a document
+reviewer confirms first and last names. Missing structured name fields can be
+completed on the central person record; existing structured names cannot be
+changed through enrollment. If that person already has an active individual
+contributor, a same-person link records both capacities. Prior donations keep
+their existing `member_id` and remain contributor-owned. No member-purpose
+email, agreement, practitioner appointment, or release authorization is
+created as part of enrollment. Archived memberships need separate review.
+
 Membership is not a permission to operate Appsmith. Person-owned reviewer
 roles and Appsmith account ownership are now separate from membership; older
 operational pages and APIs still need to adopt those permissions. Ceremony

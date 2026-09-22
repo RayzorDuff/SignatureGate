@@ -302,7 +302,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -313,7 +313,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -22232,7 +22232,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22261,7 +22261,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22273,7 +22273,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22302,7 +22302,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -24083,6 +24083,303 @@
         "messages": [],
         "name": "qArchiveCompanyDonorContact",
         "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_cc5c93a2-923c-4b6b-9c7f-87a998e3b4ec",
+      "id": "Individual Profile_qProfileCanCreateMember",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'document_reviewer') AS can_create;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qProfileCanCreateMember",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'document_reviewer') AS can_create;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qProfileCanCreateMember",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_b1d6465f-fa4f-4a03-b833-f350d6ac7bff",
+      "id": "Individual Profile_qMembershipIdentity",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT p.first_name, p.last_name FROM public.people p\nWHERE p.person_id = {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\nAND public.issue19_has_role({{ appsmith.user.email }}, 'directory_manager')\nAND public.issue19_has_role({{ appsmith.user.email }}, 'document_reviewer');",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " appsmith.user.email ",
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qMembershipIdentity",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT p.first_name, p.last_name FROM public.people p\nWHERE p.person_id = {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\nAND public.issue19_has_role({{ appsmith.user.email }}, 'directory_manager')\nAND public.issue19_has_role({{ appsmith.user.email }}, 'document_reviewer');",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " appsmith.user.email ",
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qMembershipIdentity",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_e4b252eb-cf71-432a-bcaa-cbdab1bcf2f3",
+      "id": "Individual Profile_qEnableProfileMembership",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_enable_person_membership(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.first }}, {{ this.params.last }}, {{ this.params.reason }}\n)::text AS member_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.first ",
+          " this.params.last ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qEnableProfileMembership",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_enable_person_membership(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.first }}, {{ this.params.last }}, {{ this.params.reason }}\n)::text AS member_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.first ",
+          " this.params.last ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qEnableProfileMembership",
+        "pageId": "Individual Profile",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -75241,7 +75538,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 132,
+              "bottomRow": 151,
               "canExtend": true,
               "children": [
                 {
@@ -76489,7 +76786,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 104,
+                  "bottomRow": 122,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -76516,13 +76813,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 104,
+                  "mobileBottomRow": 122,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 100,
+                  "mobileTopRow": 118,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 104,
-                  "originalTopRow": 100,
+                  "originalBottomRow": 122,
+                  "originalTopRow": 118,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -76534,7 +76831,7 @@
                   "text": "Contributor contacts (email and phone)",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 100,
+                  "topRow": 118,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -76549,7 +76846,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 108,
+                  "bottomRow": 126,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -76576,13 +76873,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 108,
+                  "mobileBottomRow": 126,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 104,
+                  "mobileTopRow": 122,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 108,
-                  "originalTopRow": 104,
+                  "originalBottomRow": 126,
+                  "originalTopRow": 122,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -76594,7 +76891,7 @@
                   "text": "New contacts become primary for contributions. Membership contacts are managed separately.",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 104,
+                  "topRow": 122,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -76610,7 +76907,7 @@
                   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 115,
+                  "bottomRow": 133,
                   "boxShadow": "none",
                   "defaultOptionValue": "email",
                   "dynamicBindingPathList": [
@@ -76643,15 +76940,15 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 115,
+                  "mobileBottomRow": 133,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 30,
-                  "mobileTopRow": 109,
+                  "mobileTopRow": 127,
                   "needsErrorInfo": false,
                   "optionLabel": "label",
                   "optionValue": "value",
-                  "originalBottomRow": 115,
-                  "originalTopRow": 109,
+                  "originalBottomRow": 133,
+                  "originalTopRow": 127,
                   "parentColumnSpace": 9.9375,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -76670,7 +76967,7 @@
                       "value": "phone"
                     }
                   ],
-                  "topRow": 109,
+                  "topRow": 127,
                   "type": "SELECT_WIDGET",
                   "version": 1,
                   "widgetId": "d7210bf859",
@@ -76681,7 +76978,7 @@
                   "animateLoading": true,
                   "autoFocus": false,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 115,
+                  "bottomRow": 133,
                   "boxShadow": "none",
                   "defaultText": "",
                   "dynamicBindingPathList": [
@@ -76714,13 +77011,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 115,
+                  "mobileBottomRow": 133,
                   "mobileLeftColumn": 32,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 109,
+                  "mobileTopRow": 127,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 115,
-                  "originalTopRow": 109,
+                  "originalBottomRow": 133,
+                  "originalTopRow": 127,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -76729,7 +77026,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "showStepArrows": false,
-                  "topRow": 109,
+                  "topRow": 127,
                   "type": "INPUT_WIDGET_V2",
                   "version": 2,
                   "widgetId": "c00e73dca0",
@@ -76745,7 +77042,7 @@
                   "animateLoading": true,
                   "autoFocus": false,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 122,
+                  "bottomRow": 140,
                   "boxShadow": "none",
                   "defaultText": "",
                   "dynamicBindingPathList": [
@@ -76778,13 +77075,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 122,
+                  "mobileBottomRow": 140,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 42,
-                  "mobileTopRow": 116,
+                  "mobileTopRow": 134,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 122,
-                  "originalTopRow": 116,
+                  "originalBottomRow": 140,
+                  "originalTopRow": 134,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -76793,7 +77090,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 42,
                   "showStepArrows": false,
-                  "topRow": 116,
+                  "topRow": 134,
                   "type": "INPUT_WIDGET_V2",
                   "version": 2,
                   "widgetId": "552545a574",
@@ -76807,7 +77104,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 121,
+                  "bottomRow": 139,
                   "boxShadow": "none",
                   "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "buttonVariant": "PRIMARY",
@@ -76849,14 +77146,14 @@
                   "key": "d352fbe99b",
                   "leftColumn": 44,
                   "minWidth": 120,
-                  "mobileBottomRow": 121,
+                  "mobileBottomRow": 139,
                   "mobileLeftColumn": 44,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 117,
+                  "mobileTopRow": 135,
                   "needsErrorInfo": false,
                   "onClick": "{{ (async () => { try { const reason = inpIndividualDonorContactReason.text?.trim(); const value = inpIndividualDonorContactValue.text?.trim(); if (!reason || !value) { showAlert('Enter a contact and reason.', 'warning'); return; } const result = await qAddIndividualDonorContact.run({ kind: selIndividualDonorContactKind.selectedOptionValue, value, reason }); if (!result?.[0]?.contact_id) throw new Error('No contact was returned.'); await Promise.all([qIndividualDonorContacts.run(), qIndividualContacts.run(), qIndividualProfile.run()]); showAlert('Contributor contact added.', 'success'); } catch (e) { showAlert('Contact change failed: ' + (e?.message || e), 'error'); } })() }}",
-                  "originalBottomRow": 121,
-                  "originalTopRow": 117,
+                  "originalBottomRow": 139,
+                  "originalTopRow": 135,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -76867,7 +77164,7 @@
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
                   "text": "Add contact",
-                  "topRow": 117,
+                  "topRow": 135,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
                   "widgetId": "60c5cb966a",
@@ -76877,7 +77174,7 @@
                   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 129,
+                  "bottomRow": 147,
                   "boxShadow": "none",
                   "defaultOptionValue": "",
                   "dynamicBindingPathList": [
@@ -76916,15 +77213,15 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 129,
+                  "mobileBottomRow": 147,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 42,
-                  "mobileTopRow": 123,
+                  "mobileTopRow": 141,
                   "needsErrorInfo": false,
                   "optionLabel": "label",
                   "optionValue": "value",
-                  "originalBottomRow": 129,
-                  "originalTopRow": 123,
+                  "originalBottomRow": 147,
+                  "originalTopRow": 141,
                   "parentColumnSpace": 9.9375,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -76934,7 +77231,7 @@
                   "rightColumn": 42,
                   "serverSideFiltering": false,
                   "sourceData": "{{ (qIndividualDonorContacts.data || []).map(c => ({label: (c.contact_kind === 'email' ? 'Email: ' : 'Phone: ') + c.contact_value + (c.is_primary ? ' (primary)' : ''), value: c.contact_id})) }}",
-                  "topRow": 123,
+                  "topRow": 141,
                   "type": "SELECT_WIDGET",
                   "version": 1,
                   "widgetId": "f0efb783a2",
@@ -76943,7 +77240,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 128,
+                  "bottomRow": 146,
                   "boxShadow": "none",
                   "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "buttonVariant": "PRIMARY",
@@ -76985,14 +77282,14 @@
                   "key": "d999787ad5",
                   "leftColumn": 44,
                   "minWidth": 120,
-                  "mobileBottomRow": 128,
+                  "mobileBottomRow": 146,
                   "mobileLeftColumn": 44,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 124,
+                  "mobileTopRow": 142,
                   "needsErrorInfo": false,
                   "onClick": "{{ (async () => { try { const reason = inpIndividualDonorContactReason.text?.trim(); const id = selIndividualDonorContactToArchive.selectedOptionValue; if (!reason || !id) { showAlert('Select a contact and enter a reason.', 'warning'); return; } const entry = (qIndividualDonorContacts.data || []).find(c => c.contact_id === id); if (!entry) throw new Error('Refresh the profile and select the contact again.'); const result = await qArchiveIndividualDonorContact.run({ kind: entry.contact_kind, id, reason }); if (!result?.[0]?.archived) throw new Error('The contact was not archived.'); await Promise.all([qIndividualDonorContacts.run(), qIndividualContacts.run(), qIndividualProfile.run()]); showAlert('Contributor contact archived.', 'success'); } catch (e) { showAlert('Contact archive failed: ' + (e?.message || e), 'error'); } })() }}",
-                  "originalBottomRow": 128,
-                  "originalTopRow": 124,
+                  "originalBottomRow": 146,
+                  "originalTopRow": 142,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -77003,11 +77300,338 @@
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
                   "text": "Archive contact",
-                  "topRow": 124,
+                  "topRow": 142,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
                   "widgetId": "2fb90efbe9",
                   "widgetName": "btnArchiveIndividualDonorContact"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 100,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "10125e5ba4",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 100,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 96,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 100,
+                  "originalTopRow": 96,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Enable membership for this individual",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 96,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "108f0e692c",
+                  "widgetName": "txtMemberEnrollmentHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 107,
+                  "boxShadow": "none",
+                  "defaultText": "{{ qMembershipIdentity.data?.[0]?.first_name || '' }}",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "defaultText"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "5b3114fa9d",
+                  "label": "Reviewed first name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 107,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 101,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 107,
+                  "originalTopRow": 101,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "showStepArrows": false,
+                  "topRow": 101,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "8162d7fe83",
+                  "widgetName": "inpEnrollmentFirstName",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 107,
+                  "boxShadow": "none",
+                  "defaultText": "{{ qMembershipIdentity.data?.[0]?.last_name || '' }}",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "defaultText"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "4b46123746",
+                  "label": "Reviewed last name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 107,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 101,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 107,
+                  "originalTopRow": 101,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 101,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "ae8c5803a4",
+                  "widgetName": "inpEnrollmentLastName",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 114,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "5ae94506ba",
+                  "label": "Reason to enable membership",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 114,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 108,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 114,
+                  "originalTopRow": 108,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 108,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "4b3eedd505",
+                  "widgetName": "inpEnrollmentReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 113,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qEnableProfileMembership.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "ce245dfe59",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 113,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 109,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const first = inpEnrollmentFirstName.text?.trim(); const last = inpEnrollmentLastName.text?.trim(); const reason = inpEnrollmentReason.text?.trim(); if (!first || !last || !reason) { showAlert('Enter reviewed first and last names and a reason.', 'warning'); return; } const rows = await qEnableProfileMembership.run({ first, last, reason }); if (!rows?.[0]?.member_id) throw new Error('No member was returned.'); await Promise.all([qIndividualProfile.run(), qMembershipIdentity.run()]); showAlert('Membership enabled. Add membership contact details and agreements in Members - Profile.', 'success'); } catch (e) { showAlert('Membership enrollment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 113,
+                  "originalTopRow": 109,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Enable membership",
+                  "topRow": 109,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "072c6a044c",
+                  "widgetName": "btnEnablePersonMembership"
                 }
               ],
               "containerStyle": "none",
@@ -77062,7 +77686,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 132,
+              "bottomRow": 151,
               "canExtend": true,
               "children": [
                 {
@@ -78310,7 +78934,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 104,
+                  "bottomRow": 122,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -78337,13 +78961,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 104,
+                  "mobileBottomRow": 122,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 100,
+                  "mobileTopRow": 118,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 104,
-                  "originalTopRow": 100,
+                  "originalBottomRow": 122,
+                  "originalTopRow": 118,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -78355,7 +78979,7 @@
                   "text": "Contributor contacts (email and phone)",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 100,
+                  "topRow": 118,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -78370,7 +78994,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 108,
+                  "bottomRow": 126,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -78397,13 +79021,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 108,
+                  "mobileBottomRow": 126,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 104,
+                  "mobileTopRow": 122,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 108,
-                  "originalTopRow": 104,
+                  "originalBottomRow": 126,
+                  "originalTopRow": 122,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -78415,7 +79039,7 @@
                   "text": "New contacts become primary for contributions. Membership contacts are managed separately.",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 104,
+                  "topRow": 122,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -78431,7 +79055,7 @@
                   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 115,
+                  "bottomRow": 133,
                   "boxShadow": "none",
                   "defaultOptionValue": "email",
                   "dynamicBindingPathList": [
@@ -78464,15 +79088,15 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 115,
+                  "mobileBottomRow": 133,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 30,
-                  "mobileTopRow": 109,
+                  "mobileTopRow": 127,
                   "needsErrorInfo": false,
                   "optionLabel": "label",
                   "optionValue": "value",
-                  "originalBottomRow": 115,
-                  "originalTopRow": 109,
+                  "originalBottomRow": 133,
+                  "originalTopRow": 127,
                   "parentColumnSpace": 9.9375,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -78491,7 +79115,7 @@
                       "value": "phone"
                     }
                   ],
-                  "topRow": 109,
+                  "topRow": 127,
                   "type": "SELECT_WIDGET",
                   "version": 1,
                   "widgetId": "d7210bf859",
@@ -78502,7 +79126,7 @@
                   "animateLoading": true,
                   "autoFocus": false,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 115,
+                  "bottomRow": 133,
                   "boxShadow": "none",
                   "defaultText": "",
                   "dynamicBindingPathList": [
@@ -78535,13 +79159,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 115,
+                  "mobileBottomRow": 133,
                   "mobileLeftColumn": 32,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 109,
+                  "mobileTopRow": 127,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 115,
-                  "originalTopRow": 109,
+                  "originalBottomRow": 133,
+                  "originalTopRow": 127,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -78550,7 +79174,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "showStepArrows": false,
-                  "topRow": 109,
+                  "topRow": 127,
                   "type": "INPUT_WIDGET_V2",
                   "version": 2,
                   "widgetId": "c00e73dca0",
@@ -78566,7 +79190,7 @@
                   "animateLoading": true,
                   "autoFocus": false,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 122,
+                  "bottomRow": 140,
                   "boxShadow": "none",
                   "defaultText": "",
                   "dynamicBindingPathList": [
@@ -78599,13 +79223,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 122,
+                  "mobileBottomRow": 140,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 42,
-                  "mobileTopRow": 116,
+                  "mobileTopRow": 134,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 122,
-                  "originalTopRow": 116,
+                  "originalBottomRow": 140,
+                  "originalTopRow": 134,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -78614,7 +79238,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 42,
                   "showStepArrows": false,
-                  "topRow": 116,
+                  "topRow": 134,
                   "type": "INPUT_WIDGET_V2",
                   "version": 2,
                   "widgetId": "552545a574",
@@ -78628,7 +79252,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 121,
+                  "bottomRow": 139,
                   "boxShadow": "none",
                   "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "buttonVariant": "PRIMARY",
@@ -78670,14 +79294,14 @@
                   "key": "d352fbe99b",
                   "leftColumn": 44,
                   "minWidth": 120,
-                  "mobileBottomRow": 121,
+                  "mobileBottomRow": 139,
                   "mobileLeftColumn": 44,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 117,
+                  "mobileTopRow": 135,
                   "needsErrorInfo": false,
                   "onClick": "{{ (async () => { try { const reason = inpIndividualDonorContactReason.text?.trim(); const value = inpIndividualDonorContactValue.text?.trim(); if (!reason || !value) { showAlert('Enter a contact and reason.', 'warning'); return; } const result = await qAddIndividualDonorContact.run({ kind: selIndividualDonorContactKind.selectedOptionValue, value, reason }); if (!result?.[0]?.contact_id) throw new Error('No contact was returned.'); await Promise.all([qIndividualDonorContacts.run(), qIndividualContacts.run(), qIndividualProfile.run()]); showAlert('Contributor contact added.', 'success'); } catch (e) { showAlert('Contact change failed: ' + (e?.message || e), 'error'); } })() }}",
-                  "originalBottomRow": 121,
-                  "originalTopRow": 117,
+                  "originalBottomRow": 139,
+                  "originalTopRow": 135,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -78688,7 +79312,7 @@
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
                   "text": "Add contact",
-                  "topRow": 117,
+                  "topRow": 135,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
                   "widgetId": "60c5cb966a",
@@ -78698,7 +79322,7 @@
                   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 129,
+                  "bottomRow": 147,
                   "boxShadow": "none",
                   "defaultOptionValue": "",
                   "dynamicBindingPathList": [
@@ -78737,15 +79361,15 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 129,
+                  "mobileBottomRow": 147,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 42,
-                  "mobileTopRow": 123,
+                  "mobileTopRow": 141,
                   "needsErrorInfo": false,
                   "optionLabel": "label",
                   "optionValue": "value",
-                  "originalBottomRow": 129,
-                  "originalTopRow": 123,
+                  "originalBottomRow": 147,
+                  "originalTopRow": 141,
                   "parentColumnSpace": 9.9375,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -78755,7 +79379,7 @@
                   "rightColumn": 42,
                   "serverSideFiltering": false,
                   "sourceData": "{{ (qIndividualDonorContacts.data || []).map(c => ({label: (c.contact_kind === 'email' ? 'Email: ' : 'Phone: ') + c.contact_value + (c.is_primary ? ' (primary)' : ''), value: c.contact_id})) }}",
-                  "topRow": 123,
+                  "topRow": 141,
                   "type": "SELECT_WIDGET",
                   "version": 1,
                   "widgetId": "f0efb783a2",
@@ -78764,7 +79388,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 128,
+                  "bottomRow": 146,
                   "boxShadow": "none",
                   "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "buttonVariant": "PRIMARY",
@@ -78806,14 +79430,14 @@
                   "key": "d999787ad5",
                   "leftColumn": 44,
                   "minWidth": 120,
-                  "mobileBottomRow": 128,
+                  "mobileBottomRow": 146,
                   "mobileLeftColumn": 44,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 124,
+                  "mobileTopRow": 142,
                   "needsErrorInfo": false,
                   "onClick": "{{ (async () => { try { const reason = inpIndividualDonorContactReason.text?.trim(); const id = selIndividualDonorContactToArchive.selectedOptionValue; if (!reason || !id) { showAlert('Select a contact and enter a reason.', 'warning'); return; } const entry = (qIndividualDonorContacts.data || []).find(c => c.contact_id === id); if (!entry) throw new Error('Refresh the profile and select the contact again.'); const result = await qArchiveIndividualDonorContact.run({ kind: entry.contact_kind, id, reason }); if (!result?.[0]?.archived) throw new Error('The contact was not archived.'); await Promise.all([qIndividualDonorContacts.run(), qIndividualContacts.run(), qIndividualProfile.run()]); showAlert('Contributor contact archived.', 'success'); } catch (e) { showAlert('Contact archive failed: ' + (e?.message || e), 'error'); } })() }}",
-                  "originalBottomRow": 128,
-                  "originalTopRow": 124,
+                  "originalBottomRow": 146,
+                  "originalTopRow": 142,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -78824,11 +79448,338 @@
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
                   "text": "Archive contact",
-                  "topRow": 124,
+                  "topRow": 142,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
                   "widgetId": "2fb90efbe9",
                   "widgetName": "btnArchiveIndividualDonorContact"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 100,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "10125e5ba4",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 100,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 96,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 100,
+                  "originalTopRow": 96,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Enable membership for this individual",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 96,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "108f0e692c",
+                  "widgetName": "txtMemberEnrollmentHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 107,
+                  "boxShadow": "none",
+                  "defaultText": "{{ qMembershipIdentity.data?.[0]?.first_name || '' }}",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "defaultText"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "5b3114fa9d",
+                  "label": "Reviewed first name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 107,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 101,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 107,
+                  "originalTopRow": 101,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "showStepArrows": false,
+                  "topRow": 101,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "8162d7fe83",
+                  "widgetName": "inpEnrollmentFirstName",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 107,
+                  "boxShadow": "none",
+                  "defaultText": "{{ qMembershipIdentity.data?.[0]?.last_name || '' }}",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "defaultText"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "4b46123746",
+                  "label": "Reviewed last name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 107,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 101,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 107,
+                  "originalTopRow": 101,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 101,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "ae8c5803a4",
+                  "widgetName": "inpEnrollmentLastName",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 114,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "5ae94506ba",
+                  "label": "Reason to enable membership",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 114,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 108,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 114,
+                  "originalTopRow": 108,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 108,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "4b3eedd505",
+                  "widgetName": "inpEnrollmentReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 113,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qEnableProfileMembership.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "key": "ce245dfe59",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 113,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 109,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const first = inpEnrollmentFirstName.text?.trim(); const last = inpEnrollmentLastName.text?.trim(); const reason = inpEnrollmentReason.text?.trim(); if (!first || !last || !reason) { showAlert('Enter reviewed first and last names and a reason.', 'warning'); return; } const rows = await qEnableProfileMembership.run({ first, last, reason }); if (!rows?.[0]?.member_id) throw new Error('No member was returned.'); await Promise.all([qIndividualProfile.run(), qMembershipIdentity.run()]); showAlert('Membership enabled. Add membership contact details and agreements in Members - Profile.', 'success'); } catch (e) { showAlert('Membership enrollment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 113,
+                  "originalTopRow": 109,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Enable membership",
+                  "topRow": 109,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "072c6a044c",
+                  "widgetName": "btnEnablePersonMembership"
                 }
               ],
               "containerStyle": "none",

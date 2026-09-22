@@ -106,6 +106,18 @@ contact has been reviewed. Member-purpose email and phone records remain on
 the existing Members - Profile workflow; these contributor controls never
 edit those membership contacts.
 
+After applying `db/migrations_issue_19_existing_person_membership.sql` and
+its rollback-only check, import the newer export. Individual Profile offers
+**Enable membership** to an account with both directory-manager and
+document-reviewer permission. The reviewer confirms first and last names and
+enters a reason. For a person missing structured names, the reviewed names
+complete the central `people` identity. A different existing name cannot be
+silently overwritten. The new member links to the same person and any active
+individual contributor; it does not alter past donations. Follow the link to
+Members - Profile to add membership-purpose contact details and agreements.
+An existing archived member requires separate review rather than creation of
+a second member ID.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:
