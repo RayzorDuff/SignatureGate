@@ -212,6 +212,17 @@ through a controlled party-contact API is a later phase; the existing
 `v_person_emails`/`v_person_phones`/`v_person_addresses` views still reflect
 the legacy source rows in this phase.
 
+`migrations_issue_19_directory_read.sql` exposes an Appsmith-scoped Directory
+and contact lookup. Directory displays one row per accessible person or
+organization, with contacts restricted to the member or contributor source
+that the current reviewer/facilitator may see. The new Individual Profile and
+Company Profile are initially read-only. The existing Members - Profile keeps
+the agreement, release, and member-contact actions. Appsmith currently maps
+accounts to active facilitator member emails, so independent account grants,
+practitioner appointments, and editable role sections require a later Issue
+#19 phase. These query helpers apply the application's current email-based
+scope; they are not a replacement for database-authenticated row policies.
+
 Membership is not a permission to operate Appsmith. An Appsmith account and its
 document/donation reviewer grants must eventually be modeled independently of
 membership. Ceremony participation belongs to a particular ceremony, while a

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added a scoped Directory and read-only Individual Profile and Company Profile in Appsmith. Member work remains reachable through the existing Members - Profile page.
+- Added database directory/contact query helpers with a rollback-only test of document-reviewer and donations-reviewer visibility.
 - Added Issue #19 person/organization-owned contact records and source mappings, plus a rollback-only integration check for matching, archiving, and owner changes.
 - Added canonical person and organization identity migration and role profile views, with a rollback-only integration smoke test.
 - Added shared person/organization identities under Issue #19 member and contributor APIs, with identity reconciliation review and combined read views for individual contact methods.

@@ -140,6 +140,14 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 # reassigned contact owners; run after the contact foundation migration.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_party_contacts.sql
 
+# Issue #19 read-only Directory query helpers. Apply after party contacts,
+# before importing the matching Appsmith export. Current account/reviewer
+# flags still determine which people, organizations and contacts are visible.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_directory_read.sql
+
+# Rollback-only access check for the Directory helpers.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_directory_read.sql
+
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
 ```

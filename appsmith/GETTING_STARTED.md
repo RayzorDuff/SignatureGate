@@ -61,6 +61,16 @@ test as described in `db/README.md`. Its member/contributor queries read the
 Members - Profile product actions use the MushroomProcess `/pgsql/` n8n
 webhooks; those three PGSQL workflows must be active in n8n.
 
+The next Issue #19 Directory export requires
+`db/migrations_issue_19_party_contacts.sql` and
+`db/migrations_issue_19_directory_read.sql`, with their rollback-only checks,
+before import. Directory lists accessible people and organizations and routes
+to the read-only Individual Profile or Company Profile. Individual Profile
+links back to Members - Profile for authorized membership, agreement, and
+release work. Existing Members - Directory and Members - Profile stay in place
+until their other actions move; reviewer grants and standalone role editing
+have not yet moved into these new screens.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:
