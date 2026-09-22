@@ -188,6 +188,15 @@ managers so that their history can be reviewed and they can be reactivated.
 Contributor contact controls remain unavailable while the contributor is
 archived.
 
+After `db/migrations_issue_19_party_identity_editing.sql` and its rollback-only
+verification, import the matching Appsmith export. A directory manager can
+correct an individual's canonical display name, structured name, and optional
+birth date from Individual Profile, or an organization's canonical name from
+Company Profile. A reason is required, old and new values are audited, and a
+stale profile must be refreshed before saving. The change updates the central
+`people` or `organizations` identity only; it does not replace member or
+contributor IDs or alter donations, contacts, agreements, releases, or roles.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:

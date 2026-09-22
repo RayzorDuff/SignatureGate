@@ -300,6 +300,17 @@ remain visible only to authorized contributor managers so the profile history
 can be reviewed and the contributor can be reactivated. Merged contributors
 remain immutable through this lifecycle action.
 
+`migrations_issue_19_party_identity_editing.sql` makes the canonical identity
+fields maintainable from Individual Profile and Company Profile by a directory
+manager. Person edits cover display name, structured first/last names, and an
+optional birth date; organization edits cover the canonical organization name.
+Every change requires a reason and records previous and current values in the
+audit log. A version derived from the loaded canonical fields provides
+optimistic concurrency, so a stale browser cannot overwrite a more recent
+correction. Domain IDs and
+records in `members`, `contributors`, donations, agreements, releases,
+contacts, appointments, and permissions are not rewritten by an identity edit.
+
 `migrations_issue_19_existing_person_membership.sql` adds a member-specific
 record to an existing person after a directory manager who is also a document
 reviewer confirms first and last names. Missing structured name fields can be

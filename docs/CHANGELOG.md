@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added directory-manager identity correction on Individual and Company Profiles, with stale-edit protection and audited old/new canonical values (#19).
 - Added reasoned, audited archive/reactivation for individual and organization contributors, retaining their contacts, provider identities, donation history, and independent membership state (#19).
 - Added permission-scoped contribution history and external provider identities to Individual Profile and Company Profile, without coupling donations to membership (#19).
 - Added reasoned, audited cross-role assignment of an individual's existing email, phone or address, preserving the central party contact and leaving new membership emails unsubscribed (#19).
