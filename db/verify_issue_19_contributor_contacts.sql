@@ -5,6 +5,7 @@ DO $$
 DECLARE
   v_actor uuid;
   v_individual record;
+  v_other record;
   v_company record;
   v_first_email uuid;
   v_second_email uuid;
@@ -22,6 +23,9 @@ BEGIN
   SELECT * INTO STRICT v_company FROM public.issue19_create_contributor(
     'issue19-contact-reviewer@example.invalid','organization',
     NULL,NULL,'Test Contact Company',NULL,NULL,'Contact integration test');
+  SELECT * INTO STRICT v_other FROM public.issue19_create_contributor(
+    'issue19-contact-reviewer@example.invalid','individual',
+    'Another','Party',NULL,NULL,NULL,'Contact ownership test');
 
   BEGIN
     PERFORM public.issue19_add_contributor_contact('unknown@example.invalid',
@@ -31,6 +35,7 @@ BEGIN
   EXCEPTION WHEN raise_exception THEN
     IF SQLERRM <> 'Donations reviewer permission required' THEN RAISE; END IF;
   END;
+
   v_first_email := public.issue19_add_contributor_contact(
     'issue19-contact-reviewer@example.invalid','individual',
     v_individual.party_id,'email','issue19-test-first@example.invalid',
@@ -39,6 +44,16 @@ BEGIN
     'issue19-contact-reviewer@example.invalid','individual',
     v_individual.party_id,'email','issue19-test-second@example.invalid',
     'New primary donor email');
+  BEGIN
+    PERFORM public.issue19_add_contributor_contact(
+      'issue19-contact-reviewer@example.invalid','individual',
+      v_other.party_id,'email','issue19-test-first@example.invalid',
+      'Cross-person contact test');
+    RAISE EXCEPTION 'Another individual reused the contact without review';
+  EXCEPTION WHEN raise_exception THEN
+    IF SQLERRM <> 'Contact belongs to another party; review before sharing it'
+    THEN RAISE; END IF;
+  END;
   IF NOT EXISTS (SELECT 1 FROM public.contributor_emails
       WHERE contributor_email_id=v_second_email AND is_primary)
     OR NOT EXISTS (SELECT 1 FROM public.party_contacts

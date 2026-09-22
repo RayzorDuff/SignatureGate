@@ -84,8 +84,10 @@ BEGIN
   IF EXISTS (SELECT 1 FROM public.party_contacts pc
       WHERE pc.status = 'active' AND pc.contact_kind = p_contact_kind
         AND pc.identity_key = v_identity
-        AND NOT ((p_party_kind='individual' AND pc.person_id=p_party_id)
-          OR (p_party_kind='organization' AND pc.organization_id=p_party_id)))
+        AND ((p_party_kind='individual'
+            AND pc.person_id IS DISTINCT FROM p_party_id)
+          OR (p_party_kind='organization'
+            AND pc.organization_id IS DISTINCT FROM p_party_id)))
     OR (p_contact_kind = 'email' AND EXISTS (
       SELECT 1 FROM public.members m WHERE m.status='active'
         AND lower(btrim(m.email))=v_identity
