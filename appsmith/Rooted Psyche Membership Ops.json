@@ -24394,7 +24394,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "SELECT * FROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "body": "SELECT s.*,\n  CASE\n    WHEN s.can_end THEN 'Ready to end membership. Confirm contributor contact details and enter a reason.'\n    WHEN m.status <> 'active' THEN 'Membership is already inactive. The existing member ID remains in history.'\n    WHEN NOT EXISTS (SELECT 1 FROM public.contributors c\n      WHERE c.person_id=m.person_id AND c.contributor_type='individual' AND c.status='active')\n      THEN 'First enable this person as a contributor above; their membership will remain until you end it.'\n    WHEN EXISTS (SELECT 1 FROM public.person_roles r WHERE r.person_id=m.person_id)\n      OR m.is_facilitator OR m.is_document_reviewer OR m.is_donations_reviewer\n      THEN 'Remove the person''s appointments and permissions (including legacy reviewer or facilitator flags) before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_facilitators f\n      WHERE f.facilitator_id=m.member_id AND f.status='active')\n      THEN 'Reassign or end this facilitator''s active member assignments before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_agreements a\n      WHERE a.member_id=m.member_id AND a.status IN\n        ('pending_review','pending_email_send','pending_signature'))\n      THEN 'Resolve pending agreements before ending membership.'\n    ELSE 'Review the membership state before continuing.'\n  END AS blocker\nFROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n) s JOIN public.members m ON m.member_id=s.member_id;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -24439,7 +24439,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "SELECT * FROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "body": "SELECT s.*,\n  CASE\n    WHEN s.can_end THEN 'Ready to end membership. Confirm contributor contact details and enter a reason.'\n    WHEN m.status <> 'active' THEN 'Membership is already inactive. The existing member ID remains in history.'\n    WHEN NOT EXISTS (SELECT 1 FROM public.contributors c\n      WHERE c.person_id=m.person_id AND c.contributor_type='individual' AND c.status='active')\n      THEN 'First enable this person as a contributor above; their membership will remain until you end it.'\n    WHEN EXISTS (SELECT 1 FROM public.person_roles r WHERE r.person_id=m.person_id)\n      OR m.is_facilitator OR m.is_document_reviewer OR m.is_donations_reviewer\n      THEN 'Remove the person''s appointments and permissions (including legacy reviewer or facilitator flags) before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_facilitators f\n      WHERE f.facilitator_id=m.member_id AND f.status='active')\n      THEN 'Reassign or end this facilitator''s active member assignments before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_agreements a\n      WHERE a.member_id=m.member_id AND a.status IN\n        ('pending_review','pending_email_send','pending_signature'))\n      THEN 'Resolve pending agreements before ending membership.'\n    ELSE 'Review the membership state before continuing.'\n  END AS blocker\nFROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n) s JOIN public.members m ON m.member_id=s.member_id;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -77948,7 +77948,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.member_id }}",
                   "key": "10125e5ba4",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -78000,6 +78000,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
@@ -78008,7 +78011,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.membership_status === 'active' }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.member_id }}",
                   "key": "a88013f642",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -78029,7 +78032,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Check contributor email and phone above before ending membership; member-only contacts stay on the historical member record. Past agreements, releases and donations remain. Resolve pending agreements, reassign facilitator work and remove appointments or permissions first.",
+                  "text": "{{ (qProfileMembershipState.data?.[0]?.blocker || (qProfileMembershipState.isLoading ? 'Checking membership eligibility...' : 'Membership eligibility is unavailable. Reload this profile or inspect qProfileMembershipState.')) + ' Member-only contacts stay on the historical member record; check contributor email and phone above.' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 155,
@@ -78041,6 +78044,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -78070,7 +78076,7 @@
                   "isDisabled": false,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.member_id }}",
                   "key": "5ae94506ba",
                   "label": "Reason to end membership",
                   "labelAlignment": "left",
@@ -78147,9 +78153,9 @@
                     }
                   ],
                   "isDefaultClickDisabled": true,
-                  "isDisabled": "{{ qEndPersonMembership.isLoading }}",
+                  "isDisabled": "{{ qEndPersonMembership.isLoading || qProfileMembershipState.data?.[0]?.can_end !== true }}",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.member_id }}",
                   "key": "ce245dfe59",
                   "leftColumn": 44,
                   "minWidth": 120,
@@ -80415,7 +80421,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.member_id }}",
                   "key": "10125e5ba4",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -80467,6 +80473,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
@@ -80475,7 +80484,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.membership_status === 'active' }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.member_id }}",
                   "key": "a88013f642",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -80496,7 +80505,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Check contributor email and phone above before ending membership; member-only contacts stay on the historical member record. Past agreements, releases and donations remain. Resolve pending agreements, reassign facilitator work and remove appointments or permissions first.",
+                  "text": "{{ (qProfileMembershipState.data?.[0]?.blocker || (qProfileMembershipState.isLoading ? 'Checking membership eligibility...' : 'Membership eligibility is unavailable. Reload this profile or inspect qProfileMembershipState.')) + ' Member-only contacts stay on the historical member record; check contributor email and phone above.' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 155,
@@ -80508,6 +80517,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -80537,7 +80549,7 @@
                   "isDisabled": false,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.member_id }}",
                   "key": "5ae94506ba",
                   "label": "Reason to end membership",
                   "labelAlignment": "left",
@@ -80614,9 +80626,9 @@
                     }
                   ],
                   "isDefaultClickDisabled": true,
-                  "isDisabled": "{{ qEndPersonMembership.isLoading }}",
+                  "isDisabled": "{{ qEndPersonMembership.isLoading || qProfileMembershipState.data?.[0]?.can_end !== true }}",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.member_id }}",
                   "key": "ce245dfe59",
                   "leftColumn": 44,
                   "minWidth": 120,

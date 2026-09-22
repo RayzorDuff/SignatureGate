@@ -134,6 +134,9 @@ database also refuses any new release for an inactive member.
 Check contributor email and phone on the profile before ending membership;
 member-purpose contacts remain on the historical member record and are not
 copied automatically into contributor contact records.
+The End membership section remains visible to an authorized reviewer even
+when the action is unavailable. It displays the first condition to resolve;
+the button becomes available only after database eligibility checks pass.
 
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.

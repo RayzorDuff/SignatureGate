@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Kept Issue #19 membership closure visible with a specific eligibility reason and a disabled action when a contributor, agreement, or operational-role condition blocks closure.
 - Corrected the Issue #19 contributor-contact ownership guard for contacts on a different person or company; added a forward repair for databases where the original contact migration had already committed.
 - Restored visible Directory and profile contact columns in Appsmith and corrected the Individual Profile role selector's option keys (#19).
 
