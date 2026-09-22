@@ -212,6 +212,8 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 # Keep active contact sources on former memberships visible to authorized
 # reviewers, list member-only contacts before contributor enrollment, and allow
 # reuse into an active contributor. Apply AFTER contact-role assignment.
+# If the first version failed on contact_detail before COMMIT, its transaction
+# rolled back; rerun the corrected migration below, then its verification.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contact_role_visibility.sql
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contact_role_visibility.sql
 

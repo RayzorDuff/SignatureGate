@@ -15,8 +15,8 @@ SELECT DISTINCT pc.contact_kind,
   CASE WHEN pc.contact_kind='address' THEN concat_ws(', ',
     NULLIF(concat_ws(' ',pc.address_1,pc.address_2),''),
     pc.city,pc.state,pc.postal_code,pc.country)
-    ELSE pc.contact_value END,
-  'former membership'::text, ps.is_primary, ps.is_verified
+    ELSE pc.contact_value END AS contact_detail,
+  'former membership'::text AS purpose, ps.is_primary, ps.is_verified
 FROM public.party_contacts pc
 JOIN public.party_contact_sources ps ON ps.party_contact_id=pc.party_contact_id
 WHERE pc.person_id=p_person_id AND pc.status='active' AND ps.status='active'
