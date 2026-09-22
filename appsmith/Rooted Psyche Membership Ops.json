@@ -302,7 +302,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -313,7 +313,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -22232,7 +22232,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22261,7 +22261,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22273,7 +22273,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22302,7 +22302,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -25289,6 +25289,305 @@
         "messages": [],
         "name": "qArchiveCompanyDonorAddress",
         "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_b04c0fcd-e035-46ba-946c-07ba5d56f12a",
+      "id": "Individual Profile_qCanAssignPersonContact",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT (public.issue19_has_role({{ appsmith.user.email }},'directory_manager') AND public.issue19_has_role({{ appsmith.user.email }},'document_reviewer') AND public.issue19_has_role({{ appsmith.user.email }},'donations_reviewer')) AS can_assign;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " appsmith.user.email ",
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qCanAssignPersonContact",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT (public.issue19_has_role({{ appsmith.user.email }},'directory_manager') AND public.issue19_has_role({{ appsmith.user.email }},'document_reviewer') AND public.issue19_has_role({{ appsmith.user.email }},'donations_reviewer')) AS can_assign;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " appsmith.user.email ",
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qCanAssignPersonContact",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_0b2b776a-d0af-40ea-857b-7af9159666c4",
+      "id": "Individual Profile_qReusablePersonContacts",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT source_table,source_id::text AS source_id,contact_kind,contact_detail,target_role FROM public.issue19_reusable_person_contacts({{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qReusablePersonContacts",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT source_table,source_id::text AS source_id,contact_kind,contact_detail,target_role FROM public.issue19_reusable_person_contacts({{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qReusablePersonContacts",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_e2a8c2a7-9f96-45ec-96df-57848aaf1c93",
+      "id": "Individual Profile_qAssignPersonContactRole",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_assign_person_contact_role({{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.source_table }}, {{ this.params.source_id }}::uuid, {{ this.params.reason }})::text AS target_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.source_table ",
+          " this.params.source_id ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qAssignPersonContactRole",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_assign_person_contact_role({{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid, {{ this.params.source_table }}, {{ this.params.source_id }}::uuid, {{ this.params.reason }})::text AS target_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.source_table ",
+          " this.params.source_id ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qAssignPersonContactRole",
+        "pageId": "Individual Profile",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -76447,7 +76746,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 231,
+              "bottomRow": 260,
               "canExtend": true,
               "children": [
                 {
@@ -79646,6 +79945,327 @@
                   "version": 1,
                   "widgetId": "e4a3fa518d",
                   "widgetName": "btnArchiveIndividualDonorAddress"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 238,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "9b79996757",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 122,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 118,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 122,
+                  "originalTopRow": 118,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Use an existing contact for the other role",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 234,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "9c62b4d685",
+                  "widgetName": "txtPersonContactReuseHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 243,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "a88013f642",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 126,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 122,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 126,
+                  "originalTopRow": 122,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Select an existing email, phone, or address for this same individual. The original membership or contributor contact stays in place. Both roles must be active; the assignment requires a reason.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 238,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "c00f813d8e",
+                  "widgetName": "txtPersonContactReuseNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 249,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "2b179a5037",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contributor contact to archive",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 147,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 141,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 147,
+                  "originalTopRow": 141,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "serverSideFiltering": false,
+                  "sourceData": "{{ (qReusablePersonContacts.data || []).map(c => ({label: (c.target_role === 'membership' ? 'Use for membership: ' : 'Use for contributions: ') + c.contact_kind + ' — ' + c.contact_detail, value: c.source_table + ':' + c.source_id})) }}",
+                  "topRow": 243,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "c90f800b3d",
+                  "widgetName": "selPersonContactToReuse",
+                  "label": "Contact to use for the other role"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 256,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "1893bc63db",
+                  "label": "Reason to assign this contact to the other role",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 140,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 134,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 140,
+                  "originalTopRow": 134,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 250,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "5f9e44a440",
+                  "widgetName": "inpPersonContactReuseReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 255,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAssignPersonContactRole.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "d352fbe99b",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 139,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 135,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const selected = selPersonContactToReuse.selectedOptionValue; const reason = inpPersonContactReuseReason.text?.trim(); const contact = (qReusablePersonContacts.data || []).find(c => c.source_table + ':' + c.source_id === selected); if (!contact || !reason) { showAlert('Select a contact and enter a reason.', 'warning'); return; } const rows = await qAssignPersonContactRole.run({ source_table: contact.source_table, source_id: contact.source_id, reason }); if (!rows?.[0]?.target_id) throw new Error('No contact was assigned.'); await Promise.all([qReusablePersonContacts.run(), qIndividualContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run()]); showAlert('Contact is now available for both membership and contributions.', 'success'); } catch (e) { showAlert('Contact assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 139,
+                  "originalTopRow": 135,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Use contact",
+                  "topRow": 251,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "cc0b8937f6",
+                  "widgetName": "btnAssignPersonContactRole"
                 }
               ],
               "containerStyle": "none",
@@ -79700,7 +80320,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 231,
+              "bottomRow": 260,
               "canExtend": true,
               "children": [
                 {
@@ -82899,6 +83519,327 @@
                   "version": 1,
                   "widgetId": "e4a3fa518d",
                   "widgetName": "btnArchiveIndividualDonorAddress"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 238,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "9b79996757",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 122,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 118,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 122,
+                  "originalTopRow": 118,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Use an existing contact for the other role",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 234,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "9c62b4d685",
+                  "widgetName": "txtPersonContactReuseHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 243,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "a88013f642",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 126,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 122,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 126,
+                  "originalTopRow": 122,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Select an existing email, phone, or address for this same individual. The original membership or contributor contact stays in place. Both roles must be active; the assignment requires a reason.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 238,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "c00f813d8e",
+                  "widgetName": "txtPersonContactReuseNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 249,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "2b179a5037",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contributor contact to archive",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 147,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 141,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 147,
+                  "originalTopRow": 141,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "serverSideFiltering": false,
+                  "sourceData": "{{ (qReusablePersonContacts.data || []).map(c => ({label: (c.target_role === 'membership' ? 'Use for membership: ' : 'Use for contributions: ') + c.contact_kind + ' — ' + c.contact_detail, value: c.source_table + ':' + c.source_id})) }}",
+                  "topRow": 243,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "c90f800b3d",
+                  "widgetName": "selPersonContactToReuse",
+                  "label": "Contact to use for the other role"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 256,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "1893bc63db",
+                  "label": "Reason to assign this contact to the other role",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 140,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 134,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 140,
+                  "originalTopRow": 134,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 250,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "5f9e44a440",
+                  "widgetName": "inpPersonContactReuseReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 255,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAssignPersonContactRole.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qCanAssignPersonContact.data?.[0]?.can_assign === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "d352fbe99b",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 139,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 135,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const selected = selPersonContactToReuse.selectedOptionValue; const reason = inpPersonContactReuseReason.text?.trim(); const contact = (qReusablePersonContacts.data || []).find(c => c.source_table + ':' + c.source_id === selected); if (!contact || !reason) { showAlert('Select a contact and enter a reason.', 'warning'); return; } const rows = await qAssignPersonContactRole.run({ source_table: contact.source_table, source_id: contact.source_id, reason }); if (!rows?.[0]?.target_id) throw new Error('No contact was assigned.'); await Promise.all([qReusablePersonContacts.run(), qIndividualContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run()]); showAlert('Contact is now available for both membership and contributions.', 'success'); } catch (e) { showAlert('Contact assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 139,
+                  "originalTopRow": 135,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Use contact",
+                  "topRow": 251,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "cc0b8937f6",
+                  "widgetName": "btnAssignPersonContactRole"
                 }
               ],
               "containerStyle": "none",

@@ -264,6 +264,16 @@ abbreviations do not duplicate an address for a contributor. Two separate
 people or organizations may legitimately use the same building. Membership
 addresses remain on the member history and are not copied automatically.
 
+`migrations_issue_19_contact_role_assignment.sql` lets a directory manager
+who also has both reviewer permissions use an existing individual contact for
+the person's other active capacity. The database inserts a new role-specific
+source row so membership agreements and donor integrations can continue using
+their own IDs, while both source rows map to the same `party_contacts` record.
+The original role record is preserved, the assignment is audited, and
+membership mailing-list subscription and verification are never inferred
+from the contributor source. Address identity uses street, unit, postal code
+and country. Organizations cannot be assigned membership contact sources.
+
 `migrations_issue_19_existing_person_membership.sql` adds a member-specific
 record to an existing person after a directory manager who is also a document
 reviewer confirms first and last names. Missing structured name fields can be

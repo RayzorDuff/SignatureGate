@@ -149,6 +149,20 @@ remaining address. A shared building may legitimately have multiple people
 or organizations, so matching mailing addresses do not merge identities.
 Member-purpose addresses remain on the historical member record.
 
+After `db/migrations_issue_19_contact_role_assignment.sql` and its rollback-only
+verification, import the newer Appsmith export. Individual Profile then offers
+**Use an existing contact for the other role** to a directory manager with both
+document-reviewer and donations-reviewer permissions. Select an existing
+membership or contributor email, phone, or physical address and enter a reason.
+The contact remains with its original capacity and acquires a second capacity
+source on the *same person-owned contact*. A contact already used by both is
+omitted. Both member and contributor records must be active; a company cannot
+gain a membership contact. New membership email sources default to not
+subscribed to Listmonk. Verification of the original email does not
+automatically verify the newly assigned copy. If a shared household email or
+phone belongs to a different party, review the identity conflict before
+assigning it across capacities.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:
