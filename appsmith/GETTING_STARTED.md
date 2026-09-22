@@ -118,6 +118,23 @@ Members - Profile to add membership-purpose contact details and agreements.
 An existing archived member requires separate review rather than creation of
 a second member ID.
 
+After `db/migrations_issue_19_end_membership.sql` and its rollback-only check,
+import the newer export. A directory manager who is also a document reviewer
+can use Individual Profile to **End membership** for an active member who
+already has an active individual contributor record. The action requires a
+reason. It sets the member to inactive, ends active contributor/member links,
+and keeps the person, contributor, donations, agreement and release history.
+Pending agreements, practitioner/reviewer permissions, and active facilitator
+assignments must be resolved first. An ended membership remains visible in the
+individual's membership history; **Enable membership** does not create another
+member ID for this person. The button to enable membership is intentionally
+hidden for everyone who already has a member record. The Release - Issue page
+checks membership again before calling the inventory shipment endpoint; the
+database also refuses any new release for an inactive member.
+Check contributor email and phone on the profile before ending membership;
+member-purpose contacts remain on the historical member record and are not
+copied automatically into contributor contact records.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:

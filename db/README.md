@@ -192,6 +192,12 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_existing_person_membership.sql
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_existing_person_membership.sql
 
+# End an active membership while keeping the person and contributor. Apply
+# AFTER existing-person membership; run the rollback-only verification before
+# importing the updated Appsmith JSON. A contributor must already be active.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_end_membership.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_end_membership.sql
+
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
 ```

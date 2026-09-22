@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added reviewed, audited membership closure on Individual Profile with separate contributor continuity, preserved financial/release history, and guards for pending agreements and active operational roles (#19).
 - Added reviewed membership enrollment from Individual Profile for existing people, retaining contributor identity and historical donation attribution (#19).
 - Added scoped, audited contributor email and phone maintenance on Individual and Company Profile, with legacy contact synchronization and rollback-only checks (#19).
 - Added audited contributor creation for individuals and companies in Directory, and controlled contributor enrollment for existing people on Individual Profile (#19).

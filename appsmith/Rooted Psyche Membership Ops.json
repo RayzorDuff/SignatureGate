@@ -88,7 +88,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqMembersDirectory.run(),\n\t\t\tqListFacilitators.run(),\n\t\t\tqAccessibleStorageLocations.run()\n\t\t]);\n\n\t\tconst initialMemberId =\n\t\t\tString(appsmith.store.member_id || \"\").trim() ||\n\t\t\tString(appsmith.URL.queryParams.member_id || \"\").trim();\n\n\t\tif (initialMemberId) {\n\t\t\tawait storeValue(\"member_id\", initialMemberId);\n\t\t\treturn await this.refreshGate(initialMemberId);\n\t\t}\n\n\t\treturn [];\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tthis.refresh();\n\t\t\n\t},\n\n\tasync setMemberId(memberId) {\n\t\tconst id = String(memberId || \"\").trim();\n\n\t\tif (!id) {\n\t\t\tawait storeValue(\"member_id\", \"\");\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", id);\n\t\treturn await this.refreshGate(id);\n\t},\n\t\n\tasync refreshGate(thisSelected) {\n\t\tconst selectedMember =\n\t\t\tString(\n\t\t\t\tthisSelected ||\n\t\t\t\tselMember.selectedOptionValue ||\n\t\t\t\tappsmith.store.member_id ||\n\t\t\t\t\"\"\n\t\t\t).trim();\n\n\t\tconst releaseType =\n\t\t\tselReleaseType.selectedOptionValue ||\n\t\t\t\"sacrament_release\";\n\n\t\tif (!selectedMember) {\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", selectedMember);\n\n\t\treturn await qGateCheckAgreement.run({\n\t\t\tmember_id: selectedMember,\n\t\t\trelease_type: releaseType,\n\t\t});\n\t},\n\n  async issueRelease() {\n\t\tconst member_id = String(\n\t\t\tselMember.selectedOptionValue ||\n\t\t\tappsmith.store.member_id ||\n\t\t\t\"\"\n\t\t).trim() || null;\n\t\tconst release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n\t\t\n\t\tconst storage_location_name = tblProducts.selectedRow.storage_location || null;\n\n\t\tif (!storage_location_name) {\n\t\t\tshowAlert(\"Internal error: unknown storage location.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\t\t\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n\t\tconst gateRows = await qGateCheckAgreement.run({\n\t\t\tmember_id,\n\t\t\trelease_type,\n\t\t});\n\n\t\tconst gateRow = Array.isArray(gateRows) && gateRows.length > 0\n\t\t\t? gateRows[0]\n\t\t\t: null;\n\n\t\tconst hasAgreement = !!gateRow?.member_agreement_id;\n\t\tconst isReviewer =\n\t\t\tappsmith.store.facilitator_is_reviewer === true ||\n\t\t\tappsmith.store.facilitator_is_reviewer === \"true\";\n\n\t\tconst notes = inpNotes.text || \"\";\n\t\tconst reviewerOverride = !hasAgreement && isReviewer;\n\n\t\tif (!hasAgreement && !isReviewer) {\n\t\t\tshowAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tif (reviewerOverride && !notes.trim()) {\n\t\t\tshowAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\t\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n\t\t\tagreement_override: reviewerOverride,\n\t\t\toverride_reason: reviewerOverride ? notes : null,\n\t\t\toverride_by: reviewerOverride ? appsmith.store.facilitator_id : null,\t\t\n      notes: notes,\n    });\n\t\n    const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n\t\tshowAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", releaseId, {\n\t\t\tmember_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n      notes: notes\n\t\t});\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
+        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqMembersDirectory.run(),\n\t\t\tqListFacilitators.run(),\n\t\t\tqAccessibleStorageLocations.run()\n\t\t]);\n\n\t\tconst initialMemberId =\n\t\t\tString(appsmith.store.member_id || \"\").trim() ||\n\t\t\tString(appsmith.URL.queryParams.member_id || \"\").trim();\n\n\t\tif (initialMemberId) {\n\t\t\tawait storeValue(\"member_id\", initialMemberId);\n\t\t\treturn await this.refreshGate(initialMemberId);\n\t\t}\n\n\t\treturn [];\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tthis.refresh();\n\t\t\n\t},\n\n\tasync setMemberId(memberId) {\n\t\tconst id = String(memberId || \"\").trim();\n\n\t\tif (!id) {\n\t\t\tawait storeValue(\"member_id\", \"\");\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", id);\n\t\treturn await this.refreshGate(id);\n\t},\n\t\n\tasync refreshGate(thisSelected) {\n\t\tconst selectedMember =\n\t\t\tString(\n\t\t\t\tthisSelected ||\n\t\t\t\tselMember.selectedOptionValue ||\n\t\t\t\tappsmith.store.member_id ||\n\t\t\t\t\"\"\n\t\t\t).trim();\n\n\t\tconst releaseType =\n\t\t\tselReleaseType.selectedOptionValue ||\n\t\t\t\"sacrament_release\";\n\n\t\tif (!selectedMember) {\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", selectedMember);\n\n\t\treturn await qGateCheckAgreement.run({\n\t\t\tmember_id: selectedMember,\n\t\t\trelease_type: releaseType,\n\t\t});\n\t},\n\n  async issueRelease() {\n\t\tconst member_id = String(\n\t\t\tselMember.selectedOptionValue ||\n\t\t\tappsmith.store.member_id ||\n\t\t\t\"\"\n\t\t).trim() || null;\n\t\tconst release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n\t\t\n\t\tconst storage_location_name = tblProducts.selectedRow.storage_location || null;\n\n\t\tif (!storage_location_name) {\n\t\t\tshowAlert(\"Internal error: unknown storage location.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\t\t\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n\t\tconst membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n\t\t\tmember_id,\n\t\t\trelease_type,\n\t\t});\n\n\t\tconst gateRow = Array.isArray(gateRows) && gateRows.length > 0\n\t\t\t? gateRows[0]\n\t\t\t: null;\n\n\t\tconst hasAgreement = !!gateRow?.member_agreement_id;\n\t\tconst isReviewer =\n\t\t\tappsmith.store.facilitator_is_reviewer === true ||\n\t\t\tappsmith.store.facilitator_is_reviewer === \"true\";\n\n\t\tconst notes = inpNotes.text || \"\";\n\t\tconst reviewerOverride = !hasAgreement && isReviewer;\n\n\t\tif (!hasAgreement && !isReviewer) {\n\t\t\tshowAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tif (reviewerOverride && !notes.trim()) {\n\t\t\tshowAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\t\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n\t\t\tagreement_override: reviewerOverride,\n\t\t\toverride_reason: reviewerOverride ? notes : null,\n\t\t\toverride_by: reviewerOverride ? appsmith.store.facilitator_id : null,\t\t\n      notes: notes,\n    });\n\t\n    const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n\t\tshowAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", releaseId, {\n\t\t\tmember_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n      notes: notes\n\t\t});\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
         "name": "releaseFlows",
         "pageId": "Release - Issue",
         "pluginId": "js-plugin",
@@ -99,7 +99,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqMembersDirectory.run(),\n\t\t\tqListFacilitators.run(),\n\t\t\tqAccessibleStorageLocations.run()\n\t\t]);\n\n\t\tconst initialMemberId =\n\t\t\tString(appsmith.store.member_id || \"\").trim() ||\n\t\t\tString(appsmith.URL.queryParams.member_id || \"\").trim();\n\n\t\tif (initialMemberId) {\n\t\t\tawait storeValue(\"member_id\", initialMemberId);\n\t\t\treturn await this.refreshGate(initialMemberId);\n\t\t}\n\n\t\treturn [];\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tthis.refresh();\n\t\t\n\t},\n\n\tasync setMemberId(memberId) {\n\t\tconst id = String(memberId || \"\").trim();\n\n\t\tif (!id) {\n\t\t\tawait storeValue(\"member_id\", \"\");\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", id);\n\t\treturn await this.refreshGate(id);\n\t},\n\t\n\tasync refreshGate(thisSelected) {\n\t\tconst selectedMember =\n\t\t\tString(\n\t\t\t\tthisSelected ||\n\t\t\t\tselMember.selectedOptionValue ||\n\t\t\t\tappsmith.store.member_id ||\n\t\t\t\t\"\"\n\t\t\t).trim();\n\n\t\tconst releaseType =\n\t\t\tselReleaseType.selectedOptionValue ||\n\t\t\t\"sacrament_release\";\n\n\t\tif (!selectedMember) {\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", selectedMember);\n\n\t\treturn await qGateCheckAgreement.run({\n\t\t\tmember_id: selectedMember,\n\t\t\trelease_type: releaseType,\n\t\t});\n\t},\n\n  async issueRelease() {\n\t\tconst member_id = String(\n\t\t\tselMember.selectedOptionValue ||\n\t\t\tappsmith.store.member_id ||\n\t\t\t\"\"\n\t\t).trim() || null;\n\t\tconst release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n\t\t\n\t\tconst storage_location_name = tblProducts.selectedRow.storage_location || null;\n\n\t\tif (!storage_location_name) {\n\t\t\tshowAlert(\"Internal error: unknown storage location.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\t\t\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n\t\tconst gateRows = await qGateCheckAgreement.run({\n\t\t\tmember_id,\n\t\t\trelease_type,\n\t\t});\n\n\t\tconst gateRow = Array.isArray(gateRows) && gateRows.length > 0\n\t\t\t? gateRows[0]\n\t\t\t: null;\n\n\t\tconst hasAgreement = !!gateRow?.member_agreement_id;\n\t\tconst isReviewer =\n\t\t\tappsmith.store.facilitator_is_reviewer === true ||\n\t\t\tappsmith.store.facilitator_is_reviewer === \"true\";\n\n\t\tconst notes = inpNotes.text || \"\";\n\t\tconst reviewerOverride = !hasAgreement && isReviewer;\n\n\t\tif (!hasAgreement && !isReviewer) {\n\t\t\tshowAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tif (reviewerOverride && !notes.trim()) {\n\t\t\tshowAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\t\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n\t\t\tagreement_override: reviewerOverride,\n\t\t\toverride_reason: reviewerOverride ? notes : null,\n\t\t\toverride_by: reviewerOverride ? appsmith.store.facilitator_id : null,\t\t\n      notes: notes,\n    });\n\t\n    const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n\t\tshowAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", releaseId, {\n\t\t\tmember_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n      notes: notes\n\t\t});\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
+        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqMembersDirectory.run(),\n\t\t\tqListFacilitators.run(),\n\t\t\tqAccessibleStorageLocations.run()\n\t\t]);\n\n\t\tconst initialMemberId =\n\t\t\tString(appsmith.store.member_id || \"\").trim() ||\n\t\t\tString(appsmith.URL.queryParams.member_id || \"\").trim();\n\n\t\tif (initialMemberId) {\n\t\t\tawait storeValue(\"member_id\", initialMemberId);\n\t\t\treturn await this.refreshGate(initialMemberId);\n\t\t}\n\n\t\treturn [];\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tthis.refresh();\n\t\t\n\t},\n\n\tasync setMemberId(memberId) {\n\t\tconst id = String(memberId || \"\").trim();\n\n\t\tif (!id) {\n\t\t\tawait storeValue(\"member_id\", \"\");\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", id);\n\t\treturn await this.refreshGate(id);\n\t},\n\t\n\tasync refreshGate(thisSelected) {\n\t\tconst selectedMember =\n\t\t\tString(\n\t\t\t\tthisSelected ||\n\t\t\t\tselMember.selectedOptionValue ||\n\t\t\t\tappsmith.store.member_id ||\n\t\t\t\t\"\"\n\t\t\t).trim();\n\n\t\tconst releaseType =\n\t\t\tselReleaseType.selectedOptionValue ||\n\t\t\t\"sacrament_release\";\n\n\t\tif (!selectedMember) {\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", selectedMember);\n\n\t\treturn await qGateCheckAgreement.run({\n\t\t\tmember_id: selectedMember,\n\t\t\trelease_type: releaseType,\n\t\t});\n\t},\n\n  async issueRelease() {\n\t\tconst member_id = String(\n\t\t\tselMember.selectedOptionValue ||\n\t\t\tappsmith.store.member_id ||\n\t\t\t\"\"\n\t\t).trim() || null;\n\t\tconst release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n\t\t\n\t\tconst storage_location_name = tblProducts.selectedRow.storage_location || null;\n\n\t\tif (!storage_location_name) {\n\t\t\tshowAlert(\"Internal error: unknown storage location.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\t\t\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n\t\tconst membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n\t\t\tmember_id,\n\t\t\trelease_type,\n\t\t});\n\n\t\tconst gateRow = Array.isArray(gateRows) && gateRows.length > 0\n\t\t\t? gateRows[0]\n\t\t\t: null;\n\n\t\tconst hasAgreement = !!gateRow?.member_agreement_id;\n\t\tconst isReviewer =\n\t\t\tappsmith.store.facilitator_is_reviewer === true ||\n\t\t\tappsmith.store.facilitator_is_reviewer === \"true\";\n\n\t\tconst notes = inpNotes.text || \"\";\n\t\tconst reviewerOverride = !hasAgreement && isReviewer;\n\n\t\tif (!hasAgreement && !isReviewer) {\n\t\t\tshowAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tif (reviewerOverride && !notes.trim()) {\n\t\t\tshowAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\t\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n\t\t\tagreement_override: reviewerOverride,\n\t\t\toverride_reason: reviewerOverride ? notes : null,\n\t\t\toverride_by: reviewerOverride ? appsmith.store.facilitator_id : null,\t\t\n      notes: notes,\n    });\n\t\n    const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n\t\tshowAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", releaseId, {\n\t\t\tmember_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n      notes: notes\n\t\t});\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
         "name": "releaseFlows",
         "pageId": "Release - Issue",
         "pluginId": "js-plugin",
@@ -302,7 +302,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -313,7 +313,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -13295,7 +13295,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
+          "body": "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -13324,7 +13324,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
+          "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
         ],
         "messages": [],
         "name": "issueRelease",
@@ -13336,7 +13336,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
+          "body": "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -13365,7 +13365,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
+          "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
         ],
         "messages": [],
         "name": "issueRelease",
@@ -22232,7 +22232,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22261,7 +22261,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22273,7 +22273,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22302,7 +22302,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -24384,6 +24384,297 @@
         "runBehaviour": "MANUAL",
         "userPermissions": [],
         "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_d856a280-1d34-422d-8f6d-05adab870742",
+      "id": "Individual Profile_qProfileMembershipState",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT * FROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qProfileMembershipState",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT * FROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qProfileMembershipState",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_f02dd3a2-5fa3-4376-ba91-14892e79e73b",
+      "id": "Individual Profile_qEndPersonMembership",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_end_person_membership(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.reason }}\n)::text AS member_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qEndPersonMembership",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_end_person_membership(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.reason }}\n)::text AS member_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qEndPersonMembership",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "69546c483d3106150e1d4549_c7c46bb8-a104-4665-b2ce-4ab2e45b7922",
+      "id": "Release - Issue_qReleaseMemberActive",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT EXISTS (SELECT 1 FROM public.members m WHERE m.member_id={{ this.params.member_id }}::uuid AND m.status='active') AS is_active;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-11T16:18:56Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " this.params.member_id "
+        ],
+        "messages": [],
+        "name": "qReleaseMemberActive",
+        "pageId": "Release - Issue",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": true
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT EXISTS (SELECT 1 FROM public.members m WHERE m.member_id={{ this.params.member_id }}::uuid AND m.status='active') AS is_active;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-11T16:18:56Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " this.params.member_id "
+        ],
+        "messages": [],
+        "name": "qReleaseMemberActive",
+        "pageId": "Release - Issue",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": true
       }
     }
   ],
@@ -75538,7 +75829,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 151,
+              "bottomRow": 176,
               "canExtend": true,
               "children": [
                 {
@@ -77330,7 +77621,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "10125e5ba4",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -77395,7 +77686,7 @@
                   "isDisabled": false,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "5b3114fa9d",
                   "label": "Reviewed first name",
                   "labelAlignment": "left",
@@ -77462,7 +77753,7 @@
                   "isDisabled": false,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "4b46123746",
                   "label": "Reviewed last name",
                   "labelAlignment": "left",
@@ -77526,7 +77817,7 @@
                   "isDisabled": false,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "5ae94506ba",
                   "label": "Reason to enable membership",
                   "labelAlignment": "left",
@@ -77605,7 +77896,7 @@
                   "isDefaultClickDisabled": true,
                   "isDisabled": "{{ qEnableProfileMembership.isLoading }}",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "ce245dfe59",
                   "leftColumn": 44,
                   "minWidth": 120,
@@ -77632,6 +77923,325 @@
                   "version": 1,
                   "widgetId": "072c6a044c",
                   "widgetName": "btnEnablePersonMembership"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 155,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "key": "10125e5ba4",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 100,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 96,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 100,
+                  "originalTopRow": 96,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "End membership; keep this individual as a contributor",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 151,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "0568589600",
+                  "widgetName": "txtEndPersonMembershipHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 159,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "a88013f642",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 126,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 122,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 126,
+                  "originalTopRow": 122,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Check contributor email and phone above before ending membership; member-only contacts stay on the historical member record. Past agreements, releases and donations remain. Resolve pending agreements, reassign facilitator work and remove appointments or permissions first.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 155,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "66f4648225",
+                  "widgetName": "txtEndPersonMembershipNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 166,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "key": "5ae94506ba",
+                  "label": "Reason to end membership",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 114,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 108,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 114,
+                  "originalTopRow": 108,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 160,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "d09141d83e",
+                  "widgetName": "inpEndMembershipReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 165,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qEndPersonMembership.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "key": "ce245dfe59",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 113,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 109,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpEndMembershipReason.text?.trim(); if (!reason) { showAlert('Enter the reason for ending membership.', 'warning'); return; } const rows = await qEndPersonMembership.run({ reason }); if (!rows?.[0]?.member_id) throw new Error('No member was returned.'); await Promise.all([qIndividualProfile.run(), qProfileMembershipState.run()]); showAlert('Membership ended; contributor and historical records remain.', 'success'); } catch (e) { showAlert('Ending membership failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 113,
+                  "originalTopRow": 109,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "End membership",
+                  "topRow": 161,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "dba5bfdef5",
+                  "widgetName": "btnEndPersonMembership"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 172,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.membership_status === 'inactive' }}",
+                  "key": "10125e5ba4",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 100,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 96,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 100,
+                  "originalTopRow": 96,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "{{ 'Membership ended on ' + new Date(qProfileMembershipState.data?.[0]?.membership_ended_at).toLocaleDateString() + '. This individual remains a contributor; past agreements, releases and donations are preserved.' }}",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 167,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "6a13679042",
+                  "widgetName": "txtFormerMembershipStatus",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
+                    }
+                  ]
                 }
               ],
               "containerStyle": "none",
@@ -77686,7 +78296,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 151,
+              "bottomRow": 176,
               "canExtend": true,
               "children": [
                 {
@@ -79478,7 +80088,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "10125e5ba4",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -79543,7 +80153,7 @@
                   "isDisabled": false,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "5b3114fa9d",
                   "label": "Reviewed first name",
                   "labelAlignment": "left",
@@ -79610,7 +80220,7 @@
                   "isDisabled": false,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "4b46123746",
                   "label": "Reviewed last name",
                   "labelAlignment": "left",
@@ -79674,7 +80284,7 @@
                   "isDisabled": false,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "5ae94506ba",
                   "label": "Reason to enable membership",
                   "labelAlignment": "left",
@@ -79753,7 +80363,7 @@
                   "isDefaultClickDisabled": true,
                   "isDisabled": "{{ qEnableProfileMembership.isLoading }}",
                   "isLoading": false,
-                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id }}",
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.member_id && !qProfileMembershipState.data?.[0]?.member_id }}",
                   "key": "ce245dfe59",
                   "leftColumn": 44,
                   "minWidth": 120,
@@ -79780,6 +80390,325 @@
                   "version": 1,
                   "widgetId": "072c6a044c",
                   "widgetName": "btnEnablePersonMembership"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 155,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "key": "10125e5ba4",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 100,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 96,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 100,
+                  "originalTopRow": 96,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "End membership; keep this individual as a contributor",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 151,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "0568589600",
+                  "widgetName": "txtEndPersonMembershipHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 159,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "a88013f642",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 126,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 122,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 126,
+                  "originalTopRow": 122,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Check contributor email and phone above before ending membership; member-only contacts stay on the historical member record. Past agreements, releases and donations remain. Resolve pending agreements, reassign facilitator work and remove appointments or permissions first.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 155,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "66f4648225",
+                  "widgetName": "txtEndPersonMembershipNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 166,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "key": "5ae94506ba",
+                  "label": "Reason to end membership",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 114,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 108,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 114,
+                  "originalTopRow": 108,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 160,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "d09141d83e",
+                  "widgetName": "inpEndMembershipReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 165,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qEndPersonMembership.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.can_end === true }}",
+                  "key": "ce245dfe59",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 113,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 109,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpEndMembershipReason.text?.trim(); if (!reason) { showAlert('Enter the reason for ending membership.', 'warning'); return; } const rows = await qEndPersonMembership.run({ reason }); if (!rows?.[0]?.member_id) throw new Error('No member was returned.'); await Promise.all([qIndividualProfile.run(), qProfileMembershipState.run()]); showAlert('Membership ended; contributor and historical records remain.', 'success'); } catch (e) { showAlert('Ending membership failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 113,
+                  "originalTopRow": 109,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "End membership",
+                  "topRow": 161,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "dba5bfdef5",
+                  "widgetName": "btnEndPersonMembership"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 172,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateMember.data?.[0]?.can_create === true && qProfileMembershipState.data?.[0]?.membership_status === 'inactive' }}",
+                  "key": "10125e5ba4",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 100,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 96,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 100,
+                  "originalTopRow": 96,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "{{ 'Membership ended on ' + new Date(qProfileMembershipState.data?.[0]?.membership_ended_at).toLocaleDateString() + '. This individual remains a contributor; past agreements, releases and donations are preserved.' }}",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 167,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "6a13679042",
+                  "widgetName": "txtFormerMembershipStatus",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
+                    }
+                  ]
                 }
               ],
               "containerStyle": "none",
