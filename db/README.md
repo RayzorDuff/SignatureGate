@@ -162,6 +162,15 @@ sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -
 # Substitute the intended person's actual Appsmith sign-in email below:
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' -U signaturegate -d signaturegate < db/bootstrap_issue_19_directory_manager.sql
 
+# Issue #19 contributor intake from Directory and enrollment of an existing
+# person as a contributor. Apply after person_roles.sql, before importing the
+# associated Appsmith export. No membership is created by these functions.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_directory_intake.sql
+
+# Rollback-only integration checks: permissions, duplicate contacts, person
+# and company creation, contact synchronization, enrollment, and auditing.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_directory_intake.sql
+
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
 ```

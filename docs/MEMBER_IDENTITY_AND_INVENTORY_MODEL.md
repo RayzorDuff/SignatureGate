@@ -235,6 +235,16 @@ donation write function is yet authorized solely by a nonmember role. The
 Appsmith PostgreSQL connection is shared, and actor email comes from the
 trusted application; these helpers do not provide DB-level user isolation.
 
+`migrations_issue_19_contributor_directory_intake.sql` allows a donations
+reviewer to create a new individual person or organization with an active
+contributor record from the Directory, and allows a directory manager who is
+also a donations reviewer to enable the contributor role for an existing
+person. The database does not match names or merge identities automatically.
+An email or phone already used by another active party blocks creation until
+the reviewer investigates; shared contacts can be added through a later
+explicit contact workflow. Both actions require a reason, write to audit_log,
+and do not create a member or agreement.
+
 Membership is not a permission to operate Appsmith. Person-owned reviewer
 roles and Appsmith account ownership are now separate from membership; older
 operational pages and APIs still need to adopt those permissions. Ceremony

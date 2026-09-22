@@ -83,6 +83,18 @@ legacy release and donation actions still use member IDs and transitional
 member flags. Adding a reviewer role to a nonmember does not yet authorize
 those legacy actions.
 
+After `db/migrations_issue_19_contributor_directory_intake.sql` and its
+rollback-only verification, import the next Appsmith export. A donations
+reviewer can create a standalone individual or company contributor in
+Directory, with optional email and phone. Existing contacts block creation
+until the reviewer checks the Directory for a matching identity; leave the
+contact blank only when the contributor is known to be distinct. A person
+already present in Individual Profile can be enabled as a contributor by a
+directory manager who is also a donations reviewer. Both operations require
+a reason and write an audit entry. Neither grants membership or release
+eligibility. This phase does not add company-contact editing or membership
+enrollment to the new profiles.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:

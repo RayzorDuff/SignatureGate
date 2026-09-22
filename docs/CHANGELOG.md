@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added audited contributor creation for individuals and companies in Directory, and controlled contributor enrollment for existing people on Individual Profile (#19).
 - Added person-owned practitioner/reviewer roles, explicit Appsmith account ownership, audited directory-manager role controls on Individual Profile, and rollback-only permission checks for Issue #19.
 - Added a scoped Directory and read-only Individual Profile and Company Profile in Appsmith. Member work remains reachable through the existing Members - Profile page.
 - Added database directory/contact query helpers with a rollback-only test of document-reviewer and donations-reviewer visibility.

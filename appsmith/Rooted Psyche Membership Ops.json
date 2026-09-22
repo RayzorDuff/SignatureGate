@@ -275,7 +275,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run(), qDirectoryCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19DirectoryFlows",
         "pageId": "Directory",
         "pluginId": "js-plugin",
@@ -286,7 +286,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run(), qDirectoryCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19DirectoryFlows",
         "pageId": "Directory",
         "pluginId": "js-plugin",
@@ -302,7 +302,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -313,7 +313,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -22143,7 +22143,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run(), qDirectoryCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22172,7 +22172,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run(), qDirectoryCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22184,7 +22184,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run(), qDirectoryCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22213,7 +22213,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qPartyDirectory.run(), qDirectoryCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22232,7 +22232,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22261,7 +22261,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22273,7 +22273,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22302,7 +22302,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22888,6 +22888,404 @@
         ],
         "messages": [],
         "name": "qSetIndividualAccount",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_1b732ba3-bcc6-4d24-b49d-78817a286943",
+      "id": "Directory_qDirectoryCanCreateContributor",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'donations_reviewer') AS can_create;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qDirectoryCanCreateContributor",
+        "pageId": "Directory",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'donations_reviewer') AS can_create;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qDirectoryCanCreateContributor",
+        "pageId": "Directory",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_555b4313-1683-43db-80c2-d81985c28f12",
+      "id": "Directory_qCreateDirectoryContributor",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT party_kind, party_id::text AS party_id, contributor_id::text AS contributor_id\nFROM public.issue19_create_contributor(\n {{ appsmith.user.email }}, {{ this.params.kind }}, {{ this.params.first }},\n {{ this.params.last }}, {{ this.params.company }}, {{ this.params.email }},\n {{ this.params.phone }}, {{ this.params.reason }}\n);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " this.params.kind ",
+          " this.params.first ",
+          " this.params.last ",
+          " this.params.company ",
+          " this.params.email ",
+          " this.params.phone ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qCreateDirectoryContributor",
+        "pageId": "Directory",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT party_kind, party_id::text AS party_id, contributor_id::text AS contributor_id\nFROM public.issue19_create_contributor(\n {{ appsmith.user.email }}, {{ this.params.kind }}, {{ this.params.first }},\n {{ this.params.last }}, {{ this.params.company }}, {{ this.params.email }},\n {{ this.params.phone }}, {{ this.params.reason }}\n);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " this.params.kind ",
+          " this.params.first ",
+          " this.params.last ",
+          " this.params.company ",
+          " this.params.email ",
+          " this.params.phone ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qCreateDirectoryContributor",
+        "pageId": "Directory",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_8398e9fe-da88-4b49-8aac-6d1eabf62db1",
+      "id": "Individual Profile_qProfileCanCreateContributor",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'donations_reviewer') AS can_create;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qProfileCanCreateContributor",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'donations_reviewer') AS can_create;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qProfileCanCreateContributor",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_30bf71fd-d601-4c58-b41f-3a2350925a2d",
+      "id": "Individual Profile_qEnableProfileContributor",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_enable_person_contributor(\n {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n {{ this.params.reason }}\n)::text AS contributor_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qEnableProfileContributor",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_enable_person_contributor(\n {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n {{ this.params.reason }}\n)::text AS contributor_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qEnableProfileContributor",
         "pageId": "Individual Profile",
         "policyMap": {},
         "runBehaviour": "MANUAL",
@@ -71665,7 +72063,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 60,
+              "bottomRow": 98,
               "canExtend": true,
               "children": [
                 {
@@ -72217,6 +72615,589 @@
                   "version": 1,
                   "widgetId": "45dd129232",
                   "widgetName": "btnRefreshDirectory"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 65,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "aab9bba337",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 65,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 61,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 65,
+                  "originalTopRow": 61,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Create a contributor (individual or company)",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 61,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "d0e26de504",
+                  "widgetName": "txtDirectoryContributorHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 72,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "individual",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "aaaf7b57a5",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contributor type",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 72,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 66,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 72,
+                  "originalTopRow": 66,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": [
+                    {
+                      "label": "Individual",
+                      "value": "individual"
+                    },
+                    {
+                      "label": "Company",
+                      "value": "organization"
+                    }
+                  ],
+                  "topRow": 66,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "8df2e4b960",
+                  "widgetName": "selNewContributorKind"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 72,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true && selNewContributorKind.selectedOptionValue === 'organization' }}",
+                  "key": "9766622000",
+                  "label": "Company name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 72,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 66,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 72,
+                  "originalTopRow": 66,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 66,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "9a6654d25c",
+                  "widgetName": "inpNewContributorCompany",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 79,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true && selNewContributorKind.selectedOptionValue === 'individual' }}",
+                  "key": "dfaf483289",
+                  "label": "First name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 79,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 73,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 79,
+                  "originalTopRow": 73,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "showStepArrows": false,
+                  "topRow": 73,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "ff7e7f8ff6",
+                  "widgetName": "inpNewContributorFirst",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 79,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true && selNewContributorKind.selectedOptionValue === 'individual' }}",
+                  "key": "2b3361858c",
+                  "label": "Last name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 79,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 73,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 79,
+                  "originalTopRow": 73,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 73,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "b51cd0ffa7",
+                  "widgetName": "inpNewContributorLast",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 86,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "bd8b142428",
+                  "label": "Contact email (optional)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 86,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 80,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 86,
+                  "originalTopRow": 80,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "showStepArrows": false,
+                  "topRow": 80,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "0aa3d15008",
+                  "widgetName": "inpNewContributorEmail",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 86,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "2f7fe104e0",
+                  "label": "Contact phone (optional)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 86,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 80,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 86,
+                  "originalTopRow": 80,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 80,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "a30cc6d26d",
+                  "widgetName": "inpNewContributorPhone",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 93,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "f8845145eb",
+                  "label": "Reason for contributor creation",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 93,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 44,
+                  "mobileTopRow": 87,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 93,
+                  "originalTopRow": 87,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 44,
+                  "showStepArrows": false,
+                  "topRow": 87,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "2d26b66cd2",
+                  "widgetName": "inpNewContributorReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 92,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qCreateDirectoryContributor.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "950aacc281",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 92,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 88,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const kind = selNewContributorKind.selectedOptionValue; const reason = inpNewContributorReason.text?.trim(); if (!reason || !kind || (kind === 'individual' && (!inpNewContributorFirst.text?.trim() || !inpNewContributorLast.text?.trim())) || (kind === 'organization' && !inpNewContributorCompany.text?.trim())) { showAlert('Select a contributor type, enter a name and reason.', 'warning'); return; } const rows = await qCreateDirectoryContributor.run({ kind, first: inpNewContributorFirst.text?.trim() || null, last: inpNewContributorLast.text?.trim() || null, company: inpNewContributorCompany.text?.trim() || null, email: inpNewContributorEmail.text?.trim() || null, phone: inpNewContributorPhone.text?.trim() || null, reason }); const created = rows?.[0]; if (!created?.party_id) throw new Error('No contributor was returned.'); await qPartyDirectory.run(); navigateTo(kind === 'individual' ? 'Individual Profile' : 'Company Profile', kind === 'individual' ? { person_id: created.party_id } : { organization_id: created.party_id }, 'SAME_WINDOW'); } catch (e) { showAlert('Contributor creation failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 92,
+                  "originalTopRow": 88,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Create contributor",
+                  "topRow": 88,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "79149d1ead",
+                  "widgetName": "btnCreateContributor"
                 }
               ],
               "containerStyle": "none",
@@ -72271,7 +73252,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 60,
+              "bottomRow": 98,
               "canExtend": true,
               "children": [
                 {
@@ -72823,6 +73804,589 @@
                   "version": 1,
                   "widgetId": "45dd129232",
                   "widgetName": "btnRefreshDirectory"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 65,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "aab9bba337",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 65,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 61,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 65,
+                  "originalTopRow": 61,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Create a contributor (individual or company)",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 61,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "d0e26de504",
+                  "widgetName": "txtDirectoryContributorHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 72,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "individual",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "aaaf7b57a5",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Contributor type",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 72,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 66,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 72,
+                  "originalTopRow": 66,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": [
+                    {
+                      "label": "Individual",
+                      "value": "individual"
+                    },
+                    {
+                      "label": "Company",
+                      "value": "organization"
+                    }
+                  ],
+                  "topRow": 66,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "8df2e4b960",
+                  "widgetName": "selNewContributorKind"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 72,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true && selNewContributorKind.selectedOptionValue === 'organization' }}",
+                  "key": "9766622000",
+                  "label": "Company name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 72,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 66,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 72,
+                  "originalTopRow": 66,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 66,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "9a6654d25c",
+                  "widgetName": "inpNewContributorCompany",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 79,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true && selNewContributorKind.selectedOptionValue === 'individual' }}",
+                  "key": "dfaf483289",
+                  "label": "First name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 79,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 73,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 79,
+                  "originalTopRow": 73,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "showStepArrows": false,
+                  "topRow": 73,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "ff7e7f8ff6",
+                  "widgetName": "inpNewContributorFirst",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 79,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true && selNewContributorKind.selectedOptionValue === 'individual' }}",
+                  "key": "2b3361858c",
+                  "label": "Last name",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 79,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 73,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 79,
+                  "originalTopRow": 73,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 73,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "b51cd0ffa7",
+                  "widgetName": "inpNewContributorLast",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 86,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "bd8b142428",
+                  "label": "Contact email (optional)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 86,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 80,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 86,
+                  "originalTopRow": 80,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "showStepArrows": false,
+                  "topRow": 80,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "0aa3d15008",
+                  "widgetName": "inpNewContributorEmail",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 86,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "2f7fe104e0",
+                  "label": "Contact phone (optional)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 86,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 80,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 86,
+                  "originalTopRow": 80,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 80,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "a30cc6d26d",
+                  "widgetName": "inpNewContributorPhone",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 93,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "f8845145eb",
+                  "label": "Reason for contributor creation",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 93,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 44,
+                  "mobileTopRow": 87,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 93,
+                  "originalTopRow": 87,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 44,
+                  "showStepArrows": false,
+                  "topRow": 87,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "2d26b66cd2",
+                  "widgetName": "inpNewContributorReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 92,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qCreateDirectoryContributor.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanCreateContributor.data?.[0]?.can_create === true }}",
+                  "key": "950aacc281",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 92,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 88,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const kind = selNewContributorKind.selectedOptionValue; const reason = inpNewContributorReason.text?.trim(); if (!reason || !kind || (kind === 'individual' && (!inpNewContributorFirst.text?.trim() || !inpNewContributorLast.text?.trim())) || (kind === 'organization' && !inpNewContributorCompany.text?.trim())) { showAlert('Select a contributor type, enter a name and reason.', 'warning'); return; } const rows = await qCreateDirectoryContributor.run({ kind, first: inpNewContributorFirst.text?.trim() || null, last: inpNewContributorLast.text?.trim() || null, company: inpNewContributorCompany.text?.trim() || null, email: inpNewContributorEmail.text?.trim() || null, phone: inpNewContributorPhone.text?.trim() || null, reason }); const created = rows?.[0]; if (!created?.party_id) throw new Error('No contributor was returned.'); await qPartyDirectory.run(); navigateTo(kind === 'individual' ? 'Individual Profile' : 'Company Profile', kind === 'individual' ? { person_id: created.party_id } : { organization_id: created.party_id }, 'SAME_WINDOW'); } catch (e) { showAlert('Contributor creation failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 92,
+                  "originalTopRow": 88,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Create contributor",
+                  "topRow": 88,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "79149d1ead",
+                  "widgetName": "btnCreateContributor"
                 }
               ],
               "containerStyle": "none",
@@ -72881,7 +74445,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 84,
+              "bottomRow": 97,
               "canExtend": true,
               "children": [
                 {
@@ -73992,6 +75556,139 @@
                   "version": 1,
                   "widgetId": "a9a46ae246",
                   "widgetName": "btnSavePersonAppAccount"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 93,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qEnableProfileContributor.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateContributor.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "a047266316",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 93,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 89,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpEnableContributorReason.text?.trim(); if (!reason) { showAlert('Enter a reason to enable contributions.', 'warning'); return; } const rows = await qEnableProfileContributor.run({ reason }); if (!rows?.[0]?.contributor_id) throw new Error('No contributor was returned.'); await qIndividualProfile.run(); showAlert('Contributor enabled for this individual.', 'success'); } catch (e) { showAlert('Contributor enrollment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 93,
+                  "originalTopRow": 89,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Enable contributor",
+                  "topRow": 89,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "918e66cef1",
+                  "widgetName": "btnEnablePersonContributor"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 88,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateContributor.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "6c42683c11",
+                  "label": "Reason to enable contributions (required)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 88,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 82,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 88,
+                  "originalTopRow": 82,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 82,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "a0143c63ab",
+                  "widgetName": "inpEnableContributorReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
                 }
               ],
               "containerStyle": "none",
@@ -74046,7 +75743,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 84,
+              "bottomRow": 97,
               "canExtend": true,
               "children": [
                 {
@@ -75157,6 +76854,139 @@
                   "version": 1,
                   "widgetId": "a9a46ae246",
                   "widgetName": "btnSavePersonAppAccount"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 93,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qEnableProfileContributor.isLoading }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateContributor.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "a047266316",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 93,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 89,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const reason = inpEnableContributorReason.text?.trim(); if (!reason) { showAlert('Enter a reason to enable contributions.', 'warning'); return; } const rows = await qEnableProfileContributor.run({ reason }); if (!rows?.[0]?.contributor_id) throw new Error('No contributor was returned.'); await qIndividualProfile.run(); showAlert('Contributor enabled for this individual.', 'success'); } catch (e) { showAlert('Contributor enrollment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 93,
+                  "originalTopRow": 89,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Enable contributor",
+                  "topRow": 89,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "918e66cef1",
+                  "widgetName": "btnEnablePersonContributor"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 88,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && qProfileCanCreateContributor.data?.[0]?.can_create === true && !!qIndividualProfile.data?.[0]?.party_id && !qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "6c42683c11",
+                  "label": "Reason to enable contributions (required)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 88,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 82,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 88,
+                  "originalTopRow": 82,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 82,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "a0143c63ab",
+                  "widgetName": "inpEnableContributorReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
                 }
               ],
               "containerStyle": "none",
