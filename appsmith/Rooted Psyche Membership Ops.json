@@ -302,7 +302,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qIndividualProfile.run(), qIndividualContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -313,7 +313,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qIndividualProfile.run(), qIndividualContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -22232,7 +22232,7 @@
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qIndividualProfile.run(), qIndividualContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22261,7 +22261,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qIndividualProfile.run(), qIndividualContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22273,7 +22273,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qIndividualProfile.run(), qIndividualContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
+          "body": "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
@@ -22302,7 +22302,7 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await Promise.all([qIndividualProfile.run(), qIndividualContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
+          "async function () {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }"
         ],
         "messages": [],
         "name": "load",
@@ -22400,6 +22400,499 @@
         "runBehaviour": "ON_PAGE_LOAD",
         "userPermissions": [],
         "userSetOnLoad": true
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_b1b73a1c-88e4-46cf-b38a-49b8d866e4ca",
+      "id": "Individual Profile_qIndividualRoles",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT role_key FROM public.issue19_profile_roles({{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid) ORDER BY role_key;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualRoles",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT role_key FROM public.issue19_profile_roles({{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid) ORDER BY role_key;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualRoles",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_ff5669da-c3b2-4e49-80f0-3d2e2ca18e20",
+      "id": "Individual Profile_qIndividualAccount",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT email, status FROM public.issue19_profile_account({{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualAccount",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT email, status FROM public.issue19_profile_account({{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualAccount",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_280d4184-a442-4b3d-876f-c8014f76ffd8",
+      "id": "Individual Profile_qDirectoryCanManage",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'directory_manager') AS can_manage;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qDirectoryCanManage",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_has_role({{ appsmith.user.email }}, 'directory_manager') AS can_manage;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email "
+        ],
+        "messages": [],
+        "name": "qDirectoryCanManage",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_cf8ff4cf-172d-477d-8c23-c15f18a7fb5b",
+      "id": "Individual Profile_qSetIndividualRole",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_set_person_role(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.role }}, {{ this.params.enabled }}::boolean, {{ this.params.reason }}\n) AS changed;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.role ",
+          " this.params.enabled ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qSetIndividualRole",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_set_person_role(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.role }}, {{ this.params.enabled }}::boolean, {{ this.params.reason }}\n) AS changed;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.role ",
+          " this.params.enabled ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qSetIndividualRole",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_f2536a0b-679e-467a-aa35-693df267fec6",
+      "id": "Individual Profile_qSetIndividualAccount",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_set_person_app_account(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.email }}, {{ this.params.reason }}\n) AS changed;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.email ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qSetIndividualAccount",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_set_person_app_account(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.email }}, {{ this.params.reason }}\n) AS changed;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.email ",
+          " this.params.reason "
+        ],
+        "messages": [],
+        "name": "qSetIndividualAccount",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
       }
     }
   ],
@@ -72388,7 +72881,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 51,
+              "bottomRow": 84,
               "canExtend": true,
               "children": [
                 {
@@ -72970,6 +73463,535 @@
                   "version": 1,
                   "widgetId": "813871fd75",
                   "widgetName": "btnOpenMemberWork"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 56,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "2758bf03b7",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 56,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 10,
+                  "mobileTopRow": 52,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 56,
+                  "originalTopRow": 52,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Appointments and account permissions (directory managers)",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 52,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "7d6798fe42",
+                  "widgetName": "txtPersonAccessHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 61,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "text"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "2e62e25dca",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 61,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 10,
+                  "mobileTopRow": 56,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 61,
+                  "originalTopRow": 56,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "{{ 'Assigned: ' + (qIndividualRoles.data?.map(x => x.role_key.replaceAll('_', ' ')).join(', ') || 'none') + '  ·  Appsmith account: ' + (qIndividualAccount.data?.[0]?.email || 'not linked') }}",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 56,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "f438adafcb",
+                  "widgetName": "txtPersonAccessCurrent",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 68,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "practitioner",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "7cb80fb097",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Appointment or permission",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 68,
+                  "mobileLeftColumn": 45,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 62,
+                  "needsErrorInfo": false,
+                  "optionLabel": "display_name",
+                  "optionValue": "type_key",
+                  "originalBottomRow": 68,
+                  "originalTopRow": 62,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": [
+                    {
+                      "label": "Practitioner (facilitator)",
+                      "value": "practitioner"
+                    },
+                    {
+                      "label": "Document reviewer",
+                      "value": "document_reviewer"
+                    },
+                    {
+                      "label": "Donations reviewer",
+                      "value": "donations_reviewer"
+                    }
+                  ],
+                  "topRow": 62,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "cf5334754d",
+                  "widgetName": "selPersonAccessRole"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 68,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "55ca12f17f",
+                  "label": "Reason for change (required)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 68,
+                  "mobileLeftColumn": 19,
+                  "mobileRightColumn": 39,
+                  "mobileTopRow": 62,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 68,
+                  "originalTopRow": 62,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 62,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "d1782048cf",
+                  "widgetName": "inpPersonAccessReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 73,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "3e505b8a3a",
+                  "leftColumn": 0,
+                  "minWidth": 120,
+                  "mobileBottomRow": 73,
+                  "mobileLeftColumn": 17,
+                  "mobileRightColumn": 33,
+                  "mobileTopRow": 69,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { if (!inpPersonAccessReason.text?.trim()) { showAlert('Enter a reason first.', 'warning'); return; } const rows = await qSetIndividualRole.run({ role: selPersonAccessRole.selectedOptionValue, enabled: true, reason: inpPersonAccessReason.text.trim() }); await Promise.all([qIndividualRoles.run(), qIndividualProfile.run()]); showAlert(rows?.[0]?.changed ? 'Role updated.' : 'Role was already in that state.', 'success'); } catch (e) { showAlert('Role change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 73,
+                  "originalTopRow": 69,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 30,
+                  "text": "Assign role",
+                  "topRow": 69,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "02c37121ef",
+                  "widgetName": "btnAssignPersonRole"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 73,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "de50761af2",
+                  "leftColumn": 32,
+                  "minWidth": 120,
+                  "mobileBottomRow": 73,
+                  "mobileLeftColumn": 17,
+                  "mobileRightColumn": 33,
+                  "mobileTopRow": 69,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { if (!inpPersonAccessReason.text?.trim()) { showAlert('Enter a reason first.', 'warning'); return; } const rows = await qSetIndividualRole.run({ role: selPersonAccessRole.selectedOptionValue, enabled: false, reason: inpPersonAccessReason.text.trim() }); await Promise.all([qIndividualRoles.run(), qIndividualProfile.run()]); showAlert(rows?.[0]?.changed ? 'Role updated.' : 'Role was already in that state.', 'success'); } catch (e) { showAlert('Role change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 73,
+                  "originalTopRow": 69,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Remove role",
+                  "topRow": 69,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "28bc86e741",
+                  "widgetName": "btnRemovePersonRole"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 81,
+                  "boxShadow": "none",
+                  "defaultText": "{{ qIndividualAccount.data?.[0]?.email || '' }}",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "defaultText"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "fe1b96889f",
+                  "label": "Appsmith sign-in email (one owner per email)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 81,
+                  "mobileLeftColumn": 19,
+                  "mobileRightColumn": 39,
+                  "mobileTopRow": 75,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 81,
+                  "originalTopRow": 75,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 75,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "0afdead690",
+                  "widgetName": "inpPersonAppAccountEmail",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 80,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "3a969b5d51",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 80,
+                  "mobileLeftColumn": 17,
+                  "mobileRightColumn": 33,
+                  "mobileTopRow": 76,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { if (!inpPersonAccessReason.text?.trim() || !inpPersonAppAccountEmail.text?.trim()) { showAlert('Enter an email and a reason first.', 'warning'); return; } const rows = await qSetIndividualAccount.run({ email: inpPersonAppAccountEmail.text.trim(), reason: inpPersonAccessReason.text.trim() }); await qIndividualAccount.run(); showAlert(rows?.[0]?.changed ? 'Account linked.' : 'Account already linked.', 'success'); } catch (e) { showAlert('Account change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 80,
+                  "originalTopRow": 76,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Link account",
+                  "topRow": 76,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "a9a46ae246",
+                  "widgetName": "btnSavePersonAppAccount"
                 }
               ],
               "containerStyle": "none",
@@ -73024,7 +74046,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 51,
+              "bottomRow": 84,
               "canExtend": true,
               "children": [
                 {
@@ -73606,6 +74628,535 @@
                   "version": 1,
                   "widgetId": "813871fd75",
                   "widgetName": "btnOpenMemberWork"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 56,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "2758bf03b7",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 56,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 10,
+                  "mobileTopRow": 52,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 56,
+                  "originalTopRow": 52,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Appointments and account permissions (directory managers)",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 52,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "7d6798fe42",
+                  "widgetName": "txtPersonAccessHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 61,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "text"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "2e62e25dca",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 61,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 10,
+                  "mobileTopRow": 56,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 61,
+                  "originalTopRow": 56,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "{{ 'Assigned: ' + (qIndividualRoles.data?.map(x => x.role_key.replaceAll('_', ' ')).join(', ') || 'none') + '  ·  Appsmith account: ' + (qIndividualAccount.data?.[0]?.email || 'not linked') }}",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 56,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "f438adafcb",
+                  "widgetName": "txtPersonAccessCurrent",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 68,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "practitioner",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": false,
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "7cb80fb097",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Appointment or permission",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 68,
+                  "mobileLeftColumn": 45,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 62,
+                  "needsErrorInfo": false,
+                  "optionLabel": "display_name",
+                  "optionValue": "type_key",
+                  "originalBottomRow": 68,
+                  "originalTopRow": 62,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select option",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": [
+                    {
+                      "label": "Practitioner (facilitator)",
+                      "value": "practitioner"
+                    },
+                    {
+                      "label": "Document reviewer",
+                      "value": "document_reviewer"
+                    },
+                    {
+                      "label": "Donations reviewer",
+                      "value": "donations_reviewer"
+                    }
+                  ],
+                  "topRow": 62,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "cf5334754d",
+                  "widgetName": "selPersonAccessRole"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 68,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "55ca12f17f",
+                  "label": "Reason for change (required)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 68,
+                  "mobileLeftColumn": 19,
+                  "mobileRightColumn": 39,
+                  "mobileTopRow": 62,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 68,
+                  "originalTopRow": 62,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 62,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "d1782048cf",
+                  "widgetName": "inpPersonAccessReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 73,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "3e505b8a3a",
+                  "leftColumn": 0,
+                  "minWidth": 120,
+                  "mobileBottomRow": 73,
+                  "mobileLeftColumn": 17,
+                  "mobileRightColumn": 33,
+                  "mobileTopRow": 69,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { if (!inpPersonAccessReason.text?.trim()) { showAlert('Enter a reason first.', 'warning'); return; } const rows = await qSetIndividualRole.run({ role: selPersonAccessRole.selectedOptionValue, enabled: true, reason: inpPersonAccessReason.text.trim() }); await Promise.all([qIndividualRoles.run(), qIndividualProfile.run()]); showAlert(rows?.[0]?.changed ? 'Role updated.' : 'Role was already in that state.', 'success'); } catch (e) { showAlert('Role change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 73,
+                  "originalTopRow": 69,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 30,
+                  "text": "Assign role",
+                  "topRow": 69,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "02c37121ef",
+                  "widgetName": "btnAssignPersonRole"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 73,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "de50761af2",
+                  "leftColumn": 32,
+                  "minWidth": 120,
+                  "mobileBottomRow": 73,
+                  "mobileLeftColumn": 17,
+                  "mobileRightColumn": 33,
+                  "mobileTopRow": 69,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { if (!inpPersonAccessReason.text?.trim()) { showAlert('Enter a reason first.', 'warning'); return; } const rows = await qSetIndividualRole.run({ role: selPersonAccessRole.selectedOptionValue, enabled: false, reason: inpPersonAccessReason.text.trim() }); await Promise.all([qIndividualRoles.run(), qIndividualProfile.run()]); showAlert(rows?.[0]?.changed ? 'Role updated.' : 'Role was already in that state.', 'success'); } catch (e) { showAlert('Role change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 73,
+                  "originalTopRow": 69,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Remove role",
+                  "topRow": 69,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "28bc86e741",
+                  "widgetName": "btnRemovePersonRole"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 81,
+                  "boxShadow": "none",
+                  "defaultText": "{{ qIndividualAccount.data?.[0]?.email || '' }}",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "defaultText"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "fe1b96889f",
+                  "label": "Appsmith sign-in email (one owner per email)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 81,
+                  "mobileLeftColumn": 19,
+                  "mobileRightColumn": 39,
+                  "mobileTopRow": 75,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 81,
+                  "originalTopRow": 75,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 75,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "0afdead690",
+                  "widgetName": "inpPersonAppAccountEmail",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 80,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": false,
+                  "isLoading": false,
+                  "isVisible": "{{ qDirectoryCanManage.data?.[0]?.can_manage === true && !!qIndividualProfile.data?.[0]?.party_id }}",
+                  "key": "3a969b5d51",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 80,
+                  "mobileLeftColumn": 17,
+                  "mobileRightColumn": 33,
+                  "mobileTopRow": 76,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { if (!inpPersonAccessReason.text?.trim() || !inpPersonAppAccountEmail.text?.trim()) { showAlert('Enter an email and a reason first.', 'warning'); return; } const rows = await qSetIndividualAccount.run({ email: inpPersonAppAccountEmail.text.trim(), reason: inpPersonAccessReason.text.trim() }); await qIndividualAccount.run(); showAlert(rows?.[0]?.changed ? 'Account linked.' : 'Account already linked.', 'success'); } catch (e) { showAlert('Account change failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 80,
+                  "originalTopRow": 76,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Link account",
+                  "topRow": 76,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "a9a46ae246",
+                  "widgetName": "btnSavePersonAppAccount"
                 }
               ],
               "containerStyle": "none",

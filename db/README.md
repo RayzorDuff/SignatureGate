@@ -148,6 +148,20 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 # Rollback-only access check for the Directory helpers.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_directory_read.sql
 
+# Issue #19 person roles and account ownership; apply after the Directory
+# migration and before importing its profile-editing Appsmith export.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_roles.sql
+
+# Rollback-only permission, nonmember-account, assignment and audit checks.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_roles.sql
+
+# Review the exact account owner first. Bootstrap one directory manager via
+# the database operator (there is intentionally no automatic promotion).
+sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -c \
+  "SELECT p.person_id, p.display_name, a.email FROM public.person_app_accounts a JOIN public.people p USING (person_id) ORDER BY a.email;"
+# Substitute the intended person's actual Appsmith sign-in email below:
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' -U signaturegate -d signaturegate < db/bootstrap_issue_19_directory_manager.sql
+
 # documenso: handle expirations and audit actors
 sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
 ```

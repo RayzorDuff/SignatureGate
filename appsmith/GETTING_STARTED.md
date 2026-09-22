@@ -68,8 +68,20 @@ before import. Directory lists accessible people and organizations and routes
 to the read-only Individual Profile or Company Profile. Individual Profile
 links back to Members - Profile for authorized membership, agreement, and
 release work. Existing Members - Directory and Members - Profile stay in place
-until their other actions move; reviewer grants and standalone role editing
-have not yet moved into these new screens.
+until their other actions move; the person-role patch adds editing on Individual
+Profile while the older operational workflows remain on the existing pages.
+
+The person-role profile export additionally requires
+`db/migrations_issue_19_person_roles.sql`. Run its rollback-only verification,
+inspect the account owners, and bootstrap one `directory_manager` as shown in
+`db/README.md` before importing the updated Appsmith export. The Individual
+Profile then shows role assignment, revocation, and account linking controls to
+that manager only. An account email may belong to only one person; use the
+actual Appsmith sign-in email. Every change requires a reason and writes an
+audit entry. New nonmember account holders can view their own Directory row;
+legacy release and donation actions still use member IDs and transitional
+member flags. Adding a reviewer role to a nonmember does not yet authorize
+those legacy actions.
 
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.

@@ -217,17 +217,29 @@ and contact lookup. Directory displays one row per accessible person or
 organization, with contacts restricted to the member or contributor source
 that the current reviewer/facilitator may see. The new Individual Profile and
 Company Profile are initially read-only. The existing Members - Profile keeps
-the agreement, release, and member-contact actions. Appsmith currently maps
-accounts to active facilitator member emails, so independent account grants,
-practitioner appointments, and editable role sections require a later Issue
-#19 phase. These query helpers apply the application's current email-based
+the agreement, release, and member-contact actions. The subsequent person-role
+migration makes Individual Profile roles and account ownership editable by an
+explicit directory manager. These query helpers apply the application's email-based
 scope; they are not a replacement for database-authenticated row policies.
 
-Membership is not a permission to operate Appsmith. An Appsmith account and its
-document/donation reviewer grants must eventually be modeled independently of
-membership. Ceremony participation belongs to a particular ceremony, while a
-practitioner/minister appointment needs its own effective dates and status.
-Those UI and domain tables will follow the shared identity migration; no new
+`migrations_issue_19_person_roles.sql` seeds person roles from the legacy
+facilitator and reviewer flags and links existing reviewer/facilitator sign-in
+emails to people. A database operator selects the first directory manager;
+there is no automatic admin promotion. On Individual Profile, that manager
+may grant/revoke practitioner, document-reviewer, and donations-reviewer
+roles, or link an Appsmith sign-in email to an individual. Account emails
+are unique across people. Changes require a reason and are audited. Active
+member flags are mirrored for current member-based workflows; new Directory
+read access can also belong to a nonmember account. No older release or
+donation write function is yet authorized solely by a nonmember role. The
+Appsmith PostgreSQL connection is shared, and actor email comes from the
+trusted application; these helpers do not provide DB-level user isolation.
+
+Membership is not a permission to operate Appsmith. Person-owned reviewer
+roles and Appsmith account ownership are now separate from membership; older
+operational pages and APIs still need to adopt those permissions. Ceremony
+participation belongs to a particular ceremony, while future practitioner and
+minister scheduling may need effective dates and status. No new
 permission or release entitlement is conferred by a person or organization row.
 
 Starting a contributor/member link does not retag earlier gifts with a member
