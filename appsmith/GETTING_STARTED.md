@@ -156,8 +156,12 @@ document-reviewer and donations-reviewer permissions. Select an existing
 membership or contributor email, phone, or physical address and enter a reason.
 The contact remains with its original capacity and acquires a second capacity
 source on the *same person-owned contact*. A contact already used by both is
-omitted. Both member and contributor records must be active; a company cannot
-gain a membership contact. New membership email sources default to not
+omitted. An active contributor can reuse a contact from an ended membership;
+Individual Profile shows that source as **former membership** to authorized
+reviewers. A member-only individual can see existing contacts before enabling
+contributions, but assignment waits until the contributor is active. Assigning
+to membership still requires an active membership. A company cannot gain a
+membership contact. New membership email sources default to not
 subscribed to Listmonk. Verification of the original email does not
 automatically verify the newly assigned copy. If a shared household email or
 phone belongs to a different party, review the identity conflict before

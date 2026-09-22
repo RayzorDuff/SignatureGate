@@ -274,6 +274,14 @@ membership mailing-list subscription and verification are never inferred
 from the contributor source. Address identity uses street, unit, postal code
 and country. Organizations cannot be assigned membership contact sources.
 
+`migrations_issue_19_contact_role_visibility.sql` lists member-only contacts
+even before contributor enrollment and shows active contacts retained by an
+ended membership as `former membership` for directory managers who are also
+document reviewers. Assignment requires the *destination* capacity to be
+active: an ended member's contact can be assigned to an active individual
+contributor, while a contributor contact cannot be assigned to an ended
+membership. The original source and canonical person contact are preserved.
+
 `migrations_issue_19_existing_person_membership.sql` adds a member-specific
 record to an existing person after a directory manager who is also a document
 reviewer confirms first and last names. Missing structured name fields can be
