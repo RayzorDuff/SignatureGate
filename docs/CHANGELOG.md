@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added permission-scoped contribution history and external provider identities to Individual Profile and Company Profile, without coupling donations to membership (#19).
 - Added reasoned, audited cross-role assignment of an individual's existing email, phone or address, preserving the central party contact and leaving new membership emails unsubscribed (#19).
 - Added reviewer-controlled contributor mailing addresses on Individual and Company Profile, with physical-address duplicate protection, primary promotion, party-contact synchronization, and audit records (#19).
 - Added reviewed, audited membership closure on Individual Profile with separate contributor continuity, preserved financial/release history, and guards for pending agreements and active operational roles (#19).

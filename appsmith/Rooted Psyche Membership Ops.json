@@ -302,7 +302,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run(),\n        qIndividualContributionHistory.run(), qIndividualProviderIdentities.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -313,7 +313,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run(),\n        qIndividualContributionHistory.run(), qIndividualProviderIdentities.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -329,7 +329,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run(), qCompanyDonorAddresses.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run(), qCompanyDonorAddresses.run(),\n        qCompanyContributionHistory.run(), qCompanyProviderIdentities.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19CompanyProfileFlows",
         "pageId": "Company Profile",
         "pluginId": "js-plugin",
@@ -340,7 +340,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run(), qCompanyDonorAddresses.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qCompanyProfile.run();\n      await Promise.all([qCompanyContacts.run(),\n        qCompanyCanEditDonorContacts.run(), qCompanyDonorContacts.run(), qCompanyDonorAddresses.run(),\n        qCompanyContributionHistory.run(), qCompanyProviderIdentities.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19CompanyProfileFlows",
         "pageId": "Company Profile",
         "pluginId": "js-plugin",
@@ -25588,6 +25588,394 @@
         "messages": [],
         "name": "qAssignPersonContactRole",
         "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_0f46f492-76c9-4760-a974-75998e8f1a50",
+      "id": "Individual Profile_qIndividualContributionHistory",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT donation_date::text AS donated_at, COALESCE(currency,'USD') || ' ' || to_char(amount_cents::numeric/100,'FM999999990.00') AS amount, provider, status, COALESCE(provider_reference,'') AS provider_reference FROM public.issue19_contribution_history({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualContributionHistory",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT donation_date::text AS donated_at, COALESCE(currency,'USD') || ' ' || to_char(amount_cents::numeric/100,'FM999999990.00') AS amount, provider, status, COALESCE(provider_reference,'') AS provider_reference FROM public.issue19_contribution_history({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualContributionHistory",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_7f922a0c-ed48-4798-9db6-b4d9a5b6f41f",
+      "id": "Individual Profile_qIndividualProviderIdentities",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT provider,provider_identity,status,COALESCE(source,'') AS source,created_at::text AS created_at FROM public.issue19_contributor_provider_identities({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualProviderIdentities",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT provider,provider_identity,status,COALESCE(source,'') AS source,created_at::text AS created_at FROM public.issue19_contributor_provider_identities({{ appsmith.user.email }}, 'individual', {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualProviderIdentities",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_28538092-a812-4807-baf9-3ae5de38f7a1",
+      "id": "Company Profile_qCompanyContributionHistory",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT donation_date::text AS donated_at, COALESCE(currency,'USD') || ' ' || to_char(amount_cents::numeric/100,'FM999999990.00') AS amount, provider, status, COALESCE(provider_reference,'') AS provider_reference FROM public.issue19_contribution_history({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qCompanyContributionHistory",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT donation_date::text AS donated_at, COALESCE(currency,'USD') || ' ' || to_char(amount_cents::numeric/100,'FM999999990.00') AS amount, provider, status, COALESCE(provider_reference,'') AS provider_reference FROM public.issue19_contribution_history({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qCompanyContributionHistory",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_ecdb632d-07cc-4764-acb8-933935b37820",
+      "id": "Company Profile_qCompanyProviderIdentities",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT provider,provider_identity,status,COALESCE(source,'') AS source,created_at::text AS created_at FROM public.issue19_contributor_provider_identities({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qCompanyProviderIdentities",
+        "pageId": "Company Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT provider,provider_identity,status,COALESCE(source,'') AS source,created_at::text AS created_at FROM public.issue19_contributor_provider_identities({{ appsmith.user.email }}, 'organization', {{ qCompanyProfile.data?.[0]?.party_id || null }}::uuid);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-01-14T21:29:36Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qCompanyProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qCompanyProviderIdentities",
+        "pageId": "Company Profile",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -76746,7 +77134,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 260,
+              "bottomRow": 332,
               "canExtend": true,
               "children": [
                 {
@@ -80266,6 +80654,710 @@
                   "version": 1,
                   "widgetId": "cc0b8937f6",
                   "widgetName": "btnAssignPersonContactRole"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 266,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "5e5ac283b5",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 266,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 262,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 266,
+                  "originalTopRow": 262,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Contribution history",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 262,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "7b77c131ce",
+                  "widgetName": "txtIndividualContributionHistoryHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "allowAddNewRow": false,
+                  "animateLoading": true,
+                  "borderColor": "#E0DEDE",
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "borderWidth": "1",
+                  "bottomRow": 294,
+                  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+                  "cachedTableData": [],
+                  "canFreezeColumn": true,
+                  "childStylesheet": {
+                    "button": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "editActions": {
+                      "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                      "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "iconButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "menuButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "menuColor": "{{appsmith.theme.colors.primaryColor}}"
+                    }
+                  },
+                  "columnOrder": [
+                    "donated_at",
+                    "amount",
+                    "provider",
+                    "status",
+                    "provider_reference"
+                  ],
+                  "columnUpdatedAt": 1790000000000,
+                  "columnWidthMap": {},
+                  "customIsLoading": false,
+                  "customIsLoadingValue": "",
+                  "defaultPageSize": 0,
+                  "defaultSearchText": "",
+                  "defaultSelectedRowIndex": 0,
+                  "defaultSelectedRowIndices": [
+                    0
+                  ],
+                  "delimiter": ",",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "boxShadow"
+                    },
+                    {
+                      "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.donated_at.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.amount.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider_reference.computedValue"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "tableData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "enableClientSideSearch": true,
+                  "endOfData": false,
+                  "flexVerticalAlignment": "start",
+                  "horizontalAlignment": "LEFT",
+                  "inlineEditingSaveOption": "ROW_LEVEL",
+                  "isLoading": false,
+                  "isSortable": true,
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisibleDownload": false,
+                  "isVisibleFilters": true,
+                  "isVisiblePagination": true,
+                  "isVisibleSearch": true,
+                  "key": "594924862a",
+                  "label": "Data",
+                  "leftColumn": 0,
+                  "minWidth": 450,
+                  "mobileBottomRow": 294,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 31,
+                  "mobileTopRow": 266,
+                  "needsErrorInfo": false,
+                  "onAddNewRowSave": "",
+                  "onPageChange": "",
+                  "onRowSelected": "",
+                  "onSearchTextChanged": "",
+                  "onSort": "",
+                  "originalBottomRow": 294,
+                  "originalTopRow": 266,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "primaryColumnId": "donated_at",
+                  "primaryColumns": {
+                    "donated_at": {
+                      "alias": "donated_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"donated_at\"])) : donated_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "donated_at",
+                      "index": 0,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Date",
+                      "notation": "standard",
+                      "originalId": "donated_at",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 190
+                    },
+                    "amount": {
+                      "alias": "amount",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"amount\"])) : amount })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "amount",
+                      "index": 1,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Amount",
+                      "notation": "standard",
+                      "originalId": "amount",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 120
+                    },
+                    "provider": {
+                      "alias": "provider",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider\"])) : provider })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider",
+                      "index": 2,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider",
+                      "notation": "standard",
+                      "originalId": "provider",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 130
+                    },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 3,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 130
+                    },
+                    "provider_reference": {
+                      "alias": "provider_reference",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider_reference\"])) : provider_reference })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider_reference",
+                      "index": 4,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider reference",
+                      "notation": "standard",
+                      "originalId": "provider_reference",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 220
+                    }
+                  },
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "searchKey": "",
+                  "serverSidePaginationEnabled": false,
+                  "showInlineEditingOptionDropdown": true,
+                  "tableData": "{{ qIndividualContributionHistory.data || [] }}",
+                  "textSize": "0.875rem",
+                  "topRow": 266,
+                  "totalRecordsCount": "",
+                  "type": "TABLE_WIDGET_V2",
+                  "version": 2,
+                  "verticalAlignment": "CENTER",
+                  "widgetId": "01e7d5c605",
+                  "widgetName": "tblIndividualContributionHistory"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 300,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "df82c42998",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 300,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 296,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 300,
+                  "originalTopRow": 296,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Provider identities",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 296,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "a5b0dc3c00",
+                  "widgetName": "txtIndividualProviderIdentitiesHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "allowAddNewRow": false,
+                  "animateLoading": true,
+                  "borderColor": "#E0DEDE",
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "borderWidth": "1",
+                  "bottomRow": 328,
+                  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+                  "cachedTableData": [],
+                  "canFreezeColumn": true,
+                  "childStylesheet": {
+                    "button": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "editActions": {
+                      "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                      "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "iconButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "menuButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "menuColor": "{{appsmith.theme.colors.primaryColor}}"
+                    }
+                  },
+                  "columnOrder": [
+                    "provider",
+                    "provider_identity",
+                    "status",
+                    "source",
+                    "created_at"
+                  ],
+                  "columnUpdatedAt": 1790000000000,
+                  "columnWidthMap": {},
+                  "customIsLoading": false,
+                  "customIsLoadingValue": "",
+                  "defaultPageSize": 0,
+                  "defaultSearchText": "",
+                  "defaultSelectedRowIndex": 0,
+                  "defaultSelectedRowIndices": [
+                    0
+                  ],
+                  "delimiter": ",",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "boxShadow"
+                    },
+                    {
+                      "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.provider.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider_identity.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.source.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.created_at.computedValue"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "tableData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "enableClientSideSearch": true,
+                  "endOfData": false,
+                  "flexVerticalAlignment": "start",
+                  "horizontalAlignment": "LEFT",
+                  "inlineEditingSaveOption": "ROW_LEVEL",
+                  "isLoading": false,
+                  "isSortable": true,
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisibleDownload": false,
+                  "isVisibleFilters": true,
+                  "isVisiblePagination": true,
+                  "isVisibleSearch": true,
+                  "key": "5edc860e3a",
+                  "label": "Data",
+                  "leftColumn": 0,
+                  "minWidth": 450,
+                  "mobileBottomRow": 328,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 31,
+                  "mobileTopRow": 300,
+                  "needsErrorInfo": false,
+                  "onAddNewRowSave": "",
+                  "onPageChange": "",
+                  "onRowSelected": "",
+                  "onSearchTextChanged": "",
+                  "onSort": "",
+                  "originalBottomRow": 328,
+                  "originalTopRow": 300,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "primaryColumnId": "provider",
+                  "primaryColumns": {
+                    "provider": {
+                      "alias": "provider",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider\"])) : provider })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider",
+                      "index": 0,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider",
+                      "notation": "standard",
+                      "originalId": "provider",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 140
+                    },
+                    "provider_identity": {
+                      "alias": "provider_identity",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider_identity\"])) : provider_identity })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider_identity",
+                      "index": 1,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider identity",
+                      "notation": "standard",
+                      "originalId": "provider_identity",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 240
+                    },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 2,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 120
+                    },
+                    "source": {
+                      "alias": "source",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"source\"])) : source })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "source",
+                      "index": 3,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Source",
+                      "notation": "standard",
+                      "originalId": "source",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 180
+                    },
+                    "created_at": {
+                      "alias": "created_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"created_at\"])) : created_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "created_at",
+                      "index": 4,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Added",
+                      "notation": "standard",
+                      "originalId": "created_at",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 190
+                    }
+                  },
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "searchKey": "",
+                  "serverSidePaginationEnabled": false,
+                  "showInlineEditingOptionDropdown": true,
+                  "tableData": "{{ qIndividualProviderIdentities.data || [] }}",
+                  "textSize": "0.875rem",
+                  "topRow": 300,
+                  "totalRecordsCount": "",
+                  "type": "TABLE_WIDGET_V2",
+                  "version": 2,
+                  "verticalAlignment": "CENTER",
+                  "widgetId": "3dd171315f",
+                  "widgetName": "tblIndividualProviderIdentities"
                 }
               ],
               "containerStyle": "none",
@@ -80320,7 +81412,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 260,
+              "bottomRow": 332,
               "canExtend": true,
               "children": [
                 {
@@ -83840,6 +84932,710 @@
                   "version": 1,
                   "widgetId": "cc0b8937f6",
                   "widgetName": "btnAssignPersonContactRole"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 266,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "5e5ac283b5",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 266,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 262,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 266,
+                  "originalTopRow": 262,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Contribution history",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 262,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "7b77c131ce",
+                  "widgetName": "txtIndividualContributionHistoryHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "allowAddNewRow": false,
+                  "animateLoading": true,
+                  "borderColor": "#E0DEDE",
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "borderWidth": "1",
+                  "bottomRow": 294,
+                  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+                  "cachedTableData": [],
+                  "canFreezeColumn": true,
+                  "childStylesheet": {
+                    "button": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "editActions": {
+                      "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                      "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "iconButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "menuButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "menuColor": "{{appsmith.theme.colors.primaryColor}}"
+                    }
+                  },
+                  "columnOrder": [
+                    "donated_at",
+                    "amount",
+                    "provider",
+                    "status",
+                    "provider_reference"
+                  ],
+                  "columnUpdatedAt": 1790000000000,
+                  "columnWidthMap": {},
+                  "customIsLoading": false,
+                  "customIsLoadingValue": "",
+                  "defaultPageSize": 0,
+                  "defaultSearchText": "",
+                  "defaultSelectedRowIndex": 0,
+                  "defaultSelectedRowIndices": [
+                    0
+                  ],
+                  "delimiter": ",",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "boxShadow"
+                    },
+                    {
+                      "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.donated_at.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.amount.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider_reference.computedValue"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "tableData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "enableClientSideSearch": true,
+                  "endOfData": false,
+                  "flexVerticalAlignment": "start",
+                  "horizontalAlignment": "LEFT",
+                  "inlineEditingSaveOption": "ROW_LEVEL",
+                  "isLoading": false,
+                  "isSortable": true,
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisibleDownload": false,
+                  "isVisibleFilters": true,
+                  "isVisiblePagination": true,
+                  "isVisibleSearch": true,
+                  "key": "594924862a",
+                  "label": "Data",
+                  "leftColumn": 0,
+                  "minWidth": 450,
+                  "mobileBottomRow": 294,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 31,
+                  "mobileTopRow": 266,
+                  "needsErrorInfo": false,
+                  "onAddNewRowSave": "",
+                  "onPageChange": "",
+                  "onRowSelected": "",
+                  "onSearchTextChanged": "",
+                  "onSort": "",
+                  "originalBottomRow": 294,
+                  "originalTopRow": 266,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "primaryColumnId": "donated_at",
+                  "primaryColumns": {
+                    "donated_at": {
+                      "alias": "donated_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"donated_at\"])) : donated_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "donated_at",
+                      "index": 0,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Date",
+                      "notation": "standard",
+                      "originalId": "donated_at",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 190
+                    },
+                    "amount": {
+                      "alias": "amount",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"amount\"])) : amount })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "amount",
+                      "index": 1,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Amount",
+                      "notation": "standard",
+                      "originalId": "amount",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 120
+                    },
+                    "provider": {
+                      "alias": "provider",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider\"])) : provider })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider",
+                      "index": 2,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider",
+                      "notation": "standard",
+                      "originalId": "provider",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 130
+                    },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 3,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 130
+                    },
+                    "provider_reference": {
+                      "alias": "provider_reference",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider_reference\"])) : provider_reference })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider_reference",
+                      "index": 4,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider reference",
+                      "notation": "standard",
+                      "originalId": "provider_reference",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 220
+                    }
+                  },
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "searchKey": "",
+                  "serverSidePaginationEnabled": false,
+                  "showInlineEditingOptionDropdown": true,
+                  "tableData": "{{ qIndividualContributionHistory.data || [] }}",
+                  "textSize": "0.875rem",
+                  "topRow": 266,
+                  "totalRecordsCount": "",
+                  "type": "TABLE_WIDGET_V2",
+                  "version": 2,
+                  "verticalAlignment": "CENTER",
+                  "widgetId": "01e7d5c605",
+                  "widgetName": "tblIndividualContributionHistory"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 300,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "key": "df82c42998",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 300,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 296,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 300,
+                  "originalTopRow": 296,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Provider identities",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 296,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "a5b0dc3c00",
+                  "widgetName": "txtIndividualProviderIdentitiesHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "allowAddNewRow": false,
+                  "animateLoading": true,
+                  "borderColor": "#E0DEDE",
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "borderWidth": "1",
+                  "bottomRow": 328,
+                  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+                  "cachedTableData": [],
+                  "canFreezeColumn": true,
+                  "childStylesheet": {
+                    "button": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "editActions": {
+                      "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                      "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "iconButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "menuButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "menuColor": "{{appsmith.theme.colors.primaryColor}}"
+                    }
+                  },
+                  "columnOrder": [
+                    "provider",
+                    "provider_identity",
+                    "status",
+                    "source",
+                    "created_at"
+                  ],
+                  "columnUpdatedAt": 1790000000000,
+                  "columnWidthMap": {},
+                  "customIsLoading": false,
+                  "customIsLoadingValue": "",
+                  "defaultPageSize": 0,
+                  "defaultSearchText": "",
+                  "defaultSelectedRowIndex": 0,
+                  "defaultSelectedRowIndices": [
+                    0
+                  ],
+                  "delimiter": ",",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "boxShadow"
+                    },
+                    {
+                      "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.provider.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider_identity.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.source.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.created_at.computedValue"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "tableData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "enableClientSideSearch": true,
+                  "endOfData": false,
+                  "flexVerticalAlignment": "start",
+                  "horizontalAlignment": "LEFT",
+                  "inlineEditingSaveOption": "ROW_LEVEL",
+                  "isLoading": false,
+                  "isSortable": true,
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisibleDownload": false,
+                  "isVisibleFilters": true,
+                  "isVisiblePagination": true,
+                  "isVisibleSearch": true,
+                  "key": "5edc860e3a",
+                  "label": "Data",
+                  "leftColumn": 0,
+                  "minWidth": 450,
+                  "mobileBottomRow": 328,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 31,
+                  "mobileTopRow": 300,
+                  "needsErrorInfo": false,
+                  "onAddNewRowSave": "",
+                  "onPageChange": "",
+                  "onRowSelected": "",
+                  "onSearchTextChanged": "",
+                  "onSort": "",
+                  "originalBottomRow": 328,
+                  "originalTopRow": 300,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "primaryColumnId": "provider",
+                  "primaryColumns": {
+                    "provider": {
+                      "alias": "provider",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider\"])) : provider })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider",
+                      "index": 0,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider",
+                      "notation": "standard",
+                      "originalId": "provider",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 140
+                    },
+                    "provider_identity": {
+                      "alias": "provider_identity",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider_identity\"])) : provider_identity })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider_identity",
+                      "index": 1,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider identity",
+                      "notation": "standard",
+                      "originalId": "provider_identity",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 240
+                    },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 2,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 120
+                    },
+                    "source": {
+                      "alias": "source",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"source\"])) : source })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "source",
+                      "index": 3,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Source",
+                      "notation": "standard",
+                      "originalId": "source",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 180
+                    },
+                    "created_at": {
+                      "alias": "created_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblIndividualProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"created_at\"])) : created_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "created_at",
+                      "index": 4,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Added",
+                      "notation": "standard",
+                      "originalId": "created_at",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 190
+                    }
+                  },
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "searchKey": "",
+                  "serverSidePaginationEnabled": false,
+                  "showInlineEditingOptionDropdown": true,
+                  "tableData": "{{ qIndividualProviderIdentities.data || [] }}",
+                  "textSize": "0.875rem",
+                  "topRow": 300,
+                  "totalRecordsCount": "",
+                  "type": "TABLE_WIDGET_V2",
+                  "version": 2,
+                  "verticalAlignment": "CENTER",
+                  "widgetId": "3dd171315f",
+                  "widgetName": "tblIndividualProviderIdentities"
                 }
               ],
               "containerStyle": "none",
@@ -83898,7 +85694,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 136,
+              "bottomRow": 208,
               "canExtend": true,
               "children": [
                 {
@@ -85723,6 +87519,710 @@
                   "version": 1,
                   "widgetId": "3d5021a5c2",
                   "widgetName": "btnArchiveCompanyDonorAddress"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 142,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "86ed7420db",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 142,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 138,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 142,
+                  "originalTopRow": 138,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Contribution history",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 138,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "66d37155fc",
+                  "widgetName": "txtCompanyContributionHistoryHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "allowAddNewRow": false,
+                  "animateLoading": true,
+                  "borderColor": "#E0DEDE",
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "borderWidth": "1",
+                  "bottomRow": 170,
+                  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+                  "cachedTableData": [],
+                  "canFreezeColumn": true,
+                  "childStylesheet": {
+                    "button": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "editActions": {
+                      "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                      "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "iconButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "menuButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "menuColor": "{{appsmith.theme.colors.primaryColor}}"
+                    }
+                  },
+                  "columnOrder": [
+                    "donated_at",
+                    "amount",
+                    "provider",
+                    "status",
+                    "provider_reference"
+                  ],
+                  "columnUpdatedAt": 1790000000000,
+                  "columnWidthMap": {},
+                  "customIsLoading": false,
+                  "customIsLoadingValue": "",
+                  "defaultPageSize": 0,
+                  "defaultSearchText": "",
+                  "defaultSelectedRowIndex": 0,
+                  "defaultSelectedRowIndices": [
+                    0
+                  ],
+                  "delimiter": ",",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "boxShadow"
+                    },
+                    {
+                      "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.donated_at.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.amount.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider_reference.computedValue"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "tableData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "enableClientSideSearch": true,
+                  "endOfData": false,
+                  "flexVerticalAlignment": "start",
+                  "horizontalAlignment": "LEFT",
+                  "inlineEditingSaveOption": "ROW_LEVEL",
+                  "isLoading": false,
+                  "isSortable": true,
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisibleDownload": false,
+                  "isVisibleFilters": true,
+                  "isVisiblePagination": true,
+                  "isVisibleSearch": true,
+                  "key": "1c21aac393",
+                  "label": "Data",
+                  "leftColumn": 0,
+                  "minWidth": 450,
+                  "mobileBottomRow": 170,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 31,
+                  "mobileTopRow": 142,
+                  "needsErrorInfo": false,
+                  "onAddNewRowSave": "",
+                  "onPageChange": "",
+                  "onRowSelected": "",
+                  "onSearchTextChanged": "",
+                  "onSort": "",
+                  "originalBottomRow": 170,
+                  "originalTopRow": 142,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "primaryColumnId": "donated_at",
+                  "primaryColumns": {
+                    "donated_at": {
+                      "alias": "donated_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"donated_at\"])) : donated_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "donated_at",
+                      "index": 0,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Date",
+                      "notation": "standard",
+                      "originalId": "donated_at",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 190
+                    },
+                    "amount": {
+                      "alias": "amount",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"amount\"])) : amount })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "amount",
+                      "index": 1,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Amount",
+                      "notation": "standard",
+                      "originalId": "amount",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 120
+                    },
+                    "provider": {
+                      "alias": "provider",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider\"])) : provider })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider",
+                      "index": 2,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider",
+                      "notation": "standard",
+                      "originalId": "provider",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 130
+                    },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 3,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 130
+                    },
+                    "provider_reference": {
+                      "alias": "provider_reference",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider_reference\"])) : provider_reference })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider_reference",
+                      "index": 4,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider reference",
+                      "notation": "standard",
+                      "originalId": "provider_reference",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 220
+                    }
+                  },
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "searchKey": "",
+                  "serverSidePaginationEnabled": false,
+                  "showInlineEditingOptionDropdown": true,
+                  "tableData": "{{ qCompanyContributionHistory.data || [] }}",
+                  "textSize": "0.875rem",
+                  "topRow": 142,
+                  "totalRecordsCount": "",
+                  "type": "TABLE_WIDGET_V2",
+                  "version": 2,
+                  "verticalAlignment": "CENTER",
+                  "widgetId": "86cb52c872",
+                  "widgetName": "tblCompanyContributionHistory"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 176,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "d7fe06d6f2",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 176,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 172,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 176,
+                  "originalTopRow": 172,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Provider identities",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 172,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "8bea412fd9",
+                  "widgetName": "txtCompanyProviderIdentitiesHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "allowAddNewRow": false,
+                  "animateLoading": true,
+                  "borderColor": "#E0DEDE",
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "borderWidth": "1",
+                  "bottomRow": 204,
+                  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+                  "cachedTableData": [],
+                  "canFreezeColumn": true,
+                  "childStylesheet": {
+                    "button": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "editActions": {
+                      "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                      "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "iconButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "menuButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "menuColor": "{{appsmith.theme.colors.primaryColor}}"
+                    }
+                  },
+                  "columnOrder": [
+                    "provider",
+                    "provider_identity",
+                    "status",
+                    "source",
+                    "created_at"
+                  ],
+                  "columnUpdatedAt": 1790000000000,
+                  "columnWidthMap": {},
+                  "customIsLoading": false,
+                  "customIsLoadingValue": "",
+                  "defaultPageSize": 0,
+                  "defaultSearchText": "",
+                  "defaultSelectedRowIndex": 0,
+                  "defaultSelectedRowIndices": [
+                    0
+                  ],
+                  "delimiter": ",",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "boxShadow"
+                    },
+                    {
+                      "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.provider.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider_identity.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.source.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.created_at.computedValue"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "tableData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "enableClientSideSearch": true,
+                  "endOfData": false,
+                  "flexVerticalAlignment": "start",
+                  "horizontalAlignment": "LEFT",
+                  "inlineEditingSaveOption": "ROW_LEVEL",
+                  "isLoading": false,
+                  "isSortable": true,
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisibleDownload": false,
+                  "isVisibleFilters": true,
+                  "isVisiblePagination": true,
+                  "isVisibleSearch": true,
+                  "key": "395a5f0ee3",
+                  "label": "Data",
+                  "leftColumn": 0,
+                  "minWidth": 450,
+                  "mobileBottomRow": 204,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 31,
+                  "mobileTopRow": 176,
+                  "needsErrorInfo": false,
+                  "onAddNewRowSave": "",
+                  "onPageChange": "",
+                  "onRowSelected": "",
+                  "onSearchTextChanged": "",
+                  "onSort": "",
+                  "originalBottomRow": 204,
+                  "originalTopRow": 176,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "primaryColumnId": "provider",
+                  "primaryColumns": {
+                    "provider": {
+                      "alias": "provider",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider\"])) : provider })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider",
+                      "index": 0,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider",
+                      "notation": "standard",
+                      "originalId": "provider",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 140
+                    },
+                    "provider_identity": {
+                      "alias": "provider_identity",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider_identity\"])) : provider_identity })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider_identity",
+                      "index": 1,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider identity",
+                      "notation": "standard",
+                      "originalId": "provider_identity",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 240
+                    },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 2,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 120
+                    },
+                    "source": {
+                      "alias": "source",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"source\"])) : source })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "source",
+                      "index": 3,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Source",
+                      "notation": "standard",
+                      "originalId": "source",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 180
+                    },
+                    "created_at": {
+                      "alias": "created_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"created_at\"])) : created_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "created_at",
+                      "index": 4,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Added",
+                      "notation": "standard",
+                      "originalId": "created_at",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 190
+                    }
+                  },
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "searchKey": "",
+                  "serverSidePaginationEnabled": false,
+                  "showInlineEditingOptionDropdown": true,
+                  "tableData": "{{ qCompanyProviderIdentities.data || [] }}",
+                  "textSize": "0.875rem",
+                  "topRow": 176,
+                  "totalRecordsCount": "",
+                  "type": "TABLE_WIDGET_V2",
+                  "version": 2,
+                  "verticalAlignment": "CENTER",
+                  "widgetId": "21133b1ab1",
+                  "widgetName": "tblCompanyProviderIdentities"
                 }
               ],
               "containerStyle": "none",
@@ -85777,7 +88277,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 136,
+              "bottomRow": 208,
               "canExtend": true,
               "children": [
                 {
@@ -87602,6 +90102,710 @@
                   "version": 1,
                   "widgetId": "3d5021a5c2",
                   "widgetName": "btnArchiveCompanyDonorAddress"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 142,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "86ed7420db",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 142,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 138,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 142,
+                  "originalTopRow": 138,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Contribution history",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 138,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "66d37155fc",
+                  "widgetName": "txtCompanyContributionHistoryHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "allowAddNewRow": false,
+                  "animateLoading": true,
+                  "borderColor": "#E0DEDE",
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "borderWidth": "1",
+                  "bottomRow": 170,
+                  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+                  "cachedTableData": [],
+                  "canFreezeColumn": true,
+                  "childStylesheet": {
+                    "button": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "editActions": {
+                      "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                      "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "iconButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "menuButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "menuColor": "{{appsmith.theme.colors.primaryColor}}"
+                    }
+                  },
+                  "columnOrder": [
+                    "donated_at",
+                    "amount",
+                    "provider",
+                    "status",
+                    "provider_reference"
+                  ],
+                  "columnUpdatedAt": 1790000000000,
+                  "columnWidthMap": {},
+                  "customIsLoading": false,
+                  "customIsLoadingValue": "",
+                  "defaultPageSize": 0,
+                  "defaultSearchText": "",
+                  "defaultSelectedRowIndex": 0,
+                  "defaultSelectedRowIndices": [
+                    0
+                  ],
+                  "delimiter": ",",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "boxShadow"
+                    },
+                    {
+                      "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.donated_at.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.amount.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider_reference.computedValue"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "tableData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "enableClientSideSearch": true,
+                  "endOfData": false,
+                  "flexVerticalAlignment": "start",
+                  "horizontalAlignment": "LEFT",
+                  "inlineEditingSaveOption": "ROW_LEVEL",
+                  "isLoading": false,
+                  "isSortable": true,
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisibleDownload": false,
+                  "isVisibleFilters": true,
+                  "isVisiblePagination": true,
+                  "isVisibleSearch": true,
+                  "key": "1c21aac393",
+                  "label": "Data",
+                  "leftColumn": 0,
+                  "minWidth": 450,
+                  "mobileBottomRow": 170,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 31,
+                  "mobileTopRow": 142,
+                  "needsErrorInfo": false,
+                  "onAddNewRowSave": "",
+                  "onPageChange": "",
+                  "onRowSelected": "",
+                  "onSearchTextChanged": "",
+                  "onSort": "",
+                  "originalBottomRow": 170,
+                  "originalTopRow": 142,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "primaryColumnId": "donated_at",
+                  "primaryColumns": {
+                    "donated_at": {
+                      "alias": "donated_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"donated_at\"])) : donated_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "donated_at",
+                      "index": 0,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Date",
+                      "notation": "standard",
+                      "originalId": "donated_at",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 190
+                    },
+                    "amount": {
+                      "alias": "amount",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"amount\"])) : amount })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "amount",
+                      "index": 1,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Amount",
+                      "notation": "standard",
+                      "originalId": "amount",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 120
+                    },
+                    "provider": {
+                      "alias": "provider",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider\"])) : provider })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider",
+                      "index": 2,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider",
+                      "notation": "standard",
+                      "originalId": "provider",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 130
+                    },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 3,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 130
+                    },
+                    "provider_reference": {
+                      "alias": "provider_reference",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyContributionHistory.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider_reference\"])) : provider_reference })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider_reference",
+                      "index": 4,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider reference",
+                      "notation": "standard",
+                      "originalId": "provider_reference",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 220
+                    }
+                  },
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "searchKey": "",
+                  "serverSidePaginationEnabled": false,
+                  "showInlineEditingOptionDropdown": true,
+                  "tableData": "{{ qCompanyContributionHistory.data || [] }}",
+                  "textSize": "0.875rem",
+                  "topRow": 142,
+                  "totalRecordsCount": "",
+                  "type": "TABLE_WIDGET_V2",
+                  "version": 2,
+                  "verticalAlignment": "CENTER",
+                  "widgetId": "86cb52c872",
+                  "widgetName": "tblCompanyContributionHistory"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 176,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "BOLD",
+                  "isLoading": false,
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "key": "d7fe06d6f2",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 176,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 172,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 176,
+                  "originalTopRow": 172,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Provider identities",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 172,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "8bea412fd9",
+                  "widgetName": "txtCompanyProviderIdentitiesHeading",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "allowAddNewRow": false,
+                  "animateLoading": true,
+                  "borderColor": "#E0DEDE",
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "borderWidth": "1",
+                  "bottomRow": 204,
+                  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+                  "cachedTableData": [],
+                  "canFreezeColumn": true,
+                  "childStylesheet": {
+                    "button": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "editActions": {
+                      "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                      "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "iconButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+                    },
+                    "menuButton": {
+                      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                      "boxShadow": "none",
+                      "menuColor": "{{appsmith.theme.colors.primaryColor}}"
+                    }
+                  },
+                  "columnOrder": [
+                    "provider",
+                    "provider_identity",
+                    "status",
+                    "source",
+                    "created_at"
+                  ],
+                  "columnUpdatedAt": 1790000000000,
+                  "columnWidthMap": {},
+                  "customIsLoading": false,
+                  "customIsLoadingValue": "",
+                  "defaultPageSize": 0,
+                  "defaultSearchText": "",
+                  "defaultSelectedRowIndex": 0,
+                  "defaultSelectedRowIndices": [
+                    0
+                  ],
+                  "delimiter": ",",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "boxShadow"
+                    },
+                    {
+                      "key": "tableData"
+                    },
+                    {
+                      "key": "primaryColumns.provider.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.provider_identity.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.status.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.source.computedValue"
+                    },
+                    {
+                      "key": "primaryColumns.created_at.computedValue"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "tableData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "enableClientSideSearch": true,
+                  "endOfData": false,
+                  "flexVerticalAlignment": "start",
+                  "horizontalAlignment": "LEFT",
+                  "inlineEditingSaveOption": "ROW_LEVEL",
+                  "isLoading": false,
+                  "isSortable": true,
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisibleDownload": false,
+                  "isVisibleFilters": true,
+                  "isVisiblePagination": true,
+                  "isVisibleSearch": true,
+                  "key": "395a5f0ee3",
+                  "label": "Data",
+                  "leftColumn": 0,
+                  "minWidth": 450,
+                  "mobileBottomRow": 204,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 31,
+                  "mobileTopRow": 176,
+                  "needsErrorInfo": false,
+                  "onAddNewRowSave": "",
+                  "onPageChange": "",
+                  "onRowSelected": "",
+                  "onSearchTextChanged": "",
+                  "onSort": "",
+                  "originalBottomRow": 204,
+                  "originalTopRow": 176,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "primaryColumnId": "provider",
+                  "primaryColumns": {
+                    "provider": {
+                      "alias": "provider",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider\"])) : provider })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider",
+                      "index": 0,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider",
+                      "notation": "standard",
+                      "originalId": "provider",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 140
+                    },
+                    "provider_identity": {
+                      "alias": "provider_identity",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"provider_identity\"])) : provider_identity })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "provider_identity",
+                      "index": 1,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Provider identity",
+                      "notation": "standard",
+                      "originalId": "provider_identity",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 240
+                    },
+                    "status": {
+                      "alias": "status",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"status\"])) : status })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "status",
+                      "index": 2,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Status",
+                      "notation": "standard",
+                      "originalId": "status",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 120
+                    },
+                    "source": {
+                      "alias": "source",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"source\"])) : source })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "source",
+                      "index": 3,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Source",
+                      "notation": "standard",
+                      "originalId": "source",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 180
+                    },
+                    "created_at": {
+                      "alias": "created_at",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "columnType": "text",
+                      "computedValue": "{{(() => { const tableData = tblCompanyProviderIdentities.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"created_at\"])) : created_at })()}}",
+                      "currencyCode": "USD",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "created_at",
+                      "index": 4,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": false,
+                      "isDisabled": false,
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Added",
+                      "notation": "standard",
+                      "originalId": "created_at",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 190
+                    }
+                  },
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "searchKey": "",
+                  "serverSidePaginationEnabled": false,
+                  "showInlineEditingOptionDropdown": true,
+                  "tableData": "{{ qCompanyProviderIdentities.data || [] }}",
+                  "textSize": "0.875rem",
+                  "topRow": 176,
+                  "totalRecordsCount": "",
+                  "type": "TABLE_WIDGET_V2",
+                  "version": 2,
+                  "verticalAlignment": "CENTER",
+                  "widgetId": "21133b1ab1",
+                  "widgetName": "tblCompanyProviderIdentities"
                 }
               ],
               "containerStyle": "none",

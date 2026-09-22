@@ -167,6 +167,13 @@ automatically verify the newly assigned copy. If a shared household email or
 phone belongs to a different party, review the identity conflict before
 assigning it across capacities.
 
+After `db/migrations_issue_19_contributor_profile_history.sql` and its
+rollback-only verification, import the matching Appsmith export. Individual
+Profile and Company Profile then show contributor-attributed donation history
+and external provider identities. These are read-only profile sections and use
+the same contribution visibility scope as Directory; they do not infer
+membership or expose reviewer notes.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:
