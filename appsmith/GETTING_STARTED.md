@@ -138,6 +138,17 @@ The End membership section remains visible to an authorized reviewer even
 when the action is unavailable. It displays the first condition to resolve;
 the button becomes available only after database eligibility checks pass.
 
+After `db/migrations_issue_19_contributor_addresses.sql` and its rollback-only
+verification, import the next Appsmith export. Donations reviewers can add
+and archive contributor-purpose mailing addresses on Individual and Company
+Profile, with a required reason and audit history. The street, unit, postal
+code, and country identify a physical address; differing city/state spelling
+does not create a second address, while different apartments remain distinct.
+The first active address is primary. Archiving the primary promotes the oldest
+remaining address. A shared building may legitimately have multiple people
+or organizations, so matching mailing addresses do not merge identities.
+Member-purpose addresses remain on the historical member record.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:

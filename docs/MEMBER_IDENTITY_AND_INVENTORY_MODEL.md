@@ -255,6 +255,15 @@ contact of its kind. Existing member-purpose contacts retain their separate
 agreement and mailing-list path. An active contact owned by another party
 requires explicit review before it can be shared.
 
+`migrations_issue_19_contributor_addresses.sql` adds reviewed contributor
+mailing-address add/archive actions to Individual and Company Profile.
+Contributor address rows continue to synchronize with `party_contacts`, owned
+by the existing person or organization. Street, unit, postal code and country
+form the physical identity; different apartments stay distinct and city/state
+abbreviations do not duplicate an address for a contributor. Two separate
+people or organizations may legitimately use the same building. Membership
+addresses remain on the member history and are not copied automatically.
+
 `migrations_issue_19_existing_person_membership.sql` adds a member-specific
 record to an existing person after a directory manager who is also a document
 reviewer confirms first and last names. Missing structured name fields can be
