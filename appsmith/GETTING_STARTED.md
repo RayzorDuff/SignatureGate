@@ -172,7 +172,10 @@ rollback-only verification, import the matching Appsmith export. Individual
 Profile and Company Profile then show contributor-attributed donation history
 and external provider identities. These are read-only profile sections and use
 the same contribution visibility scope as Directory; they do not infer
-membership or expose reviewer notes.
+membership or expose reviewer notes. The profile sections render whenever the
+profile itself is available; their database functions continue to enforce
+contribution visibility. The contributor mailing-address apartment/suite field
+is optional.
 
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.

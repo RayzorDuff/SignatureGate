@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Registered the new profile-history tables' Appsmith visibility bindings, based their rendering on the loaded profile instead of a projected contributor ID, and made contributor apartment/suite inputs explicitly optional (#19).
 - Corrected the former-member contact migration's missing SQL output alias and shortened its Individual Profile guidance (#19).
 - Kept active contact sources from ended memberships visible on Individual Profile to authorized reviewers; member-only contacts now appear before contributor enrollment and can be assigned after enrollment. Corrected the contact selector labels and refreshed contact lists when a capacity changes (#19).
 - Kept Issue #19 membership closure visible with a specific eligibility reason and a disabled action when a contributor, agreement, or operational-role condition blocks closure.

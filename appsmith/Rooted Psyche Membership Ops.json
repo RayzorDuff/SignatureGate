@@ -79769,7 +79769,7 @@
                   "inputType": "TEXT",
                   "isDisabled": false,
                   "isLoading": false,
-                  "isRequired": true,
+                  "isRequired": false,
                   "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
                   "key": "413efd9c13",
                   "label": "Apartment or suite",
@@ -80679,7 +80679,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.party_id }}",
                   "key": "5e5ac283b5",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -80794,11 +80794,17 @@
                     },
                     {
                       "key": "primaryColumns.provider_reference.computedValue"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -80809,7 +80815,7 @@
                   "inlineEditingSaveOption": "ROW_LEVEL",
                   "isLoading": false,
                   "isSortable": true,
-                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.party_id }}",
                   "isVisibleDownload": false,
                   "isVisibleFilters": true,
                   "isVisiblePagination": true,
@@ -81031,7 +81037,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.party_id }}",
                   "key": "df82c42998",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -81146,11 +81152,17 @@
                     },
                     {
                       "key": "primaryColumns.created_at.computedValue"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -81161,7 +81173,7 @@
                   "inlineEditingSaveOption": "ROW_LEVEL",
                   "isLoading": false,
                   "isSortable": true,
-                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.party_id }}",
                   "isVisibleDownload": false,
                   "isVisibleFilters": true,
                   "isVisiblePagination": true,
@@ -84047,7 +84059,7 @@
                   "inputType": "TEXT",
                   "isDisabled": false,
                   "isLoading": false,
-                  "isRequired": true,
+                  "isRequired": false,
                   "isVisible": "{{ qIndividualCanEditDonorContacts.data?.[0]?.can_edit === true && !!qIndividualProfile.data?.[0]?.contributor_id }}",
                   "key": "413efd9c13",
                   "label": "Apartment or suite",
@@ -84957,7 +84969,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.party_id }}",
                   "key": "5e5ac283b5",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -85072,11 +85084,17 @@
                     },
                     {
                       "key": "primaryColumns.provider_reference.computedValue"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -85087,7 +85105,7 @@
                   "inlineEditingSaveOption": "ROW_LEVEL",
                   "isLoading": false,
                   "isSortable": true,
-                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.party_id }}",
                   "isVisibleDownload": false,
                   "isVisibleFilters": true,
                   "isVisiblePagination": true,
@@ -85309,7 +85327,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.party_id }}",
                   "key": "df82c42998",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -85424,11 +85442,17 @@
                     },
                     {
                       "key": "primaryColumns.created_at.computedValue"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -85439,7 +85463,7 @@
                   "inlineEditingSaveOption": "ROW_LEVEL",
                   "isLoading": false,
                   "isSortable": true,
-                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qIndividualProfile.data?.[0]?.party_id }}",
                   "isVisibleDownload": false,
                   "isVisibleFilters": true,
                   "isVisiblePagination": true,
@@ -86955,7 +86979,7 @@
                   "inputType": "TEXT",
                   "isDisabled": false,
                   "isLoading": false,
-                  "isRequired": true,
+                  "isRequired": false,
                   "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
                   "key": "9483364084",
                   "label": "Apartment or suite",
@@ -87544,7 +87568,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.party_id }}",
                   "key": "86ed7420db",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -87659,11 +87683,17 @@
                     },
                     {
                       "key": "primaryColumns.provider_reference.computedValue"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -87674,7 +87704,7 @@
                   "inlineEditingSaveOption": "ROW_LEVEL",
                   "isLoading": false,
                   "isSortable": true,
-                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.party_id }}",
                   "isVisibleDownload": false,
                   "isVisibleFilters": true,
                   "isVisiblePagination": true,
@@ -87896,7 +87926,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.party_id }}",
                   "key": "d7fe06d6f2",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -88011,11 +88041,17 @@
                     },
                     {
                       "key": "primaryColumns.created_at.computedValue"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -88026,7 +88062,7 @@
                   "inlineEditingSaveOption": "ROW_LEVEL",
                   "isLoading": false,
                   "isSortable": true,
-                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.party_id }}",
                   "isVisibleDownload": false,
                   "isVisibleFilters": true,
                   "isVisiblePagination": true,
@@ -89538,7 +89574,7 @@
                   "inputType": "TEXT",
                   "isDisabled": false,
                   "isLoading": false,
-                  "isRequired": true,
+                  "isRequired": false,
                   "isVisible": "{{ qCompanyCanEditDonorContacts.data?.[0]?.can_edit === true && !!qCompanyProfile.data?.[0]?.contributor_id }}",
                   "key": "9483364084",
                   "label": "Apartment or suite",
@@ -90127,7 +90163,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.party_id }}",
                   "key": "86ed7420db",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -90242,11 +90278,17 @@
                     },
                     {
                       "key": "primaryColumns.provider_reference.computedValue"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -90257,7 +90299,7 @@
                   "inlineEditingSaveOption": "ROW_LEVEL",
                   "isLoading": false,
                   "isSortable": true,
-                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.party_id }}",
                   "isVisibleDownload": false,
                   "isVisibleFilters": true,
                   "isVisiblePagination": true,
@@ -90479,7 +90521,7 @@
                   "fontSize": "1rem",
                   "fontStyle": "BOLD",
                   "isLoading": false,
-                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.party_id }}",
                   "key": "d7fe06d6f2",
                   "leftColumn": 0,
                   "maxDynamicHeight": 9000,
@@ -90594,11 +90636,17 @@
                     },
                     {
                       "key": "primaryColumns.created_at.computedValue"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicPropertyPathList": [
                     {
                       "key": "tableData"
+                    },
+                    {
+                      "key": "isVisible"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -90609,7 +90657,7 @@
                   "inlineEditingSaveOption": "ROW_LEVEL",
                   "isLoading": false,
                   "isSortable": true,
-                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.contributor_id }}",
+                  "isVisible": "{{ !!qCompanyProfile.data?.[0]?.party_id }}",
                   "isVisibleDownload": false,
                   "isVisibleFilters": true,
                   "isVisiblePagination": true,
