@@ -24,7 +24,7 @@ globally replace `facilitator` with `Spiritual Practitioner`.
 | `member_facilitators`, `members.is_facilitator`, legacy foreign keys | Transitional member-ID compatibility | Preserve until agreement, release-actor, and storage-access migrations are complete |
 | Individual Profile assignment controls | New Issue #19 UI | First consumer of `organization_terminology` |
 | Members - Intake/Profile/Directory | Older UI with facilitator literals | Migrate during Issue #20 UI audit; do not rename internal query parameters yet |
-| Sacrament Release | Mix of practitioner UI and legacy facilitator member IDs | Migrate actor identity under Issue #19; use terminology only for display |
+| Sacrament Release | Canonical practitioner person, configured display label, nullable legacy member projection | Completed for release issuance and storage authorization; keep internal function/column contracts stable |
 | Donations | Older facilitator wording for cash-entry actor | Keep contributor identity independent; migrate display text separately |
 | Audit Log | Historical machine actions and text | Never rewrite history; new UI may render current labels around stored events |
 | n8n workflows | Field names and audit payloads include facilitator | Treat payload/column names as compatibility contracts until API versioning |
@@ -48,8 +48,9 @@ authorization, and legal meaning are designed.
 
 1. Add an operator UI for terminology changes and a preview of affected labels.
 2. Migrate remaining Appsmith user-facing literals page by page.
-3. Move agreement signer, sacrament-release actor, and storage-location access
-   from legacy facilitator member IDs to canonical person appointments.
+3. Move remaining agreement signer fields from legacy facilitator member IDs to
+   canonical person appointments. Sacrament-release actor and storage access
+   have moved; retain their legacy projections until old consumers are retired.
 4. Inventory Documenso variables and templates after legal/board review; never
    rewrite executed agreements.
 5. Test both Rooted Psyche defaults and an alternate deployment that presents

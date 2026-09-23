@@ -389,15 +389,25 @@ canonical current/history table. It grants only assigned-member visibility and
 does not confer document-review, donation-review, membership, contributor, or
 sacrament-release eligibility.
 
-Existing `member_facilitators` rows are backfilled. While legacy agreement and
-release pages still store facilitator member IDs, their writes are mirrored to
-the canonical assignment table, and a canonical assignment creates a legacy
+Existing `member_facilitators` rows are backfilled. Their writes are mirrored
+to the canonical assignment table, and a canonical assignment creates a legacy
 projection only when that practitioner has an active member ID. Individual
-Profile owns the new audited assign/end workflow. Migrating agreement signer,
-release actor, and storage-location ownership from member IDs to person IDs is
-a later phase; until then, **Open agreement operations** remains available for
-those legacy write paths. An active assignment must be ended before the
-practitioner appointment can be removed from that person.
+Profile owns the audited assign/end workflow. Agreement signer fields remain a
+legacy member-based path, so **Open agreement operations** remains available.
+An active assignment must be ended before the practitioner appointment can be
+removed from that person.
+
+`migrations_issue_19_person_release_operations.sql` completes the corresponding
+Sacrament Release move. `releases.practitioner_person_id` is the canonical actor
+attribution and `practitioner_storage_location_access` owns storage grants by
+`people.person_id`. A practitioner may therefore issue an assigned member's
+sacrament without having membership or contributor capacity. Existing release
+and storage rows are backfilled; `releases.facilitator_id` and
+`facilitator_storage_location_access` remain transitional projections for older
+reports and Members - Profile storage writes. A release still requires an
+active recipient membership, a valid signed agreement (or documented reviewer
+override), an active person-based practitioner assignment, and an authorized
+storage location. None of those checks derives authority from a display label.
 
 `migrations_issue_19_sacrament_agreement_gate.sql` centralizes release-agreement
 eligibility. A signed agreement qualifies when its template scope includes
@@ -533,13 +543,14 @@ historical records.
 
 An assigned practitioner may view the assigned member's profile and membership
 operation history. Separate permission roles continue to control review and
-administrative writes. Current legacy pages may additionally require an active
+administrative writes. Agreement operations may still require an active
 member-based compatibility row to:
 
 - upload agreements
 - send digital agreements
-- record sacrament releases
-- access storage locations
+
+Sacrament Release uses the canonical practitioner person and no longer requires
+the practitioner to be a member.
 
 Contribution review remains controlled by contributor identity and donation
 permissions, not by the practitioner-to-member assignment.
@@ -550,13 +561,15 @@ permissions, not by the practitioner-to-member assignment.
 
 Storage locations are no longer implicitly tied to facilitator names.
 
-Access is controlled through:
+Canonical access is controlled through:
 
 ```text
-facilitator_storage_location_access
+practitioner_storage_location_access
 ```
 
-Multiple facilitators may share access to the same location.
+`facilitator_storage_location_access` is a transitional member-ID projection.
+Multiple practitioners may share access to the same location, and a
+practitioner need not be a member.
 
 This supports:
 

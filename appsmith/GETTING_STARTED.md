@@ -92,6 +92,16 @@ Changing a label does not rename a role key, grant an appointment, or rewrite
 audit history and executed agreements. Issue #20's remaining UI and Documenso
 inventory is tracked in `docs/ISSUE_20_TERMINOLOGY_INVENTORY.md`.
 
+After `db/migrations_issue_19_person_release_operations.sql` and its
+rollback-only verification, import the matching Appsmith export. Sacrament
+Release authenticates the signed-in person's practitioner appointment, lists
+only practitioners assigned to the selected active member, and filters
+MushroomProcess products through that selected person's storage grants. The
+configured practitioner label is presentation only. A practitioner no longer
+needs a member record to be selected or attributed on a release. Existing
+member-based release IDs and storage grants are retained as compatibility
+projections while the older Members - Profile storage editor remains in use.
+
 After `db/migrations_issue_19_contributor_directory_intake.sql` and its
 rollback-only verification, import the next Appsmith export. A donations
 reviewer can create a standalone individual or company contributor in

@@ -65,6 +65,40 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
                 f"{relative_path}: profile terminology projection is missing or has published/unpublished drift"
             )
 
+    release_queries = {
+        "qCurrentFacilitator": "issue19_current_release_actor",
+        "qMembersDirectory": "issue19_sacrament_release_members",
+        "qListFacilitators": "issue19_release_practitioners",
+        "qAccessibleStorageLocations": "issue19_release_storage_locations",
+        "qCreateRelease": "issue19_record_sacrament_release",
+    }
+    release_actions = {
+        action.get("publishedAction", {}).get("name"): action
+        for action in data.get("actionList", [])
+        if action.get("publishedAction", {}).get("pageId") == "Sacrament Release"
+    }
+    for action_name, required_function in release_queries.items():
+        action = release_actions.get(action_name, {})
+        published_body = action.get("publishedAction", {}).get(
+            "actionConfiguration", {}
+        ).get("body", "")
+        unpublished_body = action.get("unpublishedAction", {}).get(
+            "actionConfiguration", {}
+        ).get("body", "")
+        if published_body != unpublished_body or required_function not in published_body:
+            failures.append(
+                f"{relative_path}: Sacrament Release/{action_name} must use "
+                f"{required_function} without published/unpublished drift"
+            )
+    create_release_body = release_actions.get("qCreateRelease", {}).get(
+        "publishedAction", {}
+    ).get("actionConfiguration", {}).get("body", "")
+    if "this.params.facilitator_id" in create_release_body:
+        failures.append(
+            f"{relative_path}: Sacrament Release must not submit a member ID "
+            "as its canonical practitioner"
+        )
+
     def objects(value):
         if isinstance(value, dict):
             yield value
@@ -84,6 +118,21 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
         "tblIndividualPractitionerAssignments",
     }
     for page_entry in data.get("pageList", []):
+        if page_entry.get("publishedPage", {}).get("name") == "Sacrament Release":
+            for variant_name in ("publishedPage", "unpublishedPage"):
+                release_widgets = {
+                    item.get("widgetName"): item
+                    for item in objects(page_entry.get(variant_name, {}))
+                    if item.get("widgetName")
+                }
+                selector = release_widgets.get("selFacilitator", {})
+                serialized = json.dumps(selector, sort_keys=True)
+                if "practitioner_singular_label" not in serialized \
+                   or "practitioner_person_id" not in serialized:
+                    failures.append(
+                        f"{relative_path}: {variant_name}/selFacilitator must "
+                        "use configured terminology and person identity"
+                    )
         if page_entry.get("publishedPage", {}).get("name") != "Individual Profile":
             continue
         for variant_name in ("publishedPage", "unpublishedPage"):

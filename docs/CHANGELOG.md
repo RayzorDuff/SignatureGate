@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added canonical person-based practitioner attribution and storage-location authorization for sacrament releases, including nonmember practitioners, audited release writes, legacy storage synchronization, configured practitioner labels, and rollback-only authorization checks (#19, #20).
 - Added a stable terminology concept registry, audited organization-level labels, Rooted Psyche **Spiritual Practitioner** defaults, and compatibility tests that keep a future regulated facilitator distinct (#20).
 - Added canonical person-based practitioner assignments with audited assign/end actions on Individual Profile, nonmember-practitioner access, legacy assignment synchronization, and rollback-only permission checks (#19).
 - Added document-reviewer maintenance of membership-purpose mailing addresses on Individual Profile, with normalized physical-address identity, audited archive/primary promotion, and no implicit contributor-address changes (#19).
@@ -51,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Sacrament Release now lists only practitioners assigned to the selected member, scopes inventory to that person's storage grants, and records the canonical practitioner person while retaining nullable legacy facilitator-member attribution for compatibility (#19, #20).
 - Individual Profile practitioner appointment and assignment labels now read the organization terminology profile instead of equating practitioner with facilitator (#19, #20).
 - Individual Profile now manages practitioner assignments directly; **Open agreement operations** remains as the transitional handoff for agreement writes that still require legacy member-based signer fields (#19).
 - Extended Individual Profile's role-aware contact editor to email, phone, and mailing address, replacing the separate contributor-address form while retaining independent capacity tables, permissions, and audit paths (#19).
