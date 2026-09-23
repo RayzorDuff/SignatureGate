@@ -334,6 +334,17 @@ workflow is designed; a second member ID must not be created.
 The release table rejects new releases for inactive members, including when
 an old browser session retains a previously selected member ID.
 
+`migrations_issue_19_member_operations_read.sql` begins the controlled move of
+membership-specific operations to Individual Profile. It exposes agreement
+history and practitioner-assignment history through person-based,
+permission-scoped functions. Document reviewers retain full read access;
+otherwise, an active `member_facilitators` assignment is required. General
+directory-manager or donations-reviewer access is insufficient. The profile
+links to Members - Profile for agreement and assignment writes until those
+audited actions are migrated, and it links active members to the separate
+Sacrament Release page. This avoids duplicating mutable agreement logic during
+the transition while making the canonical person profile the entry point.
+
 Membership is not a permission to operate Appsmith. Person-owned reviewer
 roles and Appsmith account ownership are now separate from membership; older
 operational pages and APIs still need to adopt those permissions. Ceremony

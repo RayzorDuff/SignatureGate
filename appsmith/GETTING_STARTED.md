@@ -207,6 +207,16 @@ only for an individual with an active membership; company, nonmember, and ended
 membership rows remain disabled. Historical non-sacrament release values are
 reported for review rather than silently reclassified.
 
+After `db/migrations_issue_19_member_operations_read.sql` and its rollback-only
+verification, import the matching Appsmith export. Individual Profile shows
+agreement history and practitioner assignments to document reviewers and to
+the practitioner currently assigned to that membership. A donations-only
+reviewer does not gain access. **Open member operations** continues to use the
+existing Members - Profile write workflow while it is migrated, and **Record
+sacrament release** opens the dedicated transfer page only for an active
+membership. Agreement approval, sending, cancellation, contact changes, and
+assignment changes remain on Members - Profile in this phase.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:

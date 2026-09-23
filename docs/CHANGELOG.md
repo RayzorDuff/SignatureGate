@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added permission-scoped agreement and practitioner-assignment history to Individual Profile, with direct handoffs to member operations and Sacrament Release (#19).
 - Added a sacrament-only release constraint with rollback-only verification and a canonical Directory shortcut for active members (#19).
 - Added directory-manager identity correction on Individual and Company Profiles, with stale-edit protection and audited old/new canonical values (#19).
 - Added reasoned, audited archive/reactivation for individual and organization contributors, retaining their contacts, provider identities, donation history, and independent membership state (#19).

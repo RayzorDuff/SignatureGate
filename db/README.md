@@ -238,6 +238,12 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_sacrament_release_scope.sql
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_sacrament_release_scope.sql
 
+# Expose agreement and practitioner-assignment history on Individual Profile
+# under the existing document-reviewer/assigned-practitioner access rule.
+# Apply AFTER the sacrament-release scope migration, then import Appsmith.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_member_operations_read.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_member_operations_read.sql
+
 # This should return no rows. If it returns historical records, review what
 # each record represents before correcting it and validating the constraint.
 sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -c "SELECT release_id, released_at, member_id, release_type, item_name, notes FROM public.releases WHERE release_type IS DISTINCT FROM 'sacrament_release' ORDER BY released_at, release_id;"
