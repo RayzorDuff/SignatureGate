@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added a stable terminology concept registry, audited organization-level labels, Rooted Psyche **Spiritual Practitioner** defaults, and compatibility tests that keep a future regulated facilitator distinct (#20).
 - Added canonical person-based practitioner assignments with audited assign/end actions on Individual Profile, nonmember-practitioner access, legacy assignment synchronization, and rollback-only permission checks (#19).
 - Added document-reviewer maintenance of membership-purpose mailing addresses on Individual Profile, with normalized physical-address identity, audited archive/primary promotion, and no implicit contributor-address changes (#19).
 - Added document-reviewer maintenance of membership-purpose email and phone records on Individual Profile, with read-only assigned-practitioner visibility, audit reasons, safe primary promotion, and no implicit contributor-contact changes (#19).
@@ -50,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Individual Profile practitioner appointment and assignment labels now read the organization terminology profile instead of equating practitioner with facilitator (#19, #20).
 - Individual Profile now manages practitioner assignments directly; **Open agreement operations** remains as the transitional handoff for agreement writes that still require legacy member-based signer fields (#19).
 - Extended Individual Profile's role-aware contact editor to email, phone, and mailing address, replacing the separate contributor-address form while retaining independent capacity tables, permissions, and audit paths (#19).
 - Consolidated Individual Profile membership and contributor email/phone forms into one role-aware contact editor, reducing page length while retaining separate permissions, tables, and audit paths for each capacity (#19).

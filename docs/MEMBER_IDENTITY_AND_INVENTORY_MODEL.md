@@ -520,6 +520,13 @@ member_practitioner_assignments
 `member_facilitators` remains a transitional compatibility projection for
 legacy operations that still require a practitioner member ID.
 
+The internal `practitioner` key is intentionally independent of its display
+label. Rooted Psyche currently labels it **Spiritual Practitioner** through
+`organization_terminology`. A future DORA `facilitator` is a separate reserved
+concept, not a synonym or automatic replacement. Updating terminology changes
+presentation only and does not alter appointments, assignments, access, or
+historical records.
+
 ---
 
 ## Practitioner access

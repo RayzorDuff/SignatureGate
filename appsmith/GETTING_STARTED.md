@@ -83,6 +83,15 @@ legacy release and donation actions still use member IDs and transitional
 member flags. Adding a reviewer role to a nonmember does not yet authorize
 those legacy actions.
 
+After `db/migrations_issue_20_organization_terminology.sql` and its
+rollback-only verification, import the matching Appsmith export. Individual
+Profile reads the configured label for the stable `practitioner` concept;
+Rooted Psyche's default is **Spiritual Practitioner**. The separate
+`facilitator` concept is inactive and reserved for a future regulated role.
+Changing a label does not rename a role key, grant an appointment, or rewrite
+audit history and executed agreements. Issue #20's remaining UI and Documenso
+inventory is tracked in `docs/ISSUE_20_TERMINOLOGY_INVENTORY.md`.
+
 After `db/migrations_issue_19_contributor_directory_intake.sql` and its
 rollback-only verification, import the next Appsmith export. A donations
 reviewer can create a standalone individual or company contributor in

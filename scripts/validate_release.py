@@ -45,6 +45,65 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
     }
     relative_path = path.relative_to(ROOT)
 
+    terminology_actions = [
+        action for action in data.get("actionList", [])
+        if action.get("publishedAction", {}).get("pageId") == "Individual Profile"
+        and action.get("publishedAction", {}).get("name") == "qIndividualProfile"
+    ]
+    if len(terminology_actions) != 1:
+        failures.append(
+            f"{relative_path}: Individual Profile must define one profile query"
+        )
+    else:
+        action = terminology_actions[0]
+        published = action.get("publishedAction", {})
+        unpublished = action.get("unpublishedAction", {})
+        published_body = published.get("actionConfiguration", {}).get("body", "")
+        unpublished_body = unpublished.get("actionConfiguration", {}).get("body", "")
+        if published_body != unpublished_body or "issue20_organization_terminology" not in published_body:
+            failures.append(
+                f"{relative_path}: profile terminology projection is missing or has published/unpublished drift"
+            )
+
+    def objects(value):
+        if isinstance(value, dict):
+            yield value
+            for child in value.values():
+                yield from objects(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from objects(child)
+
+    required_terminology_widgets = {
+        "selPersonAccessRole",
+        "txtPersonAccessCurrent",
+        "txtIndividualPractitionersHeading",
+        "txtIndividualPractitionerManagementNote",
+        "selIndividualPractitionerToAssign",
+        "btnAssignIndividualPractitioner",
+        "tblIndividualPractitionerAssignments",
+    }
+    for page_entry in data.get("pageList", []):
+        if page_entry.get("publishedPage", {}).get("name") != "Individual Profile":
+            continue
+        for variant_name in ("publishedPage", "unpublishedPage"):
+            widgets = {
+                item.get("widgetName"): item
+                for item in objects(page_entry.get(variant_name, {}))
+                if item.get("widgetName")
+            }
+            for widget_name in required_terminology_widgets:
+                serialized = json.dumps(widgets.get(widget_name, {}), sort_keys=True)
+                if "practitioner_singular_label" not in serialized \
+                   and "practitioner_plural_label" not in serialized:
+                    failures.append(
+                        f"{relative_path}: {variant_name}/{widget_name} does not use organization terminology"
+                    )
+            if "Practitioner (facilitator)" in json.dumps(page_entry.get(variant_name, {})):
+                failures.append(
+                    f"{relative_path}: {variant_name} still equates practitioner with facilitator"
+                )
+
     for collection in collections.values():
         published = collection.get("publishedCollection", {})
         unpublished = collection.get("unpublishedCollection", {})

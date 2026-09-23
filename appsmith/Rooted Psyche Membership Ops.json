@@ -21668,7 +21668,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "SELECT d.* FROM public.issue19_directory_entries({{ appsmith.user.email }}) d\nWHERE d.party_kind = 'individual' AND d.party_id::text = {{ appsmith.URL.queryParams.person_id || \"\" }}\nLIMIT 1;",
+          "body": "SELECT d.*,term.singular_label AS practitioner_singular_label,\n  term.plural_label AS practitioner_plural_label\nFROM public.issue19_directory_entries({{ appsmith.user.email }}) d\nLEFT JOIN public.issue20_organization_terminology() term\n  ON term.concept_key='practitioner'\nWHERE d.party_kind = 'individual' AND d.party_id::text = {{ appsmith.URL.queryParams.person_id || \"\" }}\nLIMIT 1;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -21713,7 +21713,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "SELECT d.* FROM public.issue19_directory_entries({{ appsmith.user.email }}) d\nWHERE d.party_kind = 'individual' AND d.party_id::text = {{ appsmith.URL.queryParams.person_id || \"\" }}\nLIMIT 1;",
+          "body": "SELECT d.*,term.singular_label AS practitioner_singular_label,\n  term.plural_label AS practitioner_plural_label\nFROM public.issue19_directory_entries({{ appsmith.user.email }}) d\nLEFT JOIN public.issue20_organization_terminology() term\n  ON term.concept_key='practitioner'\nWHERE d.party_kind = 'individual' AND d.party_id::text = {{ appsmith.URL.queryParams.person_id || \"\" }}\nLIMIT 1;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -79677,7 +79677,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "{{ 'Assigned: ' + (qIndividualRoles.data?.map(x => x.role_key.replaceAll('_', ' ')).join(', ') || 'none') + '  ·  Appsmith account: ' + (qIndividualAccount.data?.[0]?.email || 'not linked') }}",
+                  "text": "{{ 'Assigned: ' + (qIndividualRoles.data?.map(role => role.role_key === 'practitioner' ? (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') : role.role_key.replaceAll('_', ' ')).join(', ') || 'none') + '  ·  Appsmith account: ' + (qIndividualAccount.data?.[0]?.email || 'not linked') }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 86,
@@ -79689,6 +79689,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -79705,12 +79708,18 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
                     }
                   ],
                   "dynamicHeight": "FIXED",
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -79746,20 +79755,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 30,
                   "serverSideFiltering": false,
-                  "sourceData": [
-                    {
-                      "label": "Practitioner (facilitator)",
-                      "value": "practitioner"
-                    },
-                    {
-                      "label": "Document reviewer",
-                      "value": "document_reviewer"
-                    },
-                    {
-                      "label": "Donations reviewer",
-                      "value": "donations_reviewer"
-                    }
-                  ],
+                  "sourceData": "{{ [\n  { label: qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner', value: 'practitioner' },\n  { label: 'Document Reviewer', value: 'document_reviewer' },\n  { label: 'Donations Reviewer', value: 'donations_reviewer' }\n] }}",
                   "topRow": 92,
                   "type": "SELECT_WIDGET",
                   "version": 1,
@@ -83759,6 +83755,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
@@ -83788,7 +83787,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Agreement history remains in member operations. Practitioner assignments are managed here.",
+                  "text": "{{ 'Agreement history remains in member operations. ' + (qIndividualProfile.data?.[0]?.practitioner_plural_label || 'Practitioners') + ' assignments are managed here.' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 262,
@@ -83800,6 +83799,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -84031,6 +84033,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "primaryColumns.practitioner_signed_at.label"
                     }
                   ],
                   "dynamicPropertyPathList": [
@@ -84313,7 +84318,7 @@
                       "isEditable": false,
                       "isSaveVisible": true,
                       "isVisible": true,
-                      "label": "Practitioner signed",
+                      "label": "{{ (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') + ' signed' }}",
                       "notation": "standard",
                       "originalId": "practitioner_signed_at",
                       "sticky": "",
@@ -84418,6 +84423,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
@@ -84447,7 +84455,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Practitioner assignments",
+                  "text": "{{ (qIndividualProfile.data?.[0]?.practitioner_plural_label || 'Practitioners') + ' assignments' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 307,
@@ -84459,6 +84467,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -84550,6 +84561,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "primaryColumns.practitioner_name.label"
                     }
                   ],
                   "dynamicPropertyPathList": [
@@ -84677,7 +84691,7 @@
                       "isEditable": false,
                       "isSaveVisible": true,
                       "isVisible": true,
-                      "label": "Practitioner",
+                      "label": "{{ qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner' }}",
                       "notation": "standard",
                       "originalId": "practitioner_name",
                       "sticky": "",
@@ -84917,6 +84931,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
@@ -84946,7 +84963,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Document reviewers can assign any person holding the practitioner appointment. Select an active row before ending an assignment.",
+                  "text": "{{ 'Document reviewers can assign any person holding the ' + (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') + ' appointment. Select an active row before ending an assignment.' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 338,
@@ -84958,6 +84975,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -84980,6 +85000,12 @@
                     },
                     {
                       "key": "isDisabled"
+                    },
+                    {
+                      "key": "labelText"
+                    },
+                    {
+                      "key": "placeholderText"
                     }
                   ],
                   "dynamicHeight": "FIXED",
@@ -84992,6 +85018,12 @@
                     },
                     {
                       "key": "sourceData"
+                    },
+                    {
+                      "key": "labelText"
+                    },
+                    {
+                      "key": "placeholderText"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -85003,7 +85035,7 @@
                   "key": "82584cb026",
                   "labelAlignment": "left",
                   "labelPosition": "Top",
-                  "labelText": "Practitioner to assign",
+                  "labelText": "{{ (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') + ' to assign' }}",
                   "labelTextSize": "0.875rem",
                   "labelWidth": 5,
                   "leftColumn": 0,
@@ -85022,7 +85054,7 @@
                   "parentColumnSpace": 9.9375,
                   "parentId": "0",
                   "parentRowSpace": 10,
-                  "placeholderText": "Select practitioner",
+                  "placeholderText": "{{ 'Select ' + (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner').toLowerCase() }}",
                   "renderMode": "CANVAS",
                   "responsiveBehavior": "fill",
                   "rightColumn": 30,
@@ -85194,6 +85226,9 @@
                     },
                     {
                       "key": "isDisabled"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicPropertyPathList": [
@@ -85205,6 +85240,9 @@
                     },
                     {
                       "key": "isDisabled"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicTriggerPathList": [
@@ -85224,7 +85262,7 @@
                   "mobileRightColumn": 64,
                   "mobileTopRow": 350,
                   "needsErrorInfo": false,
-                  "onClick": "{{ (async () => { try { const rows = await qAssignIndividualPractitioner.run({ practitioner_person_id: selIndividualPractitionerToAssign.selectedOptionValue, notes: inpIndividualPractitionerNotes.text?.trim() || null, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('selIndividualPractitionerToAssign', true); resetWidget('inpIndividualPractitionerNotes', true); resetWidget('inpIndividualPractitionerReason', true); showAlert('Practitioner assigned.', 'success'); } catch (e) { showAlert('Practitioner assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "onClick": "{{ (async () => { try { const practitionerLabel = qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner'; const rows = await qAssignIndividualPractitioner.run({ practitioner_person_id: selIndividualPractitionerToAssign.selectedOptionValue, notes: inpIndividualPractitionerNotes.text?.trim() || null, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('selIndividualPractitionerToAssign', true); resetWidget('inpIndividualPractitionerNotes', true); resetWidget('inpIndividualPractitionerReason', true); showAlert(practitionerLabel + ' assigned.', 'success'); } catch (e) { showAlert('Assignment failed: ' + (e?.message || e), 'error'); } })() }}",
                   "originalBottomRow": 354,
                   "originalTopRow": 350,
                   "parentColumnSpace": 10.25,
@@ -85236,7 +85274,7 @@
                   "resetFormOnClick": false,
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
-                  "text": "Assign practitioner",
+                  "text": "{{ 'Assign ' + (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') }}",
                   "topRow": 350,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
@@ -85293,7 +85331,7 @@
                   "mobileRightColumn": 64,
                   "mobileTopRow": 355,
                   "needsErrorInfo": false,
-                  "onClick": "{{ (async () => { try { const selected = tblIndividualPractitionerAssignments.selectedRow; if (!selected?.member_practitioner_assignment_id || selected.assignment_status !== 'active') { showAlert('Select an active practitioner assignment.', 'warning'); return; } const rows = await qEndIndividualPractitioner.run({ assignment_id: selected.member_practitioner_assignment_id, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('inpIndividualPractitionerReason', true); showAlert('Practitioner assignment ended.', 'success'); } catch (e) { showAlert('Ending practitioner assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "onClick": "{{ (async () => { try { const practitionerLabel = qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner'; const selected = tblIndividualPractitionerAssignments.selectedRow; if (!selected?.member_practitioner_assignment_id || selected.assignment_status !== 'active') { showAlert('Select an active ' + practitionerLabel.toLowerCase() + ' assignment.', 'warning'); return; } const rows = await qEndIndividualPractitioner.run({ assignment_id: selected.member_practitioner_assignment_id, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('inpIndividualPractitionerReason', true); showAlert(practitionerLabel + ' assignment ended.', 'success'); } catch (e) { showAlert('Ending assignment failed: ' + (e?.message || e), 'error'); } })() }}",
                   "originalBottomRow": 359,
                   "originalTopRow": 355,
                   "parentColumnSpace": 10.25,
@@ -86059,7 +86097,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "{{ 'Assigned: ' + (qIndividualRoles.data?.map(x => x.role_key.replaceAll('_', ' ')).join(', ') || 'none') + '  ·  Appsmith account: ' + (qIndividualAccount.data?.[0]?.email || 'not linked') }}",
+                  "text": "{{ 'Assigned: ' + (qIndividualRoles.data?.map(role => role.role_key === 'practitioner' ? (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') : role.role_key.replaceAll('_', ' ')).join(', ') || 'none') + '  ·  Appsmith account: ' + (qIndividualAccount.data?.[0]?.email || 'not linked') }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 86,
@@ -86071,6 +86109,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -86087,12 +86128,18 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
                     }
                   ],
                   "dynamicHeight": "FIXED",
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "sourceData"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -86128,20 +86175,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 30,
                   "serverSideFiltering": false,
-                  "sourceData": [
-                    {
-                      "label": "Practitioner (facilitator)",
-                      "value": "practitioner"
-                    },
-                    {
-                      "label": "Document reviewer",
-                      "value": "document_reviewer"
-                    },
-                    {
-                      "label": "Donations reviewer",
-                      "value": "donations_reviewer"
-                    }
-                  ],
+                  "sourceData": "{{ [\n  { label: qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner', value: 'practitioner' },\n  { label: 'Document Reviewer', value: 'document_reviewer' },\n  { label: 'Donations Reviewer', value: 'donations_reviewer' }\n] }}",
                   "topRow": 92,
                   "type": "SELECT_WIDGET",
                   "version": 1,
@@ -90141,6 +90175,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
@@ -90170,7 +90207,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Agreement history remains in member operations. Practitioner assignments are managed here.",
+                  "text": "{{ 'Agreement history remains in member operations. ' + (qIndividualProfile.data?.[0]?.practitioner_plural_label || 'Practitioners') + ' assignments are managed here.' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 262,
@@ -90182,6 +90219,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -90413,6 +90453,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "primaryColumns.practitioner_signed_at.label"
                     }
                   ],
                   "dynamicPropertyPathList": [
@@ -90695,7 +90738,7 @@
                       "isEditable": false,
                       "isSaveVisible": true,
                       "isVisible": true,
-                      "label": "Practitioner signed",
+                      "label": "{{ (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') + ' signed' }}",
                       "notation": "standard",
                       "originalId": "practitioner_signed_at",
                       "sticky": "",
@@ -90800,6 +90843,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
@@ -90829,7 +90875,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Practitioner assignments",
+                  "text": "{{ (qIndividualProfile.data?.[0]?.practitioner_plural_label || 'Practitioners') + ' assignments' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 307,
@@ -90841,6 +90887,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -90932,6 +90981,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "primaryColumns.practitioner_name.label"
                     }
                   ],
                   "dynamicPropertyPathList": [
@@ -91059,7 +91111,7 @@
                       "isEditable": false,
                       "isSaveVisible": true,
                       "isVisible": true,
-                      "label": "Practitioner",
+                      "label": "{{ qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner' }}",
                       "notation": "standard",
                       "originalId": "practitioner_name",
                       "sticky": "",
@@ -91299,6 +91351,9 @@
                     },
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicHeight": "AUTO_HEIGHT",
@@ -91328,7 +91383,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Document reviewers can assign any person holding the practitioner appointment. Select an active row before ending an assignment.",
+                  "text": "{{ 'Document reviewers can assign any person holding the ' + (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') + ' appointment. Select an active row before ending an assignment.' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 338,
@@ -91340,6 +91395,9 @@
                   "dynamicPropertyPathList": [
                     {
                       "key": "isVisible"
+                    },
+                    {
+                      "key": "text"
                     }
                   ]
                 },
@@ -91362,6 +91420,12 @@
                     },
                     {
                       "key": "isDisabled"
+                    },
+                    {
+                      "key": "labelText"
+                    },
+                    {
+                      "key": "placeholderText"
                     }
                   ],
                   "dynamicHeight": "FIXED",
@@ -91374,6 +91438,12 @@
                     },
                     {
                       "key": "sourceData"
+                    },
+                    {
+                      "key": "labelText"
+                    },
+                    {
+                      "key": "placeholderText"
                     }
                   ],
                   "dynamicTriggerPathList": [],
@@ -91385,7 +91455,7 @@
                   "key": "82584cb026",
                   "labelAlignment": "left",
                   "labelPosition": "Top",
-                  "labelText": "Practitioner to assign",
+                  "labelText": "{{ (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') + ' to assign' }}",
                   "labelTextSize": "0.875rem",
                   "labelWidth": 5,
                   "leftColumn": 0,
@@ -91404,7 +91474,7 @@
                   "parentColumnSpace": 9.9375,
                   "parentId": "0",
                   "parentRowSpace": 10,
-                  "placeholderText": "Select practitioner",
+                  "placeholderText": "{{ 'Select ' + (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner').toLowerCase() }}",
                   "renderMode": "CANVAS",
                   "responsiveBehavior": "fill",
                   "rightColumn": 30,
@@ -91576,6 +91646,9 @@
                     },
                     {
                       "key": "isDisabled"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicPropertyPathList": [
@@ -91587,6 +91660,9 @@
                     },
                     {
                       "key": "isDisabled"
+                    },
+                    {
+                      "key": "text"
                     }
                   ],
                   "dynamicTriggerPathList": [
@@ -91606,7 +91682,7 @@
                   "mobileRightColumn": 64,
                   "mobileTopRow": 350,
                   "needsErrorInfo": false,
-                  "onClick": "{{ (async () => { try { const rows = await qAssignIndividualPractitioner.run({ practitioner_person_id: selIndividualPractitionerToAssign.selectedOptionValue, notes: inpIndividualPractitionerNotes.text?.trim() || null, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('selIndividualPractitionerToAssign', true); resetWidget('inpIndividualPractitionerNotes', true); resetWidget('inpIndividualPractitionerReason', true); showAlert('Practitioner assigned.', 'success'); } catch (e) { showAlert('Practitioner assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "onClick": "{{ (async () => { try { const practitionerLabel = qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner'; const rows = await qAssignIndividualPractitioner.run({ practitioner_person_id: selIndividualPractitionerToAssign.selectedOptionValue, notes: inpIndividualPractitionerNotes.text?.trim() || null, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('selIndividualPractitionerToAssign', true); resetWidget('inpIndividualPractitionerNotes', true); resetWidget('inpIndividualPractitionerReason', true); showAlert(practitionerLabel + ' assigned.', 'success'); } catch (e) { showAlert('Assignment failed: ' + (e?.message || e), 'error'); } })() }}",
                   "originalBottomRow": 354,
                   "originalTopRow": 350,
                   "parentColumnSpace": 10.25,
@@ -91618,7 +91694,7 @@
                   "resetFormOnClick": false,
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
-                  "text": "Assign practitioner",
+                  "text": "{{ 'Assign ' + (qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner') }}",
                   "topRow": 350,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
@@ -91675,7 +91751,7 @@
                   "mobileRightColumn": 64,
                   "mobileTopRow": 355,
                   "needsErrorInfo": false,
-                  "onClick": "{{ (async () => { try { const selected = tblIndividualPractitionerAssignments.selectedRow; if (!selected?.member_practitioner_assignment_id || selected.assignment_status !== 'active') { showAlert('Select an active practitioner assignment.', 'warning'); return; } const rows = await qEndIndividualPractitioner.run({ assignment_id: selected.member_practitioner_assignment_id, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('inpIndividualPractitionerReason', true); showAlert('Practitioner assignment ended.', 'success'); } catch (e) { showAlert('Ending practitioner assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "onClick": "{{ (async () => { try { const practitionerLabel = qIndividualProfile.data?.[0]?.practitioner_singular_label || 'Practitioner'; const selected = tblIndividualPractitionerAssignments.selectedRow; if (!selected?.member_practitioner_assignment_id || selected.assignment_status !== 'active') { showAlert('Select an active ' + practitionerLabel.toLowerCase() + ' assignment.', 'warning'); return; } const rows = await qEndIndividualPractitioner.run({ assignment_id: selected.member_practitioner_assignment_id, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('inpIndividualPractitionerReason', true); showAlert(practitionerLabel + ' assignment ended.', 'success'); } catch (e) { showAlert('Ending assignment failed: ' + (e?.message || e), 'error'); } })() }}",
                   "originalBottomRow": 359,
                   "originalTopRow": 355,
                   "parentColumnSpace": 10.25,

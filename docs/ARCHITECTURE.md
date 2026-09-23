@@ -213,3 +213,20 @@ n8n responsibilities:
 - Let database functions match a contributor or retain the donation for review
 
 Donations do not participate in release gating logic.
+
+## Deployment terminology and stable concepts
+
+User-facing terminology is deployment configuration, not domain identity.
+`terminology_concepts` defines stable keys used by code, authorization, and
+data relationships. `organization_terminology` provides singular, plural, and
+short labels for the one organization served by a SignatureGate deployment.
+
+Rooted Psyche currently presents the general `practitioner` appointment as
+**Spiritual Practitioner**. A deployment may instead display that same concept
+as **Facilitator** without changing stored role keys. A future regulated
+`facilitator` is reserved as a separate concept so both appointments can exist
+at once. Terminology activation or editing never grants a role or permission.
+
+Historical audit records, API fields, database keys, and executed agreements
+are not rewritten when labels change. See
+`docs/ISSUE_20_TERMINOLOGY_INVENTORY.md` for the migration inventory.
