@@ -321,16 +321,19 @@ their existing `member_id` and remain contributor-owned. No member-purpose
 email, agreement, practitioner appointment, or release authorization is
 created as part of enrollment. Archived memberships need separate review.
 
-`migrations_issue_19_end_membership.sql` allows a directory manager who is
-also a document reviewer to end an active membership after an active
-individual contributor exists. The member row remains with status `inactive`,
-end timestamp, reviewer, reason, and its agreement/release history; active
-contributor/member links become ended. Existing donations retain their
-original member IDs, while later donations can be associated with the active
-contributor alone. Pending agreements, roles, legacy reviewer flags, and
-facilitator assignments must be resolved first. Re-enrollment is deliberately
-blocked for a person with an ended membership until a reviewed reactivation
-workflow is designed; a second member ID must not be created.
+`migrations_issue_19_end_membership.sql`, as corrected by
+`migrations_issue_19_membership_contributor_independence.sql`, allows a
+directory manager who is also a document reviewer to end an active membership
+without requiring contributor capacity. The member row remains with status
+`inactive`, end timestamp, reviewer, reason, and its agreement/release history.
+If an independent contributor and active member/contributor link exist, the
+link becomes ended while the contributor remains active. No contributor is
+created, archived, or otherwise changed merely because membership ends, and
+existing donation attribution is not rewritten. Pending agreements, roles,
+legacy reviewer flags, and facilitator assignments must be resolved first.
+Re-enrollment is deliberately blocked for a person with an ended membership
+until a reviewed reactivation workflow is designed; a second member ID must
+not be created.
 The release table rejects new releases for inactive members, including when
 an old browser session retains a previously selected member ID.
 

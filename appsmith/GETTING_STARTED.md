@@ -120,10 +120,10 @@ a second member ID.
 
 After `db/migrations_issue_19_end_membership.sql` and its rollback-only check,
 import the newer export. A directory manager who is also a document reviewer
-can use Individual Profile to **End membership** for an active member who
-already has an active individual contributor record. The action requires a
-reason. It sets the member to inactive, ends active contributor/member links,
-and keeps the person, contributor, donations, agreement and release history.
+can use Individual Profile to **End membership** for an active member. The
+action requires a reason. It sets the member to inactive, ends any active
+contributor/member link, and keeps the person, contributor when present,
+donations, agreement and release history.
 Pending agreements, practitioner/reviewer permissions, and active facilitator
 assignments must be resolved first. An ended membership remains visible in the
 individual's membership history; **Enable membership** does not create another
@@ -131,9 +131,9 @@ member ID for this person. The button to enable membership is intentionally
 hidden for everyone who already has a member record. The Sacrament Release page
 checks membership again before calling the inventory shipment endpoint; the
 database also refuses any new release for an inactive member.
-Check contributor email and phone on the profile before ending membership;
-member-purpose contacts remain on the historical member record and are not
-copied automatically into contributor contact records.
+Ending membership neither requires nor creates a contributor. Member-purpose
+contacts remain on the historical member record and are not copied
+automatically into contributor contact records.
 The End membership section remains visible to an authorized reviewer even
 when the action is unavailable. It displays the first condition to resolve;
 the button becomes available only after database eligibility checks pass.
@@ -216,6 +216,14 @@ existing Members - Profile write workflow while it is migrated, and **Record
 sacrament release** opens the dedicated transfer page only for an active
 membership. Agreement approval, sending, cancellation, contact changes, and
 assignment changes remain on Members - Profile in this phase.
+
+After `db/migrations_issue_19_membership_contributor_independence.sql` and its
+rollback-only verification, import the matching Appsmith export. A member-only
+individual can end membership without first being made a contributor. If the
+person independently has contributor capacity, it remains active and any
+member/contributor link is ended; donation attribution is not rewritten. The
+profile language no longer describes membership closure as conversion to a
+contributor.
 
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.

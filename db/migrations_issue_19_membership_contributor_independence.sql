@@ -1,46 +1,17 @@
--- Issue #19: end membership without removing an individual contributor or
--- rewriting historical donations, agreements, and sacrament releases.
--- Apply after migrations_issue_19_existing_person_membership.sql; run once.
+-- Issue #19: ending membership must not require or create contributor capacity.
+-- Apply after migrations_issue_19_member_operations_read.sql; run once.
 \set ON_ERROR_STOP on
 BEGIN;
 
 DO $$ BEGIN
-  IF to_regprocedure('public.issue19_enable_person_membership(text,uuid,text,text,text)') IS NULL
-    OR to_regclass('public.person_roles') IS NULL
-    OR to_regclass('public.releases') IS NULL THEN
-    RAISE EXCEPTION 'Apply the Issue #19 person role and existing-person membership migrations first';
+  IF to_regprocedure('public.issue19_end_person_membership(text,uuid,text)') IS NULL
+     OR to_regprocedure('public.issue19_person_member_operations_state(text,uuid)') IS NULL
+     OR to_regclass('public.contributor_member_links') IS NULL THEN
+    RAISE EXCEPTION 'Apply the Issue #19 membership and member-operations migrations first';
   END IF;
 END $$;
 
-ALTER TABLE public.members
-  ADD COLUMN membership_ended_at timestamptz,
-  ADD COLUMN membership_ended_by text,
-  ADD COLUMN membership_end_reason text;
-
-COMMENT ON COLUMN public.members.membership_ended_at IS
-  'When an active membership was ended through the Issue #19 directory workflow; member ID and history remain.';
-
--- The old release UI may retain a selected member ID across navigation.
--- Enforce eligibility at the data boundary even if that selection is stale.
-CREATE FUNCTION public.issue19_require_active_release_member()
-RETURNS trigger LANGUAGE plpgsql SECURITY INVOKER
-SET search_path = public, pg_temp AS $$
-BEGIN
-  PERFORM 1 FROM public.members
-  WHERE member_id=NEW.member_id AND status='active' FOR SHARE;
-  IF NOT FOUND THEN
-    RAISE EXCEPTION 'An active membership is required for a new release';
-  END IF;
-  RETURN NEW;
-END;
-$$;
-CREATE TRIGGER trg_issue19_require_active_release_member
-BEFORE INSERT OR UPDATE OF member_id ON public.releases
-FOR EACH ROW EXECUTE FUNCTION public.issue19_require_active_release_member();
-
--- Restrict history to managers who also have document review permission.
--- An ended member is intentionally absent from the active Directory projection.
-CREATE FUNCTION public.issue19_person_membership_state(
+CREATE OR REPLACE FUNCTION public.issue19_person_membership_state(
   p_actor_email text, p_person_id uuid
 )
 RETURNS TABLE (
@@ -68,7 +39,7 @@ ORDER BY (m.status='active') DESC, m.created_at DESC
 LIMIT 1;
 $$;
 
-CREATE FUNCTION public.issue19_end_person_membership(
+CREATE OR REPLACE FUNCTION public.issue19_end_person_membership(
   p_actor_email text, p_person_id uuid, p_reason text
 )
 RETURNS uuid LANGUAGE plpgsql VOLATILE SECURITY INVOKER
@@ -91,11 +62,15 @@ BEGIN
   SELECT * INTO v_member FROM public.members
   WHERE person_id=p_person_id AND status='active' FOR UPDATE;
   IF NOT FOUND THEN RAISE EXCEPTION 'This person has no active membership'; END IF;
+
+  -- Contributor capacity is optional. Lock and preserve it when present, but
+  -- never create one merely because membership is ending.
   SELECT c.contributor_id INTO v_contributor_id FROM public.contributors c
   WHERE c.person_id=p_person_id AND c.contributor_type='individual'
     AND c.status='active'
   ORDER BY c.created_at,c.contributor_id
   LIMIT 1 FOR UPDATE;
+
   IF EXISTS (SELECT 1 FROM public.person_roles r WHERE r.person_id=p_person_id)
     OR v_member.is_facilitator OR v_member.is_document_reviewer
     OR v_member.is_donations_reviewer
@@ -115,23 +90,24 @@ BEGIN
   WHERE account.status='active'
     AND account.email_normalized=lower(btrim(p_actor_email));
 
-  UPDATE public.contributor_member_links l SET status='ended',
+  UPDATE public.contributor_member_links link SET status='ended',
     ended_at=now(), ended_by=v_actor_member_id,
     end_reason='Membership ended: ' || btrim(p_reason), updated_at=now()
-  WHERE l.member_id=v_member.member_id AND l.status='active';
+  WHERE link.member_id=v_member.member_id AND link.status='active';
   GET DIAGNOSTICS v_links_ended = ROW_COUNT;
+
   UPDATE public.members SET status='inactive', updated_at=now(),
     membership_ended_at=now(), membership_ended_by=lower(btrim(p_actor_email)),
     membership_end_reason=btrim(p_reason)
   WHERE member_id=v_member.member_id;
+
   INSERT INTO public.audit_log(actor,action,entity_type,entity_id,details)
   VALUES (lower(btrim(p_actor_email)),'membership.ended_for_person',
     'member',v_member.member_id::text,
     jsonb_build_object('person_id',p_person_id,
       'contributor_id',v_contributor_id,
       'had_active_contributor',v_contributor_id IS NOT NULL,
-      'reason',btrim(p_reason),
-      'links_ended',v_links_ended));
+      'reason',btrim(p_reason),'links_ended',v_links_ended));
   RETURN v_member.member_id;
 END;
 $$;

@@ -25,14 +25,10 @@ BEGIN
     VALUES ('Former Member','Former','Member') RETURNING person_id INTO v_person;
   v_member := public.issue19_enable_person_membership(
     'issue19-end-reviewer@example.invalid',v_person,'Former','Member','Test start');
-  BEGIN
-    PERFORM public.issue19_end_person_membership(
-      'issue19-end-reviewer@example.invalid',v_person,'Missing contributor');
-    RAISE EXCEPTION 'Membership ended without a contributor';
-  EXCEPTION WHEN raise_exception THEN
-    IF SQLERRM <> 'Enable this individual as a contributor before ending membership'
-    THEN RAISE; END IF;
-  END;
+  IF NOT (SELECT can_end FROM public.issue19_person_membership_state(
+      'issue19-end-reviewer@example.invalid',v_person)) THEN
+    RAISE EXCEPTION 'Member-only person was incorrectly blocked by contributor state';
+  END IF;
   v_contributor := public.issue19_enable_person_contributor(
     'issue19-end-reviewer@example.invalid',v_person,'Test contributor');
   -- Existing member/contributor links may also have been created by other
@@ -92,14 +88,14 @@ BEGIN
     RAISE EXCEPTION 'Eligible member was not presented as eligible';
   END IF;
   PERFORM public.issue19_end_person_membership(
-    'issue19-end-reviewer@example.invalid',v_person,'Requested conversion');
+    'issue19-end-reviewer@example.invalid',v_person,'Requested membership end');
   INSERT INTO public.donations(contributor_id,donor_kind,provider,amount_cents,status)
     VALUES (v_contributor,'identified','cash',300,'pending_review')
     RETURNING donation_id INTO v_later_donation;
   IF NOT EXISTS (SELECT 1 FROM public.members
       WHERE member_id=v_member AND status='inactive' AND person_id=v_person
         AND membership_ended_at IS NOT NULL
-        AND membership_end_reason='Requested conversion')
+        AND membership_end_reason='Requested membership end')
     OR NOT EXISTS (SELECT 1 FROM public.contributor_member_links
       WHERE member_id=v_member AND contributor_id=v_contributor
         AND status='ended' AND ended_at IS NOT NULL)

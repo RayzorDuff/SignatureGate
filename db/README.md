@@ -192,9 +192,10 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_existing_person_membership.sql
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_existing_person_membership.sql
 
-# End an active membership while keeping the person and contributor. Apply
-# AFTER existing-person membership; run the rollback-only verification before
-# importing the updated Appsmith JSON. A contributor must already be active.
+# End an active membership while keeping the person and any independently
+# existing contributor. Apply AFTER existing-person membership; run the
+# rollback-only verification before importing the updated Appsmith JSON.
+# Contributor capacity is not required and is never created by this action.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_end_membership.sql
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_end_membership.sql
 
@@ -243,6 +244,12 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 # Apply AFTER the sacrament-release scope migration, then import Appsmith.
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_member_operations_read.sql
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_member_operations_read.sql
+
+# Remove the accidental contributor prerequisite from membership closure.
+# A member-only person may end membership without creating a contributor;
+# an existing contributor and its donations remain unchanged.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_membership_contributor_independence.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_membership_contributor_independence.sql
 
 # This should return no rows. If it returns historical records, review what
 # each record represents before correcting it and validating the constraint.

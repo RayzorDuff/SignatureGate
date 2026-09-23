@@ -24307,7 +24307,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "SELECT s.*,\n  CASE\n    WHEN s.can_end THEN 'Ready to end membership. Confirm contributor contact details and enter a reason.'\n    WHEN m.status <> 'active' THEN 'Membership is already inactive. The existing member ID remains in history.'\n    WHEN NOT EXISTS (SELECT 1 FROM public.contributors c\n      WHERE c.person_id=m.person_id AND c.contributor_type='individual' AND c.status='active')\n      THEN 'First enable this person as a contributor above; their membership will remain until you end it.'\n    WHEN EXISTS (SELECT 1 FROM public.person_roles r WHERE r.person_id=m.person_id)\n      OR m.is_facilitator OR m.is_document_reviewer OR m.is_donations_reviewer\n      THEN 'Remove the person''s appointments and permissions (including legacy reviewer or facilitator flags) before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_facilitators f\n      WHERE f.facilitator_id=m.member_id AND f.status='active')\n      THEN 'Reassign or end this facilitator''s active member assignments before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_agreements a\n      WHERE a.member_id=m.member_id AND a.status IN\n        ('pending_review','pending_email_send','pending_signature'))\n      THEN 'Resolve pending agreements before ending membership.'\n    ELSE 'Review the membership state before continuing.'\n  END AS blocker\nFROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n) s JOIN public.members m ON m.member_id=s.member_id;",
+          "body": "SELECT s.*,\n  CASE\n    WHEN s.can_end THEN 'Ready to end membership. Enter a reason to continue.'\n    WHEN m.status <> 'active' THEN 'Membership is already inactive. The existing member ID remains in history.'\n    WHEN EXISTS (SELECT 1 FROM public.person_roles r WHERE r.person_id=m.person_id)\n      OR m.is_facilitator OR m.is_document_reviewer OR m.is_donations_reviewer\n      THEN 'Remove the person''s appointments and permissions (including legacy reviewer or facilitator flags) before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_facilitators f\n      WHERE f.facilitator_id=m.member_id AND f.status='active')\n      THEN 'Reassign or end this facilitator''s active member assignments before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_agreements a\n      WHERE a.member_id=m.member_id AND a.status IN\n        ('pending_review','pending_email_send','pending_signature'))\n      THEN 'Resolve pending agreements before ending membership.'\n    ELSE 'Review the membership state before continuing.'\n  END AS blocker\nFROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n) s JOIN public.members m ON m.member_id=s.member_id;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -24352,7 +24352,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "SELECT s.*,\n  CASE\n    WHEN s.can_end THEN 'Ready to end membership. Confirm contributor contact details and enter a reason.'\n    WHEN m.status <> 'active' THEN 'Membership is already inactive. The existing member ID remains in history.'\n    WHEN NOT EXISTS (SELECT 1 FROM public.contributors c\n      WHERE c.person_id=m.person_id AND c.contributor_type='individual' AND c.status='active')\n      THEN 'First enable this person as a contributor above; their membership will remain until you end it.'\n    WHEN EXISTS (SELECT 1 FROM public.person_roles r WHERE r.person_id=m.person_id)\n      OR m.is_facilitator OR m.is_document_reviewer OR m.is_donations_reviewer\n      THEN 'Remove the person''s appointments and permissions (including legacy reviewer or facilitator flags) before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_facilitators f\n      WHERE f.facilitator_id=m.member_id AND f.status='active')\n      THEN 'Reassign or end this facilitator''s active member assignments before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_agreements a\n      WHERE a.member_id=m.member_id AND a.status IN\n        ('pending_review','pending_email_send','pending_signature'))\n      THEN 'Resolve pending agreements before ending membership.'\n    ELSE 'Review the membership state before continuing.'\n  END AS blocker\nFROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n) s JOIN public.members m ON m.member_id=s.member_id;",
+          "body": "SELECT s.*,\n  CASE\n    WHEN s.can_end THEN 'Ready to end membership. Enter a reason to continue.'\n    WHEN m.status <> 'active' THEN 'Membership is already inactive. The existing member ID remains in history.'\n    WHEN EXISTS (SELECT 1 FROM public.person_roles r WHERE r.person_id=m.person_id)\n      OR m.is_facilitator OR m.is_document_reviewer OR m.is_donations_reviewer\n      THEN 'Remove the person''s appointments and permissions (including legacy reviewer or facilitator flags) before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_facilitators f\n      WHERE f.facilitator_id=m.member_id AND f.status='active')\n      THEN 'Reassign or end this facilitator''s active member assignments before ending membership.'\n    WHEN EXISTS (SELECT 1 FROM public.member_agreements a\n      WHERE a.member_id=m.member_id AND a.status IN\n        ('pending_review','pending_email_send','pending_signature'))\n      THEN 'Resolve pending agreements before ending membership.'\n    ELSE 'Review the membership state before continuing.'\n  END AS blocker\nFROM public.issue19_person_membership_state(\n  {{ appsmith.user.email }}, {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n) s JOIN public.members m ON m.member_id=s.member_id;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -80210,7 +80210,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "End membership; keep this individual as a contributor",
+                  "text": "End membership",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 181,
@@ -80273,7 +80273,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "{{ (qProfileMembershipState.data?.[0]?.blocker || (qProfileMembershipState.isLoading ? 'Checking membership eligibility...' : 'Membership eligibility is unavailable. Reload this profile or inspect qProfileMembershipState.')) + ' Member-only contacts stay on the historical member record; check contributor email and phone above.' }}",
+                  "text": "{{ (qProfileMembershipState.data?.[0]?.blocker || (qProfileMembershipState.isLoading ? 'Checking membership eligibility...' : 'Membership eligibility is unavailable. Reload this profile or inspect qProfileMembershipState.')) + ' Membership history is retained. Contributor status and donation history are not changed.' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 185,
@@ -80405,7 +80405,7 @@
                   "mobileRightColumn": 64,
                   "mobileTopRow": 139,
                   "needsErrorInfo": false,
-                  "onClick": "{{ (async () => { try { const reason = inpEndMembershipReason.text?.trim(); if (!reason) { showAlert('Enter the reason for ending membership.', 'warning'); return; } const rows = await qEndPersonMembership.run({ reason }); if (!rows?.[0]?.member_id) throw new Error('No member was returned.'); await qIndividualProfile.run(); await Promise.all([qProfileMembershipState.run(), qIndividualContacts.run(), qReusablePersonContacts.run()]); showAlert('Membership ended; contributor and historical records remain.', 'success'); } catch (e) { showAlert('Ending membership failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "onClick": "{{ (async () => { try { const reason = inpEndMembershipReason.text?.trim(); if (!reason) { showAlert('Enter the reason for ending membership.', 'warning'); return; } const rows = await qEndPersonMembership.run({ reason }); if (!rows?.[0]?.member_id) throw new Error('No member was returned.'); await qIndividualProfile.run(); await Promise.all([qProfileMembershipState.run(), qIndividualContacts.run(), qReusablePersonContacts.run()]); showAlert('Membership ended. The person and membership history remain; contributor status is unchanged.', 'success'); } catch (e) { showAlert('Ending membership failed: ' + (e?.message || e), 'error'); } })() }}",
                   "originalBottomRow": 143,
                   "originalTopRow": 139,
                   "parentColumnSpace": 10.25,
@@ -86436,7 +86436,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "End membership; keep this individual as a contributor",
+                  "text": "End membership",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 181,
@@ -86499,7 +86499,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "{{ (qProfileMembershipState.data?.[0]?.blocker || (qProfileMembershipState.isLoading ? 'Checking membership eligibility...' : 'Membership eligibility is unavailable. Reload this profile or inspect qProfileMembershipState.')) + ' Member-only contacts stay on the historical member record; check contributor email and phone above.' }}",
+                  "text": "{{ (qProfileMembershipState.data?.[0]?.blocker || (qProfileMembershipState.isLoading ? 'Checking membership eligibility...' : 'Membership eligibility is unavailable. Reload this profile or inspect qProfileMembershipState.')) + ' Membership history is retained. Contributor status and donation history are not changed.' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 185,
@@ -86631,7 +86631,7 @@
                   "mobileRightColumn": 64,
                   "mobileTopRow": 139,
                   "needsErrorInfo": false,
-                  "onClick": "{{ (async () => { try { const reason = inpEndMembershipReason.text?.trim(); if (!reason) { showAlert('Enter the reason for ending membership.', 'warning'); return; } const rows = await qEndPersonMembership.run({ reason }); if (!rows?.[0]?.member_id) throw new Error('No member was returned.'); await qIndividualProfile.run(); await Promise.all([qProfileMembershipState.run(), qIndividualContacts.run(), qReusablePersonContacts.run()]); showAlert('Membership ended; contributor and historical records remain.', 'success'); } catch (e) { showAlert('Ending membership failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "onClick": "{{ (async () => { try { const reason = inpEndMembershipReason.text?.trim(); if (!reason) { showAlert('Enter the reason for ending membership.', 'warning'); return; } const rows = await qEndPersonMembership.run({ reason }); if (!rows?.[0]?.member_id) throw new Error('No member was returned.'); await qIndividualProfile.run(); await Promise.all([qProfileMembershipState.run(), qIndividualContacts.run(), qReusablePersonContacts.run()]); showAlert('Membership ended. The person and membership history remain; contributor status is unchanged.', 'success'); } catch (e) { showAlert('Ending membership failed: ' + (e?.message || e), 'error'); } })() }}",
                   "originalBottomRow": 143,
                   "originalTopRow": 139,
                   "parentColumnSpace": 10.25,
