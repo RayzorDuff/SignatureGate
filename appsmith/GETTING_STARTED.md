@@ -242,6 +242,14 @@ signed agreement from any template version whose `required_for` includes
 does not invalidate agreements already signed from it. Reviewed template-free
 paper/manual agreements retain their legacy eligibility path.
 
+After `db/migrations_issue_19_member_address_profiles.sql` and its rollback-only
+verification, import the matching Appsmith export. The role-aware contact editor
+also handles **Mailing address**. Choose Membership or Contributor before adding
+or archiving an address. Membership operations write only `member_addresses`;
+contributor operations write only `contributor_addresses`. Apartment or suite
+remains optional. Reusing one existing address for the other capacity still
+uses the separate reviewed cross-role assignment control.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:

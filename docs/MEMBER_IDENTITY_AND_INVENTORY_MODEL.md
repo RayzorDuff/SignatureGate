@@ -369,6 +369,16 @@ and preserves separate audit semantics. Membership closure and contributor
 archival remain separate lifecycle operations because their permissions,
 blockers, and historical effects differ.
 
+`migrations_issue_19_member_address_profiles.sql` extends the same editor with
+mailing addresses. Document reviewers may add or archive addresses on an active
+membership; assigned practitioners retain read-only visibility. Physical
+identity uses normalized street, unit, postal code, and country, so city/state
+spelling changes do not create duplicates and different units remain distinct.
+Membership writes use `member_addresses`; contribution writes continue to use
+`contributor_addresses`. A same-person address already present in the other
+capacity must use the explicit reviewed assignment workflow. The shared UI and
+canonical `party_contacts` projection do not merge the two capacity records.
+
 `migrations_issue_19_sacrament_agreement_gate.sql` centralizes release-agreement
 eligibility. A signed agreement qualifies when its template scope includes
 `sacrament_release`, regardless of template version or whether that version is

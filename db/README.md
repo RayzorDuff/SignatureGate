@@ -263,6 +263,12 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_sacrament_agreement_gate.sql
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_sacrament_agreement_gate.sql
 
+# Add membership-purpose mailing addresses and merge both address capacities
+# into the role-aware Individual Profile contact editor. Apply AFTER member
+# contact profiles; contributor and membership address rows remain separate.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_member_address_profiles.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_member_address_profiles.sql
+
 # This should return no rows. If it returns historical records, review what
 # each record represents before correcting it and validating the constraint.
 sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -c "SELECT release_id, released_at, member_id, release_type, item_name, notes FROM public.releases WHERE release_type IS DISTINCT FROM 'sacrament_release' ORDER BY released_at, release_id;"
