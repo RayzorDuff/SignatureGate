@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added document-reviewer maintenance of membership-purpose email and phone records on Individual Profile, with read-only assigned-practitioner visibility, audit reasons, safe primary promotion, and no implicit contributor-contact changes (#19).
 - Added permission-scoped agreement and practitioner-assignment history to Individual Profile, with direct handoffs to member operations and Sacrament Release (#19).
 - Added a sacrament-only release constraint with rollback-only verification and a canonical Directory shortcut for active members (#19).
 - Added directory-manager identity correction on Individual and Company Profiles, with stale-edit protection and audited old/new canonical values (#19).

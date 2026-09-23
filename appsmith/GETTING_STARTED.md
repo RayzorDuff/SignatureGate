@@ -225,6 +225,16 @@ member/contributor link is ended; donation attribution is not rewritten. The
 profile language no longer describes membership closure as conversion to a
 contributor.
 
+After `db/migrations_issue_19_member_contact_profiles.sql` and its rollback-only
+verification, import the matching Appsmith export. Individual Profile then
+shows membership-purpose email and phone records to authorized member-operation
+viewers. A document reviewer can add or archive those records while the
+membership is active; assigned practitioners have read-only access. New member
+emails start as not subscribed to Listmonk. These controls write only
+`member_emails` and `member_phones`. They never add or change contributor
+contacts, and an existing contributor contact must be shared through the
+separate reviewed cross-role assignment control.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:

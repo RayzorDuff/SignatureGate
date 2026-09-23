@@ -348,6 +348,18 @@ audited actions are migrated, and it links active members to the separate
 Sacrament Release page. This avoids duplicating mutable agreement logic during
 the transition while making the canonical person profile the entry point.
 
+`migrations_issue_19_member_contact_profiles.sql` moves membership-purpose
+email and phone maintenance onto Individual Profile. Document reviewers may add
+or archive contacts only while the membership is active; assigned practitioners
+may see the current member contacts but cannot change them. New member emails
+start as not subscribed to Listmonk, archiving a primary contact promotes the
+oldest remaining active record, and all changes require a reason and audit
+entry. The functions write only `member_emails` and `member_phones`, whose
+existing triggers project them into the shared person-contact read model. They
+never create or modify `contributor_emails` or `contributor_phones`. Reusing a
+contributor contact for membership remains a separate, reviewed cross-role
+assignment so shared identity does not collapse the two capacities.
+
 Membership is not a permission to operate Appsmith. Person-owned reviewer
 roles and Appsmith account ownership are now separate from membership; older
 operational pages and APIs still need to adopt those permissions. Ceremony
