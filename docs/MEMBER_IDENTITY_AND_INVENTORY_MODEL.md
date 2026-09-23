@@ -341,12 +341,13 @@ an old browser session retains a previously selected member ID.
 membership-specific operations to Individual Profile. It exposes agreement
 history and practitioner-assignment history through person-based,
 permission-scoped functions. Document reviewers retain full read access;
-otherwise, an active `member_facilitators` assignment is required. General
-directory-manager or donations-reviewer access is insufficient. The profile
-links to Members - Profile for agreement and assignment writes until those
-audited actions are migrated, and it links active members to the separate
-Sacrament Release page. This avoids duplicating mutable agreement logic during
-the transition while making the canonical person profile the entry point.
+otherwise, a practitioner assignment is required. General directory-manager
+or donations-reviewer access is insufficient. The later person-practitioner
+migration makes that assignment person-based and moves assignment writes onto
+Individual Profile. The profile still links to Members - Profile for agreement
+writes and links active members to the separate Sacrament Release page. This
+keeps the canonical person profile as the entry point without merging member
+and contributor operations.
 
 `migrations_issue_19_member_contact_profiles.sql` moves membership-purpose
 email and phone maintenance onto Individual Profile. Document reviewers may add
@@ -378,6 +379,25 @@ Membership writes use `member_addresses`; contribution writes continue to use
 `contributor_addresses`. A same-person address already present in the other
 capacity must use the explicit reviewed assignment workflow. The shared UI and
 canonical `party_contacts` projection do not merge the two capacity records.
+
+`migrations_issue_19_person_practitioner_assignments.sql` makes the assignment
+between a practitioner and a member's active membership person-based. The
+practitioner is identified by `people.person_id` and must hold the
+`practitioner` appointment in `person_roles`; the practitioner does not need a
+member record or contributor record. `member_practitioner_assignments` is the
+canonical current/history table. It grants only assigned-member visibility and
+does not confer document-review, donation-review, membership, contributor, or
+sacrament-release eligibility.
+
+Existing `member_facilitators` rows are backfilled. While legacy agreement and
+release pages still store facilitator member IDs, their writes are mirrored to
+the canonical assignment table, and a canonical assignment creates a legacy
+projection only when that practitioner has an active member ID. Individual
+Profile owns the new audited assign/end workflow. Migrating agreement signer,
+release actor, and storage-location ownership from member IDs to person IDs is
+a later phase; until then, **Open agreement operations** remains available for
+those legacy write paths. An active assignment must be ended before the
+practitioner appointment can be removed from that person.
 
 `migrations_issue_19_sacrament_agreement_gate.sql` centralizes release-agreement
 eligibility. A signed agreement qualifies when its template scope includes
@@ -483,34 +503,39 @@ All actions are audit logged.
 
 ---
 
-# Facilitator Architecture
+# Practitioner assignment architecture
 
-## Multi-facilitator model
+## Multiple-practitioner model
 
-Members may now be assigned to multiple facilitators simultaneously.
+An active membership may be assigned to multiple practitioners
+simultaneously. Practitioner appointment belongs to a person and is independent
+of that person's membership and contributor capacities.
 
 Assignments are stored in:
 
 ```text
-member_facilitators
+member_practitioner_assignments
 ```
 
-This replaces the earlier single-facilitator architecture.
+`member_facilitators` remains a transitional compatibility projection for
+legacy operations that still require a practitioner member ID.
 
 ---
 
-## Facilitator permissions
+## Practitioner access
 
-Facilitators may:
+An assigned practitioner may view the assigned member's profile and membership
+operation history. Separate permission roles continue to control review and
+administrative writes. Current legacy pages may additionally require an active
+member-based compatibility row to:
 
-- manage member profiles
 - upload agreements
 - send digital agreements
 - record sacrament releases
-- manage member donations
 - access storage locations
 
-depending on assigned roles.
+Contribution review remains controlled by contributor identity and donation
+permissions, not by the practitioner-to-member assignment.
 
 ---
 

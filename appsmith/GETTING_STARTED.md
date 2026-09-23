@@ -250,6 +250,19 @@ contributor operations write only `contributor_addresses`. Apartment or suite
 remains optional. Reusing one existing address for the other capacity still
 uses the separate reviewed cross-role assignment control.
 
+After `db/migrations_issue_19_person_practitioner_assignments.sql` and its
+rollback-only verification, import the matching Appsmith export. Individual
+Profile can assign or end a practitioner relationship for an active membership.
+The selector lists people holding the practitioner appointment, including
+people who are not members. A reason is required and assignment history remains
+visible. Existing `member_facilitators` rows are backfilled and legacy pages
+continue to synchronize through a compatibility projection when the
+practitioner has a member ID. Agreement sending and sacrament-release actor
+fields still use the legacy member-based workflow in this phase, so those
+legacy action buttons remain available only to an actor with an active legacy
+facilitator member record. End active assignments before removing a person's
+practitioner appointment.
+
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.
 2. Import:

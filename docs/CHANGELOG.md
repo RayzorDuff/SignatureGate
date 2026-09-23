@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added canonical person-based practitioner assignments with audited assign/end actions on Individual Profile, nonmember-practitioner access, legacy assignment synchronization, and rollback-only permission checks (#19).
 - Added document-reviewer maintenance of membership-purpose mailing addresses on Individual Profile, with normalized physical-address identity, audited archive/primary promotion, and no implicit contributor-address changes (#19).
 - Added document-reviewer maintenance of membership-purpose email and phone records on Individual Profile, with read-only assigned-practitioner visibility, audit reasons, safe primary promotion, and no implicit contributor-contact changes (#19).
 - Added permission-scoped agreement and practitioner-assignment history to Individual Profile, with direct handoffs to member operations and Sacrament Release (#19).
@@ -49,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Individual Profile now manages practitioner assignments directly; **Open agreement operations** remains as the transitional handoff for agreement writes that still require legacy member-based signer fields (#19).
 - Extended Individual Profile's role-aware contact editor to email, phone, and mailing address, replacing the separate contributor-address form while retaining independent capacity tables, permissions, and audit paths (#19).
 - Consolidated Individual Profile membership and contributor email/phone forms into one role-aware contact editor, reducing page length while retaining separate permissions, tables, and audit paths for each capacity (#19).
 - Renamed the Appsmith Release - Issue page to Sacrament Release, removed agreement categories as release choices, and limited agreement gating and release writes to tangible sacrament transfers (#19).

@@ -302,7 +302,7 @@
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run(),\n        qIndividualContributionHistory.run(), qIndividualProviderIdentities.run(),\n        qIndividualContributorStatusState.run(), qIndividualPartyIdentity.run(),\n        qIndividualMemberOperationsState.run(), qIndividualMembershipContacts.run(), qIndividualMembershipAddresses.run(), qIndividualMemberAgreements.run(),\n        qIndividualPractitionerAssignments.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run(),\n        qIndividualContributionHistory.run(), qIndividualProviderIdentities.run(),\n        qIndividualContributorStatusState.run(), qIndividualPartyIdentity.run(),\n        qIndividualMemberOperationsState.run(), qIndividualMembershipContacts.run(), qIndividualMembershipAddresses.run(), qIndividualMemberAgreements.run(),\n        qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -313,7 +313,7 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run(),\n        qIndividualContributionHistory.run(), qIndividualProviderIdentities.run(),\n        qIndividualContributorStatusState.run(), qIndividualPartyIdentity.run(),\n        qIndividualMemberOperationsState.run(), qIndividualMembershipContacts.run(), qIndividualMembershipAddresses.run(), qIndividualMemberAgreements.run(),\n        qIndividualPractitionerAssignments.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
+        "body": "export default {\n  async load() {\n    for (let attempt = 0; attempt < 20 && !appsmith.user?.email; attempt++) {\n      await new Promise(resolve => setTimeout(resolve, 150));\n    }\n    if (!appsmith.user?.email) {\n      showAlert('Your account has not loaded. Refresh this page.', 'error');\n      return;\n    }\n    try {\n      await qIndividualProfile.run();\n      await Promise.all([qIndividualContacts.run(), qIndividualRoles.run(),\n        qIndividualAccount.run(), qDirectoryCanManage.run(),\n        qProfileCanCreateContributor.run(),\n        qIndividualCanEditDonorContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(),\n        qProfileCanCreateMember.run(), qMembershipIdentity.run(),\n        qProfileMembershipState.run(),\n        qCanAssignPersonContact.run(), qReusablePersonContacts.run(),\n        qIndividualContributionHistory.run(), qIndividualProviderIdentities.run(),\n        qIndividualContributorStatusState.run(), qIndividualPartyIdentity.run(),\n        qIndividualMemberOperationsState.run(), qIndividualMembershipContacts.run(), qIndividualMembershipAddresses.run(), qIndividualMemberAgreements.run(),\n        qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run()]);\n    } catch (error) {\n      showAlert('Directory could not load: ' + (error?.message || error), 'error');\n    }\n  }\n}",
         "name": "issue19IndividualProfileFlows",
         "pageId": "Individual Profile",
         "pluginId": "js-plugin",
@@ -26705,7 +26705,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "SELECT member_id::text AS member_id,membership_status,can_view,can_manage\nFROM public.issue19_person_member_operations_state(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "body": "SELECT state.member_id::text AS member_id,\n  state.membership_status,state.can_view,state.can_manage,\n  EXISTS (\n    SELECT 1 FROM public.person_app_accounts account\n    JOIN public.members actor_member ON actor_member.person_id=account.person_id\n      AND actor_member.status='active' AND actor_member.is_facilitator\n    WHERE account.status='active'\n      AND account.email_normalized=lower(btrim({{ appsmith.user.email }}))\n  ) AS can_use_legacy_operations\nFROM public.issue19_person_member_operations_state(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n) state;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -26750,7 +26750,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "SELECT member_id::text AS member_id,membership_status,can_view,can_manage\nFROM public.issue19_person_member_operations_state(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "body": "SELECT state.member_id::text AS member_id,\n  state.membership_status,state.can_view,state.can_manage,\n  EXISTS (\n    SELECT 1 FROM public.person_app_accounts account\n    JOIN public.members actor_member ON actor_member.person_id=account.person_id\n      AND actor_member.status='active' AND actor_member.is_facilitator\n    WHERE account.status='active'\n      AND account.email_normalized=lower(btrim({{ appsmith.user.email }}))\n  ) AS can_use_legacy_operations\nFROM public.issue19_person_member_operations_state(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n) state;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -26899,7 +26899,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "SELECT member_id::text AS member_id,membership_status,\n  member_facilitator_id::text AS member_facilitator_id,\n  practitioner_person_id::text AS practitioner_person_id,\n  practitioner_name,COALESCE(practitioner_email,'') AS practitioner_email,\n  assignment_status,assigned_at::text AS assigned_at,\n  updated_at::text AS updated_at,COALESCE(notes,'') AS notes\nFROM public.issue19_person_practitioner_assignments(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "body": "SELECT member_id::text AS member_id,membership_status,\n  member_practitioner_assignment_id::text AS member_practitioner_assignment_id,\n  practitioner_person_id::text AS practitioner_person_id,\n  practitioner_name,COALESCE(practitioner_email,'') AS practitioner_email,\n  assignment_status,assigned_at::text AS assigned_at,\n  updated_at::text AS updated_at,COALESCE(notes,'') AS notes,\n  ended_at::text AS ended_at,COALESCE(end_reason,'') AS end_reason\nFROM public.issue19_person_practitioner_assignments(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -26944,7 +26944,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "SELECT member_id::text AS member_id,membership_status,\n  member_facilitator_id::text AS member_facilitator_id,\n  practitioner_person_id::text AS practitioner_person_id,\n  practitioner_name,COALESCE(practitioner_email,'') AS practitioner_email,\n  assignment_status,assigned_at::text AS assigned_at,\n  updated_at::text AS updated_at,COALESCE(notes,'') AS notes\nFROM public.issue19_person_practitioner_assignments(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "body": "SELECT member_id::text AS member_id,membership_status,\n  member_practitioner_assignment_id::text AS member_practitioner_assignment_id,\n  practitioner_person_id::text AS practitioner_person_id,\n  practitioner_name,COALESCE(practitioner_email,'') AS practitioner_email,\n  assignment_status,assigned_at::text AS assigned_at,\n  updated_at::text AS updated_at,COALESCE(notes,'') AS notes,\n  ended_at::text AS ended_at,COALESCE(end_reason,'') AS end_reason\nFROM public.issue19_person_practitioner_assignments(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -27593,6 +27593,307 @@
         ],
         "messages": [],
         "name": "qArchiveIndividualMembershipAddress",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_b49512ec-0eb6-5bcc-d09d-a7f3782863fd",
+      "id": "Individual Profile_qIndividualAvailablePractitioners",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT practitioner_person_id::text AS practitioner_person_id,\n  display_name,COALESCE(account_email,'') AS account_email,\n  has_active_membership,already_assigned\nFROM public.issue19_available_member_practitioners(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-09-23T00:00:00Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualAvailablePractitioners",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT practitioner_person_id::text AS practitioner_person_id,\n  display_name,COALESCE(account_email,'') AS account_email,\n  has_active_membership,already_assigned\nFROM public.issue19_available_member_practitioners(\n  {{ appsmith.user.email }},{{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid\n);",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-09-23T00:00:00Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null "
+        ],
+        "messages": [],
+        "name": "qIndividualAvailablePractitioners",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_e9b8b474-5d51-6c11-5e8e-da8db9160f9e",
+      "id": "Individual Profile_qAssignIndividualPractitioner",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_assign_member_practitioner(\n  {{ appsmith.user.email }},\n  {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.practitioner_person_id || null }}::uuid,\n  {{ this.params.notes || null }},\n  {{ this.params.reason || null }}\n)::text AS member_practitioner_assignment_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-09-23T00:00:00Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.practitioner_person_id || null ",
+          " this.params.notes || null ",
+          " this.params.reason || null "
+        ],
+        "messages": [],
+        "name": "qAssignIndividualPractitioner",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_assign_member_practitioner(\n  {{ appsmith.user.email }},\n  {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.practitioner_person_id || null }}::uuid,\n  {{ this.params.notes || null }},\n  {{ this.params.reason || null }}\n)::text AS member_practitioner_assignment_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-09-23T00:00:00Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.practitioner_person_id || null ",
+          " this.params.notes || null ",
+          " this.params.reason || null "
+        ],
+        "messages": [],
+        "name": "qAssignIndividualPractitioner",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      }
+    },
+    {
+      "deleted": false,
+      "gitSyncId": "696aaf6bef6f963f4d13c7a7_6ee33b49-459b-573d-865d-790be03ec7a2",
+      "id": "Individual Profile_qEndIndividualPractitioner",
+      "pluginId": "postgres-plugin",
+      "pluginType": "DB",
+      "publishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_end_member_practitioner(\n  {{ appsmith.user.email }},\n  {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.assignment_id || null }}::uuid,\n  {{ this.params.reason || null }}\n)::text AS member_practitioner_assignment_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-09-23T00:00:00Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.assignment_id || null ",
+          " this.params.reason || null "
+        ],
+        "messages": [],
+        "name": "qEndIndividualPractitioner",
+        "pageId": "Individual Profile",
+        "policyMap": {},
+        "runBehaviour": "MANUAL",
+        "userPermissions": [],
+        "userSetOnLoad": false
+      },
+      "unpublishedAction": {
+        "actionConfiguration": {
+          "body": "SELECT public.issue19_end_member_practitioner(\n  {{ appsmith.user.email }},\n  {{ qIndividualProfile.data?.[0]?.party_id || null }}::uuid,\n  {{ this.params.assignment_id || null }}::uuid,\n  {{ this.params.reason || null }}\n)::text AS member_practitioner_assignment_id;",
+          "encodeParamsToggle": true,
+          "paginationType": "NONE",
+          "pluginSpecifiedTemplates": [
+            {
+              "value": true
+            }
+          ],
+          "selfReferencingDataPaths": [],
+          "timeoutInMillisecond": 10000
+        },
+        "confirmBeforeExecute": false,
+        "createdAt": "2026-09-23T00:00:00Z",
+        "datasource": {
+          "deleted": false,
+          "id": "signaturegate-postgres",
+          "isAutoGenerated": false,
+          "messages": [],
+          "name": "signaturegate-postgres",
+          "pluginId": "postgres-plugin",
+          "policies": [],
+          "policyMap": {},
+          "userPermissions": []
+        },
+        "dynamicBindingPathList": [
+          {
+            "key": "body"
+          }
+        ],
+        "invalids": [],
+        "isValid": true,
+        "jsonPathKeys": [
+          " appsmith.user.email ",
+          " qIndividualProfile.data?.[0]?.party_id || null ",
+          " this.params.assignment_id || null ",
+          " this.params.reason || null "
+        ],
+        "messages": [],
+        "name": "qEndIndividualPractitioner",
         "pageId": "Individual Profile",
         "policyMap": {},
         "runBehaviour": "MANUAL",
@@ -78682,7 +78983,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 432,
+              "bottomRow": 456,
               "canExtend": true,
               "children": [
                 {
@@ -79237,7 +79538,7 @@
                   "isDefaultClickDisabled": true,
                   "isDisabled": false,
                   "isLoading": false,
-                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_view === true }}",
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_view === true && qIndividualMemberOperationsState.data?.[0]?.can_use_legacy_operations === true }}",
                   "key": "bfc5da0962",
                   "leftColumn": 0,
                   "minWidth": 120,
@@ -79258,7 +79559,7 @@
                   "resetFormOnClick": false,
                   "responsiveBehavior": "hug",
                   "rightColumn": 30,
-                  "text": "Open member operations",
+                  "text": "Open agreement operations",
                   "topRow": 267,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
@@ -81880,7 +82181,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 344,
+                  "bottomRow": 368,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -81907,13 +82208,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 344,
+                  "mobileBottomRow": 368,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 340,
+                  "mobileTopRow": 364,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 344,
-                  "originalTopRow": 340,
+                  "originalBottomRow": 368,
+                  "originalTopRow": 364,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -81925,7 +82226,7 @@
                   "text": "Contribution history",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 340,
+                  "topRow": 364,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -81944,7 +82245,7 @@
                   "borderColor": "#E0DEDE",
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
                   "borderWidth": "1",
-                  "bottomRow": 372,
+                  "bottomRow": 396,
                   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
                   "cachedTableData": [],
                   "canFreezeColumn": true,
@@ -82046,18 +82347,18 @@
                   "label": "Data",
                   "leftColumn": 0,
                   "minWidth": 450,
-                  "mobileBottomRow": 372,
+                  "mobileBottomRow": 396,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 31,
-                  "mobileTopRow": 344,
+                  "mobileTopRow": 368,
                   "needsErrorInfo": false,
                   "onAddNewRowSave": "",
                   "onPageChange": "",
                   "onRowSelected": "",
                   "onSearchTextChanged": "",
                   "onSort": "",
-                  "originalBottomRow": 372,
-                  "originalTopRow": 344,
+                  "originalBottomRow": 396,
+                  "originalTopRow": 368,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -82227,7 +82528,7 @@
                   "showInlineEditingOptionDropdown": true,
                   "tableData": "{{ qIndividualContributionHistory.data || [] }}",
                   "textSize": "0.875rem",
-                  "topRow": 344,
+                  "topRow": 368,
                   "totalRecordsCount": "",
                   "type": "TABLE_WIDGET_V2",
                   "version": 2,
@@ -82238,7 +82539,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 378,
+                  "bottomRow": 402,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -82265,13 +82566,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 378,
+                  "mobileBottomRow": 402,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 374,
+                  "mobileTopRow": 398,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 378,
-                  "originalTopRow": 374,
+                  "originalBottomRow": 402,
+                  "originalTopRow": 398,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -82283,7 +82584,7 @@
                   "text": "Provider identities",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 374,
+                  "topRow": 398,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -82302,7 +82603,7 @@
                   "borderColor": "#E0DEDE",
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
                   "borderWidth": "1",
-                  "bottomRow": 406,
+                  "bottomRow": 430,
                   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
                   "cachedTableData": [],
                   "canFreezeColumn": true,
@@ -82404,18 +82705,18 @@
                   "label": "Data",
                   "leftColumn": 0,
                   "minWidth": 450,
-                  "mobileBottomRow": 406,
+                  "mobileBottomRow": 430,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 31,
-                  "mobileTopRow": 378,
+                  "mobileTopRow": 402,
                   "needsErrorInfo": false,
                   "onAddNewRowSave": "",
                   "onPageChange": "",
                   "onRowSelected": "",
                   "onSearchTextChanged": "",
                   "onSort": "",
-                  "originalBottomRow": 406,
-                  "originalTopRow": 378,
+                  "originalBottomRow": 430,
+                  "originalTopRow": 402,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -82585,7 +82886,7 @@
                   "showInlineEditingOptionDropdown": true,
                   "tableData": "{{ qIndividualProviderIdentities.data || [] }}",
                   "textSize": "0.875rem",
-                  "topRow": 378,
+                  "topRow": 402,
                   "totalRecordsCount": "",
                   "type": "TABLE_WIDGET_V2",
                   "version": 2,
@@ -82596,7 +82897,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 416,
+                  "bottomRow": 440,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -82623,13 +82924,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 416,
+                  "mobileBottomRow": 440,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 412,
+                  "mobileTopRow": 436,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 416,
-                  "originalTopRow": 412,
+                  "originalBottomRow": 440,
+                  "originalTopRow": 436,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -82641,7 +82942,7 @@
                   "text": "Contributor status",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 412,
+                  "topRow": 436,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -82656,7 +82957,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 421,
+                  "bottomRow": 445,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -82686,13 +82987,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 421,
+                  "mobileBottomRow": 445,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 416,
+                  "mobileTopRow": 440,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 421,
-                  "originalTopRow": 416,
+                  "originalBottomRow": 445,
+                  "originalTopRow": 440,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -82704,7 +83005,7 @@
                   "text": "{{ qIndividualContributorStatusState.data?.[0]?.status_note || '' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 416,
+                  "topRow": 440,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -82724,7 +83025,7 @@
                   "animateLoading": true,
                   "autoFocus": false,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 428,
+                  "bottomRow": 452,
                   "boxShadow": "none",
                   "defaultText": "",
                   "dynamicBindingPathList": [
@@ -82757,13 +83058,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 428,
+                  "mobileBottomRow": 452,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 42,
-                  "mobileTopRow": 422,
+                  "mobileTopRow": 446,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 428,
-                  "originalTopRow": 422,
+                  "originalBottomRow": 452,
+                  "originalTopRow": 446,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -82772,7 +83073,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 42,
                   "showStepArrows": false,
-                  "topRow": 422,
+                  "topRow": 446,
                   "type": "INPUT_WIDGET_V2",
                   "version": 2,
                   "widgetId": "ae46c501c1",
@@ -82786,7 +83087,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 427,
+                  "bottomRow": 451,
                   "boxShadow": "none",
                   "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "buttonVariant": "PRIMARY",
@@ -82828,14 +83129,14 @@
                   "key": "51cd3c640a",
                   "leftColumn": 44,
                   "minWidth": 120,
-                  "mobileBottomRow": 427,
+                  "mobileBottomRow": 451,
                   "mobileLeftColumn": 44,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 423,
+                  "mobileTopRow": 447,
                   "needsErrorInfo": false,
                   "onClick": "{{ (async () => { try { const reason = inpIndividualContributorStatusReason.text?.trim(); if (!reason) { showAlert('Enter a reason for archiving this contributor.', 'warning'); return; } const rows = await qSetIndividualContributorStatus.run({ target_status: 'archived', reason }); if (!rows?.[0]?.contributor_id) throw new Error('No contributor was returned.'); await qIndividualProfile.run(); await Promise.all([qIndividualContributorStatusState.run(), qIndividualCanEditDonorContacts.run(), qIndividualContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(), qIndividualContributionHistory.run(), qIndividualProviderIdentities.run(), qReusablePersonContacts.run()]); showAlert('Contributor archived; identity and history were preserved.', 'success'); } catch (e) { showAlert('Contributor status change failed: ' + (e?.message || e), 'error'); } })() }}",
-                  "originalBottomRow": 427,
-                  "originalTopRow": 423,
+                  "originalBottomRow": 451,
+                  "originalTopRow": 447,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -82846,7 +83147,7 @@
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
                   "text": "Archive contributor",
-                  "topRow": 423,
+                  "topRow": 447,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
                   "widgetId": "72111de520",
@@ -82855,7 +83156,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 427,
+                  "bottomRow": 451,
                   "boxShadow": "none",
                   "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "buttonVariant": "PRIMARY",
@@ -82897,14 +83198,14 @@
                   "key": "628f608591",
                   "leftColumn": 44,
                   "minWidth": 120,
-                  "mobileBottomRow": 427,
+                  "mobileBottomRow": 451,
                   "mobileLeftColumn": 44,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 423,
+                  "mobileTopRow": 447,
                   "needsErrorInfo": false,
                   "onClick": "{{ (async () => { try { const reason = inpIndividualContributorStatusReason.text?.trim(); if (!reason) { showAlert('Enter a reason for reactivating this contributor.', 'warning'); return; } const rows = await qSetIndividualContributorStatus.run({ target_status: 'active', reason }); if (!rows?.[0]?.contributor_id) throw new Error('No contributor was returned.'); await qIndividualProfile.run(); await Promise.all([qIndividualContributorStatusState.run(), qIndividualCanEditDonorContacts.run(), qIndividualContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(), qIndividualContributionHistory.run(), qIndividualProviderIdentities.run(), qReusablePersonContacts.run()]); showAlert('Contributor reactivated.', 'success'); } catch (e) { showAlert('Contributor status change failed: ' + (e?.message || e), 'error'); } })() }}",
-                  "originalBottomRow": 427,
-                  "originalTopRow": 423,
+                  "originalBottomRow": 451,
+                  "originalTopRow": 447,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -82915,7 +83216,7 @@
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
                   "text": "Reactivate contributor",
-                  "topRow": 423,
+                  "topRow": 447,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
                   "widgetId": "b660df19d3",
@@ -83487,7 +83788,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Agreement and practitioner history. Open member operations to make changes.",
+                  "text": "Agreement history remains in member operations. Practitioner assignments are managed here.",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 262,
@@ -83540,7 +83841,7 @@
                   "isDefaultClickDisabled": true,
                   "isDisabled": "{{ qIndividualMemberOperationsState.data?.[0]?.membership_status !== 'active' }}",
                   "isLoading": false,
-                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_view === true }}",
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_view === true && qIndividualMemberOperationsState.data?.[0]?.can_use_legacy_operations === true }}",
                   "key": "8d4a1c5506",
                   "leftColumn": 34,
                   "minWidth": 120,
@@ -84196,7 +84497,7 @@
                     }
                   },
                   "columnOrder": [
-                    "member_facilitator_id",
+                    "member_practitioner_assignment_id",
                     "practitioner_person_id",
                     "practitioner_name",
                     "practitioner_email",
@@ -84210,10 +84511,8 @@
                   "customIsLoadingValue": "",
                   "defaultPageSize": 0,
                   "defaultSearchText": "",
-                  "defaultSelectedRowIndex": 0,
-                  "defaultSelectedRowIndices": [
-                    0
-                  ],
+                  "defaultSelectedRowIndex": -1,
+                  "defaultSelectedRowIndices": [],
                   "delimiter": ",",
                   "dynamicBindingPathList": [
                     {
@@ -84229,7 +84528,7 @@
                       "key": "tableData"
                     },
                     {
-                      "key": "primaryColumns.member_facilitator_id.computedValue"
+                      "key": "primaryColumns.member_practitioner_assignment_id.computedValue"
                     },
                     {
                       "key": "primaryColumns.practitioner_person_id.computedValue"
@@ -84293,20 +84592,20 @@
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
-                  "primaryColumnId": "member_facilitator_id",
+                  "primaryColumnId": "member_practitioner_assignment_id",
                   "primaryColumns": {
-                    "member_facilitator_id": {
-                      "alias": "member_facilitator_id",
+                    "member_practitioner_assignment_id": {
+                      "alias": "member_practitioner_assignment_id",
                       "allowCellWrapping": false,
                       "allowSameOptionsInNewRow": true,
                       "columnType": "text",
-                      "computedValue": "{{(() => { const tableData = tblIndividualPractitionerAssignments.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"member_facilitator_id\"])) : member_facilitator_id })()}}",
+                      "computedValue": "{{(() => { const tableData = tblIndividualPractitionerAssignments.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"member_practitioner_assignment_id\"])) : member_practitioner_assignment_id })()}}",
                       "currencyCode": "USD",
                       "decimals": 0,
                       "enableFilter": true,
                       "enableSort": true,
                       "horizontalAlignment": "LEFT",
-                      "id": "member_facilitator_id",
+                      "id": "member_practitioner_assignment_id",
                       "index": 0,
                       "isCellEditable": false,
                       "isCellVisible": true,
@@ -84318,7 +84617,7 @@
                       "isVisible": false,
                       "label": "Assignment ID",
                       "notation": "standard",
-                      "originalId": "member_facilitator_id",
+                      "originalId": "member_practitioner_assignment_id",
                       "sticky": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,
@@ -84601,6 +84900,417 @@
                   "version": 1,
                   "widgetId": "19a0c11010",
                   "widgetName": "selIndividualContactCapacity"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 342,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "5d42ac017c",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 342,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 338,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 342,
+                  "originalTopRow": 338,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Document reviewers can assign any person holding the practitioner appointment. Select an active row before ending an assignment.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 338,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "b63b908870",
+                  "widgetName": "txtIndividualPractitionerManagementNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 349,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "sourceData"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading }}",
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "82584cb026",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Practitioner to assign",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 349,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 343,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 349,
+                  "originalTopRow": 343,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select practitioner",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": "{{ (qIndividualAvailablePractitioners.data || []).filter(p => p.already_assigned !== true).map(p => ({ label: p.display_name + (p.account_email ? ' · ' + p.account_email : '') + (p.has_active_membership ? ' · member' : ' · non-member'), value: p.practitioner_person_id })) }}",
+                  "topRow": 343,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "85b53cd9a6",
+                  "widgetName": "selIndividualPractitionerToAssign"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 349,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading }}",
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "d05cc5d9fe",
+                  "label": "Assignment notes (optional)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 349,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 343,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 349,
+                  "originalTopRow": 343,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 343,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "c18d5c59e7",
+                  "widgetName": "inpIndividualPractitionerNotes",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 356,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading }}",
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "ba79fa9d07",
+                  "label": "Reason for assignment change",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 356,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 350,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 356,
+                  "originalTopRow": 350,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 350,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "1c75296b00",
+                  "widgetName": "inpIndividualPractitionerReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 354,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading || !selIndividualPractitionerToAssign.selectedOptionValue || !inpIndividualPractitionerReason.text?.trim() }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "302d96ca4e",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 354,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 350,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const rows = await qAssignIndividualPractitioner.run({ practitioner_person_id: selIndividualPractitionerToAssign.selectedOptionValue, notes: inpIndividualPractitionerNotes.text?.trim() || null, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('selIndividualPractitionerToAssign', true); resetWidget('inpIndividualPractitionerNotes', true); resetWidget('inpIndividualPractitionerReason', true); showAlert('Practitioner assigned.', 'success'); } catch (e) { showAlert('Practitioner assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 354,
+                  "originalTopRow": 350,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Assign practitioner",
+                  "topRow": 350,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "758d015333",
+                  "widgetName": "btnAssignIndividualPractitioner"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 359,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "SECONDARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading || tblIndividualPractitionerAssignments.selectedRow?.assignment_status !== 'active' || !inpIndividualPractitionerReason.text?.trim() }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "f3e8197a4c",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 359,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 355,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const selected = tblIndividualPractitionerAssignments.selectedRow; if (!selected?.member_practitioner_assignment_id || selected.assignment_status !== 'active') { showAlert('Select an active practitioner assignment.', 'warning'); return; } const rows = await qEndIndividualPractitioner.run({ assignment_id: selected.member_practitioner_assignment_id, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('inpIndividualPractitionerReason', true); showAlert('Practitioner assignment ended.', 'success'); } catch (e) { showAlert('Ending practitioner assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 359,
+                  "originalTopRow": 355,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "End selected assignment",
+                  "topRow": 355,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "161c8ba1f6",
+                  "widgetName": "btnEndIndividualPractitioner"
                 }
               ],
               "containerStyle": "none",
@@ -84655,7 +85365,7 @@
             "deleted": false,
             "dsl": {
               "backgroundColor": "none",
-              "bottomRow": 432,
+              "bottomRow": 456,
               "canExtend": true,
               "children": [
                 {
@@ -85210,7 +85920,7 @@
                   "isDefaultClickDisabled": true,
                   "isDisabled": false,
                   "isLoading": false,
-                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_view === true }}",
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_view === true && qIndividualMemberOperationsState.data?.[0]?.can_use_legacy_operations === true }}",
                   "key": "bfc5da0962",
                   "leftColumn": 0,
                   "minWidth": 120,
@@ -85231,7 +85941,7 @@
                   "resetFormOnClick": false,
                   "responsiveBehavior": "hug",
                   "rightColumn": 30,
-                  "text": "Open member operations",
+                  "text": "Open agreement operations",
                   "topRow": 267,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
@@ -87853,7 +88563,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 344,
+                  "bottomRow": 368,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -87880,13 +88590,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 344,
+                  "mobileBottomRow": 368,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 340,
+                  "mobileTopRow": 364,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 344,
-                  "originalTopRow": 340,
+                  "originalBottomRow": 368,
+                  "originalTopRow": 364,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -87898,7 +88608,7 @@
                   "text": "Contribution history",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 340,
+                  "topRow": 364,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -87917,7 +88627,7 @@
                   "borderColor": "#E0DEDE",
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
                   "borderWidth": "1",
-                  "bottomRow": 372,
+                  "bottomRow": 396,
                   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
                   "cachedTableData": [],
                   "canFreezeColumn": true,
@@ -88019,18 +88729,18 @@
                   "label": "Data",
                   "leftColumn": 0,
                   "minWidth": 450,
-                  "mobileBottomRow": 372,
+                  "mobileBottomRow": 396,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 31,
-                  "mobileTopRow": 344,
+                  "mobileTopRow": 368,
                   "needsErrorInfo": false,
                   "onAddNewRowSave": "",
                   "onPageChange": "",
                   "onRowSelected": "",
                   "onSearchTextChanged": "",
                   "onSort": "",
-                  "originalBottomRow": 372,
-                  "originalTopRow": 344,
+                  "originalBottomRow": 396,
+                  "originalTopRow": 368,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -88200,7 +88910,7 @@
                   "showInlineEditingOptionDropdown": true,
                   "tableData": "{{ qIndividualContributionHistory.data || [] }}",
                   "textSize": "0.875rem",
-                  "topRow": 344,
+                  "topRow": 368,
                   "totalRecordsCount": "",
                   "type": "TABLE_WIDGET_V2",
                   "version": 2,
@@ -88211,7 +88921,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 378,
+                  "bottomRow": 402,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -88238,13 +88948,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 378,
+                  "mobileBottomRow": 402,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 374,
+                  "mobileTopRow": 398,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 378,
-                  "originalTopRow": 374,
+                  "originalBottomRow": 402,
+                  "originalTopRow": 398,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -88256,7 +88966,7 @@
                   "text": "Provider identities",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 374,
+                  "topRow": 398,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -88275,7 +88985,7 @@
                   "borderColor": "#E0DEDE",
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
                   "borderWidth": "1",
-                  "bottomRow": 406,
+                  "bottomRow": 430,
                   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
                   "cachedTableData": [],
                   "canFreezeColumn": true,
@@ -88377,18 +89087,18 @@
                   "label": "Data",
                   "leftColumn": 0,
                   "minWidth": 450,
-                  "mobileBottomRow": 406,
+                  "mobileBottomRow": 430,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 31,
-                  "mobileTopRow": 378,
+                  "mobileTopRow": 402,
                   "needsErrorInfo": false,
                   "onAddNewRowSave": "",
                   "onPageChange": "",
                   "onRowSelected": "",
                   "onSearchTextChanged": "",
                   "onSort": "",
-                  "originalBottomRow": 406,
-                  "originalTopRow": 378,
+                  "originalBottomRow": 430,
+                  "originalTopRow": 402,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -88558,7 +89268,7 @@
                   "showInlineEditingOptionDropdown": true,
                   "tableData": "{{ qIndividualProviderIdentities.data || [] }}",
                   "textSize": "0.875rem",
-                  "topRow": 378,
+                  "topRow": 402,
                   "totalRecordsCount": "",
                   "type": "TABLE_WIDGET_V2",
                   "version": 2,
@@ -88569,7 +89279,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 416,
+                  "bottomRow": 440,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -88596,13 +89306,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 416,
+                  "mobileBottomRow": 440,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 412,
+                  "mobileTopRow": 436,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 416,
-                  "originalTopRow": 412,
+                  "originalBottomRow": 440,
+                  "originalTopRow": 436,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -88614,7 +89324,7 @@
                   "text": "Contributor status",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 412,
+                  "topRow": 436,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -88629,7 +89339,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 421,
+                  "bottomRow": 445,
                   "dynamicBindingPathList": [
                     {
                       "key": "truncateButtonColor"
@@ -88659,13 +89369,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 421,
+                  "mobileBottomRow": 445,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 416,
+                  "mobileTopRow": 440,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 421,
-                  "originalTopRow": 416,
+                  "originalBottomRow": 445,
+                  "originalTopRow": 440,
                   "overflow": "NONE",
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
@@ -88677,7 +89387,7 @@
                   "text": "{{ qIndividualContributorStatusState.data?.[0]?.status_note || '' }}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
-                  "topRow": 416,
+                  "topRow": 440,
                   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "type": "TEXT_WIDGET",
                   "version": 1,
@@ -88697,7 +89407,7 @@
                   "animateLoading": true,
                   "autoFocus": false,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 428,
+                  "bottomRow": 452,
                   "boxShadow": "none",
                   "defaultText": "",
                   "dynamicBindingPathList": [
@@ -88730,13 +89440,13 @@
                   "maxDynamicHeight": 9000,
                   "minDynamicHeight": 4,
                   "minWidth": 450,
-                  "mobileBottomRow": 428,
+                  "mobileBottomRow": 452,
                   "mobileLeftColumn": 0,
                   "mobileRightColumn": 42,
-                  "mobileTopRow": 422,
+                  "mobileTopRow": 446,
                   "needsErrorInfo": false,
-                  "originalBottomRow": 428,
-                  "originalTopRow": 422,
+                  "originalBottomRow": 452,
+                  "originalTopRow": 446,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -88745,7 +89455,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 42,
                   "showStepArrows": false,
-                  "topRow": 422,
+                  "topRow": 446,
                   "type": "INPUT_WIDGET_V2",
                   "version": 2,
                   "widgetId": "ae46c501c1",
@@ -88759,7 +89469,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 427,
+                  "bottomRow": 451,
                   "boxShadow": "none",
                   "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "buttonVariant": "PRIMARY",
@@ -88801,14 +89511,14 @@
                   "key": "51cd3c640a",
                   "leftColumn": 44,
                   "minWidth": 120,
-                  "mobileBottomRow": 427,
+                  "mobileBottomRow": 451,
                   "mobileLeftColumn": 44,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 423,
+                  "mobileTopRow": 447,
                   "needsErrorInfo": false,
                   "onClick": "{{ (async () => { try { const reason = inpIndividualContributorStatusReason.text?.trim(); if (!reason) { showAlert('Enter a reason for archiving this contributor.', 'warning'); return; } const rows = await qSetIndividualContributorStatus.run({ target_status: 'archived', reason }); if (!rows?.[0]?.contributor_id) throw new Error('No contributor was returned.'); await qIndividualProfile.run(); await Promise.all([qIndividualContributorStatusState.run(), qIndividualCanEditDonorContacts.run(), qIndividualContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(), qIndividualContributionHistory.run(), qIndividualProviderIdentities.run(), qReusablePersonContacts.run()]); showAlert('Contributor archived; identity and history were preserved.', 'success'); } catch (e) { showAlert('Contributor status change failed: ' + (e?.message || e), 'error'); } })() }}",
-                  "originalBottomRow": 427,
-                  "originalTopRow": 423,
+                  "originalBottomRow": 451,
+                  "originalTopRow": 447,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -88819,7 +89529,7 @@
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
                   "text": "Archive contributor",
-                  "topRow": 423,
+                  "topRow": 447,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
                   "widgetId": "72111de520",
@@ -88828,7 +89538,7 @@
                 {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 427,
+                  "bottomRow": 451,
                   "boxShadow": "none",
                   "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
                   "buttonVariant": "PRIMARY",
@@ -88870,14 +89580,14 @@
                   "key": "628f608591",
                   "leftColumn": 44,
                   "minWidth": 120,
-                  "mobileBottomRow": 427,
+                  "mobileBottomRow": 451,
                   "mobileLeftColumn": 44,
                   "mobileRightColumn": 64,
-                  "mobileTopRow": 423,
+                  "mobileTopRow": 447,
                   "needsErrorInfo": false,
                   "onClick": "{{ (async () => { try { const reason = inpIndividualContributorStatusReason.text?.trim(); if (!reason) { showAlert('Enter a reason for reactivating this contributor.', 'warning'); return; } const rows = await qSetIndividualContributorStatus.run({ target_status: 'active', reason }); if (!rows?.[0]?.contributor_id) throw new Error('No contributor was returned.'); await qIndividualProfile.run(); await Promise.all([qIndividualContributorStatusState.run(), qIndividualCanEditDonorContacts.run(), qIndividualContacts.run(), qIndividualDonorContacts.run(), qIndividualDonorAddresses.run(), qIndividualContributionHistory.run(), qIndividualProviderIdentities.run(), qReusablePersonContacts.run()]); showAlert('Contributor reactivated.', 'success'); } catch (e) { showAlert('Contributor status change failed: ' + (e?.message || e), 'error'); } })() }}",
-                  "originalBottomRow": 427,
-                  "originalTopRow": 423,
+                  "originalBottomRow": 451,
+                  "originalTopRow": 447,
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
@@ -88888,7 +89598,7 @@
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
                   "text": "Reactivate contributor",
-                  "topRow": 423,
+                  "topRow": 447,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
                   "widgetId": "b660df19d3",
@@ -89460,7 +90170,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 64,
                   "shouldTruncate": false,
-                  "text": "Agreement and practitioner history. Open member operations to make changes.",
+                  "text": "Agreement history remains in member operations. Practitioner assignments are managed here.",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 262,
@@ -89513,7 +90223,7 @@
                   "isDefaultClickDisabled": true,
                   "isDisabled": "{{ qIndividualMemberOperationsState.data?.[0]?.membership_status !== 'active' }}",
                   "isLoading": false,
-                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_view === true }}",
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_view === true && qIndividualMemberOperationsState.data?.[0]?.can_use_legacy_operations === true }}",
                   "key": "8d4a1c5506",
                   "leftColumn": 34,
                   "minWidth": 120,
@@ -90169,7 +90879,7 @@
                     }
                   },
                   "columnOrder": [
-                    "member_facilitator_id",
+                    "member_practitioner_assignment_id",
                     "practitioner_person_id",
                     "practitioner_name",
                     "practitioner_email",
@@ -90183,10 +90893,8 @@
                   "customIsLoadingValue": "",
                   "defaultPageSize": 0,
                   "defaultSearchText": "",
-                  "defaultSelectedRowIndex": 0,
-                  "defaultSelectedRowIndices": [
-                    0
-                  ],
+                  "defaultSelectedRowIndex": -1,
+                  "defaultSelectedRowIndices": [],
                   "delimiter": ",",
                   "dynamicBindingPathList": [
                     {
@@ -90202,7 +90910,7 @@
                       "key": "tableData"
                     },
                     {
-                      "key": "primaryColumns.member_facilitator_id.computedValue"
+                      "key": "primaryColumns.member_practitioner_assignment_id.computedValue"
                     },
                     {
                       "key": "primaryColumns.practitioner_person_id.computedValue"
@@ -90266,20 +90974,20 @@
                   "parentColumnSpace": 10.25,
                   "parentId": "0",
                   "parentRowSpace": 10,
-                  "primaryColumnId": "member_facilitator_id",
+                  "primaryColumnId": "member_practitioner_assignment_id",
                   "primaryColumns": {
-                    "member_facilitator_id": {
-                      "alias": "member_facilitator_id",
+                    "member_practitioner_assignment_id": {
+                      "alias": "member_practitioner_assignment_id",
                       "allowCellWrapping": false,
                       "allowSameOptionsInNewRow": true,
                       "columnType": "text",
-                      "computedValue": "{{(() => { const tableData = tblIndividualPractitionerAssignments.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"member_facilitator_id\"])) : member_facilitator_id })()}}",
+                      "computedValue": "{{(() => { const tableData = tblIndividualPractitionerAssignments.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"member_practitioner_assignment_id\"])) : member_practitioner_assignment_id })()}}",
                       "currencyCode": "USD",
                       "decimals": 0,
                       "enableFilter": true,
                       "enableSort": true,
                       "horizontalAlignment": "LEFT",
-                      "id": "member_facilitator_id",
+                      "id": "member_practitioner_assignment_id",
                       "index": 0,
                       "isCellEditable": false,
                       "isCellVisible": true,
@@ -90291,7 +90999,7 @@
                       "isVisible": false,
                       "label": "Assignment ID",
                       "notation": "standard",
-                      "originalId": "member_facilitator_id",
+                      "originalId": "member_practitioner_assignment_id",
                       "sticky": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,
@@ -90574,6 +91282,417 @@
                   "version": 1,
                   "widgetId": "19a0c11010",
                   "widgetName": "selIndividualContactCapacity"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 342,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "truncateButtonColor"
+                    },
+                    {
+                      "key": "fontFamily"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    }
+                  ],
+                  "dynamicHeight": "AUTO_HEIGHT",
+                  "dynamicTriggerPathList": [],
+                  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+                  "fontSize": "1rem",
+                  "fontStyle": "",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "5d42ac017c",
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 342,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 338,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 342,
+                  "originalTopRow": 338,
+                  "overflow": "NONE",
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "shouldTruncate": false,
+                  "text": "Document reviewers can assign any person holding the practitioner appointment. Select an active row before ending an assignment.",
+                  "textAlign": "LEFT",
+                  "textColor": "#231F20",
+                  "topRow": 338,
+                  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "type": "TEXT_WIDGET",
+                  "version": 1,
+                  "widgetId": "b63b908870",
+                  "widgetName": "txtIndividualPractitionerManagementNote",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 349,
+                  "boxShadow": "none",
+                  "defaultOptionValue": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "sourceData"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    },
+                    {
+                      "key": "sourceData"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [],
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading }}",
+                  "isFilterable": true,
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "82584cb026",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelText": "Practitioner to assign",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 349,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 30,
+                  "mobileTopRow": 343,
+                  "needsErrorInfo": false,
+                  "optionLabel": "label",
+                  "optionValue": "value",
+                  "originalBottomRow": 349,
+                  "originalTopRow": 343,
+                  "parentColumnSpace": 9.9375,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placeholderText": "Select practitioner",
+                  "renderMode": "CANVAS",
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 30,
+                  "serverSideFiltering": false,
+                  "sourceData": "{{ (qIndividualAvailablePractitioners.data || []).filter(p => p.already_assigned !== true).map(p => ({ label: p.display_name + (p.account_email ? ' · ' + p.account_email : '') + (p.has_active_membership ? ' · member' : ' · non-member'), value: p.practitioner_person_id })) }}",
+                  "topRow": 343,
+                  "type": "SELECT_WIDGET",
+                  "version": 1,
+                  "widgetId": "85b53cd9a6",
+                  "widgetName": "selIndividualPractitionerToAssign"
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 349,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading }}",
+                  "isLoading": false,
+                  "isRequired": false,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "d05cc5d9fe",
+                  "label": "Assignment notes (optional)",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 32,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 349,
+                  "mobileLeftColumn": 32,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 343,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 349,
+                  "originalTopRow": 343,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 64,
+                  "showStepArrows": false,
+                  "topRow": 343,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "c18d5c59e7",
+                  "widgetName": "inpIndividualPractitionerNotes",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ]
+                },
+                {
+                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "animateLoading": true,
+                  "autoFocus": false,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 356,
+                  "boxShadow": "none",
+                  "defaultText": "",
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "accentColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicHeight": "FIXED",
+                  "dynamicTriggerPathList": [],
+                  "iconAlign": "left",
+                  "inputType": "TEXT",
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading }}",
+                  "isLoading": false,
+                  "isRequired": true,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "ba79fa9d07",
+                  "label": "Reason for assignment change",
+                  "labelAlignment": "left",
+                  "labelPosition": "Top",
+                  "labelStyle": "",
+                  "labelTextSize": "0.875rem",
+                  "labelWidth": 5,
+                  "leftColumn": 0,
+                  "maxDynamicHeight": 9000,
+                  "minDynamicHeight": 4,
+                  "minWidth": 450,
+                  "mobileBottomRow": 356,
+                  "mobileLeftColumn": 0,
+                  "mobileRightColumn": 42,
+                  "mobileTopRow": 350,
+                  "needsErrorInfo": false,
+                  "originalBottomRow": 356,
+                  "originalTopRow": 350,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "renderMode": "CANVAS",
+                  "resetOnSubmit": true,
+                  "responsiveBehavior": "fill",
+                  "rightColumn": 42,
+                  "showStepArrows": false,
+                  "topRow": 350,
+                  "type": "INPUT_WIDGET_V2",
+                  "version": 2,
+                  "widgetId": "1c75296b00",
+                  "widgetName": "inpIndividualPractitionerReason",
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ]
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 354,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "PRIMARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading || !selIndividualPractitionerToAssign.selectedOptionValue || !inpIndividualPractitionerReason.text?.trim() }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "302d96ca4e",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 354,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 350,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const rows = await qAssignIndividualPractitioner.run({ practitioner_person_id: selIndividualPractitionerToAssign.selectedOptionValue, notes: inpIndividualPractitionerNotes.text?.trim() || null, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('selIndividualPractitionerToAssign', true); resetWidget('inpIndividualPractitionerNotes', true); resetWidget('inpIndividualPractitionerReason', true); showAlert('Practitioner assigned.', 'success'); } catch (e) { showAlert('Practitioner assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 354,
+                  "originalTopRow": 350,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "Assign practitioner",
+                  "topRow": 350,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "758d015333",
+                  "widgetName": "btnAssignIndividualPractitioner"
+                },
+                {
+                  "animateLoading": true,
+                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+                  "bottomRow": 359,
+                  "boxShadow": "none",
+                  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+                  "buttonVariant": "SECONDARY",
+                  "disabledWhenInvalid": false,
+                  "dynamicBindingPathList": [
+                    {
+                      "key": "buttonColor"
+                    },
+                    {
+                      "key": "borderRadius"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicPropertyPathList": [
+                    {
+                      "key": "onClick"
+                    },
+                    {
+                      "key": "isVisible"
+                    },
+                    {
+                      "key": "isDisabled"
+                    }
+                  ],
+                  "dynamicTriggerPathList": [
+                    {
+                      "key": "onClick"
+                    }
+                  ],
+                  "isDefaultClickDisabled": true,
+                  "isDisabled": "{{ qAssignIndividualPractitioner.isLoading || qEndIndividualPractitioner.isLoading || tblIndividualPractitionerAssignments.selectedRow?.assignment_status !== 'active' || !inpIndividualPractitionerReason.text?.trim() }}",
+                  "isLoading": false,
+                  "isVisible": "{{ qIndividualMemberOperationsState.data?.[0]?.can_manage === true && qIndividualMemberOperationsState.data?.[0]?.membership_status === 'active' }}",
+                  "key": "f3e8197a4c",
+                  "leftColumn": 44,
+                  "minWidth": 120,
+                  "mobileBottomRow": 359,
+                  "mobileLeftColumn": 44,
+                  "mobileRightColumn": 64,
+                  "mobileTopRow": 355,
+                  "needsErrorInfo": false,
+                  "onClick": "{{ (async () => { try { const selected = tblIndividualPractitionerAssignments.selectedRow; if (!selected?.member_practitioner_assignment_id || selected.assignment_status !== 'active') { showAlert('Select an active practitioner assignment.', 'warning'); return; } const rows = await qEndIndividualPractitioner.run({ assignment_id: selected.member_practitioner_assignment_id, reason: inpIndividualPractitionerReason.text?.trim() }); if (!rows?.[0]?.member_practitioner_assignment_id) throw new Error('No assignment was returned.'); await Promise.all([qIndividualPractitionerAssignments.run(), qIndividualAvailablePractitioners.run(), qIndividualMemberOperationsState.run()]); resetWidget('inpIndividualPractitionerReason', true); showAlert('Practitioner assignment ended.', 'success'); } catch (e) { showAlert('Ending practitioner assignment failed: ' + (e?.message || e), 'error'); } })() }}",
+                  "originalBottomRow": 359,
+                  "originalTopRow": 355,
+                  "parentColumnSpace": 10.25,
+                  "parentId": "0",
+                  "parentRowSpace": 10,
+                  "placement": "CENTER",
+                  "recaptchaType": "V3",
+                  "renderMode": "CANVAS",
+                  "resetFormOnClick": false,
+                  "responsiveBehavior": "hug",
+                  "rightColumn": 64,
+                  "text": "End selected assignment",
+                  "topRow": 355,
+                  "type": "BUTTON_WIDGET",
+                  "version": 1,
+                  "widgetId": "161c8ba1f6",
+                  "widgetName": "btnEndIndividualPractitioner"
                 }
               ],
               "containerStyle": "none",
