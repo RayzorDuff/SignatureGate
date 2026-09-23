@@ -453,7 +453,7 @@ Facilitators may:
 - manage member profiles
 - upload agreements
 - send digital agreements
-- issue releases
+- record sacrament releases
 - manage member donations
 - access storage locations
 
@@ -508,7 +508,17 @@ to support future Colorado Natural Medicine compliance workflows.
 
 # Release Authorization Model
 
-Releases may now be issued:
+A release is a tangible transfer of sacrament from organizational inventory or
+storage into a recipient's custody. Membership activation, sweat-lodge
+participation, and retreat participation are not releases. Those concepts use
+membership and event lifecycles even when an agreement authorizes them.
+
+The `release_type` column remains as a compatibility discriminator, but new
+rows are constrained to `sacrament_release`. Agreement templates may still be
+tagged with `membership`, `sweat_lodge`, or `retreat`; those values describe
+what the agreement authorizes and do not create release transactions.
+
+Sacrament releases may be recorded:
 
 - against signed agreements
 - or by document-reviewer override

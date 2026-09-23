@@ -216,7 +216,7 @@ Facilitators may:
 - manage member profile information
 - upload agreements
 - request digital agreements
-- issue releases
+- record sacrament releases
 - review donations (if reviewer)
 - manage storage location access (if reviewer)
 

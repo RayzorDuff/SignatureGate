@@ -97,6 +97,11 @@ first-class records in the database and act as the canonical source of truth for
 Agreement templates may reference one or more agreement types and may exist in
 multiple variants (e.g. language versions).
 
+Agreement types describe what a document authorizes; they are not transaction
+types. `membership` governs membership lifecycle, while `sweat_lodge` and
+`retreat` govern event participation. Only `sacrament_release` authorizes a
+tangible inventory transfer recorded in `releases`.
+
 ## End-to-End Flows
 
 ### Digital Agreement Flow
@@ -131,7 +136,7 @@ agreement_templates.required_for contains 'sacrament_release'
 
 ### Inventory Flow
 
-Appsmith → n8n → Airtable
+Appsmith → n8n → MushroomProcess PostgreSQL
   List products WHERE:
     item_category = freezedriedmushrooms
     origin_strain_regulated = true
@@ -140,7 +145,7 @@ Appsmith → n8n → Airtable
 
 User selects product
 
-Appsmith → n8n → Airtable
+Appsmith → n8n → MushroomProcess PostgreSQL
   Update product.storage_location = Shipped
 
 n8n → SignatureGate

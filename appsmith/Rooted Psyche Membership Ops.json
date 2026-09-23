@@ -84,13 +84,13 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_3b07cd20-ad5a-41b3-b121-c3ecbcc2ea75",
-      "id": "Release - Issue_releaseFlows",
+      "id": "Sacrament Release_releaseFlows",
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqMembersDirectory.run(),\n\t\t\tqListFacilitators.run(),\n\t\t\tqAccessibleStorageLocations.run()\n\t\t]);\n\n\t\tconst initialMemberId =\n\t\t\tString(appsmith.store.member_id || \"\").trim() ||\n\t\t\tString(appsmith.URL.queryParams.member_id || \"\").trim();\n\n\t\tif (initialMemberId) {\n\t\t\tawait storeValue(\"member_id\", initialMemberId);\n\t\t\treturn await this.refreshGate(initialMemberId);\n\t\t}\n\n\t\treturn [];\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tthis.refresh();\n\t\t\n\t},\n\n\tasync setMemberId(memberId) {\n\t\tconst id = String(memberId || \"\").trim();\n\n\t\tif (!id) {\n\t\t\tawait storeValue(\"member_id\", \"\");\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", id);\n\t\treturn await this.refreshGate(id);\n\t},\n\t\n\tasync refreshGate(thisSelected) {\n\t\tconst selectedMember =\n\t\t\tString(\n\t\t\t\tthisSelected ||\n\t\t\t\tselMember.selectedOptionValue ||\n\t\t\t\tappsmith.store.member_id ||\n\t\t\t\t\"\"\n\t\t\t).trim();\n\n\t\tconst releaseType =\n\t\t\tselReleaseType.selectedOptionValue ||\n\t\t\t\"sacrament_release\";\n\n\t\tif (!selectedMember) {\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", selectedMember);\n\n\t\treturn await qGateCheckAgreement.run({\n\t\t\tmember_id: selectedMember,\n\t\t\trelease_type: releaseType,\n\t\t});\n\t},\n\n  async issueRelease() {\n\t\tconst member_id = String(\n\t\t\tselMember.selectedOptionValue ||\n\t\t\tappsmith.store.member_id ||\n\t\t\t\"\"\n\t\t).trim() || null;\n\t\tconst release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n\t\t\n\t\tconst storage_location_name = tblProducts.selectedRow.storage_location || null;\n\n\t\tif (!storage_location_name) {\n\t\t\tshowAlert(\"Internal error: unknown storage location.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\t\t\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n\t\tconst membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n\t\t\tmember_id,\n\t\t\trelease_type,\n\t\t});\n\n\t\tconst gateRow = Array.isArray(gateRows) && gateRows.length > 0\n\t\t\t? gateRows[0]\n\t\t\t: null;\n\n\t\tconst hasAgreement = !!gateRow?.member_agreement_id;\n\t\tconst isReviewer =\n\t\t\tappsmith.store.facilitator_is_reviewer === true ||\n\t\t\tappsmith.store.facilitator_is_reviewer === \"true\";\n\n\t\tconst notes = inpNotes.text || \"\";\n\t\tconst reviewerOverride = !hasAgreement && isReviewer;\n\n\t\tif (!hasAgreement && !isReviewer) {\n\t\t\tshowAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tif (reviewerOverride && !notes.trim()) {\n\t\t\tshowAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\t\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n\t\t\tagreement_override: reviewerOverride,\n\t\t\toverride_reason: reviewerOverride ? notes : null,\n\t\t\toverride_by: reviewerOverride ? appsmith.store.facilitator_id : null,\t\t\n      notes: notes,\n    });\n\t\n    const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n\t\tshowAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", releaseId, {\n\t\t\tmember_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n      notes: notes\n\t\t});\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
+        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqMembersDirectory.run(),\n\t\t\tqListFacilitators.run(),\n\t\t\tqAccessibleStorageLocations.run()\n\t\t]);\n\n\t\tconst initialMemberId =\n\t\t\tString(appsmith.store.member_id || \"\").trim() ||\n\t\t\tString(appsmith.URL.queryParams.member_id || \"\").trim();\n\n\t\tif (initialMemberId) {\n\t\t\tawait storeValue(\"member_id\", initialMemberId);\n\t\t\treturn await this.refreshGate(initialMemberId);\n\t\t}\n\n\t\treturn [];\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tthis.refresh();\n\t\t\n\t},\n\n\tasync setMemberId(memberId) {\n\t\tconst id = String(memberId || \"\").trim();\n\n\t\tif (!id) {\n\t\t\tawait storeValue(\"member_id\", \"\");\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", id);\n\t\treturn await this.refreshGate(id);\n\t},\n\t\n\tasync refreshGate(thisSelected) {\n\t\tconst selectedMember =\n\t\t\tString(\n\t\t\t\tthisSelected ||\n\t\t\t\tselMember.selectedOptionValue ||\n\t\t\t\tappsmith.store.member_id ||\n\t\t\t\t\"\"\n\t\t\t).trim();\n\n\t\tconst releaseType =\n\t\t\t\"sacrament_release\";\n\n\t\tif (!selectedMember) {\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", selectedMember);\n\n\t\treturn await qGateCheckAgreement.run({\n\t\t\tmember_id: selectedMember,\n\t\t\trelease_type: releaseType,\n\t\t});\n\t},\n\n  async issueRelease() {\n\t\tconst member_id = String(\n\t\t\tselMember.selectedOptionValue ||\n\t\t\tappsmith.store.member_id ||\n\t\t\t\"\"\n\t\t).trim() || null;\n\t\tconst release_type = \"sacrament_release\";\n\t\t\n\t\tconst storage_location_name = tblProducts.selectedRow.storage_location || null;\n\n\t\tif (!storage_location_name) {\n\t\t\tshowAlert(\"Internal error: unknown storage location.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\t\t\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n\t\tconst membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before releasing sacrament.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n\t\t\tmember_id,\n\t\t\trelease_type,\n\t\t});\n\n\t\tconst gateRow = Array.isArray(gateRows) && gateRows.length > 0\n\t\t\t? gateRows[0]\n\t\t\t: null;\n\n\t\tconst hasAgreement = !!gateRow?.member_agreement_id;\n\t\tconst isReviewer =\n\t\t\tappsmith.store.facilitator_is_reviewer === true ||\n\t\t\tappsmith.store.facilitator_is_reviewer === \"true\";\n\n\t\tconst notes = inpNotes.text || \"\";\n\t\tconst reviewerOverride = !hasAgreement && isReviewer;\n\n\t\tif (!hasAgreement && !isReviewer) {\n\t\t\tshowAlert(\"Not eligible. The member must sign an agreement authorizing sacrament release before the transfer can be recorded.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tif (reviewerOverride && !notes.trim()) {\n\t\t\tshowAlert(\"Notes are required when a document reviewer records a sacrament release without a signed agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\t\n\n    // A sacrament release always requires a tangible MushroomProcess product.\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n\n    // 1) Mark the selected MushroomProcess product shipped\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Record the sacrament transfer in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n\t\t\tagreement_override: reviewerOverride,\n\t\t\toverride_reason: reviewerOverride ? notes : null,\n\t\t\toverride_by: reviewerOverride ? appsmith.store.facilitator_id : null,\t\t\n      notes: notes,\n    });\n\t\n    const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n\t\tshowAlert(`Sacrament release recorded: ${releaseId || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", releaseId, {\n\t\t\tmember_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n      notes: notes\n\t\t});\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
         "name": "releaseFlows",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "pluginId": "js-plugin",
         "pluginType": "JS",
         "userPermissions": [],
@@ -99,9 +99,9 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqMembersDirectory.run(),\n\t\t\tqListFacilitators.run(),\n\t\t\tqAccessibleStorageLocations.run()\n\t\t]);\n\n\t\tconst initialMemberId =\n\t\t\tString(appsmith.store.member_id || \"\").trim() ||\n\t\t\tString(appsmith.URL.queryParams.member_id || \"\").trim();\n\n\t\tif (initialMemberId) {\n\t\t\tawait storeValue(\"member_id\", initialMemberId);\n\t\t\treturn await this.refreshGate(initialMemberId);\n\t\t}\n\n\t\treturn [];\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tthis.refresh();\n\t\t\n\t},\n\n\tasync setMemberId(memberId) {\n\t\tconst id = String(memberId || \"\").trim();\n\n\t\tif (!id) {\n\t\t\tawait storeValue(\"member_id\", \"\");\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", id);\n\t\treturn await this.refreshGate(id);\n\t},\n\t\n\tasync refreshGate(thisSelected) {\n\t\tconst selectedMember =\n\t\t\tString(\n\t\t\t\tthisSelected ||\n\t\t\t\tselMember.selectedOptionValue ||\n\t\t\t\tappsmith.store.member_id ||\n\t\t\t\t\"\"\n\t\t\t).trim();\n\n\t\tconst releaseType =\n\t\t\tselReleaseType.selectedOptionValue ||\n\t\t\t\"sacrament_release\";\n\n\t\tif (!selectedMember) {\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", selectedMember);\n\n\t\treturn await qGateCheckAgreement.run({\n\t\t\tmember_id: selectedMember,\n\t\t\trelease_type: releaseType,\n\t\t});\n\t},\n\n  async issueRelease() {\n\t\tconst member_id = String(\n\t\t\tselMember.selectedOptionValue ||\n\t\t\tappsmith.store.member_id ||\n\t\t\t\"\"\n\t\t).trim() || null;\n\t\tconst release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n\t\t\n\t\tconst storage_location_name = tblProducts.selectedRow.storage_location || null;\n\n\t\tif (!storage_location_name) {\n\t\t\tshowAlert(\"Internal error: unknown storage location.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\t\t\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n\t\tconst membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n\t\t\tmember_id,\n\t\t\trelease_type,\n\t\t});\n\n\t\tconst gateRow = Array.isArray(gateRows) && gateRows.length > 0\n\t\t\t? gateRows[0]\n\t\t\t: null;\n\n\t\tconst hasAgreement = !!gateRow?.member_agreement_id;\n\t\tconst isReviewer =\n\t\t\tappsmith.store.facilitator_is_reviewer === true ||\n\t\t\tappsmith.store.facilitator_is_reviewer === \"true\";\n\n\t\tconst notes = inpNotes.text || \"\";\n\t\tconst reviewerOverride = !hasAgreement && isReviewer;\n\n\t\tif (!hasAgreement && !isReviewer) {\n\t\t\tshowAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tif (reviewerOverride && !notes.trim()) {\n\t\t\tshowAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\t\n\n    // Product selection required (for sacrament_release only)\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n\n    // 1) Mark shipped in Airtable (only if sacrament_release)\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Insert release record in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n\t\t\tagreement_override: reviewerOverride,\n\t\t\toverride_reason: reviewerOverride ? notes : null,\n\t\t\toverride_by: reviewerOverride ? appsmith.store.facilitator_id : null,\t\t\n      notes: notes,\n    });\n\t\n    const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n\t\tshowAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", releaseId, {\n\t\t\tmember_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n      notes: notes\n\t\t});\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
+        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\t\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t\t\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqMembersDirectory.run(),\n\t\t\tqListFacilitators.run(),\n\t\t\tqAccessibleStorageLocations.run()\n\t\t]);\n\n\t\tconst initialMemberId =\n\t\t\tString(appsmith.store.member_id || \"\").trim() ||\n\t\t\tString(appsmith.URL.queryParams.member_id || \"\").trim();\n\n\t\tif (initialMemberId) {\n\t\t\tawait storeValue(\"member_id\", initialMemberId);\n\t\t\treturn await this.refreshGate(initialMemberId);\n\t\t}\n\n\t\treturn [];\n\t},\n\t\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\t//showAlert(\"Beginning init. mode=\" + appsmith.mode, \"warning\");\n\n\t\t\t// Wait briefly for Appsmith user context to hydrate\n      let email = null;\n      for (let i = 0; i < 20; i++) {\n        email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n        if (email) break;\n        await new Promise(r => setTimeout(r, 150));\n      }\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\t// IMPORTANT: use return value of run(), not qCurrentFacilitator.data\n      let rows = await qCurrentFacilitator.run({ email });\n\n      // 🔴 Appsmith bug fix\n      if (!Array.isArray(rows)) rows = [];\n      //showAlert(\"qCurrentFacilitator rows=\" + rows.length, \"warning\");\n\n      const me = rows[0];\t\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\t\n\t\t\t\tawait this.auditLog(\"auth.denied\",\"facilitator\",\"\", { email, page: appsmith.URL?.pathname, mode: appsmith.mode });if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\t//Only redirect when not in editor\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\t//showAlert(\"Access granted for \" + facilitator_email + \" id=\" + facilitator_id + \" document reviewer=\" + is_document_reviewer + \" donations reviewer=\" + is_donations_reviewer, \"success\");\n\n\t\t\t// May want these enabled in deployed mode:\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer );\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\t\n\n\t\t\n\t\t\t//await this.auditLog(\"auth.granted\",\"facilitator\", facilitator_id, { email: facilitator_email, is_reviewer, is_donations_reviewer page: appsmith.URL?.pathname, mode: appsmith.mode });\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\t// Helpful: show query error if present\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t//Only redirect when not in editor\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tthis.refresh();\n\t\t\n\t},\n\n\tasync setMemberId(memberId) {\n\t\tconst id = String(memberId || \"\").trim();\n\n\t\tif (!id) {\n\t\t\tawait storeValue(\"member_id\", \"\");\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", id);\n\t\treturn await this.refreshGate(id);\n\t},\n\t\n\tasync refreshGate(thisSelected) {\n\t\tconst selectedMember =\n\t\t\tString(\n\t\t\t\tthisSelected ||\n\t\t\t\tselMember.selectedOptionValue ||\n\t\t\t\tappsmith.store.member_id ||\n\t\t\t\t\"\"\n\t\t\t).trim();\n\n\t\tconst releaseType =\n\t\t\t\"sacrament_release\";\n\n\t\tif (!selectedMember) {\n\t\t\treturn [];\n\t\t}\n\n\t\tawait storeValue(\"member_id\", selectedMember);\n\n\t\treturn await qGateCheckAgreement.run({\n\t\t\tmember_id: selectedMember,\n\t\t\trelease_type: releaseType,\n\t\t});\n\t},\n\n  async issueRelease() {\n\t\tconst member_id = String(\n\t\t\tselMember.selectedOptionValue ||\n\t\t\tappsmith.store.member_id ||\n\t\t\t\"\"\n\t\t).trim() || null;\n\t\tconst release_type = \"sacrament_release\";\n\t\t\n\t\tconst storage_location_name = tblProducts.selectedRow.storage_location || null;\n\n\t\tif (!storage_location_name) {\n\t\t\tshowAlert(\"Internal error: unknown storage location.\", \"warning\");\n\t\t\treturn;\n\t\t}\n\t\t\n    if (!member_id) {\n      showAlert(\"Select a member.\", \"warning\");\n      return;\n    }\n    \n    await this.auditLog(\"release.attempt\",\"member\", member_id, { member_id, release_type, page: appsmith.URL?.pathname });\n\t\t\n\t\t// Gate: enforce the right agreement type\n\t\tconst membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before releasing sacrament.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n\t\t\tmember_id,\n\t\t\trelease_type,\n\t\t});\n\n\t\tconst gateRow = Array.isArray(gateRows) && gateRows.length > 0\n\t\t\t? gateRows[0]\n\t\t\t: null;\n\n\t\tconst hasAgreement = !!gateRow?.member_agreement_id;\n\t\tconst isReviewer =\n\t\t\tappsmith.store.facilitator_is_reviewer === true ||\n\t\t\tappsmith.store.facilitator_is_reviewer === \"true\";\n\n\t\tconst notes = inpNotes.text || \"\";\n\t\tconst reviewerOverride = !hasAgreement && isReviewer;\n\n\t\tif (!hasAgreement && !isReviewer) {\n\t\t\tshowAlert(\"Not eligible. The member must sign an agreement authorizing sacrament release before the transfer can be recorded.\", \"error\");\n\t\t\treturn;\n\t\t}\n\n\t\tif (reviewerOverride && !notes.trim()) {\n\t\t\tshowAlert(\"Notes are required when a document reviewer records a sacrament release without a signed agreement.\", \"warning\");\n\t\t\treturn;\n\t\t}\t\n\n    // A sacrament release always requires a tangible MushroomProcess product.\n    const product = tblProducts.selectedRow;\n    if (release_type === \"sacrament_release\") {\n      if (!product?.mushroomprocess_product_id) {\n        showAlert(\"Select a product to issue.\", \"warning\");\n        return;\n      }\n    }\n\n    const facilitator_id = selFacilitator.selectedOptionValue || null;\n    if (!facilitator_id) {\n      showAlert(\"Select a facilitator.\", \"warning\");\n      return;\n    }\n\n    //const quantity = Number(inpQuantity.text || 1);\n\t\tconst quantity = 1;\n    if (!Number.isFinite(quantity) || quantity <= 0) {\n      showAlert(\"Quantity must be a positive number.\", \"warning\");\n      return;\n    }\n\n\t\n    //const unit = selUnit.selectedOptionValue || \"unit\";\n\t\tconst unit = \"g\";\n\n    // 1) Mark the selected MushroomProcess product shipped\n    if (release_type === \"sacrament_release\") {\n      await apiMarkProductShipped.run();\n    }\n\n\t\tshowAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n\t\t\n    // 2) Record the sacrament transfer in SignatureGate\n    const ins = await qCreateRelease.run({\n      member_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n\t\t\tagreement_override: reviewerOverride,\n\t\t\toverride_reason: reviewerOverride ? notes : null,\n\t\t\toverride_by: reviewerOverride ? appsmith.store.facilitator_id : null,\t\t\n      notes: notes,\n    });\n\t\n    const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n\t\tshowAlert(`Sacrament release recorded: ${releaseId || \"ok\"}`, \"success\");\n\t\tawait this.auditLog(\"release.issued\",\"release\", releaseId, {\n\t\t\tmember_id: member_id,\n      release_type: release_type,\n      member_agreement_id: gateRow?.member_agreement_id || null,\n      mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n      item_name: product?.item_name || release_type,\n      quantity: quantity,\n      unit: unit,\n      net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n      strain: product?.strain || null,\n      facilitator_id: facilitator_id,\n\t\t\tstorage_location_name: storage_location_name,\n      notes: notes\n\t\t});\n\t\t\n    // Refresh products list so shipped disappears\n    if (release_type === \"sacrament_release\") {\n      await apiListAvailableProducts.run();\n    }\n\n    return ins;\n  },\n};\n",
         "name": "releaseFlows",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "pluginId": "js-plugin",
         "pluginType": "JS",
         "userPermissions": [],
@@ -2995,7 +2995,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR ma.agreement_template_id IS NULL\n        OR lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual', 'documenso')\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR (\n          ma.agreement_template_id IS NULL\n          AND lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual')\n        )\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -3039,7 +3039,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR ma.agreement_template_id IS NULL\n        OR lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual', 'documenso')\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR (\n          ma.agreement_template_id IS NULL\n          AND lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual')\n        )\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -7628,7 +7628,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR ma.agreement_template_id IS NULL\n        OR lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual', 'documenso')\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR (\n          ma.agreement_template_id IS NULL\n          AND lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual')\n        )\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -7672,7 +7672,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR ma.agreement_template_id IS NULL\n        OR lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual', 'documenso')\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR (\n          ma.agreement_template_id IS NULL\n          AND lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual')\n        )\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -13290,19 +13290,19 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_1fec4ce5-e4dc-4f27-91ce-d08bbdd7f113",
-      "id": "Release - Issue_releaseFlows.issueRelease",
+      "id": "Sacrament Release_releaseFlows.issueRelease",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
+          "body": "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before releasing sacrament.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. The member must sign an agreement authorizing sacrament release before the transfer can be recorded.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer records a sacrament release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Sacrament release recorded: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-11T16:21:47Z",
         "datasource": {
@@ -13324,11 +13324,11 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
+          "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before releasing sacrament.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. The member must sign an agreement authorizing sacrament release before the transfer can be recorded.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer records a sacrament release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Sacrament release recorded: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
         ],
         "messages": [],
         "name": "issueRelease",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13336,14 +13336,14 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
+          "body": "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before releasing sacrament.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. The member must sign an agreement authorizing sacrament release before the transfer can be recorded.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer records a sacrament release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Sacrament release recorded: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}",
           "encodeParamsToggle": true,
           "jsArguments": [],
           "paginationType": "NONE",
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-11T16:21:47Z",
         "datasource": {
@@ -13365,11 +13365,11 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before shipping inventory.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. Member must sign the required agreement before a release can be issued.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer issues a release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Release issued: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
+          "async function () {\n  const member_id = String(selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim() || null;\n  const release_type = \"sacrament_release\";\n  const storage_location_name = tblProducts.selectedRow.storage_location || null;\n  if (!storage_location_name) {\n    showAlert(\"Internal error: unknown storage location.\", \"warning\");\n    return;\n  }\n  if (!member_id) {\n    showAlert(\"Select a member.\", \"warning\");\n    return;\n  }\n  await releaseFlows.auditLog(\"release.attempt\", \"member\", member_id, {\n    member_id,\n    release_type,\n    page: appsmith.URL?.pathname\n  });\n  const membership = await qReleaseMemberActive.run({ member_id });\n  if (membership?.[0]?.is_active !== true) {\n    showAlert(\"Select an active member before releasing sacrament.\", \"error\");\n    return;\n  }\n  const gateRows = await qGateCheckAgreement.run({\n    member_id,\n    release_type\n  });\n  const gateRow = Array.isArray(gateRows) && gateRows.length > 0 ? gateRows[0] : null;\n  const hasAgreement = !!gateRow?.member_agreement_id;\n  const isReviewer = appsmith.store.facilitator_is_reviewer === true || appsmith.store.facilitator_is_reviewer === \"true\";\n  const notes = inpNotes.text || \"\";\n  const reviewerOverride = !hasAgreement && isReviewer;\n  if (!hasAgreement && !isReviewer) {\n    showAlert(\"Not eligible. The member must sign an agreement authorizing sacrament release before the transfer can be recorded.\", \"error\");\n    return;\n  }\n  if (reviewerOverride && !notes.trim()) {\n    showAlert(\"Notes are required when a document reviewer records a sacrament release without a signed agreement.\", \"warning\");\n    return;\n  }\n  const product = tblProducts.selectedRow;\n  if (release_type === \"sacrament_release\") {\n    if (!product?.mushroomprocess_product_id) {\n      showAlert(\"Select a product to issue.\", \"warning\");\n      return;\n    }\n  }\n  const facilitator_id = selFacilitator.selectedOptionValue || null;\n  if (!facilitator_id) {\n    showAlert(\"Select a facilitator.\", \"warning\");\n    return;\n  }\n  const quantity = 1;\n  if (!Number.isFinite(quantity) || quantity <= 0) {\n    showAlert(\"Quantity must be a positive number.\", \"warning\");\n    return;\n  }\n  const unit = \"g\";\n  if (release_type === \"sacrament_release\") {\n    await apiMarkProductShipped.run();\n  }\n  showAlert(`Shipped: ${product?.mushroomprocess_product_id || \"ok\"}`, \"success\");\n  const ins = await qCreateRelease.run({\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    agreement_override: reviewerOverride,\n    override_reason: reviewerOverride ? notes : null,\n    override_by: reviewerOverride ? appsmith.store.facilitator_id : null,\n    notes: notes\n  });\n  const releaseId = ins?.[0]?.release_id || ins?.release_id || \"\";\n  showAlert(`Sacrament release recorded: ${releaseId || \"ok\"}`, \"success\");\n  await releaseFlows.auditLog(\"release.issued\", \"release\", releaseId, {\n    member_id: member_id,\n    release_type: release_type,\n    member_agreement_id: gateRow?.member_agreement_id || null,\n    mushroomprocess_product_id: product?.mushroomprocess_product_id || null,\n    item_name: product?.item_name || release_type,\n    quantity: quantity,\n    unit: unit,\n    net_weight_g: product?.net_weight_g.replace(/[a-zA-Z]+$/, \"\") || null,\n    strain: product?.strain || null,\n    facilitator_id: facilitator_id,\n    storage_location_name: storage_location_name,\n    notes: notes\n  });\n  if (release_type === \"sacrament_release\") {\n    await apiListAvailableProducts.run();\n  }\n  return ins;\n}"
         ],
         "messages": [],
         "name": "issueRelease",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13379,7 +13379,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_b88d01d7-2325-4e11-b0f8-d38c888757b5",
-      "id": "Release - Issue_releaseFlows.refresh",
+      "id": "Sacrament Release_releaseFlows.refresh",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -13391,7 +13391,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T22:05:09Z",
         "datasource": {
@@ -13417,7 +13417,7 @@
         ],
         "messages": [],
         "name": "refresh",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13432,7 +13432,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T22:05:09Z",
         "datasource": {
@@ -13458,7 +13458,7 @@
         ],
         "messages": [],
         "name": "refresh",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13468,7 +13468,7 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_1403d907-7d8f-4e58-b4f7-6f37bf3c1c9b",
-      "id": "Release - Issue_releaseFlows.verifyaccess",
+      "id": "Sacrament Release_releaseFlows.verifyaccess",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -13480,7 +13480,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-14T18:30:51Z",
         "datasource": {
@@ -13506,7 +13506,7 @@
         ],
         "messages": [],
         "name": "verifyaccess",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "ON_PAGE_LOAD",
         "userPermissions": [],
@@ -13521,7 +13521,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-14T18:30:51Z",
         "datasource": {
@@ -13547,7 +13547,7 @@
         ],
         "messages": [],
         "name": "verifyaccess",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "ON_PAGE_LOAD",
         "userPermissions": [],
@@ -13557,12 +13557,12 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_ad57fc71-a63c-4351-8206-e27a428220a3",
-      "id": "Release - Issue_releaseFlows.refreshGate",
+      "id": "Sacrament Release_releaseFlows.refreshGate",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function (thisSelected) {\n  const selectedMember = String(thisSelected || selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim();\n  const releaseType = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  if (!selectedMember) {\n    return [];\n  }\n  await storeValue(\"member_id\", selectedMember);\n  return await qGateCheckAgreement.run({\n    member_id: selectedMember,\n    release_type: releaseType\n  });\n}",
+          "body": "async function (thisSelected) {\n  const selectedMember = String(thisSelected || selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim();\n  const releaseType = \"sacrament_release\";\n  if (!selectedMember) {\n    return [];\n  }\n  await storeValue(\"member_id\", selectedMember);\n  return await qGateCheckAgreement.run({\n    member_id: selectedMember,\n    release_type: releaseType\n  });\n}",
           "encodeParamsToggle": true,
           "jsArguments": [
             {
@@ -13573,7 +13573,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-11T16:21:47Z",
         "datasource": {
@@ -13595,11 +13595,11 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function (thisSelected) {\n  const selectedMember = String(thisSelected || selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim();\n  const releaseType = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  if (!selectedMember) {\n    return [];\n  }\n  await storeValue(\"member_id\", selectedMember);\n  return await qGateCheckAgreement.run({\n    member_id: selectedMember,\n    release_type: releaseType\n  });\n}"
+          "async function (thisSelected) {\n  const selectedMember = String(thisSelected || selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim();\n  const releaseType = \"sacrament_release\";\n  if (!selectedMember) {\n    return [];\n  }\n  await storeValue(\"member_id\", selectedMember);\n  return await qGateCheckAgreement.run({\n    member_id: selectedMember,\n    release_type: releaseType\n  });\n}"
         ],
         "messages": [],
         "name": "refreshGate",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13607,7 +13607,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function (thisSelected) {\n  const selectedMember = String(thisSelected || selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim();\n  const releaseType = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  if (!selectedMember) {\n    return [];\n  }\n  await storeValue(\"member_id\", selectedMember);\n  return await qGateCheckAgreement.run({\n    member_id: selectedMember,\n    release_type: releaseType\n  });\n}",
+          "body": "async function (thisSelected) {\n  const selectedMember = String(thisSelected || selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim();\n  const releaseType = \"sacrament_release\";\n  if (!selectedMember) {\n    return [];\n  }\n  await storeValue(\"member_id\", selectedMember);\n  return await qGateCheckAgreement.run({\n    member_id: selectedMember,\n    release_type: releaseType\n  });\n}",
           "encodeParamsToggle": true,
           "jsArguments": [
             {
@@ -13618,7 +13618,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-11T16:21:47Z",
         "datasource": {
@@ -13640,11 +13640,11 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function (thisSelected) {\n  const selectedMember = String(thisSelected || selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim();\n  const releaseType = selReleaseType.selectedOptionValue || \"sacrament_release\";\n  if (!selectedMember) {\n    return [];\n  }\n  await storeValue(\"member_id\", selectedMember);\n  return await qGateCheckAgreement.run({\n    member_id: selectedMember,\n    release_type: releaseType\n  });\n}"
+          "async function (thisSelected) {\n  const selectedMember = String(thisSelected || selMember.selectedOptionValue || appsmith.store.member_id || \"\").trim();\n  const releaseType = \"sacrament_release\";\n  if (!selectedMember) {\n    return [];\n  }\n  await storeValue(\"member_id\", selectedMember);\n  return await qGateCheckAgreement.run({\n    member_id: selectedMember,\n    release_type: releaseType\n  });\n}"
         ],
         "messages": [],
         "name": "refreshGate",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13654,7 +13654,7 @@
     {
       "deleted": false,
       "gitSyncId": "696aaf6bef6f963f4d13c7a7_aaa10307-7f2b-4147-a376-f36d31367932",
-      "id": "Release - Issue_releaseFlows.auditLog",
+      "id": "Sacrament Release_releaseFlows.auditLog",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -13679,7 +13679,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-16T21:40:04Z",
         "datasource": {
@@ -13705,7 +13705,7 @@
         ],
         "messages": [],
         "name": "auditLog",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13733,7 +13733,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-16T21:40:04Z",
         "datasource": {
@@ -13759,7 +13759,7 @@
         ],
         "messages": [],
         "name": "auditLog",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13769,7 +13769,7 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_26d5936d-5bd1-40d4-b7ed-d0c7e3a784e2",
-      "id": "Release - Issue_qListFacilitators",
+      "id": "Sacrament Release_qListFacilitators",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -13804,7 +13804,7 @@
         "jsonPathKeys": [],
         "messages": [],
         "name": "qListFacilitators",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -13842,7 +13842,7 @@
         "jsonPathKeys": [],
         "messages": [],
         "name": "qListFacilitators",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -13852,12 +13852,12 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_49d05534-c0b9-4d30-98dc-0073862da810",
-      "id": "Release - Issue_qGateCheckAgreement",
+      "id": "Sacrament Release_qGateCheckAgreement",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "SELECT\n  ma.member_agreement_id,\n  ma.agreement_template_id,\n  ma.signed_at,\n  COALESCE(t.name, 'Paper Agreement - No Template') AS template_name,\n  t.version AS template_version,\n  ma.status,\n  ma.signature_method\nFROM public.member_agreements ma\nLEFT JOIN public.agreement_templates t\n  ON t.agreement_template_id = ma.agreement_template_id\nWHERE ma.member_id = {{ this.params.member_id }}::uuid\n  AND lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed')\n  AND (\n    (\n      t.agreement_template_id IS NOT NULL\n      AND COALESCE(t.active, true) = true\n      AND {{ this.params.release_type || 'sacrament_release' }} = ANY(COALESCE(t.required_for, ARRAY[]::text[]))\n    )\n    OR (\n      lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual', 'documenso')\n      AND {{ this.params.release_type || 'sacrament_release' }} = 'sacrament_release'\n    )\n  )\nORDER BY ma.signed_at DESC NULLS LAST, ma.updated_at DESC\nLIMIT 1;",
+          "body": "SELECT\n  ma.member_agreement_id,\n  ma.agreement_template_id,\n  ma.signed_at,\n  COALESCE(t.name, 'Paper Agreement - No Template') AS template_name,\n  t.version AS template_version,\n  ma.status,\n  ma.signature_method\nFROM public.member_agreements ma\nLEFT JOIN public.agreement_templates t\n  ON t.agreement_template_id = ma.agreement_template_id\nWHERE ma.member_id = {{ this.params.member_id }}::uuid\n  AND lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed')\n  AND (\n    (\n      t.agreement_template_id IS NOT NULL\n      AND COALESCE(t.active, true) = true\n      AND 'sacrament_release' = ANY(COALESCE(t.required_for, ARRAY[]::text[]))\n    )\n    OR (\n      ma.agreement_template_id IS NULL\n      AND lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual')\n    )\n  )\nORDER BY ma.signed_at DESC NULLS LAST, ma.updated_at DESC\nLIMIT 1;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -13889,12 +13889,11 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          " this.params.member_id ",
-          " this.params.release_type || 'sacrament_release' "
+          " this.params.member_id "
         ],
         "messages": [],
         "name": "qGateCheckAgreement",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13902,7 +13901,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "SELECT\n  ma.member_agreement_id,\n  ma.agreement_template_id,\n  ma.signed_at,\n  COALESCE(t.name, 'Paper Agreement - No Template') AS template_name,\n  t.version AS template_version,\n  ma.status,\n  ma.signature_method\nFROM public.member_agreements ma\nLEFT JOIN public.agreement_templates t\n  ON t.agreement_template_id = ma.agreement_template_id\nWHERE ma.member_id = {{ this.params.member_id }}::uuid\n  AND lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed')\n  AND (\n    (\n      t.agreement_template_id IS NOT NULL\n      AND COALESCE(t.active, true) = true\n      AND {{ this.params.release_type || 'sacrament_release' }} = ANY(COALESCE(t.required_for, ARRAY[]::text[]))\n    )\n    OR (\n      lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual', 'documenso')\n      AND {{ this.params.release_type || 'sacrament_release' }} = 'sacrament_release'\n    )\n  )\nORDER BY ma.signed_at DESC NULLS LAST, ma.updated_at DESC\nLIMIT 1;",
+          "body": "SELECT\n  ma.member_agreement_id,\n  ma.agreement_template_id,\n  ma.signed_at,\n  COALESCE(t.name, 'Paper Agreement - No Template') AS template_name,\n  t.version AS template_version,\n  ma.status,\n  ma.signature_method\nFROM public.member_agreements ma\nLEFT JOIN public.agreement_templates t\n  ON t.agreement_template_id = ma.agreement_template_id\nWHERE ma.member_id = {{ this.params.member_id }}::uuid\n  AND lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed')\n  AND (\n    (\n      t.agreement_template_id IS NOT NULL\n      AND COALESCE(t.active, true) = true\n      AND 'sacrament_release' = ANY(COALESCE(t.required_for, ARRAY[]::text[]))\n    )\n    OR (\n      ma.agreement_template_id IS NULL\n      AND lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual')\n    )\n  )\nORDER BY ma.signed_at DESC NULLS LAST, ma.updated_at DESC\nLIMIT 1;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -13934,12 +13933,11 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          " this.params.member_id ",
-          " this.params.release_type || 'sacrament_release' "
+          " this.params.member_id "
         ],
         "messages": [],
         "name": "qGateCheckAgreement",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -13949,7 +13947,7 @@
     {
       "deleted": false,
       "gitSyncId": "6a2c72cf889f4468406c5d09_f119cf44-88e4-4ef4-bbe7-b712845277ee",
-      "id": "Release - Issue_releaseFlows.setMemberId",
+      "id": "Sacrament Release_releaseFlows.setMemberId",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -13965,7 +13963,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 0
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-06-22T17:50:39Z",
         "datasource": {
@@ -13991,7 +13989,7 @@
         ],
         "messages": [],
         "name": "setMemberId",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -14010,7 +14008,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 0
         },
-        "collectionId": "Release - Issue_releaseFlows",
+        "collectionId": "Sacrament Release_releaseFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-06-22T17:50:39Z",
         "datasource": {
@@ -14036,7 +14034,7 @@
         ],
         "messages": [],
         "name": "setMemberId",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -14046,7 +14044,7 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_760f76a4-a998-4e02-b297-771c0954344f",
-      "id": "Release - Issue_qAuditLogInsert",
+      "id": "Sacrament Release_qAuditLogInsert",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -14091,7 +14089,7 @@
         ],
         "messages": [],
         "name": "qAuditLogInsert",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -14139,7 +14137,7 @@
         ],
         "messages": [],
         "name": "qAuditLogInsert",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -14149,12 +14147,12 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_6cc94c9a-e2a4-4492-a319-741edc45760a",
-      "id": "Release - Issue_qMembersDirectory",
+      "id": "Sacrament Release_qMembersDirectory",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR ma.agreement_template_id IS NULL\n        OR lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual', 'documenso')\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR (\n          ma.agreement_template_id IS NULL\n          AND lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual')\n        )\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -14190,7 +14188,7 @@
         ],
         "messages": [],
         "name": "qMembersDirectory",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -14198,7 +14196,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR ma.agreement_template_id IS NULL\n        OR lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual', 'documenso')\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
+          "body": "WITH me AS (\n  SELECT\n    member_id,\n    COALESCE(is_document_reviewer, FALSE) AS is_document_reviewer\n  FROM public.member_profiles\n  WHERE lower(email) = lower({{ appsmith.user.email }})\n    AND status = 'active'\n  LIMIT 1\n)\nSELECT DISTINCT\n  m.member_id,\n  m.first_name,\n  m.last_name,\n  m.email,\n  m.phone,\n  m.status,\n  m.is_facilitator,\n  m.created_at,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT me2.email, ' ')\n    FROM public.member_emails me2\n    WHERE me2.member_id = m.member_id\n      AND COALESCE(me2.status, 'active') = 'active'\n  ), '') AS member_emails_search,\n\n  COALESCE((\n    SELECT string_agg(DISTINCT mp.phone, ' ')\n    FROM public.member_phones mp\n    WHERE mp.member_id = m.member_id\n      AND COALESCE(mp.status, 'active') = 'active'\n  ), '') AS member_phones_search,\n\n  COALESCE((\n    SELECT string_agg(\n      DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n      ' '\n    )\n    FROM public.member_addresses ma\n    WHERE ma.member_id = m.member_id\n      AND COALESCE(ma.status, 'active') = 'active'\n  ), '') AS member_addresses_search,\n\n  concat_ws(' ',\n    m.member_id::text,\n    m.first_name,\n    m.last_name,\n    m.email,\n    m.phone,\n    COALESCE((\n      SELECT string_agg(DISTINCT me2.email, ' ')\n      FROM public.member_emails me2\n      WHERE me2.member_id = m.member_id\n        AND COALESCE(me2.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(DISTINCT mp.phone, ' ')\n      FROM public.member_phones mp\n      WHERE mp.member_id = m.member_id\n        AND COALESCE(mp.status, 'active') = 'active'\n    ), ''),\n    COALESCE((\n      SELECT string_agg(\n        DISTINCT concat_ws(' ', ma.address_1, ma.address_2, ma.city, ma.state, ma.postal_code, ma.country),\n        ' '\n      )\n      FROM public.member_addresses ma\n      WHERE ma.member_id = m.member_id\n        AND COALESCE(ma.status, 'active') = 'active'\n    ), '')\n  ) AS member_search_text,\n\n  (\n    SELECT ma.status\n    FROM public.member_agreements ma\n    LEFT JOIN public.agreement_templates at\n      ON at.agreement_template_id = ma.agreement_template_id\n    WHERE ma.member_id = m.member_id\n      AND (\n        'sacrament_release' = ANY(COALESCE(at.required_for, ARRAY[]::text[]))\n        OR (\n          ma.agreement_template_id IS NULL\n          AND lower(COALESCE(ma.signature_method, '')) IN ('paper', 'manual')\n        )\n      )\n    ORDER BY\n      CASE\n        WHEN lower(COALESCE(ma.status, '')) IN ('signed', 'complete', 'completed') THEN 0\n        WHEN lower(COALESCE(ma.status, '')) IN ('pending_review', 'pending_signature') THEN 1\n        WHEN lower(COALESCE(ma.status, '')) IN ('expired', 'rejected', 'canceled', 'cancelled') THEN 2\n        ELSE 3\n      END,\n      ma.signed_at DESC NULLS LAST,\n      ma.created_at DESC\n    LIMIT 1\n  ) AS latest_release_agreement_status,\n\n  (\n    SELECT max(sr.released_at)\n    FROM public.releases sr\n    WHERE sr.member_id = m.member_id\n  ) AS last_release_at\n\nFROM public.member_profiles m\nCROSS JOIN me\nWHERE\n  m.status = 'active'\n  AND (\n    me.is_document_reviewer = TRUE\n    OR EXISTS (\n      SELECT 1\n      FROM public.member_facilitators mf\n      WHERE mf.member_id = m.member_id\n        AND mf.facilitator_id = me.member_id\n        AND mf.status = 'active'\n    )\n  )\nORDER BY m.last_name NULLS LAST, m.first_name NULLS LAST, m.created_at DESC\nLIMIT 500;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -14234,7 +14232,7 @@
         ],
         "messages": [],
         "name": "qMembersDirectory",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -14244,7 +14242,7 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_b869b15d-ad5f-4f71-8d64-5f40a1d62f37",
-      "id": "Release - Issue_qCurrentFacilitator",
+      "id": "Sacrament Release_qCurrentFacilitator",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -14285,7 +14283,7 @@
         ],
         "messages": [],
         "name": "qCurrentFacilitator",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -14329,7 +14327,7 @@
         ],
         "messages": [],
         "name": "qCurrentFacilitator",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -14339,12 +14337,12 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_b7cd8348-4b70-49fb-8896-764d20e1fe19",
-      "id": "Release - Issue_qCreateRelease",
+      "id": "Sacrament Release_qCreateRelease",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "INSERT INTO releases (\n  member_id,\n  release_type,\n  member_agreement_id,\n  mushroomprocess_product_id,\n  item_name,\n  quantity,\n  unit,\n  net_weight_g,\n  strain,\n  facilitator_id,\n  storage_location_name,\n  notes\n)\nVALUES (\n  {{ this.params.member_id }}::uuid,\n  {{ this.params.release_type }},\n\t{{ this.params.member_agreement_id }},\n  {{ this.params.mushroomprocess_product_id }},\n  {{ this.params.item_name }},\n  {{ this.params.quantity }}::numeric,\n  {{ this.params.unit }},\n  {{ this.params.net_weight_g }}::numeric,\n  {{ this.params.strain }},\n  {{ this.params.facilitator_id }}::uuid,\n  {{ this.params.storage_location_name }},\n  {{ this.params.notes }}\n)\nRETURNING release_id;",
+          "body": "INSERT INTO releases (\n  member_id,\n  release_type,\n  member_agreement_id,\n  mushroomprocess_product_id,\n  item_name,\n  quantity,\n  unit,\n  net_weight_g,\n  strain,\n  facilitator_id,\n  storage_location_name,\n  notes\n)\nVALUES (\n  {{ this.params.member_id }}::uuid,\n  'sacrament_release',\n\t{{ this.params.member_agreement_id }},\n  {{ this.params.mushroomprocess_product_id }},\n  {{ this.params.item_name }},\n  {{ this.params.quantity }}::numeric,\n  {{ this.params.unit }},\n  {{ this.params.net_weight_g }}::numeric,\n  {{ this.params.strain }},\n  {{ this.params.facilitator_id }}::uuid,\n  {{ this.params.storage_location_name }},\n  {{ this.params.notes }}\n)\nRETURNING release_id;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -14381,7 +14379,6 @@
           " this.params.notes ",
           " this.params.facilitator_id ",
           " this.params.member_agreement_id ",
-          " this.params.release_type ",
           " this.params.quantity ",
           " this.params.storage_location_name ",
           " this.params.strain ",
@@ -14391,7 +14388,7 @@
         ],
         "messages": [],
         "name": "qCreateRelease",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -14399,7 +14396,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "INSERT INTO releases (\n  member_id,\n  release_type,\n  member_agreement_id,\n  mushroomprocess_product_id,\n  item_name,\n  quantity,\n  unit,\n  net_weight_g,\n  strain,\n  facilitator_id,\n  storage_location_name,\n  notes\n)\nVALUES (\n  {{ this.params.member_id }}::uuid,\n  {{ this.params.release_type }},\n\t{{ this.params.member_agreement_id }},\n  {{ this.params.mushroomprocess_product_id }},\n  {{ this.params.item_name }},\n  {{ this.params.quantity }}::numeric,\n  {{ this.params.unit }},\n  {{ this.params.net_weight_g }}::numeric,\n  {{ this.params.strain }},\n  {{ this.params.facilitator_id }}::uuid,\n  {{ this.params.storage_location_name }},\n  {{ this.params.notes }}\n)\nRETURNING release_id;",
+          "body": "INSERT INTO releases (\n  member_id,\n  release_type,\n  member_agreement_id,\n  mushroomprocess_product_id,\n  item_name,\n  quantity,\n  unit,\n  net_weight_g,\n  strain,\n  facilitator_id,\n  storage_location_name,\n  notes\n)\nVALUES (\n  {{ this.params.member_id }}::uuid,\n  'sacrament_release',\n\t{{ this.params.member_agreement_id }},\n  {{ this.params.mushroomprocess_product_id }},\n  {{ this.params.item_name }},\n  {{ this.params.quantity }}::numeric,\n  {{ this.params.unit }},\n  {{ this.params.net_weight_g }}::numeric,\n  {{ this.params.strain }},\n  {{ this.params.facilitator_id }}::uuid,\n  {{ this.params.storage_location_name }},\n  {{ this.params.notes }}\n)\nRETURNING release_id;",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -14436,7 +14433,6 @@
           " this.params.notes ",
           " this.params.facilitator_id ",
           " this.params.member_agreement_id ",
-          " this.params.release_type ",
           " this.params.quantity ",
           " this.params.storage_location_name ",
           " this.params.strain ",
@@ -14446,7 +14442,7 @@
         ],
         "messages": [],
         "name": "qCreateRelease",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -14456,7 +14452,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_51806ca4-a766-4861-833c-24848eff9cbf",
-      "id": "Release - Issue_qAccessibleStorageLocations",
+      "id": "Sacrament Release_qAccessibleStorageLocations",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -14497,7 +14493,7 @@
         ],
         "messages": [],
         "name": "qAccessibleStorageLocations",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -14541,90 +14537,7 @@
         ],
         "messages": [],
         "name": "qAccessibleStorageLocations",
-        "pageId": "Release - Issue",
-        "policyMap": {},
-        "runBehaviour": "AUTOMATIC",
-        "userPermissions": [],
-        "userSetOnLoad": false
-      }
-    },
-    {
-      "deleted": false,
-      "gitSyncId": "696e976bef6f963f4d13cbc6_7ece3340-b7d0-4202-bab6-5f71393d1928",
-      "id": "Release - Issue_qAgreementTypesList",
-      "pluginId": "postgres-plugin",
-      "pluginType": "DB",
-      "publishedAction": {
-        "actionConfiguration": {
-          "body": "SELECT type_key, display_name\nFROM public.agreement_types\nWHERE active = true\nORDER BY sort_order, display_name;\n",
-          "encodeParamsToggle": true,
-          "paginationType": "NONE",
-          "pluginSpecifiedTemplates": [
-            {
-              "value": true
-            }
-          ],
-          "selfReferencingDataPaths": [],
-          "timeoutInMillisecond": 10000
-        },
-        "confirmBeforeExecute": false,
-        "createdAt": "2026-01-21T17:09:06Z",
-        "datasource": {
-          "deleted": false,
-          "id": "signaturegate-postgres",
-          "isAutoGenerated": false,
-          "messages": [],
-          "name": "signaturegate-postgres",
-          "pluginId": "postgres-plugin",
-          "policies": [],
-          "policyMap": {},
-          "userPermissions": []
-        },
-        "dynamicBindingPathList": [],
-        "invalids": [],
-        "isValid": true,
-        "jsonPathKeys": [],
-        "messages": [],
-        "name": "qAgreementTypesList",
-        "pageId": "Release - Issue",
-        "policyMap": {},
-        "runBehaviour": "AUTOMATIC",
-        "userPermissions": [],
-        "userSetOnLoad": false
-      },
-      "unpublishedAction": {
-        "actionConfiguration": {
-          "body": "SELECT type_key, display_name\nFROM public.agreement_types\nWHERE active = true\nORDER BY sort_order, display_name;\n",
-          "encodeParamsToggle": true,
-          "paginationType": "NONE",
-          "pluginSpecifiedTemplates": [
-            {
-              "value": true
-            }
-          ],
-          "selfReferencingDataPaths": [],
-          "timeoutInMillisecond": 10000
-        },
-        "confirmBeforeExecute": false,
-        "createdAt": "2026-01-21T17:09:06Z",
-        "datasource": {
-          "deleted": false,
-          "id": "signaturegate-postgres",
-          "isAutoGenerated": false,
-          "messages": [],
-          "name": "signaturegate-postgres",
-          "pluginId": "postgres-plugin",
-          "policies": [],
-          "policyMap": {},
-          "userPermissions": []
-        },
-        "dynamicBindingPathList": [],
-        "invalids": [],
-        "isValid": true,
-        "jsonPathKeys": [],
-        "messages": [],
-        "name": "qAgreementTypesList",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -14634,7 +14547,7 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_f055b6a4-3e34-4434-a534-b2bc44563b3b",
-      "id": "Release - Issue_apiListAvailableProducts",
+      "id": "Sacrament Release_apiListAvailableProducts",
       "pluginId": "restapi-plugin",
       "pluginType": "API",
       "publishedAction": {
@@ -14693,7 +14606,7 @@
         ],
         "messages": [],
         "name": "apiListAvailableProducts",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -14755,7 +14668,7 @@
         ],
         "messages": [],
         "name": "apiListAvailableProducts",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -14765,7 +14678,7 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_d15d40cc-fb31-42a8-81b5-70ede1a82e06",
-      "id": "Release - Issue_apiMarkProductShipped",
+      "id": "Sacrament Release_apiMarkProductShipped",
       "pluginId": "restapi-plugin",
       "pluginType": "API",
       "publishedAction": {
@@ -14823,7 +14736,7 @@
         ],
         "messages": [],
         "name": "apiMarkProductShipped",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -14884,7 +14797,7 @@
         ],
         "messages": [],
         "name": "apiMarkProductShipped",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -24585,7 +24498,7 @@
     {
       "deleted": false,
       "gitSyncId": "69546c483d3106150e1d4549_c7c46bb8-a104-4665-b2ce-4ab2e45b7922",
-      "id": "Release - Issue_qReleaseMemberActive",
+      "id": "Sacrament Release_qReleaseMemberActive",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -24626,7 +24539,7 @@
         ],
         "messages": [],
         "name": "qReleaseMemberActive",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -24670,7 +24583,7 @@
         ],
         "messages": [],
         "name": "qReleaseMemberActive",
-        "pageId": "Release - Issue",
+        "pageId": "Sacrament Release",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -26921,7 +26834,7 @@
         "isDefault": false
       },
       {
-        "id": "Release - Issue",
+        "id": "Sacrament Release",
         "isDefault": false
       },
       {
@@ -27001,7 +26914,7 @@
         "isDefault": false
       },
       {
-        "id": "Release - Issue",
+        "id": "Sacrament Release",
         "isDefault": false
       },
       {
@@ -28074,7 +27987,7 @@
                           "isFilterable": true,
                           "isLoading": false,
                           "isRequired": false,
-                          "isVisible": true,
+                          "isVisible": false,
                           "key": "rgf69u4gmd",
                           "labelAlignment": "left",
                           "labelPosition": "Top",
@@ -28151,7 +28064,7 @@
                           "isFilterable": true,
                           "isLoading": false,
                           "isRequired": "{{ inpCreateRelease.isChecked && !inpUploadRelease.isChecked }}",
-                          "isVisible": true,
+                          "isVisible": false,
                           "key": "rgf69u4gmd",
                           "labelAlignment": "left",
                           "labelPosition": "Top",
@@ -29435,7 +29348,7 @@
                           "isFilterable": true,
                           "isLoading": false,
                           "isRequired": false,
-                          "isVisible": true,
+                          "isVisible": false,
                           "key": "rgf69u4gmd",
                           "labelAlignment": "left",
                           "labelPosition": "Top",
@@ -30243,13 +30156,13 @@
                       "width": 150
                     },
                     "customColumn3": {
-                      "alias": "Issue Release",
+                      "alias": "Record Sacrament Release",
                       "allowCellWrapping": false,
                       "allowSameOptionsInNewRow": true,
                       "borderRadius": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
                       "boxShadow": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
                       "buttonColor": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
-                      "buttonLabel": "Issue Release",
+                      "buttonLabel": "Record Sacrament Release",
                       "buttonStyle": "rgb(3, 179, 101)",
                       "columnType": "button",
                       "computedValue": "",
@@ -30272,7 +30185,7 @@
                       "label": "Release",
                       "labelColor": "#FFFFFF",
                       "notation": "standard",
-                      "onClick": "{{navigateTo('Release - Issue', {member_id : currentRow[\"member_id\"] }, 'SAME_WINDOW');}}",
+                      "onClick": "{{navigateTo('Sacrament Release', {member_id : currentRow[\"member_id\"] }, 'SAME_WINDOW');}}",
                       "originalId": "customColumn3",
                       "sticky": "",
                       "textSize": "0.875rem",
@@ -31295,13 +31208,13 @@
                       "width": 150
                     },
                     "customColumn3": {
-                      "alias": "Issue Release",
+                      "alias": "Record Sacrament Release",
                       "allowCellWrapping": false,
                       "allowSameOptionsInNewRow": true,
                       "borderRadius": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
                       "boxShadow": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
                       "buttonColor": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
-                      "buttonLabel": "Issue Release",
+                      "buttonLabel": "Record Sacrament Release",
                       "buttonStyle": "rgb(3, 179, 101)",
                       "columnType": "button",
                       "computedValue": "",
@@ -31324,7 +31237,7 @@
                       "label": "Release",
                       "labelColor": "#FFFFFF",
                       "notation": "standard",
-                      "onClick": "{{navigateTo('Release - Issue', {member_id : currentRow[\"member_id\"] }, 'SAME_WINDOW');}}",
+                      "onClick": "{{navigateTo('Sacrament Release', {member_id : currentRow[\"member_id\"] }, 'SAME_WINDOW');}}",
                       "originalId": "customColumn3",
                       "sticky": "",
                       "textSize": "0.875rem",
@@ -31962,7 +31875,7 @@
                   "isFilterable": true,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": true,
+                  "isVisible": false,
                   "key": "rgf69u4gmd",
                   "labelAlignment": "left",
                   "labelPosition": "Top",
@@ -35897,7 +35810,7 @@
                   "mobileRightColumn": 54,
                   "mobileTopRow": 1,
                   "needsErrorInfo": false,
-                  "onClick": "{{ navigateTo(\"Release - Issue\", { member_id: appsmith.store.member_id }, \"SAME_WINDOW\") }}",
+                  "onClick": "{{ navigateTo(\"Sacrament Release\", { member_id: appsmith.store.member_id }, \"SAME_WINDOW\") }}",
                   "originalBottomRow": 27,
                   "originalTopRow": 23,
                   "parentColumnSpace": 10.25,
@@ -35909,7 +35822,7 @@
                   "resetFormOnClick": false,
                   "responsiveBehavior": "hug",
                   "rightColumn": 14,
-                  "text": "Issue Release",
+                  "text": "Record Sacrament Release",
                   "topRow": 23,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
@@ -45117,7 +45030,7 @@
                   "isFilterable": true,
                   "isLoading": false,
                   "isRequired": true,
-                  "isVisible": true,
+                  "isVisible": false,
                   "key": "rgf69u4gmd",
                   "labelAlignment": "left",
                   "labelPosition": "Top",
@@ -49052,7 +48965,7 @@
                   "mobileRightColumn": 54,
                   "mobileTopRow": 1,
                   "needsErrorInfo": false,
-                  "onClick": "{{ navigateTo(\"Release - Issue\", { member_id: appsmith.store.member_id }, \"SAME_WINDOW\") }}",
+                  "onClick": "{{ navigateTo(\"Sacrament Release\", { member_id: appsmith.store.member_id }, \"SAME_WINDOW\") }}",
                   "originalBottomRow": 27,
                   "originalTopRow": 23,
                   "parentColumnSpace": 10.25,
@@ -49064,7 +48977,7 @@
                   "resetFormOnClick": false,
                   "responsiveBehavior": "hug",
                   "rightColumn": 14,
-                  "text": "Issue Release",
+                  "text": "Record Sacrament Release",
                   "topRow": 23,
                   "type": "BUTTON_WIDGET",
                   "version": 1,
@@ -58275,7 +58188,7 @@
                   "mobileRightColumn": 54,
                   "mobileTopRow": 1,
                   "needsErrorInfo": false,
-                  "onClick": "{{ navigateTo(\"Members - Directory\") }}",
+                  "onClick": "{{ navigateTo(\"Directory\") }}",
                   "originalBottomRow": 20,
                   "originalTopRow": 16,
                   "parentColumnSpace": 10.25,
@@ -58373,72 +58286,6 @@
                   "widgetName": "selMember"
                 },
                 {
-                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
-                  "animateLoading": true,
-                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 13,
-                  "boxShadow": "none",
-                  "defaultOptionValue": "sacrament_release",
-                  "dynamicBindingPathList": [
-                    {
-                      "key": "sourceData"
-                    },
-                    {
-                      "key": "borderRadius"
-                    }
-                  ],
-                  "dynamicHeight": "FIXED",
-                  "dynamicPropertyPathList": [
-                    {
-                      "key": "sourceData"
-                    }
-                  ],
-                  "dynamicTriggerPathList": [
-                    {
-                      "key": "onOptionChange"
-                    }
-                  ],
-                  "isDisabled": false,
-                  "isFilterable": true,
-                  "isLoading": false,
-                  "isRequired": false,
-                  "isVisible": true,
-                  "key": "mjehiralxq",
-                  "labelAlignment": "left",
-                  "labelPosition": "Top",
-                  "labelText": "Release Type",
-                  "labelTextSize": "0.875rem",
-                  "labelWidth": 5,
-                  "leftColumn": 0,
-                  "maxDynamicHeight": 9000,
-                  "minDynamicHeight": 4,
-                  "minWidth": 450,
-                  "mobileBottomRow": 24,
-                  "mobileLeftColumn": 0,
-                  "mobileRightColumn": 16,
-                  "mobileTopRow": 17,
-                  "needsErrorInfo": false,
-                  "onOptionChange": "{{releaseFlows.refreshGate();}}",
-                  "optionLabel": "display_name",
-                  "optionValue": "type_key",
-                  "originalBottomRow": 31,
-                  "originalTopRow": 24,
-                  "parentColumnSpace": 10.25,
-                  "parentId": "0",
-                  "parentRowSpace": 10,
-                  "placeholderText": "Select option",
-                  "renderMode": "CANVAS",
-                  "responsiveBehavior": "fill",
-                  "rightColumn": 23,
-                  "serverSideFiltering": false,
-                  "sourceData": "{{ qAgreementTypesList.data }}",
-                  "topRow": 7,
-                  "type": "SELECT_WIDGET",
-                  "version": 1,
-                  "widgetId": "306m3lqwup",
-                  "widgetName": "selReleaseType"
-                },
-                {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
                   "bottomRow": 8,
@@ -58485,7 +58332,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 41,
                   "shouldTruncate": false,
-                  "text": "{{\n(() => {\n  const selectedMember = String(\n    selMember.selectedOptionValue ||\n    appsmith.store.member_id ||\n    \"\"\n  ).trim();\n\n  const memberRow = (qMembersDirectory.data || [])\n    .find(m => String(m.member_id) === selectedMember);\n\n  const memberLabel = memberRow\n    ? `${memberRow.first_name || \"\"} ${memberRow.last_name || \"\"}`.trim()\n    : selectedMember || \"selected member\";\n\n  const releaseType = selReleaseType.selectedOptionValue || \"sacrament_release\";\n\n  const releaseTypeRow = (qAgreementTypesList.data || [])\n    .find(t => String(t.type_key) === String(releaseType));\n\n  const releaseLabel =\n    releaseTypeRow?.display_name ||\n    releaseType ||\n    \"selected release type\";\n\n  if (!selectedMember) {\n    return \"Select a member to check eligibility.\";\n  }\n\n  if (qGateCheckAgreement.isLoading) {\n    return \"Checking eligibility...\";\n  }\n\n  const gateRow = qGateCheckAgreement.data?.[0] || null;\n\n  if (gateRow?.member_agreement_id) {\n    const signedLabel =\n      gateRow.template_name ||\n      releaseLabel ||\n      \"required agreement\";\n\n    return `✅ Eligible — ${memberLabel} has signed: ${signedLabel}`;\n  }\n\n  return `❌ Not eligible — ${memberLabel} has not signed: ${releaseLabel}`;\n})()\n}}",
+                  "text": "{{\n(() => {\n  const selectedMember = String(\n    selMember.selectedOptionValue ||\n    appsmith.store.member_id ||\n    \"\"\n  ).trim();\n\n  const memberRow = (qMembersDirectory.data || [])\n    .find(m => String(m.member_id) === selectedMember);\n\n  const memberLabel = memberRow\n    ? `${memberRow.first_name || \"\"} ${memberRow.last_name || \"\"}`.trim()\n    : selectedMember || \"selected member\";\n\n  const releaseType = \"sacrament_release\";\n  const releaseLabel = \"Sacrament Release\";\n\n  if (!selectedMember) {\n    return \"Select a member to check eligibility.\";\n  }\n\n  if (qGateCheckAgreement.isLoading) {\n    return \"Checking eligibility...\";\n  }\n\n  const gateRow = qGateCheckAgreement.data?.[0] || null;\n\n  if (gateRow?.member_agreement_id) {\n    const signedLabel =\n      gateRow.template_name ||\n      releaseLabel ||\n      \"required agreement\";\n\n    return `✅ Eligible — ${memberLabel} has signed: ${signedLabel}`;\n  }\n\n  return `❌ Not eligible — ${memberLabel} has not signed: ${releaseLabel}`;\n})()\n}}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 3,
@@ -59203,7 +59050,7 @@
                   "resetFormOnClick": false,
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
-                  "text": "Issue Release",
+                  "text": "Record Sacrament Release",
                   "tooltip": "{{\n!qGateCheckAgreement.data?.length && appsmith.store.facilitator_is_reviewer\n  ? \"Reviewer override: notes required\"\n  : \"\"\n}}",
                   "topRow": 16,
                   "type": "BUTTON_WIDGET",
@@ -59291,13 +59138,13 @@
               "widgetId": "0",
               "widgetName": "MainContainer"
             },
-            "id": "Release - Issue",
+            "id": "Sacrament Release",
             "layoutOnLoadActionErrors": [],
             "layoutOnLoadActions": [
               [
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_qAccessibleStorageLocations",
+                  "id": "Sacrament Release_qAccessibleStorageLocations",
                   "jsonPathKeys": [
                     " appsmith.user.email "
                   ],
@@ -59307,15 +59154,7 @@
                 },
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_qAgreementTypesList",
-                  "jsonPathKeys": [],
-                  "name": "qAgreementTypesList",
-                  "pluginType": "DB",
-                  "timeoutInMillisecond": 10000
-                },
-                {
-                  "confirmBeforeExecute": false,
-                  "id": "Release - Issue_qListFacilitators",
+                  "id": "Sacrament Release_qListFacilitators",
                   "jsonPathKeys": [],
                   "name": "qListFacilitators",
                   "pluginType": "DB",
@@ -59323,7 +59162,7 @@
                 },
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_qMembersDirectory",
+                  "id": "Sacrament Release_qMembersDirectory",
                   "jsonPathKeys": [
                     " appsmith.user.email "
                   ],
@@ -59334,9 +59173,9 @@
               ],
               [
                 {
-                  "collectionId": "Release - Issue_releaseFlows",
+                  "collectionId": "Sacrament Release_releaseFlows",
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_releaseFlows.verifyaccess",
+                  "id": "Sacrament Release_releaseFlows.verifyaccess",
                   "jsonPathKeys": [
                     "async function () {\n  try {\n    let email = null;\n    for (let i = 0; i < 20; i++) {\n      email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n      if (email) break;\n      await new Promise(r => setTimeout(r, 150));\n    }\n    if (!email) {\n      showAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n      return;\n    }\n    let rows = await qCurrentFacilitator.run({\n      email\n    });\n    if (!Array.isArray(rows)) rows = [];\n    const me = rows[0];\n    if (!me?.member_id) {\n      showAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n      await releaseFlows.auditLog(\"auth.denied\", \"facilitator\", \"\", {\n        email,\n        page: appsmith.URL?.pathname,\n        mode: appsmith.mode\n      });\n      if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n        navigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n      }\n      return;\n    }\n    const facilitator_id = me.member_id;\n    const facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n    const is_document_reviewer = me.is_document_reviewer;\n    const is_donations_reviewer = me.is_donations_reviewer;\n    storeValue(\"facilitator_id\", facilitator_id);\n    storeValue(\"facilitator_email\", facilitator_email);\n    storeValue(\"facilitator_is_reviewer\", is_document_reviewer);\n    storeValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n    storeValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\n  } catch (e) {\n    showAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n    showAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? ({})), \"error\");\n    if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n      navigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n    }\n    return;\n  }\n  releaseFlows.refresh();\n}"
                   ],
@@ -59348,7 +59187,7 @@
               [
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_apiListAvailableProducts",
+                  "id": "Sacrament Release_apiListAvailableProducts",
                   "jsonPathKeys": [
                     " JSON.stringify((qAccessibleStorageLocations.data || []).map(x => x.storage_location_name)) "
                   ],
@@ -59364,7 +59203,7 @@
             "viewMode": false
           }
         ],
-        "name": "Release - Issue",
+        "name": "Sacrament Release",
         "policyMap": {},
         "slug": "release-issue",
         "uniqueSlug": "release-issue",
@@ -59418,7 +59257,7 @@
                   "mobileRightColumn": 54,
                   "mobileTopRow": 1,
                   "needsErrorInfo": false,
-                  "onClick": "{{ navigateTo(\"Members - Directory\") }}",
+                  "onClick": "{{ navigateTo(\"Directory\") }}",
                   "originalBottomRow": 20,
                   "originalTopRow": 16,
                   "parentColumnSpace": 10.25,
@@ -59516,72 +59355,6 @@
                   "widgetName": "selMember"
                 },
                 {
-                  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
-                  "animateLoading": true,
-                  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-                  "bottomRow": 13,
-                  "boxShadow": "none",
-                  "defaultOptionValue": "sacrament_release",
-                  "dynamicBindingPathList": [
-                    {
-                      "key": "sourceData"
-                    },
-                    {
-                      "key": "borderRadius"
-                    }
-                  ],
-                  "dynamicHeight": "FIXED",
-                  "dynamicPropertyPathList": [
-                    {
-                      "key": "sourceData"
-                    }
-                  ],
-                  "dynamicTriggerPathList": [
-                    {
-                      "key": "onOptionChange"
-                    }
-                  ],
-                  "isDisabled": false,
-                  "isFilterable": true,
-                  "isLoading": false,
-                  "isRequired": false,
-                  "isVisible": true,
-                  "key": "mjehiralxq",
-                  "labelAlignment": "left",
-                  "labelPosition": "Top",
-                  "labelText": "Release Type",
-                  "labelTextSize": "0.875rem",
-                  "labelWidth": 5,
-                  "leftColumn": 0,
-                  "maxDynamicHeight": 9000,
-                  "minDynamicHeight": 4,
-                  "minWidth": 450,
-                  "mobileBottomRow": 24,
-                  "mobileLeftColumn": 0,
-                  "mobileRightColumn": 16,
-                  "mobileTopRow": 17,
-                  "needsErrorInfo": false,
-                  "onOptionChange": "{{releaseFlows.refreshGate();}}",
-                  "optionLabel": "display_name",
-                  "optionValue": "type_key",
-                  "originalBottomRow": 31,
-                  "originalTopRow": 24,
-                  "parentColumnSpace": 10.25,
-                  "parentId": "0",
-                  "parentRowSpace": 10,
-                  "placeholderText": "Select option",
-                  "renderMode": "CANVAS",
-                  "responsiveBehavior": "fill",
-                  "rightColumn": 23,
-                  "serverSideFiltering": false,
-                  "sourceData": "{{ qAgreementTypesList.data }}",
-                  "topRow": 7,
-                  "type": "SELECT_WIDGET",
-                  "version": 1,
-                  "widgetId": "306m3lqwup",
-                  "widgetName": "selReleaseType"
-                },
-                {
                   "animateLoading": true,
                   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
                   "bottomRow": 8,
@@ -59628,7 +59401,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 41,
                   "shouldTruncate": false,
-                  "text": "{{\n(() => {\n  const selectedMember = String(\n    selMember.selectedOptionValue ||\n    appsmith.store.member_id ||\n    \"\"\n  ).trim();\n\n  const memberRow = (qMembersDirectory.data || [])\n    .find(m => String(m.member_id) === selectedMember);\n\n  const memberLabel = memberRow\n    ? `${memberRow.first_name || \"\"} ${memberRow.last_name || \"\"}`.trim()\n    : selectedMember || \"selected member\";\n\n  const releaseType = selReleaseType.selectedOptionValue || \"sacrament_release\";\n\n  const releaseTypeRow = (qAgreementTypesList.data || [])\n    .find(t => String(t.type_key) === String(releaseType));\n\n  const releaseLabel =\n    releaseTypeRow?.display_name ||\n    releaseType ||\n    \"selected release type\";\n\n  if (!selectedMember) {\n    return \"Select a member to check eligibility.\";\n  }\n\n  if (qGateCheckAgreement.isLoading) {\n    return \"Checking eligibility...\";\n  }\n\n  const gateRow = qGateCheckAgreement.data?.[0] || null;\n\n  if (gateRow?.member_agreement_id) {\n    const signedLabel =\n      gateRow.template_name ||\n      releaseLabel ||\n      \"required agreement\";\n\n    return `✅ Eligible — ${memberLabel} has signed: ${signedLabel}`;\n  }\n\n  return `❌ Not eligible — ${memberLabel} has not signed: ${releaseLabel}`;\n})()\n}}",
+                  "text": "{{\n(() => {\n  const selectedMember = String(\n    selMember.selectedOptionValue ||\n    appsmith.store.member_id ||\n    \"\"\n  ).trim();\n\n  const memberRow = (qMembersDirectory.data || [])\n    .find(m => String(m.member_id) === selectedMember);\n\n  const memberLabel = memberRow\n    ? `${memberRow.first_name || \"\"} ${memberRow.last_name || \"\"}`.trim()\n    : selectedMember || \"selected member\";\n\n  const releaseType = \"sacrament_release\";\n  const releaseLabel = \"Sacrament Release\";\n\n  if (!selectedMember) {\n    return \"Select a member to check eligibility.\";\n  }\n\n  if (qGateCheckAgreement.isLoading) {\n    return \"Checking eligibility...\";\n  }\n\n  const gateRow = qGateCheckAgreement.data?.[0] || null;\n\n  if (gateRow?.member_agreement_id) {\n    const signedLabel =\n      gateRow.template_name ||\n      releaseLabel ||\n      \"required agreement\";\n\n    return `✅ Eligible — ${memberLabel} has signed: ${signedLabel}`;\n  }\n\n  return `❌ Not eligible — ${memberLabel} has not signed: ${releaseLabel}`;\n})()\n}}",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 3,
@@ -60346,7 +60119,7 @@
                   "resetFormOnClick": false,
                   "responsiveBehavior": "hug",
                   "rightColumn": 64,
-                  "text": "Issue Release",
+                  "text": "Record Sacrament Release",
                   "tooltip": "{{\n!qGateCheckAgreement.data?.length && appsmith.store.facilitator_is_reviewer\n  ? \"Reviewer override: notes required\"\n  : \"\"\n}}",
                   "topRow": 16,
                   "type": "BUTTON_WIDGET",
@@ -60434,13 +60207,13 @@
               "widgetId": "0",
               "widgetName": "MainContainer"
             },
-            "id": "Release - Issue",
+            "id": "Sacrament Release",
             "layoutOnLoadActionErrors": [],
             "layoutOnLoadActions": [
               [
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_qAccessibleStorageLocations",
+                  "id": "Sacrament Release_qAccessibleStorageLocations",
                   "jsonPathKeys": [
                     " appsmith.user.email "
                   ],
@@ -60450,15 +60223,7 @@
                 },
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_qAgreementTypesList",
-                  "jsonPathKeys": [],
-                  "name": "qAgreementTypesList",
-                  "pluginType": "DB",
-                  "timeoutInMillisecond": 10000
-                },
-                {
-                  "confirmBeforeExecute": false,
-                  "id": "Release - Issue_qListFacilitators",
+                  "id": "Sacrament Release_qListFacilitators",
                   "jsonPathKeys": [],
                   "name": "qListFacilitators",
                   "pluginType": "DB",
@@ -60466,7 +60231,7 @@
                 },
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_qMembersDirectory",
+                  "id": "Sacrament Release_qMembersDirectory",
                   "jsonPathKeys": [
                     " appsmith.user.email "
                   ],
@@ -60477,9 +60242,9 @@
               ],
               [
                 {
-                  "collectionId": "Release - Issue_releaseFlows",
+                  "collectionId": "Sacrament Release_releaseFlows",
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_releaseFlows.verifyaccess",
+                  "id": "Sacrament Release_releaseFlows.verifyaccess",
                   "jsonPathKeys": [
                     "async function () {\n  try {\n    let email = null;\n    for (let i = 0; i < 20; i++) {\n      email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n      if (email) break;\n      await new Promise(r => setTimeout(r, 150));\n    }\n    if (!email) {\n      showAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n      return;\n    }\n    let rows = await qCurrentFacilitator.run({\n      email\n    });\n    if (!Array.isArray(rows)) rows = [];\n    const me = rows[0];\n    if (!me?.member_id) {\n      showAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n      await releaseFlows.auditLog(\"auth.denied\", \"facilitator\", \"\", {\n        email,\n        page: appsmith.URL?.pathname,\n        mode: appsmith.mode\n      });\n      if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n        navigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n      }\n      return;\n    }\n    const facilitator_id = me.member_id;\n    const facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n    const is_document_reviewer = me.is_document_reviewer;\n    const is_donations_reviewer = me.is_donations_reviewer;\n    storeValue(\"facilitator_id\", facilitator_id);\n    storeValue(\"facilitator_email\", facilitator_email);\n    storeValue(\"facilitator_is_reviewer\", is_document_reviewer);\n    storeValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n    storeValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\n  } catch (e) {\n    showAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n    showAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? ({})), \"error\");\n    if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n      navigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n    }\n    return;\n  }\n  releaseFlows.refresh();\n}"
                   ],
@@ -60491,7 +60256,7 @@
               [
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Release - Issue_apiListAvailableProducts",
+                  "id": "Sacrament Release_apiListAvailableProducts",
                   "jsonPathKeys": [
                     " JSON.stringify((qAccessibleStorageLocations.data || []).map(x => x.storage_location_name)) "
                   ],
@@ -60507,7 +60272,7 @@
             "viewMode": false
           }
         ],
-        "name": "Release - Issue",
+        "name": "Sacrament Release",
         "policyMap": {},
         "slug": "release-issue",
         "uniqueSlug": "release-issue",
@@ -75998,9 +75763,9 @@
                       "alias": "Profile",
                       "allowCellWrapping": false,
                       "allowSameOptionsInNewRow": true,
-                      "borderRadius": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
-                      "boxShadow": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
-                      "buttonColor": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+                      "borderRadius": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "boxShadow": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+                      "buttonColor": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
                       "buttonLabel": "View Profile",
                       "buttonStyle": "rgb(3, 179, 101)",
                       "columnType": "button",
@@ -76026,6 +75791,45 @@
                       "notation": "standard",
                       "onClick": "{{ navigateTo(currentRow.party_kind === 'organization' ? 'Company Profile' : 'Individual Profile', currentRow.party_kind === 'organization' ? {organization_id: currentRow.party_id} : {person_id: currentRow.party_id}, 'SAME_WINDOW') }}",
                       "originalId": "customColumn1",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "customColumn2": {
+                      "alias": "Sacrament Release",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "borderRadius": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "boxShadow": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+                      "buttonColor": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+                      "buttonLabel": "Record Release",
+                      "buttonStyle": "rgb(3, 179, 101)",
+                      "columnType": "button",
+                      "computedValue": "",
+                      "currencyCode": "USD",
+                      "customAlias": "",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "customColumn2",
+                      "index": 8,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": true,
+                      "isDisabled": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => (!(currentRow.party_kind === \"individual\" && currentRow.member_id && currentRow.membership_status === \"active\")))}}",
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Sacrament",
+                      "labelColor": "#FFFFFF",
+                      "notation": "standard",
+                      "onClick": "{{navigateTo(\"Sacrament Release\", { member_id: currentRow.member_id }, \"SAME_WINDOW\")}}",
+                      "originalId": "customColumn2",
                       "sticky": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,
@@ -77187,9 +76991,9 @@
                       "alias": "Profile",
                       "allowCellWrapping": false,
                       "allowSameOptionsInNewRow": true,
-                      "borderRadius": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
-                      "boxShadow": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
-                      "buttonColor": "{{tblMembers.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+                      "borderRadius": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "boxShadow": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+                      "buttonColor": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
                       "buttonLabel": "View Profile",
                       "buttonStyle": "rgb(3, 179, 101)",
                       "columnType": "button",
@@ -77215,6 +77019,45 @@
                       "notation": "standard",
                       "onClick": "{{ navigateTo(currentRow.party_kind === 'organization' ? 'Company Profile' : 'Individual Profile', currentRow.party_kind === 'organization' ? {organization_id: currentRow.party_id} : {person_id: currentRow.party_id}, 'SAME_WINDOW') }}",
                       "originalId": "customColumn1",
+                      "sticky": "",
+                      "textSize": "0.875rem",
+                      "thousandSeparator": true,
+                      "validation": {},
+                      "verticalAlignment": "CENTER",
+                      "width": 150
+                    },
+                    "customColumn2": {
+                      "alias": "Sacrament Release",
+                      "allowCellWrapping": false,
+                      "allowSameOptionsInNewRow": true,
+                      "borderRadius": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+                      "boxShadow": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+                      "buttonColor": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+                      "buttonLabel": "Record Release",
+                      "buttonStyle": "rgb(3, 179, 101)",
+                      "columnType": "button",
+                      "computedValue": "",
+                      "currencyCode": "USD",
+                      "customAlias": "",
+                      "decimals": 0,
+                      "enableFilter": true,
+                      "enableSort": true,
+                      "horizontalAlignment": "LEFT",
+                      "id": "customColumn2",
+                      "index": 8,
+                      "isCellEditable": false,
+                      "isCellVisible": true,
+                      "isDerived": true,
+                      "isDisabled": "{{tblDirectory.processedTableData.map((currentRow, currentIndex) => (!(currentRow.party_kind === \"individual\" && currentRow.member_id && currentRow.membership_status === \"active\")))}}",
+                      "isDiscardVisible": true,
+                      "isEditable": false,
+                      "isSaveVisible": true,
+                      "isVisible": true,
+                      "label": "Sacrament",
+                      "labelColor": "#FFFFFF",
+                      "notation": "standard",
+                      "onClick": "{{navigateTo(\"Sacrament Release\", { member_id: currentRow.member_id }, \"SAME_WINDOW\")}}",
+                      "originalId": "customColumn2",
                       "sticky": "",
                       "textSize": "0.875rem",
                       "thousandSeparator": true,

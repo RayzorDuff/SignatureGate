@@ -57,7 +57,7 @@ Route Appsmith to NocoDB using the **internal docker hostname / local network pa
 For the Issue #19 canonical-identity export, first apply
 `db/migrations_issue_19_canonical_people.sql` and run its rollback-only smoke
 test as described in `db/README.md`. Its member/contributor queries read the
-`member_profiles` and `contributor_profiles` views. The Release - Issue and
+`member_profiles` and `contributor_profiles` views. The Sacrament Release and
 Members - Profile product actions use the MushroomProcess `/pgsql/` n8n
 webhooks; those three PGSQL workflows must be active in n8n.
 
@@ -128,7 +128,7 @@ Pending agreements, practitioner/reviewer permissions, and active facilitator
 assignments must be resolved first. An ended membership remains visible in the
 individual's membership history; **Enable membership** does not create another
 member ID for this person. The button to enable membership is intentionally
-hidden for everyone who already has a member record. The Release - Issue page
+hidden for everyone who already has a member record. The Sacrament Release page
 checks membership again before calling the inventory shipment endpoint; the
 database also refuses any new release for an inactive member.
 Check contributor email and phone on the profile before ending membership;
@@ -196,6 +196,16 @@ Company Profile. A reason is required, old and new values are audited, and a
 stale profile must be refreshed before saving. The change updates the central
 `people` or `organizations` identity only; it does not replace member or
 contributor IDs or alter donations, contacts, agreements, releases, or roles.
+
+After `db/migrations_issue_19_sacrament_release_scope.sql` and its rollback-only
+verification, import the matching Appsmith export. The former **Release -
+Issue** page is now **Sacrament Release**. It records only tangible sacrament
+transfers, always writes `release_type = 'sacrament_release'`, and checks an
+agreement authorizing sacrament release. Membership, sweat-lodge, and retreat
+agreement types are not release choices. Directory provides **Record Release**
+only for an individual with an active membership; company, nonmember, and ended
+membership rows remain disabled. Historical non-sacrament release values are
+reported for review rather than silently reclassified.
 
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.

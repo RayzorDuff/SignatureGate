@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added a sacrament-only release constraint with rollback-only verification and a canonical Directory shortcut for active members (#19).
 - Added directory-manager identity correction on Individual and Company Profiles, with stale-edit protection and audited old/new canonical values (#19).
 - Added reasoned, audited archive/reactivation for individual and organization contributors, retaining their contacts, provider identities, donation history, and independent membership state (#19).
 - Added permission-scoped contribution history and external provider identities to Individual Profile and Company Profile, without coupling donations to membership (#19).
@@ -41,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Renamed the Appsmith Release - Issue page to Sacrament Release, removed agreement categories as release choices, and limited agreement gating and release writes to tangible sacrament transfers (#19).
 - Existing member and contributor contact writes now feed the shared party-contact read model; agreement and Listmonk references retain their existing member email IDs during the UI migration.
 - Stored individual names and dates of birth only in `people` and organization names only in `organizations`; Appsmith and the Documenso release workflow read the role profile views.
 - Switched Appsmith product availability and shipment endpoints to the existing MushroomProcess PGSQL n8n workflows.
