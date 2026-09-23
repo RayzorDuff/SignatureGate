@@ -134,6 +134,10 @@ member has member_agreements.status = 'signed'
 AND
 agreement_templates.required_for contains 'sacrament_release'
 
+The template version and current `active` flag do not affect an agreement that
+was already signed. `active` controls whether a template may be selected for a
+new agreement; it does not expire prior signatures.
+
 ### Inventory Flow
 
 Appsmith → n8n → MushroomProcess PostgreSQL

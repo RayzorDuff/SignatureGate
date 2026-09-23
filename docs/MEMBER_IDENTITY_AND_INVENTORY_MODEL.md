@@ -360,6 +360,23 @@ never create or modify `contributor_emails` or `contributor_phones`. Reusing a
 contributor contact for membership remains a separate, reviewed cross-role
 assignment so shared identity does not collapse the two capacities.
 
+Individual Profile presents those email/phone operations through one role-aware
+editor rather than parallel membership and contributor forms. Its selector is
+limited to capacities the person has and the current reviewer may access. The
+shared presentation does not merge storage or authorization: each action still
+calls the member- or contributor-specific function, refreshes both projections,
+and preserves separate audit semantics. Membership closure and contributor
+archival remain separate lifecycle operations because their permissions,
+blockers, and historical effects differ.
+
+`migrations_issue_19_sacrament_agreement_gate.sql` centralizes release-agreement
+eligibility. A signed agreement qualifies when its template scope includes
+`sacrament_release`, regardless of template version or whether that version is
+still active for new issuance. An inactive template therefore cannot be used
+for a new agreement but does not invalidate an existing signature. Reviewed
+template-free paper/manual agreements remain supported. Membership-only,
+pending, rejected, expired, and canceled agreements do not pass the gate.
+
 Membership is not a permission to operate Appsmith. Person-owned reviewer
 roles and Appsmith account ownership are now separate from membership; older
 operational pages and APIs still need to adopt those permissions. Ceremony

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Made the Sacrament Release gate honor signed sacrament agreements from inactive older template versions, and added rollback-only coverage for old/new versions, unrelated scopes, pending status, and reviewed manual agreements (#19).
+- Corrected the membership-contact verification fixture after canonical identity removed copied contributor name columns (#19).
 - Removed the contributor prerequisite from membership closure: ending membership no longer creates or requires contributor capacity, while an existing contributor, link history, and donation attribution are preserved (#19).
 - Registered the new profile-history tables' Appsmith visibility bindings, based their rendering on the loaded profile instead of a projected contributor ID, and made contributor apartment/suite inputs explicitly optional (#19).
 - Corrected the former-member contact migration's missing SQL output alias and shortened its Individual Profile guidance (#19).
@@ -45,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Consolidated Individual Profile membership and contributor email/phone forms into one role-aware contact editor, reducing page length while retaining separate permissions, tables, and audit paths for each capacity (#19).
 - Renamed the Appsmith Release - Issue page to Sacrament Release, removed agreement categories as release choices, and limited agreement gating and release writes to tangible sacrament transfers (#19).
 - Existing member and contributor contact writes now feed the shared party-contact read model; agreement and Listmonk references retain their existing member email IDs during the UI migration.
 - Stored individual names and dates of birth only in `people` and organization names only in `organizations`; Appsmith and the Documenso release workflow read the role profile views.

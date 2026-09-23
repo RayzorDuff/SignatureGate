@@ -227,13 +227,20 @@ contributor.
 
 After `db/migrations_issue_19_member_contact_profiles.sql` and its rollback-only
 verification, import the matching Appsmith export. Individual Profile then
-shows membership-purpose email and phone records to authorized member-operation
-viewers. A document reviewer can add or archive those records while the
-membership is active; assigned practitioners have read-only access. New member
-emails start as not subscribed to Listmonk. These controls write only
-`member_emails` and `member_phones`. They never add or change contributor
-contacts, and an existing contributor contact must be shared through the
-separate reviewed cross-role assignment control.
+provides one email/phone editor with a **Contact role** selector. It offers only
+Membership and/or Contributor when that capacity exists and the signed-in
+reviewer may access it. Membership writes still go only to `member_emails` and
+`member_phones`; contributor writes still go only to the contributor tables.
+Assigned practitioners have read-only membership visibility. New member emails
+start as not subscribed to Listmonk, and an existing contact is shared across
+capacities only through the separate reviewed cross-role assignment control.
+
+After `db/migrations_issue_19_sacrament_agreement_gate.sql` and its rollback-only
+verification, import the matching Appsmith export. Sacrament Release accepts a
+signed agreement from any template version whose `required_for` includes
+`sacrament_release`. Deactivating an old template prevents new selection but
+does not invalidate agreements already signed from it. Reviewed template-free
+paper/manual agreements retain their legacy eligibility path.
 
 ### Most reliable: import the **full app JSON**
 1. In Appsmith, go to the workspace → **Create New → Import**.

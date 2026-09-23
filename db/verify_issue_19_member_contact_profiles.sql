@@ -30,8 +30,10 @@ BEGIN
     RETURNING person_id INTO v_target_person;
   INSERT INTO public.members(person_id) VALUES (v_target_person)
     RETURNING member_id INTO v_target_member;
-  INSERT INTO public.contributors(contributor_type,person_id,display_name)
-    VALUES ('individual',v_target_person,'Issue 19 Contact Target')
+  -- Contributor identity fields are canonical in people; contributors stores
+  -- only the independent contribution capacity after canonical_people.sql.
+  INSERT INTO public.contributors(contributor_type,person_id)
+    VALUES ('individual',v_target_person)
     RETURNING contributor_id INTO v_contributor_id;
 
   BEGIN
