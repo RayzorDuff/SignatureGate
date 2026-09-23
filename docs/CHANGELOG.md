@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Fixed Givebutter webhook ingestion when a numeric Givebutter `contact_id` is passed as the external provider identity; the workflow now normalizes the identity to text and explicitly casts database parameters to the `ingest_provider_donation(...)` signature (#19).
 - Made the Sacrament Release gate honor signed sacrament agreements from inactive older template versions, and added rollback-only coverage for old/new versions, unrelated scopes, pending status, and reviewed manual agreements (#19).
 - Corrected the membership-contact verification fixture after canonical identity removed copied contributor name columns (#19).
 - Removed the contributor prerequisite from membership closure: ending membership no longer creates or requires contributor capacity, while an existing contributor, link history, and donation attribution are preserved (#19).

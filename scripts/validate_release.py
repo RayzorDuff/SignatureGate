@@ -8,6 +8,32 @@ import re
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
+def validate_givebutter_workflow(path: pathlib.Path, data: dict, failures: list[str]) -> None:
+    """Guard the provider-identity bind type used by the Givebutter webhook."""
+    if data.get("name") != "SignatureGate - Givebutter - Webhook Transactions":
+        return
+
+    relative_path = path.relative_to(ROOT)
+    nodes = {node.get("name"): node for node in data.get("nodes", [])}
+    normalize = nodes.get("Normalize Transaction", {})
+    postgres = nodes.get("PG - Insert Donation + Audit", {})
+    normalize_code = normalize.get("parameters", {}).get("jsCode", "")
+    query = postgres.get("parameters", {}).get("query", "")
+
+    if "provider_identity" not in normalize_code or "data.contact_id.toString()" not in normalize_code:
+        failures.append(
+            f"{relative_path}: Givebutter contact_id must be normalized to a text provider_identity"
+        )
+
+    provider_identity_call = re.search(
+        r"p_provider_identity\s*=>[^\n]*\$\d+::text", query
+    )
+    if not provider_identity_call:
+        failures.append(
+            f"{relative_path}: ingest_provider_donation provider identity bind must be explicitly cast to text"
+        )
+
+
 def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]) -> None:
     """Catch drift between Appsmith JS actions and their combined JS objects."""
     if not {"actionList", "actionCollectionList", "pageList"}.issubset(data):
@@ -90,6 +116,7 @@ def validate_assets() -> None:
             data = json.loads(path.read_text(encoding="utf-8"))
             if isinstance(data, dict):
                 validate_appsmith_export(path, data, failures)
+                validate_givebutter_workflow(path, data, failures)
         except Exception as exc:
             failures.append(f"{path.relative_to(ROOT)}: {exc}")
     if failures:
