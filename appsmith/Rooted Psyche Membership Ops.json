@@ -207,13 +207,13 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_e2329507-c895-487c-b575-9cb9e351bb41",
-      "id": "Agreements - Templates_agreementTemplateFlows",
+      "id": "Agreement Templates_agreementTemplateFlows",
       "publishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqAgreementTemplatesList.run(),\n\t\t\tqAgreementTypesList.run(),\n\t\t]);\n\t},\n\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\tlet email = null;\n\t\t\tfor (let i = 0; i < 20; i++) {\n\t\t\t\temail = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n\t\t\t\tif (email) break;\n\t\t\t\tawait new Promise(r => setTimeout(r, 150));\n\t\t\t}\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tlet rows = await qCurrentFacilitator.run({ email });\n\t\t\tif (!Array.isArray(rows)) rows = [];\n\n\t\t\tconst me = rows[0];\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\tawait this.auditLog(\"auth.denied\", \"facilitator\", \"\", {\n\t\t\t\t\temail,\n\t\t\t\t\tpage: appsmith.URL?.pathname,\n\t\t\t\t\tmode: appsmith.mode\n\t\t\t\t});\n\t\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer);\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\n\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\n\t\tthis.refresh();\n\t},\n\n\tlinkify(inputText) {\n\t\tconst s = String(inputText || \"\");\n\t\tlet replacedText = s.replace(/((https?|ftp):\\/\\/[\\w\\d&@#/%?=~_|!:,.;]+[-A-Z0-9+&@#/%=~_|])/ig, function(url) {\n\t\t\treturn '<a href=\"' + url + '\" target=\"_blank\">' + url + '</a>';\n\t\t});\n\t\treplacedText = replacedText.replace(/(^|[^/])(www\\.[\\S]+(\\b|$))/gim,function(match, capture1, capture2) {\n\t\t\treturn capture1 + '<a href=\"http://' + capture2 + '\" target=\"_blank\">' + capture2 + '</a>';\n\t\t});\n\t\treturn replacedText;\n\t},\n\n\t_normArray(v) {\n\t\tif (v == null) return [];\n\t\tif (Array.isArray(v)) return v.map(String);\n\t\tif (typeof v === \"string\") {\n\t\t\tconst s = v.trim();\n\t\t\tif (!s) return [];\n\t\t\tconst stripped = s.replace(/^\\{|\\}$/g, \"\");\n\t\t\treturn stripped.split(\",\").map(x => x.trim()).filter(Boolean);\n\t\t}\n\t\treturn [];\n\t},\n\n\t_deepEqual(a, b) {\n\t\treturn JSON.stringify(a) === JSON.stringify(b);\n\t},\n\n\t_normInt(v) {\n\t\tif (v === null || v === undefined) return null;\n\t\tif (typeof v === \"number\" && Number.isFinite(v)) return Math.trunc(v);\n\t\tconst s = String(v).trim();\n\t\tif (!s) return null;\n\t\tconst n = Number(s);\n\t\treturn Number.isFinite(n) ? Math.trunc(n) : null;\n\t},\n\n\t_normText(v) {\n\t\tif (v === null || v === undefined) return \"\";\n\t\treturn String(v).trim();\n\t},\n\n\t_diff(oldRow, newRow) {\n\t\tconst changes = {};\n\t\tconst keys = [\n\t\t\t\"name\",\n\t\t\t\"version\",\n\t\t\t\"required_for\",\n\t\t\t\"doc_url\",\n\t\t\t\"active\",\n\t\t\t\"documenso_template_id\",\n\t\t\t\"documenso_template_envelope_id\",\n\t\t\t\"documenso_member_recipient_id\",\n\t\t\t\"documenso_facilitator_recipient_id\",\n\t\t];\n\n\t\tfor (const k of keys) {\n\t\t\tlet oldV = oldRow?.[k];\n\t\t\tlet newV = newRow?.[k];\n\n\t\t\tif (k === \"required_for\") {\n\t\t\t\toldV = this._normArray(oldV);\n\t\t\t\tnewV = this._normArray(newV);\n\t\t\t} else if (k === \"documenso_template_id\" || k === \"documenso_member_recipient_id\" || k === \"documenso_facilitator_recipient_id\") {\n\t\t\t\toldV = this._normInt(oldV);\n\t\t\t\tnewV = this._normInt(newV);\n\t\t\t} else if (k === \"documenso_template_envelope_id\" || k === \"doc_url\" || k === \"name\" || k === \"version\") {\n\t\t\t\toldV = this._normText(oldV);\n\t\t\t\tnewV = this._normText(newV);\n\t\t\t} else if (k === \"active\") {\n\t\t\t\toldV = !!oldV;\n\t\t\t\tnewV = !!newV;\n\t\t\t}\n\n\t\t\tconst same = JSON.stringify(oldV ?? null) === JSON.stringify(newV ?? null);\n\t\t\tif (!same) changes[k] = { from: oldV ?? null, to: newV ?? null };\n\t\t}\n\t\treturn changes;\n\t},\n\n\tnormalizeDocumensoTemplate(raw) {\n\t\tconst t = raw?.json || raw || {};\n\t\tconst recipients = Array.isArray(t.recipients) ? t.recipients.slice() : [];\n\t\tconst signerRecipients = recipients\n\t\t\t.filter(r => String(r.role || \"\").toUpperCase() === \"SIGNER\" || r.signingOrder)\n\t\t\t.sort((a, b) => (this._normInt(a.signingOrder) ?? 999) - (this._normInt(b.signingOrder) ?? 999));\n\n\t\tconst memberRecipient = signerRecipients.find(r => this._normInt(r.signingOrder) === 1) || signerRecipients[0] || null;\n\t\tconst facilitatorRecipient = signerRecipients.find(r => this._normInt(r.signingOrder) === 2) || signerRecipients[1] || null;\n\n\t\treturn {\n\t\t\ttemplate_id: this._normInt(t.id ?? t.templateId ?? t.template_id),\n\t\t\tenvelope_id: this._normText(t.envelopeId ?? t.envelope_id ?? t.id),\n\t\t\ttitle: this._normText(t.title ?? t.name ?? t.envelopeId ?? t.id),\n\t\t\ttype: this._normText(t.type),\n\t\t\trecipient_count: recipients.length,\n\t\t\tmember_recipient_id: this._normInt(memberRecipient?.id),\n\t\t\tfacilitator_recipient_id: this._normInt(facilitatorRecipient?.id),\n\t\t\trecipients\n\t\t};\n\t},\n\n\tasync loadDocumensoTemplates() {\n\t\tconst response = await apiListDocumensoTemplates.run();\n\t\tconst body = response?.body ?? response ?? {};\n\t\tconst rows = Array.isArray(body?.data)\n\t\t\t? body.data\n\t\t\t: Array.isArray(response)\n\t\t\t\t? response\n\t\t\t\t: [];\n\n\t\tconst templates = rows\n\t\t\t.map(t => this.normalizeDocumensoTemplate(t))\n\t\t\t.filter(t => t.envelope_id);\n\n\t\tawait storeValue(\"documenso_templates\", templates, false);\n\t\tshowAlert(`Loaded ${templates.length} Documenso template${templates.length === 1 ? \"\" : \"s\"}.`, \"success\");\n\t\treturn templates;\n\t},\n\n\tdocumensoTemplateOptions() {\n\t\tconst rows = appsmith.store.documenso_templates || [];\n\t\treturn rows.map(t => ({\n\t\t\tlabel: `${t.title || t.envelope_id}${t.envelope_id ? \" — \" + t.envelope_id : \"\"}`,\n\t\t\tvalue: t.envelope_id\n\t\t}));\n\t},\n\n\tselectedDocumensoTemplate() {\n\t\tconst selectedEnvelopeId = this._normText(selCreateDocumensoTemplate.selectedOptionValue);\n\t\treturn (appsmith.store.documenso_templates || []).find(t => t.envelope_id === selectedEnvelopeId) || null;\n\t},\n\n\tcreateRowFromForm() {\n\t\tconst selected = this.selectedDocumensoTemplate();\n\n\t\treturn {\n\t\t\tname: this._normText(inpCreateAgreementName.text),\n\t\t\tversion: this._normText(inpCreateAgreementVersion.text),\n\t\t\trequired_for: this._normArray(selCreateAgreementTypes.selectedOptionValues),\n\t\t\tdoc_url: this._normText(inpCreateAgreementURL.text),\n\t\t\tactive: !!inpCreateAgreementActive.isChecked,\n\t\t\tdocumenso_template_id: selected?.template_id ?? null,\n\t\t\tdocumenso_template_envelope_id: selected?.envelope_id ?? \"\",\n\t\t\tdocumenso_member_recipient_id: selected?.member_recipient_id ?? null,\n\t\t\tdocumenso_facilitator_recipient_id: selected?.facilitator_recipient_id ?? null\n\t\t};\n\t},\n\n\tvalidateCreateRow(row) {\n\t\tif (!row.name) throw new Error(\"Agreement Name is required.\");\n\t\tif (!row.version) throw new Error(\"Version is required.\");\n\t\tif (!row.doc_url) throw new Error(\"Paper template URL is required.\");\n\t\tif (!row.required_for.length) throw new Error(\"At least one Agreement Type is required.\");\n\t\tif (!row.documenso_template_envelope_id) throw new Error(\"Select a Documenso template.\");\n\t\tif (!row.documenso_member_recipient_id) throw new Error(\"The selected Documenso template does not have a signer recipient to use as the member.\");\n\t},\n\n\tasync createTemplateFromForm() {\n\t\tconst row = this.createRowFromForm();\n\t\tthis.validateCreateRow(row);\n\n\t\tconst res = await this.saveTemplate(row);\n\t\tresetWidget(\"frmNewTemplate\", true);\n\t\tawait storeValue(\"documenso_templates\", appsmith.store.documenso_templates || [], false);\n\t\treturn res;\n\t},\n\n\tasync saveTemplate(row, multiselect) {\n\t\tconst templates = qAgreementTemplatesList?.data || [];\n\t\tconst isExisting = !!row?.agreement_template_id;\n\n\t\tconst oldRow = isExisting\n\t\t\t? templates.find(t => t.agreement_template_id === row.agreement_template_id)\n\t\t\t: null;\n\n\t\tif (multiselect) { row.required_for = multiselect; }\n\t\tconst requiredForArr = this._normArray(row.required_for);\n\n\t\tconst normalizedRow = {\n\t\t\t...row,\n\t\t\trequired_for: requiredForArr,\n\t\t\tdocumenso_template_id: this._normInt(row.documenso_template_id),\n\t\t\tdocumenso_template_envelope_id: this._normText(row.documenso_template_envelope_id),\n\t\t\tdocumenso_member_recipient_id: this._normInt(row.documenso_member_recipient_id),\n\t\t\tdocumenso_facilitator_recipient_id: this._normInt(row.documenso_facilitator_recipient_id),\n\t\t};\n\n\t\tconst changes = this._diff(oldRow, normalizedRow);\n\n\t\tif (isExisting && Object.keys(changes).length === 0) {\n\t\t\tshowAlert(\"No changes to save.\", \"info\");\n\t\t\treturn;\n\t\t}\n\n\t\tconst auditDetails = {\n\t\t\tagreement_template_id: row.agreement_template_id ?? null,\n\t\t\tchanges,\n\t\t\tsaved_from_page: \"Agreements - Templates\"\n\t\t};\n\n\t\tconst params = {\n\t\t\tagreement_template_id: row.agreement_template_id,\n\t\t\tname: this._normText(row.name),\n\t\t\tversion: this._normText(row.version),\n\t\t\trequired_for_json: JSON.stringify(requiredForArr),\n\t\t\tdoc_url: this._normText(row.doc_url),\n\t\t\tactive: !!row.active,\n\t\t\tdocumenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n\t\t\tdocumenso_template_envelope_id: this._normText(row.documenso_template_envelope_id),\n\t\t\tdocumenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n\t\t\tdocumenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n\t\t\tactor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n\t\t\taudit_details: JSON.stringify(auditDetails)\n\t\t};\n\n\t\tif (!params.name) throw new Error(\"Template name is required.\");\n\t\tif (!params.version) throw new Error(\"Template version is required.\");\n\n\t\tlet res;\n\t\tif (isExisting) {\n\t\t\tres = await qAgreementTemplateUpdate.run(params);\n\t\t\tshowAlert(\"Template updated.\", \"success\");\n\t\t} else {\n\t\t\tres = await qAgreementTemplateInsert.run(params);\n\t\t\tshowAlert(\"Template created.\", \"success\");\n\t\t}\n\n\t\tawait qAgreementTemplatesList.run();\n\t\treturn res;\n\t},\n\n}",
+        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqAgreementTemplatesList.run(),\n\t\t\tqAgreementTypesList.run(),\n\t\t]);\n\t},\n\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\tlet email = null;\n\t\t\tfor (let i = 0; i < 20; i++) {\n\t\t\t\temail = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n\t\t\t\tif (email) break;\n\t\t\t\tawait new Promise(r => setTimeout(r, 150));\n\t\t\t}\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tlet rows = await qCurrentFacilitator.run({ email });\n\t\t\tif (!Array.isArray(rows)) rows = [];\n\n\t\t\tconst me = rows[0];\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\tawait this.auditLog(\"auth.denied\", \"facilitator\", \"\", {\n\t\t\t\t\temail,\n\t\t\t\t\tpage: appsmith.URL?.pathname,\n\t\t\t\t\tmode: appsmith.mode\n\t\t\t\t});\n\t\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer);\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\n\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\n\t\tthis.refresh();\n\t},\n\n\tlinkify(inputText) {\n\t\tconst s = String(inputText || \"\");\n\t\tlet replacedText = s.replace(/((https?|ftp):\\/\\/[\\w\\d&@#/%?=~_|!:,.;]+[-A-Z0-9+&@#/%=~_|])/ig, function(url) {\n\t\t\treturn '<a href=\"' + url + '\" target=\"_blank\">' + url + '</a>';\n\t\t});\n\t\treplacedText = replacedText.replace(/(^|[^/])(www\\.[\\S]+(\\b|$))/gim,function(match, capture1, capture2) {\n\t\t\treturn capture1 + '<a href=\"http://' + capture2 + '\" target=\"_blank\">' + capture2 + '</a>';\n\t\t});\n\t\treturn replacedText;\n\t},\n\n\t_normArray(v) {\n\t\tif (v == null) return [];\n\t\tif (Array.isArray(v)) return v.map(String);\n\t\tif (typeof v === \"string\") {\n\t\t\tconst s = v.trim();\n\t\t\tif (!s) return [];\n\t\t\tconst stripped = s.replace(/^\\{|\\}$/g, \"\");\n\t\t\treturn stripped.split(\",\").map(x => x.trim()).filter(Boolean);\n\t\t}\n\t\treturn [];\n\t},\n\n\t_deepEqual(a, b) {\n\t\treturn JSON.stringify(a) === JSON.stringify(b);\n\t},\n\n\t_normInt(v) {\n\t\tif (v === null || v === undefined) return null;\n\t\tif (typeof v === \"number\" && Number.isFinite(v)) return Math.trunc(v);\n\t\tconst s = String(v).trim();\n\t\tif (!s) return null;\n\t\tconst n = Number(s);\n\t\treturn Number.isFinite(n) ? Math.trunc(n) : null;\n\t},\n\n\t_normText(v) {\n\t\tif (v === null || v === undefined) return \"\";\n\t\treturn String(v).trim();\n\t},\n\n\t_diff(oldRow, newRow) {\n\t\tconst changes = {};\n\t\tconst keys = [\n\t\t\t\"name\",\n\t\t\t\"version\",\n\t\t\t\"required_for\",\n\t\t\t\"doc_url\",\n\t\t\t\"active\",\n\t\t\t\"documenso_template_id\",\n\t\t\t\"documenso_template_envelope_id\",\n\t\t\t\"documenso_member_recipient_id\",\n\t\t\t\"documenso_facilitator_recipient_id\",\n\t\t];\n\n\t\tfor (const k of keys) {\n\t\t\tlet oldV = oldRow?.[k];\n\t\t\tlet newV = newRow?.[k];\n\n\t\t\tif (k === \"required_for\") {\n\t\t\t\toldV = this._normArray(oldV);\n\t\t\t\tnewV = this._normArray(newV);\n\t\t\t} else if (k === \"documenso_template_id\" || k === \"documenso_member_recipient_id\" || k === \"documenso_facilitator_recipient_id\") {\n\t\t\t\toldV = this._normInt(oldV);\n\t\t\t\tnewV = this._normInt(newV);\n\t\t\t} else if (k === \"documenso_template_envelope_id\" || k === \"doc_url\" || k === \"name\" || k === \"version\") {\n\t\t\t\toldV = this._normText(oldV);\n\t\t\t\tnewV = this._normText(newV);\n\t\t\t} else if (k === \"active\") {\n\t\t\t\toldV = !!oldV;\n\t\t\t\tnewV = !!newV;\n\t\t\t}\n\n\t\t\tconst same = JSON.stringify(oldV ?? null) === JSON.stringify(newV ?? null);\n\t\t\tif (!same) changes[k] = { from: oldV ?? null, to: newV ?? null };\n\t\t}\n\t\treturn changes;\n\t},\n\n\tnormalizeDocumensoTemplate(raw) {\n\t\tconst t = raw?.json || raw || {};\n\t\tconst recipients = Array.isArray(t.recipients) ? t.recipients.slice() : [];\n\t\tconst signerRecipients = recipients\n\t\t\t.filter(r => String(r.role || \"\").toUpperCase() === \"SIGNER\" || r.signingOrder)\n\t\t\t.sort((a, b) => (this._normInt(a.signingOrder) ?? 999) - (this._normInt(b.signingOrder) ?? 999));\n\n\t\tconst memberRecipient = signerRecipients.find(r => this._normInt(r.signingOrder) === 1) || signerRecipients[0] || null;\n\t\tconst facilitatorRecipient = signerRecipients.find(r => this._normInt(r.signingOrder) === 2) || signerRecipients[1] || null;\n\n\t\treturn {\n\t\t\ttemplate_id: this._normInt(t.id ?? t.templateId ?? t.template_id),\n\t\t\tenvelope_id: this._normText(t.envelopeId ?? t.envelope_id ?? t.id),\n\t\t\ttitle: this._normText(t.title ?? t.name ?? t.envelopeId ?? t.id),\n\t\t\ttype: this._normText(t.type),\n\t\t\trecipient_count: recipients.length,\n\t\t\tmember_recipient_id: this._normInt(memberRecipient?.id),\n\t\t\tfacilitator_recipient_id: this._normInt(facilitatorRecipient?.id),\n\t\t\trecipients\n\t\t};\n\t},\n\n\tasync loadDocumensoTemplates() {\n\t\tconst response = await apiListDocumensoTemplates.run();\n\t\tconst body = response?.body ?? response ?? {};\n\t\tconst rows = Array.isArray(body?.data)\n\t\t\t? body.data\n\t\t\t: Array.isArray(response)\n\t\t\t\t? response\n\t\t\t\t: [];\n\n\t\tconst templates = rows\n\t\t\t.map(t => this.normalizeDocumensoTemplate(t))\n\t\t\t.filter(t => t.envelope_id);\n\n\t\tawait storeValue(\"documenso_templates\", templates, false);\n\t\tshowAlert(`Loaded ${templates.length} Documenso template${templates.length === 1 ? \"\" : \"s\"}.`, \"success\");\n\t\treturn templates;\n\t},\n\n\tdocumensoTemplateOptions() {\n\t\tconst rows = appsmith.store.documenso_templates || [];\n\t\treturn rows.map(t => ({\n\t\t\tlabel: `${t.title || t.envelope_id}${t.envelope_id ? \" — \" + t.envelope_id : \"\"}`,\n\t\t\tvalue: t.envelope_id\n\t\t}));\n\t},\n\n\tselectedDocumensoTemplate() {\n\t\tconst selectedEnvelopeId = this._normText(selCreateDocumensoTemplate.selectedOptionValue);\n\t\treturn (appsmith.store.documenso_templates || []).find(t => t.envelope_id === selectedEnvelopeId) || null;\n\t},\n\n\tcreateRowFromForm() {\n\t\tconst selected = this.selectedDocumensoTemplate();\n\n\t\treturn {\n\t\t\tname: this._normText(inpCreateAgreementName.text),\n\t\t\tversion: this._normText(inpCreateAgreementVersion.text),\n\t\t\trequired_for: this._normArray(selCreateAgreementTypes.selectedOptionValues),\n\t\t\tdoc_url: this._normText(inpCreateAgreementURL.text),\n\t\t\tactive: !!inpCreateAgreementActive.isChecked,\n\t\t\tdocumenso_template_id: selected?.template_id ?? null,\n\t\t\tdocumenso_template_envelope_id: selected?.envelope_id ?? \"\",\n\t\t\tdocumenso_member_recipient_id: selected?.member_recipient_id ?? null,\n\t\t\tdocumenso_facilitator_recipient_id: selected?.facilitator_recipient_id ?? null\n\t\t};\n\t},\n\n\tvalidateCreateRow(row) {\n\t\tif (!row.name) throw new Error(\"Agreement Name is required.\");\n\t\tif (!row.version) throw new Error(\"Version is required.\");\n\t\tif (!row.doc_url) throw new Error(\"Paper template URL is required.\");\n\t\tif (!row.required_for.length) throw new Error(\"At least one Agreement Type is required.\");\n\t\tif (!row.documenso_template_envelope_id) throw new Error(\"Select a Documenso template.\");\n\t\tif (!row.documenso_member_recipient_id) throw new Error(\"The selected Documenso template does not have a signer recipient to use as the member.\");\n\t},\n\n\tasync createTemplateFromForm() {\n\t\tconst row = this.createRowFromForm();\n\t\tthis.validateCreateRow(row);\n\n\t\tconst res = await this.saveTemplate(row);\n\t\tresetWidget(\"frmNewTemplate\", true);\n\t\tawait storeValue(\"documenso_templates\", appsmith.store.documenso_templates || [], false);\n\t\treturn res;\n\t},\n\n\tasync saveTemplate(row, multiselect) {\n\t\tconst templates = qAgreementTemplatesList?.data || [];\n\t\tconst isExisting = !!row?.agreement_template_id;\n\n\t\tconst oldRow = isExisting\n\t\t\t? templates.find(t => t.agreement_template_id === row.agreement_template_id)\n\t\t\t: null;\n\n\t\tif (multiselect) { row.required_for = multiselect; }\n\t\tconst requiredForArr = this._normArray(row.required_for);\n\n\t\tconst normalizedRow = {\n\t\t\t...row,\n\t\t\trequired_for: requiredForArr,\n\t\t\tdocumenso_template_id: this._normInt(row.documenso_template_id),\n\t\t\tdocumenso_template_envelope_id: this._normText(row.documenso_template_envelope_id),\n\t\t\tdocumenso_member_recipient_id: this._normInt(row.documenso_member_recipient_id),\n\t\t\tdocumenso_facilitator_recipient_id: this._normInt(row.documenso_facilitator_recipient_id),\n\t\t};\n\n\t\tconst changes = this._diff(oldRow, normalizedRow);\n\n\t\tif (isExisting && Object.keys(changes).length === 0) {\n\t\t\tshowAlert(\"No changes to save.\", \"info\");\n\t\t\treturn;\n\t\t}\n\n\t\tconst auditDetails = {\n\t\t\tagreement_template_id: row.agreement_template_id ?? null,\n\t\t\tchanges,\n\t\t\tsaved_from_page: \"Agreement Templates\"\n\t\t};\n\n\t\tconst params = {\n\t\t\tagreement_template_id: row.agreement_template_id,\n\t\t\tname: this._normText(row.name),\n\t\t\tversion: this._normText(row.version),\n\t\t\trequired_for_json: JSON.stringify(requiredForArr),\n\t\t\tdoc_url: this._normText(row.doc_url),\n\t\t\tactive: !!row.active,\n\t\t\tdocumenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n\t\t\tdocumenso_template_envelope_id: this._normText(row.documenso_template_envelope_id),\n\t\t\tdocumenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n\t\t\tdocumenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n\t\t\tactor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n\t\t\taudit_details: JSON.stringify(auditDetails)\n\t\t};\n\n\t\tif (!params.name) throw new Error(\"Template name is required.\");\n\t\tif (!params.version) throw new Error(\"Template version is required.\");\n\n\t\tlet res;\n\t\tif (isExisting) {\n\t\t\tres = await qAgreementTemplateUpdate.run(params);\n\t\t\tshowAlert(\"Template updated.\", \"success\");\n\t\t} else {\n\t\t\tres = await qAgreementTemplateInsert.run(params);\n\t\t\tshowAlert(\"Template created.\", \"success\");\n\t\t}\n\n\t\tawait qAgreementTemplatesList.run();\n\t\treturn res;\n\t},\n\n}",
         "name": "agreementTemplateFlows",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "pluginId": "js-plugin",
         "pluginType": "JS",
         "userPermissions": [],
@@ -222,9 +222,9 @@
       "unpublishedCollection": {
         "actions": [],
         "archivedActions": [],
-        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqAgreementTemplatesList.run(),\n\t\t\tqAgreementTypesList.run(),\n\t\t]);\n\t},\n\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\tlet email = null;\n\t\t\tfor (let i = 0; i < 20; i++) {\n\t\t\t\temail = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n\t\t\t\tif (email) break;\n\t\t\t\tawait new Promise(r => setTimeout(r, 150));\n\t\t\t}\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tlet rows = await qCurrentFacilitator.run({ email });\n\t\t\tif (!Array.isArray(rows)) rows = [];\n\n\t\t\tconst me = rows[0];\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\tawait this.auditLog(\"auth.denied\", \"facilitator\", \"\", {\n\t\t\t\t\temail,\n\t\t\t\t\tpage: appsmith.URL?.pathname,\n\t\t\t\t\tmode: appsmith.mode\n\t\t\t\t});\n\t\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer);\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\n\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\n\t\tthis.refresh();\n\t},\n\n\tlinkify(inputText) {\n\t\tconst s = String(inputText || \"\");\n\t\tlet replacedText = s.replace(/((https?|ftp):\\/\\/[\\w\\d&@#/%?=~_|!:,.;]+[-A-Z0-9+&@#/%=~_|])/ig, function(url) {\n\t\t\treturn '<a href=\"' + url + '\" target=\"_blank\">' + url + '</a>';\n\t\t});\n\t\treplacedText = replacedText.replace(/(^|[^/])(www\\.[\\S]+(\\b|$))/gim,function(match, capture1, capture2) {\n\t\t\treturn capture1 + '<a href=\"http://' + capture2 + '\" target=\"_blank\">' + capture2 + '</a>';\n\t\t});\n\t\treturn replacedText;\n\t},\n\n\t_normArray(v) {\n\t\tif (v == null) return [];\n\t\tif (Array.isArray(v)) return v.map(String);\n\t\tif (typeof v === \"string\") {\n\t\t\tconst s = v.trim();\n\t\t\tif (!s) return [];\n\t\t\tconst stripped = s.replace(/^\\{|\\}$/g, \"\");\n\t\t\treturn stripped.split(\",\").map(x => x.trim()).filter(Boolean);\n\t\t}\n\t\treturn [];\n\t},\n\n\t_deepEqual(a, b) {\n\t\treturn JSON.stringify(a) === JSON.stringify(b);\n\t},\n\n\t_normInt(v) {\n\t\tif (v === null || v === undefined) return null;\n\t\tif (typeof v === \"number\" && Number.isFinite(v)) return Math.trunc(v);\n\t\tconst s = String(v).trim();\n\t\tif (!s) return null;\n\t\tconst n = Number(s);\n\t\treturn Number.isFinite(n) ? Math.trunc(n) : null;\n\t},\n\n\t_normText(v) {\n\t\tif (v === null || v === undefined) return \"\";\n\t\treturn String(v).trim();\n\t},\n\n\t_diff(oldRow, newRow) {\n\t\tconst changes = {};\n\t\tconst keys = [\n\t\t\t\"name\",\n\t\t\t\"version\",\n\t\t\t\"required_for\",\n\t\t\t\"doc_url\",\n\t\t\t\"active\",\n\t\t\t\"documenso_template_id\",\n\t\t\t\"documenso_template_envelope_id\",\n\t\t\t\"documenso_member_recipient_id\",\n\t\t\t\"documenso_facilitator_recipient_id\",\n\t\t];\n\n\t\tfor (const k of keys) {\n\t\t\tlet oldV = oldRow?.[k];\n\t\t\tlet newV = newRow?.[k];\n\n\t\t\tif (k === \"required_for\") {\n\t\t\t\toldV = this._normArray(oldV);\n\t\t\t\tnewV = this._normArray(newV);\n\t\t\t} else if (k === \"documenso_template_id\" || k === \"documenso_member_recipient_id\" || k === \"documenso_facilitator_recipient_id\") {\n\t\t\t\toldV = this._normInt(oldV);\n\t\t\t\tnewV = this._normInt(newV);\n\t\t\t} else if (k === \"documenso_template_envelope_id\" || k === \"doc_url\" || k === \"name\" || k === \"version\") {\n\t\t\t\toldV = this._normText(oldV);\n\t\t\t\tnewV = this._normText(newV);\n\t\t\t} else if (k === \"active\") {\n\t\t\t\toldV = !!oldV;\n\t\t\t\tnewV = !!newV;\n\t\t\t}\n\n\t\t\tconst same = JSON.stringify(oldV ?? null) === JSON.stringify(newV ?? null);\n\t\t\tif (!same) changes[k] = { from: oldV ?? null, to: newV ?? null };\n\t\t}\n\t\treturn changes;\n\t},\n\n\tnormalizeDocumensoTemplate(raw) {\n\t\tconst t = raw?.json || raw || {};\n\t\tconst recipients = Array.isArray(t.recipients) ? t.recipients.slice() : [];\n\t\tconst signerRecipients = recipients\n\t\t\t.filter(r => String(r.role || \"\").toUpperCase() === \"SIGNER\" || r.signingOrder)\n\t\t\t.sort((a, b) => (this._normInt(a.signingOrder) ?? 999) - (this._normInt(b.signingOrder) ?? 999));\n\n\t\tconst memberRecipient = signerRecipients.find(r => this._normInt(r.signingOrder) === 1) || signerRecipients[0] || null;\n\t\tconst facilitatorRecipient = signerRecipients.find(r => this._normInt(r.signingOrder) === 2) || signerRecipients[1] || null;\n\n\t\treturn {\n\t\t\ttemplate_id: this._normInt(t.id ?? t.templateId ?? t.template_id),\n\t\t\tenvelope_id: this._normText(t.envelopeId ?? t.envelope_id ?? t.id),\n\t\t\ttitle: this._normText(t.title ?? t.name ?? t.envelopeId ?? t.id),\n\t\t\ttype: this._normText(t.type),\n\t\t\trecipient_count: recipients.length,\n\t\t\tmember_recipient_id: this._normInt(memberRecipient?.id),\n\t\t\tfacilitator_recipient_id: this._normInt(facilitatorRecipient?.id),\n\t\t\trecipients\n\t\t};\n\t},\n\n\tasync loadDocumensoTemplates() {\n\t\tconst response = await apiListDocumensoTemplates.run();\n\t\tconst body = response?.body ?? response ?? {};\n\t\tconst rows = Array.isArray(body?.data)\n\t\t\t? body.data\n\t\t\t: Array.isArray(response)\n\t\t\t\t? response\n\t\t\t\t: [];\n\n\t\tconst templates = rows\n\t\t\t.map(t => this.normalizeDocumensoTemplate(t))\n\t\t\t.filter(t => t.envelope_id);\n\n\t\tawait storeValue(\"documenso_templates\", templates, false);\n\t\tshowAlert(`Loaded ${templates.length} Documenso template${templates.length === 1 ? \"\" : \"s\"}.`, \"success\");\n\t\treturn templates;\n\t},\n\n\tdocumensoTemplateOptions() {\n\t\tconst rows = appsmith.store.documenso_templates || [];\n\t\treturn rows.map(t => ({\n\t\t\tlabel: `${t.title || t.envelope_id}${t.envelope_id ? \" — \" + t.envelope_id : \"\"}`,\n\t\t\tvalue: t.envelope_id\n\t\t}));\n\t},\n\n\tselectedDocumensoTemplate() {\n\t\tconst selectedEnvelopeId = this._normText(selCreateDocumensoTemplate.selectedOptionValue);\n\t\treturn (appsmith.store.documenso_templates || []).find(t => t.envelope_id === selectedEnvelopeId) || null;\n\t},\n\n\tcreateRowFromForm() {\n\t\tconst selected = this.selectedDocumensoTemplate();\n\n\t\treturn {\n\t\t\tname: this._normText(inpCreateAgreementName.text),\n\t\t\tversion: this._normText(inpCreateAgreementVersion.text),\n\t\t\trequired_for: this._normArray(selCreateAgreementTypes.selectedOptionValues),\n\t\t\tdoc_url: this._normText(inpCreateAgreementURL.text),\n\t\t\tactive: !!inpCreateAgreementActive.isChecked,\n\t\t\tdocumenso_template_id: selected?.template_id ?? null,\n\t\t\tdocumenso_template_envelope_id: selected?.envelope_id ?? \"\",\n\t\t\tdocumenso_member_recipient_id: selected?.member_recipient_id ?? null,\n\t\t\tdocumenso_facilitator_recipient_id: selected?.facilitator_recipient_id ?? null\n\t\t};\n\t},\n\n\tvalidateCreateRow(row) {\n\t\tif (!row.name) throw new Error(\"Agreement Name is required.\");\n\t\tif (!row.version) throw new Error(\"Version is required.\");\n\t\tif (!row.doc_url) throw new Error(\"Paper template URL is required.\");\n\t\tif (!row.required_for.length) throw new Error(\"At least one Agreement Type is required.\");\n\t\tif (!row.documenso_template_envelope_id) throw new Error(\"Select a Documenso template.\");\n\t\tif (!row.documenso_member_recipient_id) throw new Error(\"The selected Documenso template does not have a signer recipient to use as the member.\");\n\t},\n\n\tasync createTemplateFromForm() {\n\t\tconst row = this.createRowFromForm();\n\t\tthis.validateCreateRow(row);\n\n\t\tconst res = await this.saveTemplate(row);\n\t\tresetWidget(\"frmNewTemplate\", true);\n\t\tawait storeValue(\"documenso_templates\", appsmith.store.documenso_templates || [], false);\n\t\treturn res;\n\t},\n\n\tasync saveTemplate(row, multiselect) {\n\t\tconst templates = qAgreementTemplatesList?.data || [];\n\t\tconst isExisting = !!row?.agreement_template_id;\n\n\t\tconst oldRow = isExisting\n\t\t\t? templates.find(t => t.agreement_template_id === row.agreement_template_id)\n\t\t\t: null;\n\n\t\tif (multiselect) { row.required_for = multiselect; }\n\t\tconst requiredForArr = this._normArray(row.required_for);\n\n\t\tconst normalizedRow = {\n\t\t\t...row,\n\t\t\trequired_for: requiredForArr,\n\t\t\tdocumenso_template_id: this._normInt(row.documenso_template_id),\n\t\t\tdocumenso_template_envelope_id: this._normText(row.documenso_template_envelope_id),\n\t\t\tdocumenso_member_recipient_id: this._normInt(row.documenso_member_recipient_id),\n\t\t\tdocumenso_facilitator_recipient_id: this._normInt(row.documenso_facilitator_recipient_id),\n\t\t};\n\n\t\tconst changes = this._diff(oldRow, normalizedRow);\n\n\t\tif (isExisting && Object.keys(changes).length === 0) {\n\t\t\tshowAlert(\"No changes to save.\", \"info\");\n\t\t\treturn;\n\t\t}\n\n\t\tconst auditDetails = {\n\t\t\tagreement_template_id: row.agreement_template_id ?? null,\n\t\t\tchanges,\n\t\t\tsaved_from_page: \"Agreements - Templates\"\n\t\t};\n\n\t\tconst params = {\n\t\t\tagreement_template_id: row.agreement_template_id,\n\t\t\tname: this._normText(row.name),\n\t\t\tversion: this._normText(row.version),\n\t\t\trequired_for_json: JSON.stringify(requiredForArr),\n\t\t\tdoc_url: this._normText(row.doc_url),\n\t\t\tactive: !!row.active,\n\t\t\tdocumenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n\t\t\tdocumenso_template_envelope_id: this._normText(row.documenso_template_envelope_id),\n\t\t\tdocumenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n\t\t\tdocumenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n\t\t\tactor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n\t\t\taudit_details: JSON.stringify(auditDetails)\n\t\t};\n\n\t\tif (!params.name) throw new Error(\"Template name is required.\");\n\t\tif (!params.version) throw new Error(\"Template version is required.\");\n\n\t\tlet res;\n\t\tif (isExisting) {\n\t\t\tres = await qAgreementTemplateUpdate.run(params);\n\t\t\tshowAlert(\"Template updated.\", \"success\");\n\t\t} else {\n\t\t\tres = await qAgreementTemplateInsert.run(params);\n\t\t\tshowAlert(\"Template created.\", \"success\");\n\t\t}\n\n\t\tawait qAgreementTemplatesList.run();\n\t\treturn res;\n\t},\n\n}",
+        "body": "export default {\n\n\tasync auditLog(action, entity_type, entity_id, payload) {\n\t\ttry {\n\t\t\tawait qAuditLogInsert.run({\n\t\t\t\taction,\n\t\t\t\tentity_type,\n\t\t\t\tentity_id: entity_id ?? \"\",\n\t\t\t\tactor_member_id: appsmith.store.facilitator_id ?? \"\",\n\t\t\t\tactor_email: ((appsmith.user?.email ?? \"\").trim().toLowerCase()),\n\t\t\t\tmode: appsmith.mode ?? \"\",\n\t\t\t\tdetails_json: JSON.stringify(payload ?? {}),\n\t\t\t});\n\t\t} catch (e) {\n\t\t\tconsole.log(\"audit_log insert failed:\", e);\n\t\t}\n\t},\n\n\tasync refresh() {\n\t\tawait Promise.allSettled([\n\t\t\tqAgreementTemplatesList.run(),\n\t\t\tqAgreementTypesList.run(),\n\t\t]);\n\t},\n\n\tasync verifyaccess() {\n\t\ttry {\n\t\t\tlet email = null;\n\t\t\tfor (let i = 0; i < 20; i++) {\n\t\t\t\temail = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n\t\t\t\tif (email) break;\n\t\t\t\tawait new Promise(r => setTimeout(r, 150));\n\t\t\t}\n\n\t\t\tif (!email) {\n\t\t\t\tshowAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tlet rows = await qCurrentFacilitator.run({ email });\n\t\t\tif (!Array.isArray(rows)) rows = [];\n\n\t\t\tconst me = rows[0];\n\n\t\t\tif (!me?.member_id) {\n\t\t\t\tshowAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n\t\t\t\tawait this.auditLog(\"auth.denied\", \"facilitator\", \"\", {\n\t\t\t\t\temail,\n\t\t\t\t\tpage: appsmith.URL?.pathname,\n\t\t\t\t\tmode: appsmith.mode\n\t\t\t\t});\n\t\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t\t}\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst facilitator_id = me.member_id;\n\t\t\tconst facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n\t\t\tconst is_document_reviewer = me.is_document_reviewer;\n\t\t\tconst is_donations_reviewer = me.is_donations_reviewer;\n\n\t\t\tstoreValue(\"facilitator_id\", facilitator_id);\n\t\t\tstoreValue(\"facilitator_email\", facilitator_email);\n\t\t\tstoreValue(\"facilitator_is_reviewer\", is_document_reviewer);\n\t\t\tstoreValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n\t\t\tstoreValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\n\n\t\t} catch (e) {\n\t\t\tshowAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n\t\t\tshowAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? {}), \"error\");\n\t\t\tif (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n\t\t\t\tnavigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\n\t\tthis.refresh();\n\t},\n\n\tlinkify(inputText) {\n\t\tconst s = String(inputText || \"\");\n\t\tlet replacedText = s.replace(/((https?|ftp):\\/\\/[\\w\\d&@#/%?=~_|!:,.;]+[-A-Z0-9+&@#/%=~_|])/ig, function(url) {\n\t\t\treturn '<a href=\"' + url + '\" target=\"_blank\">' + url + '</a>';\n\t\t});\n\t\treplacedText = replacedText.replace(/(^|[^/])(www\\.[\\S]+(\\b|$))/gim,function(match, capture1, capture2) {\n\t\t\treturn capture1 + '<a href=\"http://' + capture2 + '\" target=\"_blank\">' + capture2 + '</a>';\n\t\t});\n\t\treturn replacedText;\n\t},\n\n\t_normArray(v) {\n\t\tif (v == null) return [];\n\t\tif (Array.isArray(v)) return v.map(String);\n\t\tif (typeof v === \"string\") {\n\t\t\tconst s = v.trim();\n\t\t\tif (!s) return [];\n\t\t\tconst stripped = s.replace(/^\\{|\\}$/g, \"\");\n\t\t\treturn stripped.split(\",\").map(x => x.trim()).filter(Boolean);\n\t\t}\n\t\treturn [];\n\t},\n\n\t_deepEqual(a, b) {\n\t\treturn JSON.stringify(a) === JSON.stringify(b);\n\t},\n\n\t_normInt(v) {\n\t\tif (v === null || v === undefined) return null;\n\t\tif (typeof v === \"number\" && Number.isFinite(v)) return Math.trunc(v);\n\t\tconst s = String(v).trim();\n\t\tif (!s) return null;\n\t\tconst n = Number(s);\n\t\treturn Number.isFinite(n) ? Math.trunc(n) : null;\n\t},\n\n\t_normText(v) {\n\t\tif (v === null || v === undefined) return \"\";\n\t\treturn String(v).trim();\n\t},\n\n\t_diff(oldRow, newRow) {\n\t\tconst changes = {};\n\t\tconst keys = [\n\t\t\t\"name\",\n\t\t\t\"version\",\n\t\t\t\"required_for\",\n\t\t\t\"doc_url\",\n\t\t\t\"active\",\n\t\t\t\"documenso_template_id\",\n\t\t\t\"documenso_template_envelope_id\",\n\t\t\t\"documenso_member_recipient_id\",\n\t\t\t\"documenso_facilitator_recipient_id\",\n\t\t];\n\n\t\tfor (const k of keys) {\n\t\t\tlet oldV = oldRow?.[k];\n\t\t\tlet newV = newRow?.[k];\n\n\t\t\tif (k === \"required_for\") {\n\t\t\t\toldV = this._normArray(oldV);\n\t\t\t\tnewV = this._normArray(newV);\n\t\t\t} else if (k === \"documenso_template_id\" || k === \"documenso_member_recipient_id\" || k === \"documenso_facilitator_recipient_id\") {\n\t\t\t\toldV = this._normInt(oldV);\n\t\t\t\tnewV = this._normInt(newV);\n\t\t\t} else if (k === \"documenso_template_envelope_id\" || k === \"doc_url\" || k === \"name\" || k === \"version\") {\n\t\t\t\toldV = this._normText(oldV);\n\t\t\t\tnewV = this._normText(newV);\n\t\t\t} else if (k === \"active\") {\n\t\t\t\toldV = !!oldV;\n\t\t\t\tnewV = !!newV;\n\t\t\t}\n\n\t\t\tconst same = JSON.stringify(oldV ?? null) === JSON.stringify(newV ?? null);\n\t\t\tif (!same) changes[k] = { from: oldV ?? null, to: newV ?? null };\n\t\t}\n\t\treturn changes;\n\t},\n\n\tnormalizeDocumensoTemplate(raw) {\n\t\tconst t = raw?.json || raw || {};\n\t\tconst recipients = Array.isArray(t.recipients) ? t.recipients.slice() : [];\n\t\tconst signerRecipients = recipients\n\t\t\t.filter(r => String(r.role || \"\").toUpperCase() === \"SIGNER\" || r.signingOrder)\n\t\t\t.sort((a, b) => (this._normInt(a.signingOrder) ?? 999) - (this._normInt(b.signingOrder) ?? 999));\n\n\t\tconst memberRecipient = signerRecipients.find(r => this._normInt(r.signingOrder) === 1) || signerRecipients[0] || null;\n\t\tconst facilitatorRecipient = signerRecipients.find(r => this._normInt(r.signingOrder) === 2) || signerRecipients[1] || null;\n\n\t\treturn {\n\t\t\ttemplate_id: this._normInt(t.id ?? t.templateId ?? t.template_id),\n\t\t\tenvelope_id: this._normText(t.envelopeId ?? t.envelope_id ?? t.id),\n\t\t\ttitle: this._normText(t.title ?? t.name ?? t.envelopeId ?? t.id),\n\t\t\ttype: this._normText(t.type),\n\t\t\trecipient_count: recipients.length,\n\t\t\tmember_recipient_id: this._normInt(memberRecipient?.id),\n\t\t\tfacilitator_recipient_id: this._normInt(facilitatorRecipient?.id),\n\t\t\trecipients\n\t\t};\n\t},\n\n\tasync loadDocumensoTemplates() {\n\t\tconst response = await apiListDocumensoTemplates.run();\n\t\tconst body = response?.body ?? response ?? {};\n\t\tconst rows = Array.isArray(body?.data)\n\t\t\t? body.data\n\t\t\t: Array.isArray(response)\n\t\t\t\t? response\n\t\t\t\t: [];\n\n\t\tconst templates = rows\n\t\t\t.map(t => this.normalizeDocumensoTemplate(t))\n\t\t\t.filter(t => t.envelope_id);\n\n\t\tawait storeValue(\"documenso_templates\", templates, false);\n\t\tshowAlert(`Loaded ${templates.length} Documenso template${templates.length === 1 ? \"\" : \"s\"}.`, \"success\");\n\t\treturn templates;\n\t},\n\n\tdocumensoTemplateOptions() {\n\t\tconst rows = appsmith.store.documenso_templates || [];\n\t\treturn rows.map(t => ({\n\t\t\tlabel: `${t.title || t.envelope_id}${t.envelope_id ? \" — \" + t.envelope_id : \"\"}`,\n\t\t\tvalue: t.envelope_id\n\t\t}));\n\t},\n\n\tselectedDocumensoTemplate() {\n\t\tconst selectedEnvelopeId = this._normText(selCreateDocumensoTemplate.selectedOptionValue);\n\t\treturn (appsmith.store.documenso_templates || []).find(t => t.envelope_id === selectedEnvelopeId) || null;\n\t},\n\n\tcreateRowFromForm() {\n\t\tconst selected = this.selectedDocumensoTemplate();\n\n\t\treturn {\n\t\t\tname: this._normText(inpCreateAgreementName.text),\n\t\t\tversion: this._normText(inpCreateAgreementVersion.text),\n\t\t\trequired_for: this._normArray(selCreateAgreementTypes.selectedOptionValues),\n\t\t\tdoc_url: this._normText(inpCreateAgreementURL.text),\n\t\t\tactive: !!inpCreateAgreementActive.isChecked,\n\t\t\tdocumenso_template_id: selected?.template_id ?? null,\n\t\t\tdocumenso_template_envelope_id: selected?.envelope_id ?? \"\",\n\t\t\tdocumenso_member_recipient_id: selected?.member_recipient_id ?? null,\n\t\t\tdocumenso_facilitator_recipient_id: selected?.facilitator_recipient_id ?? null\n\t\t};\n\t},\n\n\tvalidateCreateRow(row) {\n\t\tif (!row.name) throw new Error(\"Agreement Name is required.\");\n\t\tif (!row.version) throw new Error(\"Version is required.\");\n\t\tif (!row.doc_url) throw new Error(\"Paper template URL is required.\");\n\t\tif (!row.required_for.length) throw new Error(\"At least one Agreement Type is required.\");\n\t\tif (!row.documenso_template_envelope_id) throw new Error(\"Select a Documenso template.\");\n\t\tif (!row.documenso_member_recipient_id) throw new Error(\"The selected Documenso template does not have a signer recipient to use as the member.\");\n\t},\n\n\tasync createTemplateFromForm() {\n\t\tconst row = this.createRowFromForm();\n\t\tthis.validateCreateRow(row);\n\n\t\tconst res = await this.saveTemplate(row);\n\t\tresetWidget(\"frmNewTemplate\", true);\n\t\tawait storeValue(\"documenso_templates\", appsmith.store.documenso_templates || [], false);\n\t\treturn res;\n\t},\n\n\tasync saveTemplate(row, multiselect) {\n\t\tconst templates = qAgreementTemplatesList?.data || [];\n\t\tconst isExisting = !!row?.agreement_template_id;\n\n\t\tconst oldRow = isExisting\n\t\t\t? templates.find(t => t.agreement_template_id === row.agreement_template_id)\n\t\t\t: null;\n\n\t\tif (multiselect) { row.required_for = multiselect; }\n\t\tconst requiredForArr = this._normArray(row.required_for);\n\n\t\tconst normalizedRow = {\n\t\t\t...row,\n\t\t\trequired_for: requiredForArr,\n\t\t\tdocumenso_template_id: this._normInt(row.documenso_template_id),\n\t\t\tdocumenso_template_envelope_id: this._normText(row.documenso_template_envelope_id),\n\t\t\tdocumenso_member_recipient_id: this._normInt(row.documenso_member_recipient_id),\n\t\t\tdocumenso_facilitator_recipient_id: this._normInt(row.documenso_facilitator_recipient_id),\n\t\t};\n\n\t\tconst changes = this._diff(oldRow, normalizedRow);\n\n\t\tif (isExisting && Object.keys(changes).length === 0) {\n\t\t\tshowAlert(\"No changes to save.\", \"info\");\n\t\t\treturn;\n\t\t}\n\n\t\tconst auditDetails = {\n\t\t\tagreement_template_id: row.agreement_template_id ?? null,\n\t\t\tchanges,\n\t\t\tsaved_from_page: \"Agreement Templates\"\n\t\t};\n\n\t\tconst params = {\n\t\t\tagreement_template_id: row.agreement_template_id,\n\t\t\tname: this._normText(row.name),\n\t\t\tversion: this._normText(row.version),\n\t\t\trequired_for_json: JSON.stringify(requiredForArr),\n\t\t\tdoc_url: this._normText(row.doc_url),\n\t\t\tactive: !!row.active,\n\t\t\tdocumenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n\t\t\tdocumenso_template_envelope_id: this._normText(row.documenso_template_envelope_id),\n\t\t\tdocumenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n\t\t\tdocumenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n\t\t\tactor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n\t\t\taudit_details: JSON.stringify(auditDetails)\n\t\t};\n\n\t\tif (!params.name) throw new Error(\"Template name is required.\");\n\t\tif (!params.version) throw new Error(\"Template version is required.\");\n\n\t\tlet res;\n\t\tif (isExisting) {\n\t\t\tres = await qAgreementTemplateUpdate.run(params);\n\t\t\tshowAlert(\"Template updated.\", \"success\");\n\t\t} else {\n\t\t\tres = await qAgreementTemplateInsert.run(params);\n\t\t\tshowAlert(\"Template created.\", \"success\");\n\t\t}\n\n\t\tawait qAgreementTemplatesList.run();\n\t\treturn res;\n\t},\n\n}",
         "name": "agreementTemplateFlows",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "pluginId": "js-plugin",
         "pluginType": "JS",
         "userPermissions": [],
@@ -1422,7 +1422,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "INSERT INTO public.member_agreements (\n  member_id,\n  facilitator_id,\n  agreement_template_id,\n  signature_method,\n  status,\n  evidence,\n  member_email_id\n)\nVALUES (\n  {{ this.params.member_id }}::uuid,\n  {{ this.params.facilitator_id }}::uuid,\n  NULLIF({{ this.params.agreement_template_id }},'')::uuid,\n  {{ this.params.signature_method }},\n  {{ this.params.status }},\n  COALESCE({{ this.params.evidence_json }}::jsonb, '[]'::jsonb),\n  NULLIF({{ this.params.member_email_id || \"\" }}, '')::uuid\n)\nRETURNING member_agreement_id;",
+          "body": "SELECT *\nFROM public.issue19_create_member_agreement(\n  {{ appsmith.user.email }},\n  {{ this.params.member_id }}::uuid,\n  (SELECT person_id FROM public.members\n   WHERE member_id={{ this.params.facilitator_id }}::uuid),\n  NULLIF({{ this.params.agreement_template_id || \"\" }}, '')::uuid,\n  {{ this.params.signature_method }},\n  {{ this.params.status }},\n  COALESCE({{ this.params.evidence_json || \"[]\" }}::jsonb, '[]'::jsonb),\n  NULLIF({{ this.params.member_email_id || \"\" }}, '')::uuid\n);",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -1454,13 +1454,14 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
+          " appsmith.user.email ",
           " this.params.member_id ",
           " this.params.facilitator_id ",
-          " this.params.agreement_template_id ",
-          " this.params.member_email_id || \"\" ",
-          " this.params.evidence_json ",
+          " this.params.agreement_template_id || \"\" ",
           " this.params.signature_method ",
-          " this.params.status "
+          " this.params.status ",
+          " this.params.evidence_json || \"[]\" ",
+          " this.params.member_email_id || \"\" "
         ],
         "messages": [],
         "name": "qCreatePendingAgreement",
@@ -1472,7 +1473,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "INSERT INTO public.member_agreements (\n  member_id,\n  facilitator_id,\n  agreement_template_id,\n  signature_method,\n  status,\n  evidence,\n  member_email_id\n)\nVALUES (\n  {{ this.params.member_id }}::uuid,\n  {{ this.params.facilitator_id }}::uuid,\n  NULLIF({{ this.params.agreement_template_id }},'')::uuid,\n  {{ this.params.signature_method }},\n  {{ this.params.status }},\n  COALESCE({{ this.params.evidence_json }}::jsonb, '[]'::jsonb),\n  NULLIF({{ this.params.member_email_id || \"\" }}, '')::uuid\n)\nRETURNING member_agreement_id;",
+          "body": "SELECT *\nFROM public.issue19_create_member_agreement(\n  {{ appsmith.user.email }},\n  {{ this.params.member_id }}::uuid,\n  (SELECT person_id FROM public.members\n   WHERE member_id={{ this.params.facilitator_id }}::uuid),\n  NULLIF({{ this.params.agreement_template_id || \"\" }}, '')::uuid,\n  {{ this.params.signature_method }},\n  {{ this.params.status }},\n  COALESCE({{ this.params.evidence_json || \"[]\" }}::jsonb, '[]'::jsonb),\n  NULLIF({{ this.params.member_email_id || \"\" }}, '')::uuid\n);",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -1504,13 +1505,14 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
+          " appsmith.user.email ",
           " this.params.member_id ",
           " this.params.facilitator_id ",
-          " this.params.agreement_template_id ",
-          " this.params.member_email_id || \"\" ",
-          " this.params.evidence_json ",
+          " this.params.agreement_template_id || \"\" ",
           " this.params.signature_method ",
-          " this.params.status "
+          " this.params.status ",
+          " this.params.evidence_json || \"[]\" ",
+          " this.params.member_email_id || \"\" "
         ],
         "messages": [],
         "name": "qCreatePendingAgreement",
@@ -9236,7 +9238,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "INSERT INTO public.member_agreements (\n  member_id,\n  facilitator_id,\n  agreement_template_id,\n  signature_method,\n  status,\n  evidence,\n  member_email_id\n)\nVALUES (\n  {{ this.params.member_id }}::uuid,\n  {{ this.params.facilitator_id }}::uuid,\n  NULLIF({{ this.params.agreement_template_id || \"\" }}, '')::uuid,\n  {{ this.params.signature_method }},\n  {{ this.params.status }},\n  COALESCE({{ this.params.evidence_json || \"[]\" }}::jsonb, '[]'::jsonb),\n  NULLIF({{ this.params.member_email_id || \"\" }}, '')::uuid\n)\nRETURNING member_agreement_id;",
+          "body": "SELECT *\nFROM public.issue19_create_member_agreement(\n  {{ appsmith.user.email }},\n  {{ this.params.member_id }}::uuid,\n  (SELECT person_id FROM public.members\n   WHERE member_id={{ this.params.facilitator_id }}::uuid),\n  NULLIF({{ this.params.agreement_template_id || \"\" }}, '')::uuid,\n  {{ this.params.signature_method }},\n  {{ this.params.status }},\n  COALESCE({{ this.params.evidence_json || \"[]\" }}::jsonb, '[]'::jsonb),\n  NULLIF({{ this.params.member_email_id || \"\" }}, '')::uuid\n);",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -9268,13 +9270,14 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
+          " appsmith.user.email ",
           " this.params.member_id ",
           " this.params.facilitator_id ",
           " this.params.agreement_template_id || \"\" ",
-          " this.params.member_email_id || \"\" ",
-          " this.params.evidence_json || \"[]\" ",
           " this.params.signature_method ",
-          " this.params.status "
+          " this.params.status ",
+          " this.params.evidence_json || \"[]\" ",
+          " this.params.member_email_id || \"\" "
         ],
         "messages": [],
         "name": "qCreatePendingAgreement",
@@ -9286,7 +9289,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "INSERT INTO public.member_agreements (\n  member_id,\n  facilitator_id,\n  agreement_template_id,\n  signature_method,\n  status,\n  evidence,\n  member_email_id\n)\nVALUES (\n  {{ this.params.member_id }}::uuid,\n  {{ this.params.facilitator_id }}::uuid,\n  NULLIF({{ this.params.agreement_template_id || \"\" }}, '')::uuid,\n  {{ this.params.signature_method }},\n  {{ this.params.status }},\n  COALESCE({{ this.params.evidence_json || \"[]\" }}::jsonb, '[]'::jsonb),\n  NULLIF({{ this.params.member_email_id || \"\" }}, '')::uuid\n)\nRETURNING member_agreement_id;",
+          "body": "SELECT *\nFROM public.issue19_create_member_agreement(\n  {{ appsmith.user.email }},\n  {{ this.params.member_id }}::uuid,\n  (SELECT person_id FROM public.members\n   WHERE member_id={{ this.params.facilitator_id }}::uuid),\n  NULLIF({{ this.params.agreement_template_id || \"\" }}, '')::uuid,\n  {{ this.params.signature_method }},\n  {{ this.params.status }},\n  COALESCE({{ this.params.evidence_json || \"[]\" }}::jsonb, '[]'::jsonb),\n  NULLIF({{ this.params.member_email_id || \"\" }}, '')::uuid\n);",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -9318,13 +9321,14 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
+          " appsmith.user.email ",
           " this.params.member_id ",
           " this.params.facilitator_id ",
           " this.params.agreement_template_id || \"\" ",
-          " this.params.member_email_id || \"\" ",
-          " this.params.evidence_json || \"[]\" ",
           " this.params.signature_method ",
-          " this.params.status "
+          " this.params.status ",
+          " this.params.evidence_json || \"[]\" ",
+          " this.params.member_email_id || \"\" "
         ],
         "messages": [],
         "name": "qCreatePendingAgreement",
@@ -17341,7 +17345,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_72560490-df45-4aa7-bd39-21dd5af12360",
-      "id": "Agreements - Templates_agreementTemplateFlows._normInt",
+      "id": "Agreement Templates_agreementTemplateFlows._normInt",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -17357,7 +17361,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T02:16:17Z",
         "datasource": {
@@ -17383,7 +17387,7 @@
         ],
         "messages": [],
         "name": "_normInt",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17402,7 +17406,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T02:16:17Z",
         "datasource": {
@@ -17428,7 +17432,7 @@
         ],
         "messages": [],
         "name": "_normInt",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17438,7 +17442,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_0add2924-3efa-4184-92cd-5798b75db4d9",
-      "id": "Agreements - Templates_agreementTemplateFlows.auditLog",
+      "id": "Agreement Templates_agreementTemplateFlows.auditLog",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -17463,7 +17467,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -17489,7 +17493,7 @@
         ],
         "messages": [],
         "name": "auditLog",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17517,7 +17521,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -17543,7 +17547,7 @@
         ],
         "messages": [],
         "name": "auditLog",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17553,7 +17557,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_3a167ff8-39e9-4534-930a-738f15c39a43",
-      "id": "Agreements - Templates_agreementTemplateFlows._diff",
+      "id": "Agreement Templates_agreementTemplateFlows._diff",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -17572,7 +17576,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T00:57:56Z",
         "datasource": {
@@ -17598,7 +17602,7 @@
         ],
         "messages": [],
         "name": "_diff",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17620,7 +17624,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T00:57:56Z",
         "datasource": {
@@ -17646,7 +17650,7 @@
         ],
         "messages": [],
         "name": "_diff",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17656,7 +17660,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_e036e968-e083-429d-87c5-ca21f9db0f4e",
-      "id": "Agreements - Templates_agreementTemplateFlows._normArray",
+      "id": "Agreement Templates_agreementTemplateFlows._normArray",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -17672,7 +17676,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T00:57:56Z",
         "datasource": {
@@ -17698,7 +17702,7 @@
         ],
         "messages": [],
         "name": "_normArray",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17717,7 +17721,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T00:57:56Z",
         "datasource": {
@@ -17743,7 +17747,7 @@
         ],
         "messages": [],
         "name": "_normArray",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17753,7 +17757,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_e489f21a-b2f9-4083-a207-b5b7d6e3839e",
-      "id": "Agreements - Templates_agreementTemplateFlows._normText",
+      "id": "Agreement Templates_agreementTemplateFlows._normText",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -17769,7 +17773,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T02:16:17Z",
         "datasource": {
@@ -17795,7 +17799,7 @@
         ],
         "messages": [],
         "name": "_normText",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17814,7 +17818,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T02:16:17Z",
         "datasource": {
@@ -17840,7 +17844,7 @@
         ],
         "messages": [],
         "name": "_normText",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17850,7 +17854,7 @@
     {
       "deleted": false,
       "gitSyncId": "app_2421d40b-5844-496c-ad90-9612f217e3c3",
-      "id": "Agreements - Templates_agreementTemplateFlows.validateCreateRow",
+      "id": "Agreement Templates_agreementTemplateFlows.validateCreateRow",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -17866,7 +17870,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -17892,7 +17896,7 @@
         ],
         "messages": [],
         "name": "validateCreateRow",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17911,7 +17915,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -17937,7 +17941,7 @@
         ],
         "messages": [],
         "name": "validateCreateRow",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -17947,12 +17951,12 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_dc3d45a1-ba8e-4589-bbd6-4609c67537ac",
-      "id": "Agreements - Templates_agreementTemplateFlows.saveTemplate",
+      "id": "Agreement Templates_agreementTemplateFlows.saveTemplate",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "async function (row, multiselect) {\n  const templates = qAgreementTemplatesList?.data || [];\n  const isExisting = !!row?.agreement_template_id;\n  const oldRow = isExisting ? templates.find(t => t.agreement_template_id === row.agreement_template_id) : null;\n  if (multiselect) {\n    row.required_for = multiselect;\n  }\n  const requiredForArr = agreementTemplateFlows._normArray(row.required_for);\n  const normalizedRow = {\n    ...row,\n    required_for: requiredForArr,\n    documenso_template_id: agreementTemplateFlows._normInt(row.documenso_template_id),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: agreementTemplateFlows._normInt(row.documenso_member_recipient_id),\n    documenso_facilitator_recipient_id: agreementTemplateFlows._normInt(row.documenso_facilitator_recipient_id)\n  };\n  const changes = agreementTemplateFlows._diff(oldRow, normalizedRow);\n  if (isExisting && Object.keys(changes).length === 0) {\n    showAlert(\"No changes to save.\", \"info\");\n    return;\n  }\n  const auditDetails = {\n    agreement_template_id: row.agreement_template_id ?? null,\n    changes,\n    saved_from_page: \"Agreements - Templates\"\n  };\n  const params = {\n    agreement_template_id: row.agreement_template_id,\n    name: agreementTemplateFlows._normText(row.name),\n    version: agreementTemplateFlows._normText(row.version),\n    required_for_json: JSON.stringify(requiredForArr),\n    doc_url: agreementTemplateFlows._normText(row.doc_url),\n    active: !!row.active,\n    documenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n    documenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n    actor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n    audit_details: JSON.stringify(auditDetails)\n  };\n  if (!params.name) throw new Error(\"Template name is required.\");\n  if (!params.version) throw new Error(\"Template version is required.\");\n  let res;\n  if (isExisting) {\n    res = await qAgreementTemplateUpdate.run(params);\n    showAlert(\"Template updated.\", \"success\");\n  } else {\n    res = await qAgreementTemplateInsert.run(params);\n    showAlert(\"Template created.\", \"success\");\n  }\n  await qAgreementTemplatesList.run();\n  return res;\n}",
+          "body": "async function (row, multiselect) {\n  const templates = qAgreementTemplatesList?.data || [];\n  const isExisting = !!row?.agreement_template_id;\n  const oldRow = isExisting ? templates.find(t => t.agreement_template_id === row.agreement_template_id) : null;\n  if (multiselect) {\n    row.required_for = multiselect;\n  }\n  const requiredForArr = agreementTemplateFlows._normArray(row.required_for);\n  const normalizedRow = {\n    ...row,\n    required_for: requiredForArr,\n    documenso_template_id: agreementTemplateFlows._normInt(row.documenso_template_id),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: agreementTemplateFlows._normInt(row.documenso_member_recipient_id),\n    documenso_facilitator_recipient_id: agreementTemplateFlows._normInt(row.documenso_facilitator_recipient_id)\n  };\n  const changes = agreementTemplateFlows._diff(oldRow, normalizedRow);\n  if (isExisting && Object.keys(changes).length === 0) {\n    showAlert(\"No changes to save.\", \"info\");\n    return;\n  }\n  const auditDetails = {\n    agreement_template_id: row.agreement_template_id ?? null,\n    changes,\n    saved_from_page: \"Agreement Templates\"\n  };\n  const params = {\n    agreement_template_id: row.agreement_template_id,\n    name: agreementTemplateFlows._normText(row.name),\n    version: agreementTemplateFlows._normText(row.version),\n    required_for_json: JSON.stringify(requiredForArr),\n    doc_url: agreementTemplateFlows._normText(row.doc_url),\n    active: !!row.active,\n    documenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n    documenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n    actor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n    audit_details: JSON.stringify(auditDetails)\n  };\n  if (!params.name) throw new Error(\"Template name is required.\");\n  if (!params.version) throw new Error(\"Template version is required.\");\n  let res;\n  if (isExisting) {\n    res = await qAgreementTemplateUpdate.run(params);\n    showAlert(\"Template updated.\", \"success\");\n  } else {\n    res = await qAgreementTemplateInsert.run(params);\n    showAlert(\"Template created.\", \"success\");\n  }\n  await qAgreementTemplatesList.run();\n  return res;\n}",
           "encodeParamsToggle": true,
           "jsArguments": [
             {
@@ -17966,7 +17970,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T00:57:56Z",
         "datasource": {
@@ -17988,11 +17992,11 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function (row, multiselect) {\n  const templates = qAgreementTemplatesList?.data || [];\n  const isExisting = !!row?.agreement_template_id;\n  const oldRow = isExisting ? templates.find(t => t.agreement_template_id === row.agreement_template_id) : null;\n  if (multiselect) {\n    row.required_for = multiselect;\n  }\n  const requiredForArr = agreementTemplateFlows._normArray(row.required_for);\n  const normalizedRow = {\n    ...row,\n    required_for: requiredForArr,\n    documenso_template_id: agreementTemplateFlows._normInt(row.documenso_template_id),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: agreementTemplateFlows._normInt(row.documenso_member_recipient_id),\n    documenso_facilitator_recipient_id: agreementTemplateFlows._normInt(row.documenso_facilitator_recipient_id)\n  };\n  const changes = agreementTemplateFlows._diff(oldRow, normalizedRow);\n  if (isExisting && Object.keys(changes).length === 0) {\n    showAlert(\"No changes to save.\", \"info\");\n    return;\n  }\n  const auditDetails = {\n    agreement_template_id: row.agreement_template_id ?? null,\n    changes,\n    saved_from_page: \"Agreements - Templates\"\n  };\n  const params = {\n    agreement_template_id: row.agreement_template_id,\n    name: agreementTemplateFlows._normText(row.name),\n    version: agreementTemplateFlows._normText(row.version),\n    required_for_json: JSON.stringify(requiredForArr),\n    doc_url: agreementTemplateFlows._normText(row.doc_url),\n    active: !!row.active,\n    documenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n    documenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n    actor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n    audit_details: JSON.stringify(auditDetails)\n  };\n  if (!params.name) throw new Error(\"Template name is required.\");\n  if (!params.version) throw new Error(\"Template version is required.\");\n  let res;\n  if (isExisting) {\n    res = await qAgreementTemplateUpdate.run(params);\n    showAlert(\"Template updated.\", \"success\");\n  } else {\n    res = await qAgreementTemplateInsert.run(params);\n    showAlert(\"Template created.\", \"success\");\n  }\n  await qAgreementTemplatesList.run();\n  return res;\n}"
+          "async function (row, multiselect) {\n  const templates = qAgreementTemplatesList?.data || [];\n  const isExisting = !!row?.agreement_template_id;\n  const oldRow = isExisting ? templates.find(t => t.agreement_template_id === row.agreement_template_id) : null;\n  if (multiselect) {\n    row.required_for = multiselect;\n  }\n  const requiredForArr = agreementTemplateFlows._normArray(row.required_for);\n  const normalizedRow = {\n    ...row,\n    required_for: requiredForArr,\n    documenso_template_id: agreementTemplateFlows._normInt(row.documenso_template_id),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: agreementTemplateFlows._normInt(row.documenso_member_recipient_id),\n    documenso_facilitator_recipient_id: agreementTemplateFlows._normInt(row.documenso_facilitator_recipient_id)\n  };\n  const changes = agreementTemplateFlows._diff(oldRow, normalizedRow);\n  if (isExisting && Object.keys(changes).length === 0) {\n    showAlert(\"No changes to save.\", \"info\");\n    return;\n  }\n  const auditDetails = {\n    agreement_template_id: row.agreement_template_id ?? null,\n    changes,\n    saved_from_page: \"Agreement Templates\"\n  };\n  const params = {\n    agreement_template_id: row.agreement_template_id,\n    name: agreementTemplateFlows._normText(row.name),\n    version: agreementTemplateFlows._normText(row.version),\n    required_for_json: JSON.stringify(requiredForArr),\n    doc_url: agreementTemplateFlows._normText(row.doc_url),\n    active: !!row.active,\n    documenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n    documenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n    actor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n    audit_details: JSON.stringify(auditDetails)\n  };\n  if (!params.name) throw new Error(\"Template name is required.\");\n  if (!params.version) throw new Error(\"Template version is required.\");\n  let res;\n  if (isExisting) {\n    res = await qAgreementTemplateUpdate.run(params);\n    showAlert(\"Template updated.\", \"success\");\n  } else {\n    res = await qAgreementTemplateInsert.run(params);\n    showAlert(\"Template created.\", \"success\");\n  }\n  await qAgreementTemplatesList.run();\n  return res;\n}"
         ],
         "messages": [],
         "name": "saveTemplate",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18000,7 +18004,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "async function (row, multiselect) {\n  const templates = qAgreementTemplatesList?.data || [];\n  const isExisting = !!row?.agreement_template_id;\n  const oldRow = isExisting ? templates.find(t => t.agreement_template_id === row.agreement_template_id) : null;\n  if (multiselect) {\n    row.required_for = multiselect;\n  }\n  const requiredForArr = agreementTemplateFlows._normArray(row.required_for);\n  const normalizedRow = {\n    ...row,\n    required_for: requiredForArr,\n    documenso_template_id: agreementTemplateFlows._normInt(row.documenso_template_id),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: agreementTemplateFlows._normInt(row.documenso_member_recipient_id),\n    documenso_facilitator_recipient_id: agreementTemplateFlows._normInt(row.documenso_facilitator_recipient_id)\n  };\n  const changes = agreementTemplateFlows._diff(oldRow, normalizedRow);\n  if (isExisting && Object.keys(changes).length === 0) {\n    showAlert(\"No changes to save.\", \"info\");\n    return;\n  }\n  const auditDetails = {\n    agreement_template_id: row.agreement_template_id ?? null,\n    changes,\n    saved_from_page: \"Agreements - Templates\"\n  };\n  const params = {\n    agreement_template_id: row.agreement_template_id,\n    name: agreementTemplateFlows._normText(row.name),\n    version: agreementTemplateFlows._normText(row.version),\n    required_for_json: JSON.stringify(requiredForArr),\n    doc_url: agreementTemplateFlows._normText(row.doc_url),\n    active: !!row.active,\n    documenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n    documenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n    actor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n    audit_details: JSON.stringify(auditDetails)\n  };\n  if (!params.name) throw new Error(\"Template name is required.\");\n  if (!params.version) throw new Error(\"Template version is required.\");\n  let res;\n  if (isExisting) {\n    res = await qAgreementTemplateUpdate.run(params);\n    showAlert(\"Template updated.\", \"success\");\n  } else {\n    res = await qAgreementTemplateInsert.run(params);\n    showAlert(\"Template created.\", \"success\");\n  }\n  await qAgreementTemplatesList.run();\n  return res;\n}",
+          "body": "async function (row, multiselect) {\n  const templates = qAgreementTemplatesList?.data || [];\n  const isExisting = !!row?.agreement_template_id;\n  const oldRow = isExisting ? templates.find(t => t.agreement_template_id === row.agreement_template_id) : null;\n  if (multiselect) {\n    row.required_for = multiselect;\n  }\n  const requiredForArr = agreementTemplateFlows._normArray(row.required_for);\n  const normalizedRow = {\n    ...row,\n    required_for: requiredForArr,\n    documenso_template_id: agreementTemplateFlows._normInt(row.documenso_template_id),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: agreementTemplateFlows._normInt(row.documenso_member_recipient_id),\n    documenso_facilitator_recipient_id: agreementTemplateFlows._normInt(row.documenso_facilitator_recipient_id)\n  };\n  const changes = agreementTemplateFlows._diff(oldRow, normalizedRow);\n  if (isExisting && Object.keys(changes).length === 0) {\n    showAlert(\"No changes to save.\", \"info\");\n    return;\n  }\n  const auditDetails = {\n    agreement_template_id: row.agreement_template_id ?? null,\n    changes,\n    saved_from_page: \"Agreement Templates\"\n  };\n  const params = {\n    agreement_template_id: row.agreement_template_id,\n    name: agreementTemplateFlows._normText(row.name),\n    version: agreementTemplateFlows._normText(row.version),\n    required_for_json: JSON.stringify(requiredForArr),\n    doc_url: agreementTemplateFlows._normText(row.doc_url),\n    active: !!row.active,\n    documenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n    documenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n    actor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n    audit_details: JSON.stringify(auditDetails)\n  };\n  if (!params.name) throw new Error(\"Template name is required.\");\n  if (!params.version) throw new Error(\"Template version is required.\");\n  let res;\n  if (isExisting) {\n    res = await qAgreementTemplateUpdate.run(params);\n    showAlert(\"Template updated.\", \"success\");\n  } else {\n    res = await qAgreementTemplateInsert.run(params);\n    showAlert(\"Template created.\", \"success\");\n  }\n  await qAgreementTemplatesList.run();\n  return res;\n}",
           "encodeParamsToggle": true,
           "jsArguments": [
             {
@@ -18014,7 +18018,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T00:57:56Z",
         "datasource": {
@@ -18036,11 +18040,11 @@
         "invalids": [],
         "isValid": true,
         "jsonPathKeys": [
-          "async function (row, multiselect) {\n  const templates = qAgreementTemplatesList?.data || [];\n  const isExisting = !!row?.agreement_template_id;\n  const oldRow = isExisting ? templates.find(t => t.agreement_template_id === row.agreement_template_id) : null;\n  if (multiselect) {\n    row.required_for = multiselect;\n  }\n  const requiredForArr = agreementTemplateFlows._normArray(row.required_for);\n  const normalizedRow = {\n    ...row,\n    required_for: requiredForArr,\n    documenso_template_id: agreementTemplateFlows._normInt(row.documenso_template_id),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: agreementTemplateFlows._normInt(row.documenso_member_recipient_id),\n    documenso_facilitator_recipient_id: agreementTemplateFlows._normInt(row.documenso_facilitator_recipient_id)\n  };\n  const changes = agreementTemplateFlows._diff(oldRow, normalizedRow);\n  if (isExisting && Object.keys(changes).length === 0) {\n    showAlert(\"No changes to save.\", \"info\");\n    return;\n  }\n  const auditDetails = {\n    agreement_template_id: row.agreement_template_id ?? null,\n    changes,\n    saved_from_page: \"Agreements - Templates\"\n  };\n  const params = {\n    agreement_template_id: row.agreement_template_id,\n    name: agreementTemplateFlows._normText(row.name),\n    version: agreementTemplateFlows._normText(row.version),\n    required_for_json: JSON.stringify(requiredForArr),\n    doc_url: agreementTemplateFlows._normText(row.doc_url),\n    active: !!row.active,\n    documenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n    documenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n    actor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n    audit_details: JSON.stringify(auditDetails)\n  };\n  if (!params.name) throw new Error(\"Template name is required.\");\n  if (!params.version) throw new Error(\"Template version is required.\");\n  let res;\n  if (isExisting) {\n    res = await qAgreementTemplateUpdate.run(params);\n    showAlert(\"Template updated.\", \"success\");\n  } else {\n    res = await qAgreementTemplateInsert.run(params);\n    showAlert(\"Template created.\", \"success\");\n  }\n  await qAgreementTemplatesList.run();\n  return res;\n}"
+          "async function (row, multiselect) {\n  const templates = qAgreementTemplatesList?.data || [];\n  const isExisting = !!row?.agreement_template_id;\n  const oldRow = isExisting ? templates.find(t => t.agreement_template_id === row.agreement_template_id) : null;\n  if (multiselect) {\n    row.required_for = multiselect;\n  }\n  const requiredForArr = agreementTemplateFlows._normArray(row.required_for);\n  const normalizedRow = {\n    ...row,\n    required_for: requiredForArr,\n    documenso_template_id: agreementTemplateFlows._normInt(row.documenso_template_id),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: agreementTemplateFlows._normInt(row.documenso_member_recipient_id),\n    documenso_facilitator_recipient_id: agreementTemplateFlows._normInt(row.documenso_facilitator_recipient_id)\n  };\n  const changes = agreementTemplateFlows._diff(oldRow, normalizedRow);\n  if (isExisting && Object.keys(changes).length === 0) {\n    showAlert(\"No changes to save.\", \"info\");\n    return;\n  }\n  const auditDetails = {\n    agreement_template_id: row.agreement_template_id ?? null,\n    changes,\n    saved_from_page: \"Agreement Templates\"\n  };\n  const params = {\n    agreement_template_id: row.agreement_template_id,\n    name: agreementTemplateFlows._normText(row.name),\n    version: agreementTemplateFlows._normText(row.version),\n    required_for_json: JSON.stringify(requiredForArr),\n    doc_url: agreementTemplateFlows._normText(row.doc_url),\n    active: !!row.active,\n    documenso_template_id: (normalizedRow.documenso_template_id ?? \"\").toString(),\n    documenso_template_envelope_id: agreementTemplateFlows._normText(row.documenso_template_envelope_id),\n    documenso_member_recipient_id: (normalizedRow.documenso_member_recipient_id ?? \"\").toString(),\n    documenso_facilitator_recipient_id: (normalizedRow.documenso_facilitator_recipient_id ?? \"\").toString(),\n    actor: appsmith.store.facilitator_email || appsmith.user?.email || \"unknown\",\n    audit_details: JSON.stringify(auditDetails)\n  };\n  if (!params.name) throw new Error(\"Template name is required.\");\n  if (!params.version) throw new Error(\"Template version is required.\");\n  let res;\n  if (isExisting) {\n    res = await qAgreementTemplateUpdate.run(params);\n    showAlert(\"Template updated.\", \"success\");\n  } else {\n    res = await qAgreementTemplateInsert.run(params);\n    showAlert(\"Template created.\", \"success\");\n  }\n  await qAgreementTemplatesList.run();\n  return res;\n}"
         ],
         "messages": [],
         "name": "saveTemplate",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18050,7 +18054,7 @@
     {
       "deleted": false,
       "gitSyncId": "app_9955efbe-709b-47c7-8914-c97f34eae8ff",
-      "id": "Agreements - Templates_agreementTemplateFlows.normalizeDocumensoTemplate",
+      "id": "Agreement Templates_agreementTemplateFlows.normalizeDocumensoTemplate",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18066,7 +18070,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18092,7 +18096,7 @@
         ],
         "messages": [],
         "name": "normalizeDocumensoTemplate",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18111,7 +18115,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18137,7 +18141,7 @@
         ],
         "messages": [],
         "name": "normalizeDocumensoTemplate",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18147,7 +18151,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_295706c4-8317-490d-9860-69a569e0a04e",
-      "id": "Agreements - Templates_agreementTemplateFlows.verifyaccess",
+      "id": "Agreement Templates_agreementTemplateFlows.verifyaccess",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18159,7 +18163,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18185,7 +18189,7 @@
         ],
         "messages": [],
         "name": "verifyaccess",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "ON_PAGE_LOAD",
         "userPermissions": [],
@@ -18200,7 +18204,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18226,7 +18230,7 @@
         ],
         "messages": [],
         "name": "verifyaccess",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "ON_PAGE_LOAD",
         "userPermissions": [],
@@ -18236,7 +18240,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_28b24d59-d55c-4b00-801b-e36bd1bac276",
-      "id": "Agreements - Templates_agreementTemplateFlows.linkify",
+      "id": "Agreement Templates_agreementTemplateFlows.linkify",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18252,7 +18256,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:17:41Z",
         "datasource": {
@@ -18278,7 +18282,7 @@
         ],
         "messages": [],
         "name": "linkify",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18297,7 +18301,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:17:41Z",
         "datasource": {
@@ -18323,7 +18327,7 @@
         ],
         "messages": [],
         "name": "linkify",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18333,7 +18337,7 @@
     {
       "deleted": false,
       "gitSyncId": "app_b4de1343-f73e-45b6-b1ae-fadb3ffc2c1e",
-      "id": "Agreements - Templates_agreementTemplateFlows.documensoTemplateOptions",
+      "id": "Agreement Templates_agreementTemplateFlows.documensoTemplateOptions",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18345,7 +18349,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18371,7 +18375,7 @@
         ],
         "messages": [],
         "name": "documensoTemplateOptions",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18386,7 +18390,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18412,7 +18416,7 @@
         ],
         "messages": [],
         "name": "documensoTemplateOptions",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18422,7 +18426,7 @@
     {
       "deleted": false,
       "gitSyncId": "app_1c4c2863-59ff-451f-8fa6-730cfa050d37",
-      "id": "Agreements - Templates_agreementTemplateFlows.loadDocumensoTemplates",
+      "id": "Agreement Templates_agreementTemplateFlows.loadDocumensoTemplates",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18434,7 +18438,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18460,7 +18464,7 @@
         ],
         "messages": [],
         "name": "loadDocumensoTemplates",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18475,7 +18479,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18501,7 +18505,7 @@
         ],
         "messages": [],
         "name": "loadDocumensoTemplates",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18511,7 +18515,7 @@
     {
       "deleted": false,
       "gitSyncId": "app_1fbe11e9-49b7-4972-acce-dbc561ff92e5",
-      "id": "Agreements - Templates_agreementTemplateFlows.createRowFromForm",
+      "id": "Agreement Templates_agreementTemplateFlows.createRowFromForm",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18523,7 +18527,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18549,7 +18553,7 @@
         ],
         "messages": [],
         "name": "createRowFromForm",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18564,7 +18568,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18590,7 +18594,7 @@
         ],
         "messages": [],
         "name": "createRowFromForm",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18600,7 +18604,7 @@
     {
       "deleted": false,
       "gitSyncId": "app_8ed25f55-1398-43a4-ad89-368050cbd7e2",
-      "id": "Agreements - Templates_agreementTemplateFlows.createTemplateFromForm",
+      "id": "Agreement Templates_agreementTemplateFlows.createTemplateFromForm",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18612,7 +18616,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18638,7 +18642,7 @@
         ],
         "messages": [],
         "name": "createTemplateFromForm",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18653,7 +18657,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18679,7 +18683,7 @@
         ],
         "messages": [],
         "name": "createTemplateFromForm",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18689,7 +18693,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_721623fb-68dc-4d3f-b07a-2827c85b6ac9",
-      "id": "Agreements - Templates_agreementTemplateFlows.refresh",
+      "id": "Agreement Templates_agreementTemplateFlows.refresh",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18701,7 +18705,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18727,7 +18731,7 @@
         ],
         "messages": [],
         "name": "refresh",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18742,7 +18746,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18768,7 +18772,7 @@
         ],
         "messages": [],
         "name": "refresh",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18778,7 +18782,7 @@
     {
       "deleted": false,
       "gitSyncId": "app_4c26eaf1-585c-4dda-978a-5f80cef8af82",
-      "id": "Agreements - Templates_agreementTemplateFlows.selectedDocumensoTemplate",
+      "id": "Agreement Templates_agreementTemplateFlows.selectedDocumensoTemplate",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18790,7 +18794,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18816,7 +18820,7 @@
         ],
         "messages": [],
         "name": "selectedDocumensoTemplate",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18831,7 +18835,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-19T21:54:17Z",
         "datasource": {
@@ -18857,7 +18861,7 @@
         ],
         "messages": [],
         "name": "selectedDocumensoTemplate",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18867,7 +18871,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_79a4534d-8f84-4113-b2fc-253797992a75",
-      "id": "Agreements - Templates_agreementTemplateFlows._deepEqual",
+      "id": "Agreement Templates_agreementTemplateFlows._deepEqual",
       "pluginId": "js-plugin",
       "pluginType": "JS",
       "publishedAction": {
@@ -18886,7 +18890,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T00:57:56Z",
         "datasource": {
@@ -18912,7 +18916,7 @@
         ],
         "messages": [],
         "name": "_deepEqual",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18934,7 +18938,7 @@
           "selfReferencingDataPaths": [],
           "timeoutInMillisecond": 10000
         },
-        "collectionId": "Agreements - Templates_agreementTemplateFlows",
+        "collectionId": "Agreement Templates_agreementTemplateFlows",
         "confirmBeforeExecute": false,
         "createdAt": "2026-01-21T00:57:56Z",
         "datasource": {
@@ -18960,7 +18964,7 @@
         ],
         "messages": [],
         "name": "_deepEqual",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -18970,7 +18974,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_bf4fcdb3-c8a8-4d66-ba96-f107ef9da74c",
-      "id": "Agreements - Templates_qAgreementTemplateInsert",
+      "id": "Agreement Templates_qAgreementTemplateInsert",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -19021,7 +19025,7 @@
         ],
         "messages": [],
         "name": "qAgreementTemplateInsert",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -19075,7 +19079,7 @@
         ],
         "messages": [],
         "name": "qAgreementTemplateInsert",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -19085,7 +19089,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_011793da-1403-4b22-877c-7ad0502daf0f",
-      "id": "Agreements - Templates_qAuditLogInsert",
+      "id": "Agreement Templates_qAuditLogInsert",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -19130,7 +19134,7 @@
         ],
         "messages": [],
         "name": "qAuditLogInsert",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -19178,7 +19182,7 @@
         ],
         "messages": [],
         "name": "qAuditLogInsert",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -19188,7 +19192,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_5f8e4316-e5e3-4b87-8f24-58c6768d3b04",
-      "id": "Agreements - Templates_qCurrentFacilitator",
+      "id": "Agreement Templates_qCurrentFacilitator",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -19229,7 +19233,7 @@
         ],
         "messages": [],
         "name": "qCurrentFacilitator",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -19273,7 +19277,7 @@
         ],
         "messages": [],
         "name": "qCurrentFacilitator",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -19283,7 +19287,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_274a071e-e503-4d1e-8cfc-fcd88748bf1b",
-      "id": "Agreements - Templates_qAgreementTypesList",
+      "id": "Agreement Templates_qAgreementTypesList",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -19318,7 +19322,7 @@
         "jsonPathKeys": [],
         "messages": [],
         "name": "qAgreementTypesList",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -19356,7 +19360,7 @@
         "jsonPathKeys": [],
         "messages": [],
         "name": "qAgreementTypesList",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "AUTOMATIC",
         "userPermissions": [],
@@ -19366,7 +19370,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_cdeb4b14-04ee-448c-aa00-86adc5edc76c",
-      "id": "Agreements - Templates_qAgreementTemplatesList",
+      "id": "Agreement Templates_qAgreementTemplatesList",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -19403,7 +19407,7 @@
         "jsonPathKeys": [],
         "messages": [],
         "name": "qAgreementTemplatesList",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "ON_PAGE_LOAD",
         "userPermissions": [],
@@ -19443,7 +19447,7 @@
         "jsonPathKeys": [],
         "messages": [],
         "name": "qAgreementTemplatesList",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "ON_PAGE_LOAD",
         "userPermissions": [],
@@ -19453,7 +19457,7 @@
     {
       "deleted": false,
       "gitSyncId": "696e976bef6f963f4d13cbc6_d66cd9c4-3db5-4813-ba2b-49f5fa771ac3",
-      "id": "Agreements - Templates_qAgreementTemplateUpdate",
+      "id": "Agreement Templates_qAgreementTemplateUpdate",
       "pluginId": "postgres-plugin",
       "pluginType": "DB",
       "publishedAction": {
@@ -19505,7 +19509,7 @@
         ],
         "messages": [],
         "name": "qAgreementTemplateUpdate",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -19560,7 +19564,7 @@
         ],
         "messages": [],
         "name": "qAgreementTemplateUpdate",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -19570,7 +19574,7 @@
     {
       "deleted": false,
       "gitSyncId": "app_5a83c527-498f-41f8-8775-d9abdfb62cc2",
-      "id": "Agreements - Templates_apiListDocumensoTemplates",
+      "id": "Agreement Templates_apiListDocumensoTemplates",
       "pluginId": "restapi-plugin",
       "pluginType": "API",
       "publishedAction": {
@@ -19615,7 +19619,7 @@
         "jsonPathKeys": [],
         "messages": [],
         "name": "apiListDocumensoTemplates",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -19663,7 +19667,7 @@
         "jsonPathKeys": [],
         "messages": [],
         "name": "apiListDocumensoTemplates",
-        "pageId": "Agreements - Templates",
+        "pageId": "Agreement Templates",
         "policyMap": {},
         "runBehaviour": "MANUAL",
         "userPermissions": [],
@@ -28060,7 +28064,7 @@
         "isDefault": false
       },
       {
-        "id": "Agreements - Templates",
+        "id": "Agreement Templates",
         "isDefault": false
       },
       {
@@ -28140,7 +28144,7 @@
         "isDefault": false
       },
       {
-        "id": "Agreements - Templates",
+        "id": "Agreement Templates",
         "isDefault": false
       },
       {
@@ -60100,6 +60104,9 @@
                     },
                     {
                       "key": "borderRadius"
+                    },
+                    {
+                      "key": "labelText"
                     }
                   ],
                   "dynamicHeight": "FIXED",
@@ -61180,6 +61187,9 @@
                     },
                     {
                       "key": "borderRadius"
+                    },
+                    {
+                      "key": "labelText"
                     }
                   ],
                   "dynamicHeight": "FIXED",
@@ -68521,7 +68531,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 40,
                   "shouldTruncate": false,
-                  "text": "Agreements - Templates",
+                  "text": "Agreement Templates",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 0,
@@ -69511,13 +69521,13 @@
               "widgetId": "0",
               "widgetName": "MainContainer"
             },
-            "id": "Agreements - Templates",
+            "id": "Agreement Templates",
             "layoutOnLoadActionErrors": [],
             "layoutOnLoadActions": [
               [
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Agreements - Templates_qAgreementTemplatesList",
+                  "id": "Agreement Templates_qAgreementTemplatesList",
                   "jsonPathKeys": [],
                   "name": "qAgreementTemplatesList",
                   "pluginType": "DB",
@@ -69527,7 +69537,7 @@
               [
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Agreements - Templates_qAgreementTypesList",
+                  "id": "Agreement Templates_qAgreementTypesList",
                   "jsonPathKeys": [],
                   "name": "qAgreementTypesList",
                   "pluginType": "DB",
@@ -69536,9 +69546,9 @@
               ],
               [
                 {
-                  "collectionId": "Agreements - Templates_agreementTemplateFlows",
+                  "collectionId": "Agreement Templates_agreementTemplateFlows",
                   "confirmBeforeExecute": false,
-                  "id": "Agreements - Templates_agreementTemplateFlows.verifyaccess",
+                  "id": "Agreement Templates_agreementTemplateFlows.verifyaccess",
                   "jsonPathKeys": [
                     "async function () {\n  try {\n    let email = null;\n    for (let i = 0; i < 20; i++) {\n      email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n      if (email) break;\n      await new Promise(r => setTimeout(r, 150));\n    }\n    if (!email) {\n      showAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n      return;\n    }\n    let rows = await qCurrentFacilitator.run({\n      email\n    });\n    if (!Array.isArray(rows)) rows = [];\n    const me = rows[0];\n    if (!me?.member_id) {\n      showAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n      await agreementTemplateFlows.auditLog(\"auth.denied\", \"facilitator\", \"\", {\n        email,\n        page: appsmith.URL?.pathname,\n        mode: appsmith.mode\n      });\n      if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n        navigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n      }\n      return;\n    }\n    const facilitator_id = me.member_id;\n    const facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n    const is_document_reviewer = me.is_document_reviewer;\n    const is_donations_reviewer = me.is_donations_reviewer;\n    storeValue(\"facilitator_id\", facilitator_id);\n    storeValue(\"facilitator_email\", facilitator_email);\n    storeValue(\"facilitator_is_reviewer\", is_document_reviewer);\n    storeValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n    storeValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\n  } catch (e) {\n    showAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n    showAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? ({})), \"error\");\n    if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n      navigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n    }\n    return;\n  }\n  agreementTemplateFlows.refresh();\n}"
                   ],
@@ -69554,7 +69564,7 @@
             "viewMode": false
           }
         ],
-        "name": "Agreements - Templates",
+        "name": "Agreement Templates",
         "policyMap": {},
         "slug": "agreements-templates",
         "uniqueSlug": "agreements-templates",
@@ -70441,7 +70451,7 @@
                   "responsiveBehavior": "fill",
                   "rightColumn": 40,
                   "shouldTruncate": false,
-                  "text": "Agreements - Templates",
+                  "text": "Agreement Templates",
                   "textAlign": "LEFT",
                   "textColor": "#231F20",
                   "topRow": 0,
@@ -71431,13 +71441,13 @@
               "widgetId": "0",
               "widgetName": "MainContainer"
             },
-            "id": "Agreements - Templates",
+            "id": "Agreement Templates",
             "layoutOnLoadActionErrors": [],
             "layoutOnLoadActions": [
               [
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Agreements - Templates_qAgreementTemplatesList",
+                  "id": "Agreement Templates_qAgreementTemplatesList",
                   "jsonPathKeys": [],
                   "name": "qAgreementTemplatesList",
                   "pluginType": "DB",
@@ -71447,7 +71457,7 @@
               [
                 {
                   "confirmBeforeExecute": false,
-                  "id": "Agreements - Templates_qAgreementTypesList",
+                  "id": "Agreement Templates_qAgreementTypesList",
                   "jsonPathKeys": [],
                   "name": "qAgreementTypesList",
                   "pluginType": "DB",
@@ -71456,9 +71466,9 @@
               ],
               [
                 {
-                  "collectionId": "Agreements - Templates_agreementTemplateFlows",
+                  "collectionId": "Agreement Templates_agreementTemplateFlows",
                   "confirmBeforeExecute": false,
-                  "id": "Agreements - Templates_agreementTemplateFlows.verifyaccess",
+                  "id": "Agreement Templates_agreementTemplateFlows.verifyaccess",
                   "jsonPathKeys": [
                     "async function () {\n  try {\n    let email = null;\n    for (let i = 0; i < 20; i++) {\n      email = (appsmith.user?.email ?? \"\").trim().toLowerCase();\n      if (email) break;\n      await new Promise(r => setTimeout(r, 150));\n    }\n    if (!email) {\n      showAlert(\"Unknown user: appsmith.user.email not available.\", \"error\");\n      return;\n    }\n    let rows = await qCurrentFacilitator.run({\n      email\n    });\n    if (!Array.isArray(rows)) rows = [];\n    const me = rows[0];\n    if (!me?.member_id) {\n      showAlert(\"Access denied: not an active facilitator for \" + email, \"error\");\n      await agreementTemplateFlows.auditLog(\"auth.denied\", \"facilitator\", \"\", {\n        email,\n        page: appsmith.URL?.pathname,\n        mode: appsmith.mode\n      });\n      if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n        navigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n      }\n      return;\n    }\n    const facilitator_id = me.member_id;\n    const facilitator_email = (me.email ?? \"\").trim().toLowerCase();\n    const is_document_reviewer = me.is_document_reviewer;\n    const is_donations_reviewer = me.is_donations_reviewer;\n    storeValue(\"facilitator_id\", facilitator_id);\n    storeValue(\"facilitator_email\", facilitator_email);\n    storeValue(\"facilitator_is_reviewer\", is_document_reviewer);\n    storeValue(\"facilitator_is_donations_reviewer\", is_donations_reviewer);\n    storeValue(\"facilitator_full_name\", `${me.first_name} ${me.last_name}`.trim());\n  } catch (e) {\n    showAlert(\"Access check failed: \" + (e?.message || e), \"error\");\n    showAlert(\"Query error: \" + JSON.stringify(qCurrentFacilitator?.error ?? ({})), \"error\");\n    if (appsmith.mode === \"DEPLOYED\" || appsmith.mode === \"PUBLISHED\") {\n      navigateTo(\"Unauthorized\", {}, \"SAME_WINDOW\");\n    }\n    return;\n  }\n  agreementTemplateFlows.refresh();\n}"
                   ],
@@ -71474,7 +71484,7 @@
             "viewMode": false
           }
         ],
-        "name": "Agreements - Templates",
+        "name": "Agreement Templates",
         "policyMap": {},
         "slug": "agreements-templates",
         "uniqueSlug": "agreements-templates",

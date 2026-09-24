@@ -102,6 +102,15 @@ needs a member record to be selected or attributed on a release. Existing
 member-based release IDs and storage grants are retained as compatibility
 projections while the older Members - Profile storage editor remains in use.
 
+After `db/migrations_issue_19_person_agreement_signers.sql` and its rollback-only
+verification, import the matching Appsmith export and the updated Documenso send
+workflow. New member agreements retain the member as the agreement recipient
+but record the assigned practitioner by canonical person ID. A practitioner no
+longer needs a membership to sign an agreement. The older Members pages remain
+transitional entry points and their member-based signer selection is converted
+to the canonical person by the guarded database writer. The page formerly named
+**Agreements - Templates** is now **Agreement Templates**.
+
 After `db/migrations_issue_19_contributor_directory_intake.sql` and its
 rollback-only verification, import the next Appsmith export. A donations
 reviewer can create a standalone individual or company contributor in
@@ -318,7 +327,7 @@ When issuing or sending a digital agreement, facilitators must explicitly select
 The system does not automatically choose a template based on type alone.
 This ensures correct handling of multiple templates (e.g. language variants).
 
-- Create your agreement template entries using the page Agreements - Templates.
+- Create your agreement template entries using the page Agreement Templates.
 - You can get your envelopeId from Documenso.  After you have created the Agreement Template in Documenso,
   find the envelopeID pattern in the URL.  For example:  
   

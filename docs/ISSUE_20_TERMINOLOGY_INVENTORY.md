@@ -23,11 +23,12 @@ globally replace `facilitator` with `Spiritual Practitioner`.
 | `member_practitioner_assignments` | Canonical person-based assignment | Keep stable; consume configured labels in UI |
 | `member_facilitators`, `members.is_facilitator`, legacy foreign keys | Transitional member-ID compatibility | Preserve until agreement, release-actor, and storage-access migrations are complete |
 | Individual Profile assignment controls | New Issue #19 UI | First consumer of `organization_terminology` |
-| Members - Intake/Profile/Directory | Older UI with facilitator literals | Migrate during Issue #20 UI audit; do not rename internal query parameters yet |
+| Members - Intake/Profile/Directory | Older UI with facilitator literals | Agreement writes now resolve to a canonical practitioner person; migrate remaining page labels and member operations before retiring these pages |
 | Sacrament Release | Canonical practitioner person, configured display label, nullable legacy member projection | Completed for release issuance and storage authorization; keep internal function/column contracts stable |
 | Donations | Older facilitator wording for cash-entry actor | Keep contributor identity independent; migrate display text separately |
 | Audit Log | Historical machine actions and text | Never rewrite history; new UI may render current labels around stored events |
-| n8n workflows | Field names and audit payloads include facilitator | Treat payload/column names as compatibility contracts until API versioning |
+| Agreement Templates | Renamed from Agreements - Templates | Completed; internal Documenso recipient field names remain compatibility contracts |
+| n8n workflows | Field names and audit payloads include facilitator | Agreement delivery now resolves the canonical practitioner person and person-owned email; retain Documenso `facilitator_*` recipient names until template/API versioning |
 | Database errors/comments/docs | Mixed user-facing and internal language | Migrate user-facing errors deliberately; retain clear legacy comments |
 | Documenso templates and executed agreements | Legally significant text | Inventory only; do not modify while the Spiritual Practitioner Agreement is under review |
 
@@ -48,9 +49,10 @@ authorization, and legal meaning are designed.
 
 1. Add an operator UI for terminology changes and a preview of affected labels.
 2. Migrate remaining Appsmith user-facing literals page by page.
-3. Move remaining agreement signer fields from legacy facilitator member IDs to
-   canonical person appointments. Sacrament-release actor and storage access
-   have moved; retain their legacy projections until old consumers are retired.
+3. Migrate the remaining Members pages from member-ID practitioner selectors to
+   person-ID selectors. Agreement, release, and storage records now have
+   canonical practitioner identity; retain legacy projections until old
+   consumers are retired.
 4. Inventory Documenso variables and templates after legal/board review; never
    rewrite executed agreements.
 5. Test both Rooted Psyche defaults and an alternate deployment that presents

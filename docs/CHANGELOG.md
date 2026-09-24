@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Registered the Sacrament Release practitioner selector label as an Appsmith dynamic binding so deployed pages render the configured term instead of raw moustache text (#20).
 - Fixed Givebutter webhook ingestion when a numeric Givebutter `contact_id` is passed as the external provider identity; the workflow now normalizes the identity to text and explicitly casts database parameters to the `ingest_provider_donation(...)` signature (#19).
 - Made the Sacrament Release gate honor signed sacrament agreements from inactive older template versions, and added rollback-only coverage for old/new versions, unrelated scopes, pending status, and reviewed manual agreements (#19).
 - Corrected the membership-contact verification fixture after canonical identity removed copied contributor name columns (#19).
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added canonical person attribution for agreement practitioners, guarded agreement creation, nonmember-practitioner Documenso delivery, legacy member-ID synchronization, and rollback-only checks (#19, #20).
 - Added canonical person-based practitioner attribution and storage-location authorization for sacrament releases, including nonmember practitioners, audited release writes, legacy storage synchronization, configured practitioner labels, and rollback-only authorization checks (#19, #20).
 - Added a stable terminology concept registry, audited organization-level labels, Rooted Psyche **Spiritual Practitioner** defaults, and compatibility tests that keep a future regulated facilitator distinct (#20).
 - Added canonical person-based practitioner assignments with audited assign/end actions on Individual Profile, nonmember-practitioner access, legacy assignment synchronization, and rollback-only permission checks (#19).
@@ -52,6 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Renamed the Appsmith **Agreements - Templates** page to **Agreement Templates** and added release validation for the page identity and dynamic terminology binding (#20).
+- Member agreements remain membership records while their practitioner signer is now person-based; contributor status is neither created nor required (#19).
 - Sacrament Release now lists only practitioners assigned to the selected member, scopes inventory to that person's storage grants, and records the canonical practitioner person while retaining nullable legacy facilitator-member attribution for compatibility (#19, #20).
 - Individual Profile practitioner appointment and assignment labels now read the organization terminology profile instead of equating practitioner with facilitator (#19, #20).
 - Individual Profile now manages practitioner assignments directly; **Open agreement operations** remains as the transitional handoff for agreement writes that still require legacy member-based signer fields (#19).

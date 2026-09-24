@@ -628,6 +628,16 @@ Overrides require:
 
 All override actions are audit logged.
 
+Member agreements remain attached to `members` because they authorize member
+operations. The practitioner who sends or co-signs an agreement is identified
+by `member_agreements.practitioner_person_id`, independent of whether that
+person has a membership or contributor capacity. `facilitator_id` remains a
+nullable compatibility projection for older pages and reports. New agreement
+writes use a guarded function that requires an active practitioner assignment;
+the Documenso workflow resolves the practitioner's name and email from the
+canonical person/contact model while preserving existing template recipient
+field names.
+
 ---
 
 # Audit Logging

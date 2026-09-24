@@ -34,6 +34,37 @@ def validate_givebutter_workflow(path: pathlib.Path, data: dict, failures: list[
         )
 
 
+def validate_documenso_workflow(path: pathlib.Path, data: dict, failures: list[str]) -> None:
+    """Keep agreement delivery on canonical person signer identity."""
+    if data.get("name") != "SignatureGate - Documenso - Send Release (Member+Facilitator)":
+        return
+
+    relative_path = path.relative_to(ROOT)
+    nodes = {node.get("name"): node for node in data.get("nodes", [])}
+    context_query = nodes.get("PG - Load Agreement Context", {}).get(
+        "parameters", {}
+    ).get("query", "")
+    payload_code = nodes.get("Build Documenso Payload", {}).get(
+        "parameters", {}
+    ).get("jsCode", "")
+    required_query_fragments = (
+        "ma.practitioner_person_id",
+        "JOIN people practitioner",
+        "v_person_emails",
+        "person_app_accounts practitioner_account",
+    )
+    if any(fragment not in context_query for fragment in required_query_fragments):
+        failures.append(
+            f"{relative_path}: Documenso agreement context must resolve the "
+            "canonical practitioner person and person-owned email"
+        )
+    if "practitioner_person_id: row.practitioner_person_id" not in payload_code:
+        failures.append(
+            f"{relative_path}: Documenso payload must retain canonical "
+            "practitioner attribution"
+        )
+
+
 def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]) -> None:
     """Catch drift between Appsmith JS actions and their combined JS objects."""
     if not {"actionList", "actionCollectionList", "pageList"}.issubset(data):
@@ -99,6 +130,35 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
             "as its canonical practitioner"
         )
 
+    agreement_create_actions = [
+        action for action in data.get("actionList", [])
+        if action.get("publishedAction", {}).get("name") == "qCreatePendingAgreement"
+    ]
+    if len(agreement_create_actions) != 2:
+        failures.append(
+            f"{relative_path}: expected two transitional member agreement writers"
+        )
+    for action in agreement_create_actions:
+        published = action.get("publishedAction", {})
+        unpublished = action.get("unpublishedAction", {})
+        published_body = published.get("actionConfiguration", {}).get("body", "")
+        unpublished_body = unpublished.get("actionConfiguration", {}).get("body", "")
+        if published_body != unpublished_body \
+           or "issue19_create_member_agreement" not in published_body:
+            failures.append(
+                f"{relative_path}: {published.get('pageId')}/qCreatePendingAgreement "
+                "must use the canonical guarded agreement writer"
+            )
+
+    page_names = {
+        page.get("publishedPage", {}).get("name")
+        for page in data.get("pageList", [])
+    }
+    if "Agreement Templates" not in page_names or "Agreements - Templates" in page_names:
+        failures.append(
+            f"{relative_path}: Agreement Templates page rename is incomplete"
+        )
+
     def objects(value):
         if isinstance(value, dict):
             yield value
@@ -132,6 +192,15 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
                     failures.append(
                         f"{relative_path}: {variant_name}/selFacilitator must "
                         "use configured terminology and person identity"
+                    )
+                binding_keys = {
+                    binding.get("key")
+                    for binding in selector.get("dynamicBindingPathList", [])
+                }
+                if "labelText" not in binding_keys:
+                    failures.append(
+                        f"{relative_path}: {variant_name}/selFacilitator "
+                        "labelText must be registered as a dynamic binding"
                     )
         if page_entry.get("publishedPage", {}).get("name") != "Individual Profile":
             continue
@@ -225,6 +294,7 @@ def validate_assets() -> None:
             if isinstance(data, dict):
                 validate_appsmith_export(path, data, failures)
                 validate_givebutter_workflow(path, data, failures)
+                validate_documenso_workflow(path, data, failures)
         except Exception as exc:
             failures.append(f"{path.relative_to(ROOT)}: {exc}")
     if failures:

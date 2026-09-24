@@ -48,7 +48,9 @@ Two workflow exports are included under `n8n/workflows/`:
      { "member_agreement_id": "<uuid>" }
      ```
    - Behavior:
-     - Loads member + facilitator + active template
+     - Loads the member, the canonical practitioner person, and active template
+       (the existing `facilitator_*` Documenso recipient fields are retained as
+       compatibility contracts)
      - Calls Documenso `POST /api/v2/envelope/use` with `distributeDocument=true`
      - Updates `member_agreements` with `signature_method='documenso'`, `status='pending_signature'`, and Documenso identifiers
 
