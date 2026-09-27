@@ -16461,7 +16461,7 @@
       "pluginType": "DB",
       "publishedAction": {
         "actionConfiguration": {
-          "body": "SELECT *\nFROM public.record_cash_donation_identity(\n  p_choice => {{ this.params.contributor_choice }},\n  p_is_anonymous => COALESCE({{ this.params.is_anonymous }}, false),\n  p_amount_cents => {{ this.params.amount_cents }}::integer,\n  p_donated_at => {{ this.params.donated_at }}::timestamptz,\n  p_notes => {{ this.params.notes || null }},\n  p_facilitator_id => {{ appsmith.store.facilitator_id }}::uuid\n);",
+          "body": "SELECT *\nFROM public.record_cash_donation_identity(\n  p_choice => '{{ this.params.contributor_choice }}',\n  p_is_anonymous => COALESCE({{ this.params.is_anonymous }}, false),\n  p_amount_cents => {{ this.params.amount_cents }}::integer,\n  p_donated_at => '{{ this.params.donated_at }}'::timestamptz,\n  p_notes => {{ this.params.notes || null }},\n  p_facilitator_id => '{{ appsmith.store.facilitator_id }}'::uuid\n);",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
@@ -16509,7 +16509,7 @@
       },
       "unpublishedAction": {
         "actionConfiguration": {
-          "body": "SELECT *\nFROM public.record_cash_donation_identity(\n  p_choice => {{ this.params.contributor_choice }},\n  p_is_anonymous => COALESCE({{ this.params.is_anonymous }}, false),\n  p_amount_cents => {{ this.params.amount_cents }}::integer,\n  p_donated_at => {{ this.params.donated_at }}::timestamptz,\n  p_notes => {{ this.params.notes || null }},\n  p_facilitator_id => {{ appsmith.store.facilitator_id }}::uuid\n);",
+          "body": "SELECT *\nFROM public.record_cash_donation_identity(\n  p_choice => '{{ this.params.contributor_choice }}',\n  p_is_anonymous => COALESCE({{ this.params.is_anonymous }}, false),\n  p_amount_cents => {{ this.params.amount_cents }}::integer,\n  p_donated_at => '{{ this.params.donated_at }}'::timestamptz,\n  p_notes => {{ this.params.notes || null }},\n  p_facilitator_id => '{{ appsmith.store.facilitator_id }}'::uuid\n);",
           "encodeParamsToggle": true,
           "paginationType": "NONE",
           "pluginSpecifiedTemplates": [
