@@ -1,0 +1,61 @@
+name: Regenerate Appsmith export
+
+on:
+  workflow_dispatch:
+    inputs:
+      appsmith_ref:
+        description: SignatureGate-Appsmith branch, tag, or commit
+        required: true
+        default: master
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out SignatureGate
+        uses: actions/checkout@v4
+
+      - name: Check out SignatureGate-Appsmith
+        uses: actions/checkout@v4
+        with:
+          repository: RayzorDuff/SignatureGate-Appsmith
+          ref: ${{ inputs.appsmith_ref }}
+          path: .appsmith-source
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Regenerate monolithic Appsmith export
+        run: |
+          node scripts/appsmith-export.mjs \
+            --source .appsmith-source \
+            --output "appsmith/Rooted Psyche Membership Ops.json"
+
+      - name: Validate generated export
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from "node:fs";
+          const f = "appsmith/Rooted Psyche Membership Ops.json";
+          const x = JSON.parse(fs.readFileSync(f, "utf8"));
+          if (x.artifactJsonType !== "APPLICATION") throw new Error("Unexpected artifactJsonType");
+          if (!Array.isArray(x.pageList)) throw new Error("Missing pageList");
+          if (!Array.isArray(x.actionList)) throw new Error("Missing actionList");
+          console.log(JSON.stringify({pages:x.pageList.length, actions:x.actionList.length, datasources:x.datasourceList?.length ?? 0, actionCollections:x.actionCollectionList?.length ?? 0}, null, 2));
+          NODE
+
+      - name: Commit regenerated export
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "appsmith/Rooted Psyche Membership Ops.json"
+          if git diff --cached --quiet; then
+            echo "Generated export is already current."
+          else
+            git commit -m "chore: regenerate Appsmith export"
+            git push
+          fi
