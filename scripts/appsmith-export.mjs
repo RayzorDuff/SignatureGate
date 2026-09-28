@@ -86,10 +86,12 @@ const theme = exists(path.join(source, "theme.json")) ? readJson(path.join(sourc
 const pageRoot = path.join(source, "pages");
 const pageList = listDirs(pageRoot).map(name => buildPage(path.join(pageRoot, name))).filter(Boolean);
 const datasourceRoot = path.join(source, "datasources");
-const datasourceList = listDirs(datasourceRoot).map(name => {
-  const file = path.join(datasourceRoot, name + ".json");
-  return exists(file) ? readJson(file) : null;
-}).filter(Boolean);
+const datasourceList = exists(datasourceRoot)
+  ? fs.readdirSync(datasourceRoot)
+      .filter(name => name.endsWith(".json"))
+      .sort()
+      .map(name => readJson(path.join(datasourceRoot, name)))
+  : [];
 
 const actionList = [];
 for (const pageName of listDirs(pageRoot)) {
