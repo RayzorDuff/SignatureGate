@@ -118,7 +118,7 @@ BEGIN
   IF p_capacity = 'member' THEN
     IF p_contact_kind = 'email' THEN
       SELECT e.is_primary, e.email, e.email_normalized, e.member_email_id
-      INTO v_was_primary, v_contact_detail, v_identity, v_source_owner_id
+      INTO v_was_primary, v_contact_detail, v_identity, v_source_contact_id
       FROM public.member_emails e
       WHERE e.member_email_id = p_contact_id
         AND e.member_id = v_source_owner_id
@@ -126,7 +126,7 @@ BEGIN
       FOR UPDATE;
     ELSIF p_contact_kind = 'phone' THEN
       SELECT p.is_primary, p.phone, p.phone_normalized, p.member_phone_id
-      INTO v_was_primary, v_contact_detail, v_identity, v_source_owner_id
+      INTO v_was_primary, v_contact_detail, v_identity, v_source_contact_id
       FROM public.member_phones p
       WHERE p.member_phone_id = p_contact_id
         AND p.member_id = v_source_owner_id
@@ -139,7 +139,7 @@ BEGIN
         public.member_address_identity_key(
           a.address_1,a.address_2,a.postal_code,a.country),
         a.member_address_id
-      INTO v_was_primary, v_contact_detail, v_identity, v_source_owner_id
+      INTO v_was_primary, v_contact_detail, v_identity, v_source_contact_id
       FROM public.member_addresses a
       WHERE a.member_address_id = p_contact_id
         AND a.member_id = v_source_owner_id
@@ -149,7 +149,7 @@ BEGIN
   ELSE
     IF p_contact_kind = 'email' THEN
       SELECT e.is_primary, e.email, e.email_normalized, e.contributor_email_id
-      INTO v_was_primary, v_contact_detail, v_identity, v_source_owner_id
+      INTO v_was_primary, v_contact_detail, v_identity, v_source_contact_id
       FROM public.contributor_emails e
       WHERE e.contributor_email_id = p_contact_id
         AND e.contributor_id = v_source_owner_id
@@ -157,7 +157,7 @@ BEGIN
       FOR UPDATE;
     ELSIF p_contact_kind = 'phone' THEN
       SELECT p.is_primary, p.phone, p.phone_normalized, p.contributor_phone_id
-      INTO v_was_primary, v_contact_detail, v_identity, v_source_owner_id
+      INTO v_was_primary, v_contact_detail, v_identity, v_source_contact_id
       FROM public.contributor_phones p
       WHERE p.contributor_phone_id = p_contact_id
         AND p.contributor_id = v_source_owner_id
@@ -170,7 +170,7 @@ BEGIN
         public.member_address_identity_key(
           a.address_1,a.address_2,a.postal_code,a.country),
         a.contributor_address_id
-      INTO v_was_primary, v_contact_detail, v_identity, v_source_owner_id
+      INTO v_was_primary, v_contact_detail, v_identity, v_source_contact_id
       FROM public.contributor_addresses a
       WHERE a.contributor_address_id = p_contact_id
         AND a.contributor_id = v_source_owner_id
