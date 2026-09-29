@@ -38,6 +38,7 @@ DECLARE
   v_target_id uuid;
   v_source_owner_id uuid;
   v_target_owner_id uuid;
+  v_source_contact_id uuid;
   v_party_contact_id uuid;
   v_identity text;
   v_was_primary boolean;
@@ -72,8 +73,6 @@ BEGIN
       ELSE 'contributor_addresses' END;
   END IF;
 
-  -- Resolve both capacities from their canonical people. The source and target
-  -- must both be active individuals in the selected capacity.
   IF p_capacity = 'member' THEN
     SELECT m.member_id INTO v_source_owner_id
     FROM public.members m
@@ -113,8 +112,6 @@ BEGIN
     END IF;
   END IF;
 
-  -- Lock the exact source row and verify that the caller did not submit a
-  -- contact ID belonging to another individual.
   IF p_capacity = 'member' THEN
     IF p_contact_kind = 'email' THEN
       SELECT e.is_primary, e.email, e.email_normalized, e.member_email_id
@@ -198,8 +195,6 @@ BEGIN
     RAISE EXCEPTION 'Contact mapping needs review before reassignment';
   END IF;
 
-  -- Reassignment moves ownership. Do not silently turn an existing target
-  -- contact into a duplicate or merge two contact records.
   IF p_capacity = 'member' THEN
     IF p_contact_kind = 'email' AND EXISTS (
       SELECT 1 FROM public.member_emails e
@@ -239,9 +234,6 @@ BEGIN
     END IF;
   END IF;
 
-  -- Member email/phone identities are globally unique among active member
-  -- rows, so a target collision there is already covered by the checks above
-  -- plus the underlying database constraints.
   IF p_capacity = 'member' THEN
     IF p_contact_kind = 'email' THEN
       UPDATE public.member_emails
@@ -300,8 +292,6 @@ BEGIN
     RAISE EXCEPTION 'Contact reassignment did not update the source row';
   END IF;
 
-  -- The party-contact source trigger moves the canonical person ownership
-  -- with the legacy source row. Verify that invariant before returning.
   IF NOT EXISTS (
     SELECT 1
     FROM public.party_contact_sources ps
