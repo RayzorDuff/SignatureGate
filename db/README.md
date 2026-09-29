@@ -298,6 +298,16 @@ sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signatureg
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_agreement_signers.sql
 sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_agreement_signers.sql
 
+# Issue #19: reviewed reassignment of a member/contributor email, phone, or
+# address from one individual to another. Apply AFTER person agreement signers.
+# This preserves the canonical contact identity, rejects duplicate target
+# ownership, records the reason, and writes an audit entry.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_contact_reassignment.sql
+
+# Rollback-only verification of the reassignment function and its canonical
+# contact synchronization triggers.
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_contact_reassignment.sql
+
 # This should return no rows. If it returns historical records, review what
 # each record represents before correcting it and validating the constraint.
 sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -c "SELECT release_id, released_at, member_id, release_type, item_name, notes FROM public.releases WHERE release_type IS DISTINCT FROM 'sacrament_release' ORDER BY released_at, release_id;"
