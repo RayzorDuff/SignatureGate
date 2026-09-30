@@ -169,7 +169,8 @@ BEGIN
     );
     RAISE EXCEPTION 'Confirmed batch item was mutable.';
   EXCEPTION WHEN OTHERS THEN
-    IF position('immutable' IN SQLERRM) = 0 THEN
+    IF position('confirmed, not draft' IN SQLERRM) = 0
+       AND position('immutable' IN SQLERRM) = 0 THEN
       RAISE;
     END IF;
   END;
