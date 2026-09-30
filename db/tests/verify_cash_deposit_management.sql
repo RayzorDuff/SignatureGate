@@ -223,4 +223,4 @@ $$;
 
 ROLLBACK;
 
-SELECT 'Issue #17 cash deposit backend smoke test passed.' AS result;
+SELECT 'Cash deposit backend smoke test passed.' AS result;

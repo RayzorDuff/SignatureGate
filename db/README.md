@@ -25,23 +25,23 @@ Until that change has been deployed to production, apply only:
 ```bash
 sudo docker exec -i signaturegate-postgres \
   psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate \
-  < db/cash_deposit_management.sql
+  < db/migrations/cash_deposit_management.sql
 ```
 
 Do not load `db/schema.sql` over the existing production database as an upgrade mechanism.
 
-After the cash-deposit migration is deployed and verified in production, `db/schema.sql` and the production schema represent the same database definition. At that point the pending deployment migration can also be retired from the repository.
+After the cash-deposit migration is deployed and verified in production, `db/schema.sql` and the production schema represent the same database definition. The migration remains under `db/migrations/` as the deployment record for that production upgrade.
 
 ## Verification
 
-The verification scripts in `db/verify_*.sql` are rollback-only integration checks. They create synthetic data inside a transaction and roll the transaction back when complete.
+The verification scripts in `db/tests/verify_*.sql` are rollback-only integration checks. They create synthetic data inside a transaction and roll the transaction back when complete.
 
 Run them against a disposable or dedicated test database, not against production:
 
 ```bash
 sudo docker exec -i signaturegate-postgres \
   psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
-  < db/verify_cash_deposit_management.sql
+  < db/tests/verify_cash_deposit_management.sql
 ```
 
 The cash-deposit verification covers:
@@ -153,13 +153,13 @@ The audit log is not intended for debugging or analytics and should not be trunc
 
 ## Database development model
 
-The database now follows a canonical-schema model rather than an installation-time migration chain.
+The database follows a canonical-schema model with a small deployment-migration surface for changes that are still pending in production.
 
 - Change the database definition through normal development and testing.
 - Validate the resulting schema against a clean database.
 - Regenerate `db/schema.sql` when the canonical database definition changes.
-- Keep focused `db/verify_*.sql` regression checks for important behavior.
-- Do not add a new historical installation migration for routine schema evolution.
+- Keep focused `db/tests/verify_*.sql` regression checks for important behavior.
+- Do not add historical installation migrations for schema changes that are already incorporated into the canonical schema.
 - Production upgrades that cannot safely be represented by replacing the schema bootstrap should be handled as explicit, separately reviewed deployment operations.
 
-The historical migration chain has been removed from the active database installation surface because the current production schema has been consolidated into `db/schema.sql`.
+The historical migration chain has been removed from the active database installation surface. `db/migrations/` contains only the forward deployment migration still required by current production; once that migration has been deployed and verified, future schema changes should normally be consolidated directly into `db/schema.sql` rather than accumulated as historical migrations.
