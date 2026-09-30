@@ -18,19 +18,9 @@ Before applying it to a database that contains data, take an appropriate backup.
 
 ## Current production upgrade
 
-The repository schema has been consolidated from the tested current production schema. The only database change that is still pending in the current production database is cash-deposit management.
+The canonical schema includes the current cash-deposit management definition. The production database has not yet been changed by this branch; do not load `db/schema.sql` over the existing production database as an upgrade mechanism.
 
-Until that change has been deployed to production, apply only:
-
-```bash
-sudo docker exec -i signaturegate-postgres \
-  psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate \
-  < db/migrations/cash_deposit_management.sql
-```
-
-Do not load `db/schema.sql` over the existing production database as an upgrade mechanism.
-
-After the cash-deposit migration is deployed and verified in production, `db/schema.sql` and the production schema represent the same database definition. The migration remains under `db/migrations/` as the deployment record for that production upgrade.
+Production deployment should use the reviewed database change procedure for the current release rather than treating the canonical bootstrap as an in-place upgrade.
 
 ## Verification
 
