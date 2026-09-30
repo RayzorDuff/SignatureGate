@@ -27,6 +27,9 @@ DECLARE
   v_reviewer uuid := public.uuid_generate_v4();
   v_non_reviewer uuid := public.uuid_generate_v4();
   v_member uuid := public.uuid_generate_v4();
+  v_preparer_person uuid := public.uuid_generate_v4();
+  v_reviewer_person uuid := public.uuid_generate_v4();
+  v_non_reviewer_person uuid := public.uuid_generate_v4();
   v_person uuid := public.uuid_generate_v4();
   v_contributor uuid;
   v_donation_a uuid := public.uuid_generate_v4();
@@ -37,18 +40,22 @@ DECLARE
   v_total bigint;
 BEGIN
   INSERT INTO public.people (person_id, display_name, first_name, last_name)
-  VALUES (v_person, 'Issue17 Donor', 'Issue17', 'Donor');
+  VALUES
+    (v_preparer_person, 'Issue17 Preparer', 'Issue17', 'Preparer'),
+    (v_reviewer_person, 'Issue17 Reviewer', 'Issue17', 'Reviewer'),
+    (v_non_reviewer_person, 'Issue17 Other', 'Issue17', 'Other'),
+    (v_person, 'Issue17 Donor', 'Issue17', 'Donor');
 
   INSERT INTO public.members (
     member_id, person_id, email, status,
     is_facilitator, is_donations_reviewer
   )
   VALUES
-    (v_preparer, public.uuid_generate_v4(), 'issue17-preparer@example.invalid',
+    (v_preparer, v_preparer_person, 'issue17-preparer@example.invalid',
      'active', true, false),
-    (v_reviewer, public.uuid_generate_v4(), 'issue17-reviewer@example.invalid',
+    (v_reviewer, v_reviewer_person, 'issue17-reviewer@example.invalid',
      'active', true, true),
-    (v_non_reviewer, public.uuid_generate_v4(), 'issue17-other@example.invalid',
+    (v_non_reviewer, v_non_reviewer_person, 'issue17-other@example.invalid',
      'active', true, false),
     (v_member, v_person, 'issue17-donor@example.invalid',
      'active', false, false);
