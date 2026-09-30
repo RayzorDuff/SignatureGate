@@ -192,6 +192,58 @@ BEGIN
     RAISE EXCEPTION 'Cancelled batch did not return donation to Cash on Hand.';
   END IF;
 
+  -- A prepared batch may also be cancelled, preserving its active item history.
+  SELECT * INTO v_batch
+  FROM public.create_cash_deposit_batch(
+    v_preparer, CURRENT_DATE, NULL, NULL
+  );
+
+  PERFORM public.add_cash_deposit_item(
+    v_batch.deposit_batch_id, v_donation_c, v_preparer
+  );
+
+  SELECT * INTO v_batch
+  FROM public.prepare_cash_deposit_batch(
+    v_batch.deposit_batch_id,
+    v_preparer,
+    CURRENT_DATE,
+    'LIFECYCLE-CANCEL-001',
+    'SignatureGate Operating Account',
+    'prepared cancellation smoke test'
+  );
+
+  IF v_batch.status <> 'prepared' THEN
+    RAISE EXCEPTION 'Expected batch to be prepared before cancellation.';
+  END IF;
+
+  PERFORM public.cancel_cash_deposit_batch(
+    v_batch.deposit_batch_id, v_preparer, 'cancel prepared batch test'
+  );
+
+  IF (SELECT status
+      FROM public.cash_deposit_batches
+      WHERE deposit_batch_id = v_batch.deposit_batch_id) <> 'cancelled'
+  THEN
+    RAISE EXCEPTION 'Prepared batch did not transition to cancelled.';
+  END IF;
+
+  SELECT count(*) INTO v_count
+  FROM public.cash_deposit_batch_items
+  WHERE deposit_batch_id = v_batch.deposit_batch_id
+    AND donation_id = v_donation_c
+    AND removed_at IS NOT NULL
+    AND removal_reason = 'cancel prepared batch test';
+
+  IF v_count <> 1 THEN
+    RAISE EXCEPTION 'Prepared-batch cancellation did not preserve item history.';
+  END IF;
+
+  IF (SELECT count(*) FROM public.cash_on_hand_donations()
+      WHERE donation_id = v_donation_c) <> 1
+  THEN
+    RAISE EXCEPTION 'Prepared-batch cancellation did not return donation to Cash on Hand.';
+  END IF;
+
   SELECT * INTO v_batch
   FROM public.create_cash_deposit_batch(
     v_preparer, CURRENT_DATE, NULL, NULL
