@@ -83,7 +83,7 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Add explicit member/anonymous/unresolved donor identity and the controlled
 # anonymous-cash creation and donation-review functions for Issue #17.
 # Apply before importing the matching Appsmith and Givebutter workflow exports.
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_issue_17_anonymous_cash_donations.sql
+sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_anonymous_cash_donations.sql
 
 # Decouple identified contributors from membership for Issue #19. This adds
 # individual/organization contributors, auditable contributor-member links,
@@ -91,21 +91,21 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # functions for a staged Appsmith/n8n rollout.
 # Apply after the Issue #17 migration and before importing the matching
 # Appsmith export or activating the matching Givebutter workflow.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_identity.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contributor_identity.sql
 
 # Install contributor-first matching and the idempotent provider-ingestion API.
 # Apply after the Issue #19 identity migration and before activating the
 # matching Givebutter n8n workflow.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_ingestion.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contributor_ingestion.sql
 
 # Issue #19: shared person and organization identities under the existing
 # member/contributor APIs. Apply after BOTH preceding Issue #19 migrations.
 # This is a one-time migration: back up the DB and do not rerun it.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_shared_identity.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_shared_identity.sql
 
 # Optional smoke test for the transitional shared-identity schema. Run BEFORE
 # the canonical-people migration below; it exercises the old name projections.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_shared_identity.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_shared_identity.sql
 
 # Review previously differing names; contact values are shown through the
 # v_person_emails / v_person_phones / v_person_addresses read views.
@@ -123,190 +123,190 @@ sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegat
 # Issue #19: move person names and birth dates, and organization names, out of
 # role tables. Run ONCE after backing up the database, during a brief write
 # pause; import the matching Appsmith export next. Existing role IDs remain.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_canonical_people.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_canonical_people.sql
 
 # Optional end-to-end smoke test. Synthetic rows are rolled back even when
 # checks pass. Run after the canonical migration, before importing Appsmith.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_canonical_people.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_canonical_people.sql
 
 # Issue #19 contact foundation: backfill person/organization-owned email, phone,
 # and address records, and synchronize the existing member/contributor contact
 # writes. Apply ONCE after canonical_people.sql, before the Directory UI phase.
 # Keep the legacy contact tables: agreement and mailing-list rows still point
 # at member_email_id and the current Appsmith/n8n workflows write those tables.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_party_contacts.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_party_contacts.sql
 
 # Rollback-only integration check for shared, separate, archived, edited, and
 # reassigned contact owners; run after the contact foundation migration.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_party_contacts.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_party_contacts.sql
 
 # Issue #19 read-only Directory query helpers. Apply after party contacts,
 # before importing the matching Appsmith export. Current account/reviewer
 # flags still determine which people, organizations and contacts are visible.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_directory_read.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_directory_read.sql
 
 # Rollback-only access check for the Directory helpers.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_directory_read.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_directory_read.sql
 
 # Issue #19 person roles and account ownership; apply after the Directory
 # migration and before importing its profile-editing Appsmith export.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_roles.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_person_roles.sql
 
 # Rollback-only permission, nonmember-account, assignment and audit checks.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_roles.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_person_roles.sql
 
 # Review the exact account owner first. Bootstrap one directory manager via
 # the database operator (there is intentionally no automatic promotion).
 sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -c \
   "SELECT p.person_id, p.display_name, a.email FROM public.person_app_accounts a JOIN public.people p USING (person_id) ORDER BY a.email;"
 # Substitute the intended person's actual Appsmith sign-in email below:
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' -U signaturegate -d signaturegate < db/bootstrap_issue_19_directory_manager.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' -U signaturegate -d signaturegate < db/bootstrap_directory_manager.sql
 
 # Issue #19 contributor intake from Directory and enrollment of an existing
 # person as a contributor. Apply after person_roles.sql, before importing the
 # associated Appsmith export. No membership is created by these functions.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_directory_intake.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contributor_directory_intake.sql
 
 # Rollback-only integration checks: permissions, duplicate contacts, person
 # and company creation, contact synchronization, enrollment, and auditing.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_directory_intake.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_contributor_directory_intake.sql
 
 # Issue #19 contributor-purpose contact maintenance on Individual and Company
 # Profile. Apply after directory intake, before importing the matching export.
 # Member-purpose contacts retain their existing edit path.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_contacts.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contributor_contacts.sql
 
 # Rollback-only checks for permissions, contact ownership, primary selection,
 # legacy-to-party synchronization, archiving, and audit entries.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_contacts.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_contributor_contacts.sql
 
 # If contributor_contacts.sql committed but the initial verification failed
 # at the cross-party contact check, apply this forward function replacement;
 # do not rerun the CREATE FUNCTION migration. Then rerun verification.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_contact_guard_fix.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_contacts.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contributor_contact_guard_fix.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_contributor_contacts.sql
 
 # Issue #19: create membership for a selected existing person without a second
 # person record, an automatic agreement, or a rewrite of prior donations.
 # Apply AFTER the contact guard repair and its passing verification.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_existing_person_membership.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_existing_person_membership.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_existing_person_membership.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_existing_person_membership.sql
 
 # End an active membership while keeping the person and any independently
 # existing contributor. Apply AFTER existing-person membership; run the
 # rollback-only verification before importing the updated Appsmith JSON.
 # Contributor capacity is not required and is never created by this action.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_end_membership.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_end_membership.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_end_membership.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_end_membership.sql
 
 # Contributor-purpose mailing addresses on Individual and Company Profile.
 # Apply AFTER the membership-closure migration, then run the rollback-only test.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_addresses.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_addresses.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contributor_addresses.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_contributor_addresses.sql
 
 # Allow reviewed assignment of one person's member/contributor email, phone,
 # or address to the other capacity without replacing its original source.
 # Apply AFTER contributor addresses, then run the rollback-only checks.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contact_role_assignment.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contact_role_assignment.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contact_role_assignment.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_contact_role_assignment.sql
 
 # Keep active contact sources on former memberships visible to authorized
 # reviewers, list member-only contacts before contributor enrollment, and allow
 # reuse into an active contributor. Apply AFTER contact-role assignment.
 # If the first version failed on contact_detail before COMMIT, its transaction
 # rolled back; rerun the corrected migration below, then its verification.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contact_role_visibility.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contact_role_visibility.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contact_role_visibility.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_contact_role_visibility.sql
 
 # Show contributor-attributed donation history and provider identities on
 # Individual Profile and Company Profile. Apply AFTER contact-role visibility.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_profile_history.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_profile_history.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contributor_profile_history.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_contributor_profile_history.sql
 
 # Add reviewed contributor archive/reactivation for people and organizations.
 # Apply AFTER contributor profile history, then run the rollback-only checks.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_status.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_status.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_contributor_status.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_contributor_status.sql
 
 # Add audited canonical name/date-of-birth maintenance for people and names for
 # organizations. Apply AFTER contributor status, then run rollback-only checks.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_party_identity_editing.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_party_identity_editing.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_party_identity_editing.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_party_identity_editing.sql
 
 # Define a release as a tangible sacrament transfer, reject new membership or
 # event values in releases.release_type, and retain legacy exceptions for
 # explicit review. Apply AFTER canonical identity editing.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_sacrament_release_scope.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_sacrament_release_scope.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_sacrament_release_scope.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_sacrament_release_scope.sql
 
 # Expose agreement and practitioner-assignment history on Individual Profile
 # under the existing document-reviewer/assigned-practitioner access rule.
 # Apply AFTER the sacrament-release scope migration, then import Appsmith.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_member_operations_read.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_member_operations_read.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_member_operations_read.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_member_operations_read.sql
 
 # Remove the accidental contributor prerequisite from membership closure.
 # A member-only person may end membership without creating a contributor;
 # an existing contributor and its donations remain unchanged.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_membership_contributor_independence.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_membership_contributor_independence.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_membership_contributor_independence.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_membership_contributor_independence.sql
 
 # Add membership-purpose email/phone maintenance to Individual Profile.
 # Apply AFTER the membership/contributor independence repair. The functions
 # write only member contact rows; contributor contacts remain independent.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_member_contact_profiles.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_member_contact_profiles.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_member_contact_profiles.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_member_contact_profiles.sql
 
 # Make sacrament-release eligibility independent of template version/active
 # status. Apply AFTER member contact profiles, then import Appsmith. Template
 # required_for scope and signed agreement status remain mandatory.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_sacrament_agreement_gate.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_sacrament_agreement_gate.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_sacrament_agreement_gate.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_sacrament_agreement_gate.sql
 
 # Add membership-purpose mailing addresses and merge both address capacities
 # into the role-aware Individual Profile contact editor. Apply AFTER member
 # contact profiles; contributor and membership address rows remain separate.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_member_address_profiles.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_member_address_profiles.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_member_address_profiles.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_member_address_profiles.sql
 
 # Replace member-ID-only facilitator assignment with canonical person-based
 # practitioner assignment. Existing rows are backfilled and legacy writes stay
 # synchronized; a practitioner does not need membership. Apply AFTER member
 # address profiles, then import the matching Appsmith export.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_practitioner_assignments.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_practitioner_assignments.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_person_practitioner_assignments.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_person_practitioner_assignments.sql
 
 # Add stable terminology concepts and Rooted Psyche's deployment labels.
 # This does not rename role keys or grant appointments. The operational
 # practitioner and a future regulated facilitator remain distinct concepts.
 # Apply AFTER person-based practitioner assignments, then import Appsmith.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_20_organization_terminology.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_20_organization_terminology.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_organization_terminology.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_organization_terminology.sql
 
 # Move sacrament-release actor attribution and storage authorization to the
 # canonical practitioner person. Existing member-based storage grants and
 # releases are backfilled, and legacy storage writes remain synchronized while
 # older member operations are retired. Apply AFTER Issue #20 terminology, then
 # import the matching Appsmith export.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_release_operations.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_release_operations.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_person_release_operations.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_person_release_operations.sql
 
 # Move member-agreement practitioner attribution to the canonical person.
 # Existing facilitator member IDs remain nullable compatibility projections.
 # Apply AFTER person release operations, then import both the Appsmith export
 # and the Documenso send workflow from this revision.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_agreement_signers.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_agreement_signers.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_person_agreement_signers.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_person_agreement_signers.sql
 
 # Issue #19: reviewed reassignment of a member/contributor email, phone, or
 # address from one individual to another. Apply AFTER person agreement signers.
 # This preserves the canonical contact identity, rejects duplicate target
 # ownership, records the reason, and writes an audit entry.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_contact_reassignment.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_person_contact_reassignment.sql
 
 # Rollback-only verification of the reassignment function and its canonical
 # contact synchronization triggers.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_contact_reassignment.sql
+sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_person_contact_reassignment.sql
 
 # This should return no rows. If it returns historical records, review what
 # each record represents before correcting it and validating the constraint.
