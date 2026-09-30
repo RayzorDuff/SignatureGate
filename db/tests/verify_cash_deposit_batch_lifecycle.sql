@@ -35,6 +35,7 @@ DECLARE
   v_contributor_b uuid;
   v_donation_a uuid := public.uuid_generate_v4();
   v_donation_b uuid := public.uuid_generate_v4();
+  v_donation_c uuid := public.uuid_generate_v4();
   v_batch public.cash_deposit_batches%ROWTYPE;
   v_item public.cash_deposit_batch_items%ROWTYPE;
   v_count integer;
@@ -71,7 +72,9 @@ BEGIN
     (v_donation_a, v_member_a, v_contributor_a, 'identified', 'cash',
      12500, 'USD', now(), 'verified', v_preparer),
     (v_donation_b, v_member_b, v_contributor_b, 'identified', 'cash',
-     7500, 'USD', now(), 'verified', v_preparer);
+     7500, 'USD', now(), 'verified', v_preparer),
+    (v_donation_c, v_member_a, v_contributor_a, 'identified', 'cash',
+     3000, 'USD', now(), 'verified', v_preparer);
 
   SELECT * INTO v_batch
   FROM public.create_cash_deposit_batch(
@@ -91,7 +94,7 @@ BEGIN
   END;
 
   PERFORM public.add_cash_deposit_item(
-    v_batch.deposit_batch_id, v_donation_a, v_preparer
+    v_batch.deposit_batch_id, v_donation_c, v_preparer
   );
   PERFORM public.add_cash_deposit_item(
     v_batch.deposit_batch_id, v_donation_b, v_preparer
@@ -133,17 +136,17 @@ BEGIN
   );
 
   PERFORM public.add_cash_deposit_item(
-    v_batch.deposit_batch_id, v_donation_a, v_preparer
+    v_batch.deposit_batch_id, v_donation_c, v_preparer
   );
 
   PERFORM public.remove_cash_deposit_item(
-    v_batch.deposit_batch_id, v_donation_a, v_preparer, 'remove and re-add test'
+    v_batch.deposit_batch_id, v_donation_c, v_preparer, 'remove and re-add test'
   );
 
   SELECT count(*) INTO v_count
   FROM public.cash_deposit_batch_items
   WHERE deposit_batch_id = v_batch.deposit_batch_id
-    AND donation_id = v_donation_a
+    AND donation_id = v_donation_c
     AND removed_at IS NOT NULL
     AND removed_by = v_preparer
     AND removal_reason = 'remove and re-add test';
@@ -164,7 +167,7 @@ BEGIN
   SELECT count(*) INTO v_count
   FROM public.cash_deposit_batch_items
   WHERE deposit_batch_id = v_batch.deposit_batch_id
-    AND donation_id = v_donation_a;
+    AND donation_id = v_donation_c;
 
   IF v_count <> 2 THEN
     RAISE EXCEPTION 'Expected preserved removal plus active re-add history.';
