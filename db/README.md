@@ -2,19 +2,19 @@
 
 ## Canonical schema
 
-\`db/schema.sql\` is the authoritative, self-contained database definition for SignatureGate.
+`db/schema.sql` is the authoritative, self-contained database definition for SignatureGate.
 
 It is a complete schema bootstrap, including tables, constraints, indexes, functions, triggers, views, and the current seed data represented by the repository. A new SignatureGate database should be initialized from this file alone.
 
 From the server where the SignatureGate PostgreSQL container runs:
 
-\`\`\`bash
+```bash
 sudo docker exec -i signaturegate-postgres \
   psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate \
   < db/schema.sql
-\`\`\`
+```
 
-Before applying it to a database that contains data, take an appropriate backup. \`schema.sql\` is intended as a bootstrap definition, not as an in-place upgrade script for an existing production database.
+Before applying it to a database that contains data, take an appropriate backup. `schema.sql` is intended as a bootstrap definition, not as an in-place upgrade script for an existing production database.
 
 ## Current production upgrade
 
@@ -22,27 +22,27 @@ The repository schema has been consolidated from the tested current production s
 
 Until that change has been deployed to production, apply only:
 
-\`\`\`bash
+```bash
 sudo docker exec -i signaturegate-postgres \
   psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate \
   < db/migrations/cash_deposit_management.sql
-\`\`\`
+```
 
-Do not load \`db/schema.sql\` over the existing production database as an upgrade mechanism.
+Do not load `db/schema.sql` over the existing production database as an upgrade mechanism.
 
-After the cash-deposit migration is deployed and verified in production, \`db/schema.sql\` and the production schema represent the same database definition. The migration remains under \`db/migrations/\` as the deployment record for that production upgrade.
+After the cash-deposit migration is deployed and verified in production, `db/schema.sql` and the production schema represent the same database definition. The migration remains under `db/migrations/` as the deployment record for that production upgrade.
 
 ## Verification
 
-The verification scripts in \`db/tests/verify_*.sql\` are rollback-only integration checks. They create synthetic data inside a transaction and roll the transaction back when complete.
+The verification scripts in `db/tests/verify_*.sql` are rollback-only integration checks. They create synthetic data inside a transaction and roll the transaction back when complete.
 
 Run them against a disposable or dedicated test database, not against production:
 
-\`\`\`bash
+```bash
 sudo docker exec -i signaturegate-postgres \
   psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
   < db/tests/verify_cash_deposit_management.sql
-\`\`\`
+```
 
 The cash-deposit verification covers:
 
@@ -77,12 +77,12 @@ The accounting/ERP integration remains a separate system boundary. Cash-deposit 
 
 A new installation may need an active agreement template if the canonical seed data does not contain the template required by the deployment:
 
-\`\`\`bash
+```bash
 sudo docker exec -it signaturegate-postgres psql \
   -U signaturegate -d signaturegate -c "INSERT INTO agreement_templates (name, version, required_for, doc_url, active) \
 VALUES ('Member Acknowledgment & Liability Release', '2025-12-01', ARRAY['membership','sacrament_release'], \
 'DOCUMENSO_TEMPLATE_OR_PDF_URL', true) ON CONFLICT DO NOTHING;"
-\`\`\`
+```
 
 Use the deployment's actual Documenso template URL rather than the placeholder above.
 
@@ -92,13 +92,13 @@ Create or connect the SignatureGate NocoDB base to the PostgreSQL database as ap
 
 When NocoDB is running in the same Docker network:
 
-\`\`\`
+```
 Host: signaturegate-postgres
 Port: 5432
-DB: \${SIG_DB_NAME}
-User: \${SIG_DB_USER}
-Password: \${SIG_DB_PASSWORD}
-\`\`\`
+DB: ${SIG_DB_NAME}
+User: ${SIG_DB_USER}
+Password: ${SIG_DB_PASSWORD}
+```
 
 ## Appsmith
 
@@ -106,46 +106,48 @@ Create a PostgreSQL datasource in Appsmith using the same database connection.
 
 When Appsmith is running in the same Docker network:
 
-\`\`\`
+```
 Host: signaturegate-postgres
 Port: 5432
-DB: \${SIG_DB_NAME}
-User: \${SIG_DB_USER}
-Password: \${SIG_DB_PASSWORD}
-\`\`\`
+DB: ${SIG_DB_NAME}
+User: ${SIG_DB_USER}
+Password: ${SIG_DB_PASSWORD}
+```
 
 ## Directory manager bootstrap
 
-The canonical schema contains the directory-manager account and authorization model. For a new or empty deployment, the operator-only bootstrap helper can create the initial person, active member, Appsmith application account, facilitator authorization, and directory-manager role in one transaction.
+The canonical schema contains the directory-manager account and authorization model. When a new deployment requires an initial directory manager, review the available application accounts first:
 
-Use the exact Appsmith sign-in email and the corresponding person's name:
+```bash
+sudo docker exec signaturegate-postgres psql \
+  -U signaturegate -d signaturegate -c \
+  "SELECT p.person_id, p.display_name, a.email
+     FROM public.person_app_accounts a
+     JOIN public.people p USING (person_id)
+     ORDER BY a.email;"
+```
 
-\`\`\`bash
+Then bootstrap the intended account with the operator-only helper:
+
+```bash
 sudo docker exec -i signaturegate-postgres psql \
-  -v ON_ERROR_STOP=1 \
-  -v admin_email='ACTUAL_SIGN_IN_EMAIL' \
-  -v admin_first_name='FIRST_NAME' \
-  -v admin_last_name='LAST_NAME' \
-  -U signaturegate -d signaturegate_test \
+  -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' \
+  -U signaturegate -d signaturegate \
   < db/bootstrap_directory_manager.sql
-\`\`\`
-
-The helper is intentionally one-time: it refuses to run when a directory manager already exists. It also refuses to silently create a second identity when the supplied application account or member identity conflicts with an existing record.
-
-For an existing application account, the helper requires that its person already have an active member record and then ensures that member is an active facilitator before assigning the directory-manager role.
+```
 
 ## Audit log
 
-The \`audit_log\` table provides permanent, append-only recording of significant system events.
+The `audit_log` table provides permanent, append-only recording of significant system events.
 
 Important fields include:
 
-- \`actor\` — email or system identifier such as \`n8n\` or \`documenso\`.
-- \`action\` — machine-readable event name.
-- \`entity_type\` — logical entity affected.
-- \`entity_id\` — identifier of the affected entity.
-- \`details\` — JSON contextual metadata.
-- \`created_at\` — server timestamp.
+- `actor` — email or system identifier such as `n8n` or `documenso`.
+- `action` — machine-readable event name.
+- `entity_type` — logical entity affected.
+- `entity_id` — identifier of the affected entity.
+- `details` — JSON contextual metadata.
+- `created_at` — server timestamp.
 
 The audit log is not intended for debugging or analytics and should not be truncated or modified.
 
@@ -155,9 +157,9 @@ The database follows a canonical-schema model with a small deployment-migration 
 
 - Change the database definition through normal development and testing.
 - Validate the resulting schema against a clean database.
-- Regenerate \`db/schema.sql\` when the canonical database definition changes.
-- Keep focused \`db/tests/verify_*.sql\` regression checks for important behavior.
+- Regenerate `db/schema.sql` when the canonical database definition changes.
+- Keep focused `db/tests/verify_*.sql` regression checks for important behavior.
 - Do not add historical installation migrations for schema changes that are already incorporated into the canonical schema.
 - Production upgrades that cannot safely be represented by replacing the schema bootstrap should be handled as explicit, separately reviewed deployment operations.
 
-The historical migration chain has been removed from the active database installation surface. \`db/migrations/\` contains only the forward deployment migration still required by current production; once that migration has been deployed and verified, future schema changes should normally be consolidated directly into \`db/schema.sql\` rather than accumulated as historical migrations.
+The historical migration chain has been removed from the active database installation surface. `db/migrations/` contains only the forward deployment migration still required by current production; once that migration has been deployed and verified, future schema changes should normally be consolidated directly into `db/schema.sql` rather than accumulated as historical migrations.

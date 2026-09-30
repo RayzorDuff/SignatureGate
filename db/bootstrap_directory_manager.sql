@@ -20,6 +20,8 @@
 
 BEGIN;
 SELECT set_config('directory.bootstrap_email', lower(btrim(:'admin_email')), true);
+SELECT set_config('directory.bootstrap_first_name', btrim(:'admin_first_name'), true);
+SELECT set_config('directory.bootstrap_last_name', btrim(:'admin_last_name'), true);
 LOCK TABLE
   public.person_roles,
   public.person_app_accounts,
@@ -30,8 +32,8 @@ IN SHARE ROW EXCLUSIVE MODE;
 DO $$
 DECLARE
   v_email text := current_setting('directory.bootstrap_email');
-  v_first_name text := NULLIF(btrim(:'admin_first_name'), '');
-  v_last_name text := NULLIF(btrim(:'admin_last_name'), '');
+  v_first_name text := NULLIF(current_setting('directory.bootstrap_first_name'), '');
+  v_last_name text := NULLIF(current_setting('directory.bootstrap_last_name'), '');
   v_person_id uuid;
   v_member_id uuid;
   v_account_person_id uuid;
