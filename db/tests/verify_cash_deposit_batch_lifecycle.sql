@@ -27,6 +27,8 @@ DECLARE
   v_reviewer uuid := public.uuid_generate_v4();
   v_person_a uuid := public.uuid_generate_v4();
   v_person_b uuid := public.uuid_generate_v4();
+  v_donor_person_a uuid := public.uuid_generate_v4();
+  v_donor_person_b uuid := public.uuid_generate_v4();
   v_member_a uuid := public.uuid_generate_v4();
   v_member_b uuid := public.uuid_generate_v4();
   v_contributor_a uuid;
@@ -40,7 +42,9 @@ BEGIN
   INSERT INTO public.people (person_id, display_name, first_name, last_name)
   VALUES
     (v_person_a, 'Deposit Lifecycle Preparer', 'Deposit', 'Preparer'),
-    (v_person_b, 'Deposit Lifecycle Reviewer', 'Deposit', 'Reviewer');
+    (v_person_b, 'Deposit Lifecycle Reviewer', 'Deposit', 'Reviewer'),
+    (v_donor_person_a, 'Deposit Lifecycle Donor A', 'Deposit', 'Donor A'),
+    (v_donor_person_b, 'Deposit Lifecycle Donor B', 'Deposit', 'Donor B');
 
   INSERT INTO public.members (
     member_id, person_id, email, status,
@@ -51,9 +55,9 @@ BEGIN
      'active', true, false),
     (v_reviewer, v_person_b, 'deposit-lifecycle-reviewer@example.invalid',
      'active', true, true),
-    (v_member_a, public.uuid_generate_v4(), 'deposit-lifecycle-donor-a@example.invalid',
+    (v_member_a, v_donor_person_a, 'deposit-lifecycle-donor-a@example.invalid',
      'active', false, false),
-    (v_member_b, public.uuid_generate_v4(), 'deposit-lifecycle-donor-b@example.invalid',
+    (v_member_b, v_donor_person_b, 'deposit-lifecycle-donor-b@example.invalid',
      'active', false, false);
 
   v_contributor_a := public.ensure_member_contributor(v_member_a);
