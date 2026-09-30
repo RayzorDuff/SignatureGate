@@ -214,6 +214,8 @@ BEGIN
 END;
 $$;
 
+DROP FUNCTION IF EXISTS public.remove_cash_deposit_item(uuid, uuid, uuid);
+
 CREATE OR REPLACE FUNCTION public.remove_cash_deposit_item(
   p_deposit_batch_id uuid,
   p_donation_id uuid,
