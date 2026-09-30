@@ -63,8 +63,7 @@ BEGIN
   );
 
   IF (
-    SELECT count(*)
-    FROM public.cash_on_hand_donations()
+    SELECT count(*) FROM public.cash_on_hand_donations()
     WHERE donation_id = v_donation
   ) <> 1 THEN
     RAISE EXCEPTION 'Verified cash donation did not enter Cash on Hand.';
@@ -80,8 +79,7 @@ BEGIN
   );
 
   IF (
-    SELECT count(*)
-    FROM public.cash_on_hand_donations()
+    SELECT count(*) FROM public.cash_on_hand_donations()
     WHERE donation_id = v_donation
   ) <> 0 THEN
     RAISE EXCEPTION 'Assigned cash donation remained in Cash on Hand.';
@@ -104,12 +102,8 @@ BEGIN
 
   SELECT * INTO v_batch
   FROM public.prepare_cash_deposit_batch(
-    v_batch.deposit_batch_id,
-    v_preparer,
-    CURRENT_DATE,
-    'E2E-001',
-    'SignatureGate Operating Account',
-    'end-to-end preparation'
+    v_batch.deposit_batch_id, v_preparer, CURRENT_DATE,
+    'E2E-001', 'SignatureGate Operating Account', 'end-to-end preparation'
   );
 
   IF v_batch.status <> 'prepared'
@@ -134,12 +128,8 @@ BEGIN
 
   SELECT * INTO v_batch
   FROM public.confirm_cash_deposit_batch(
-    v_batch.deposit_batch_id,
-    v_reviewer,
-    2750,
-    CURRENT_DATE,
-    'E2E-001',
-    'end-to-end confirmation'
+    v_batch.deposit_batch_id, v_reviewer, 2750,
+    CURRENT_DATE, 'E2E-001', 'end-to-end confirmation'
   );
 
   IF v_batch.status <> 'confirmed'
@@ -151,8 +141,7 @@ BEGIN
   END IF;
 
   IF (
-    SELECT count(*)
-    FROM public.cash_on_hand_donations()
+    SELECT count(*) FROM public.cash_on_hand_donations()
     WHERE donation_id = v_donation
   ) <> 0 THEN
     RAISE EXCEPTION 'Confirmed cash donation returned to Cash on Hand.';
@@ -172,12 +161,8 @@ BEGIN
 
   BEGIN
     PERFORM public.prepare_cash_deposit_batch(
-      v_batch.deposit_batch_id,
-      v_preparer,
-      CURRENT_DATE,
-      'E2E-002',
-      'SignatureGate Operating Account',
-      NULL
+      v_batch.deposit_batch_id, v_preparer, CURRENT_DATE,
+      'E2E-002', 'SignatureGate Operating Account', NULL
     );
     RAISE EXCEPTION 'Confirmed batch was mutable through preparation.';
   EXCEPTION WHEN OTHERS THEN
@@ -190,8 +175,15 @@ BEGIN
   END;
 
   SELECT count(*) INTO v_audit_count
-  FROM public.cash_deposit_audit_log
-  WHERE deposit_batch_id = v_batch.deposit_batch_id;
+  FROM public.audit_log
+  WHERE entity_type = 'cash_deposit_batch'
+    AND entity_id = v_batch.deposit_batch_id::text
+    AND action IN (
+      'cash_deposit_batch.created',
+      'cash_deposit_batch.item_added',
+      'cash_deposit_batch.prepared',
+      'cash_deposit_batch.confirmed'
+    );
 
   IF v_audit_count < 4 THEN
     RAISE EXCEPTION
