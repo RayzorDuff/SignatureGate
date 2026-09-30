@@ -37,6 +37,7 @@ DECLARE
   v_donation_b uuid := public.uuid_generate_v4();
   v_donation_c uuid := public.uuid_generate_v4();
   v_batch public.cash_deposit_batches%ROWTYPE;
+  v_second_batch public.cash_deposit_batches%ROWTYPE;
   v_item public.cash_deposit_batch_items%ROWTYPE;
   v_count integer;
 BEGIN
@@ -172,6 +173,23 @@ BEGIN
   IF v_count <> 2 THEN
     RAISE EXCEPTION 'Expected preserved removal plus active re-add history.';
   END IF;
+
+  -- An active donation cannot be assigned to a second batch concurrently.
+  SELECT * INTO v_second_batch
+  FROM public.create_cash_deposit_batch(
+    v_preparer, CURRENT_DATE, NULL, NULL
+  );
+
+  BEGIN
+    PERFORM public.add_cash_deposit_item(
+      v_second_batch.deposit_batch_id, v_donation_c, v_preparer
+    );
+    RAISE EXCEPTION 'Donation was assigned to a second active batch.';
+  EXCEPTION WHEN OTHERS THEN
+    IF position('already assigned' IN SQLERRM) = 0 THEN
+      RAISE;
+    END IF;
+  END;
 
   PERFORM public.cancel_cash_deposit_batch(
     v_batch.deposit_batch_id, v_preparer, 'cancel prepared deposit test'
