@@ -94,7 +94,7 @@ BEGIN
   END;
 
   PERFORM public.add_cash_deposit_item(
-    v_batch.deposit_batch_id, v_donation_c, v_preparer
+    v_batch.deposit_batch_id, v_donation_a, v_preparer
   );
   PERFORM public.add_cash_deposit_item(
     v_batch.deposit_batch_id, v_donation_b, v_preparer
@@ -157,7 +157,7 @@ BEGIN
 
   SELECT * INTO v_item
   FROM public.add_cash_deposit_item(
-    v_batch.deposit_batch_id, v_donation_a, v_preparer
+    v_batch.deposit_batch_id, v_donation_c, v_preparer
   );
 
   IF v_item.removed_at IS NOT NULL THEN
@@ -187,7 +187,7 @@ BEGIN
   END IF;
 
   IF (SELECT count(*) FROM public.cash_on_hand_donations()
-      WHERE donation_id = v_donation_a) <> 1
+      WHERE donation_id = v_donation_c) <> 1
   THEN
     RAISE EXCEPTION 'Cancelled batch did not return donation to Cash on Hand.';
   END IF;
