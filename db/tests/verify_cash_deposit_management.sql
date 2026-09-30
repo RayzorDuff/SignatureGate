@@ -117,6 +117,25 @@ BEGIN
     END IF;
   END;
 
+  SELECT * INTO v_batch
+  FROM public.prepare_cash_deposit_batch(
+    v_batch.deposit_batch_id,
+    v_preparer,
+    CURRENT_DATE,
+    'SMOKE-001',
+    'SignatureGate Operating Account',
+    'prepared management smoke test'
+  );
+
+  IF v_batch.status <> 'prepared'
+     OR v_batch.prepared_by <> v_preparer
+     OR v_batch.prepared_at IS NULL
+     OR v_batch.destination_bank_account <> 'SignatureGate Operating Account'
+     OR v_batch.expected_amount_cents <> 20000
+  THEN
+    RAISE EXCEPTION 'Prepared batch fields are incorrect.';
+  END IF;
+
   BEGIN
     PERFORM public.confirm_cash_deposit_batch(
       v_batch.deposit_batch_id, v_non_reviewer, 20000,
@@ -132,7 +151,7 @@ BEGIN
   BEGIN
     PERFORM public.confirm_cash_deposit_batch(
       v_batch.deposit_batch_id, v_reviewer, 19999,
-      CURRENT_DATE, 'ISSUE17-SMOKE-001', NULL
+      CURRENT_DATE, 'SMOKE-001', NULL
     );
     RAISE EXCEPTION 'Mismatched actual amount was accepted.';
   EXCEPTION WHEN OTHERS THEN
