@@ -198,7 +198,7 @@ BEGIN
   );
 
   PERFORM public.add_cash_deposit_item(
-    v_batch.deposit_batch_id, v_donation_a, v_preparer
+    v_batch.deposit_batch_id, v_donation_c, v_preparer
   );
 
   BEGIN
@@ -230,14 +230,14 @@ BEGIN
   FROM public.confirm_cash_deposit_batch(
     v_batch.deposit_batch_id,
     v_reviewer,
-    12500,
+    3000,
     CURRENT_DATE,
     'LIFECYCLE-002',
     NULL
   );
 
   IF v_batch.status <> 'confirmed'
-     OR v_batch.actual_amount_cents <> 12500
+     OR v_batch.actual_amount_cents <> 3000
      OR v_batch.verifier_id <> v_reviewer
   THEN
     RAISE EXCEPTION 'Confirmed lifecycle batch fields are incorrect.';
