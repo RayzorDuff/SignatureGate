@@ -1,6 +1,6 @@
 -- SignatureGate Issue #17: rollback-only verification for cash deposit backend.
 --
--- This script creates synthetic members/donations and exercises the operational
+-- This script targets the current Issue #19 canonical identity schema. It creates synthetic members/donations and exercises the operational
 -- invariants inside one transaction. No test data survives.
 
 \set ON_ERROR_STOP on
@@ -13,7 +13,8 @@ BEGIN
      OR to_regprocedure('public.remove_cash_deposit_item(uuid,uuid,uuid)') IS NULL
      OR to_regprocedure('public.confirm_cash_deposit_batch(uuid,uuid,integer,date,text,text)') IS NULL
      OR to_regprocedure('public.cancel_cash_deposit_batch(uuid,uuid,text)') IS NULL
-     OR to_regprocedure('public.cash_on_hand_donations()') IS NOT NULL AND to_regclass('public.cash_deposit_batches') IS NULL
+     OR to_regprocedure('public.cash_on_hand_donations()') IS NULL
+     OR to_regclass('public.cash_deposit_batches') IS NULL
   THEN
     RAISE EXCEPTION 'Issue #17 cash deposit backend is not installed.';
   END IF;
