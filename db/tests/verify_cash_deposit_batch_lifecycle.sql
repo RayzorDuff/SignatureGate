@@ -1,6 +1,6 @@
 -- Rollback-only verification for the cash deposit batch lifecycle refinement.
 --
--- Requires the canonical schema plus db/migrations/cash_deposit_batch_lifecycle.sql.
+-- Targets the canonical schema, including the cash-deposit lifecycle refinement.
 
 \set ON_ERROR_STOP on
 BEGIN;
