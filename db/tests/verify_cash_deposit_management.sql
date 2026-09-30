@@ -1,6 +1,6 @@
--- SignatureGate Issue #17: rollback-only verification for cash deposit backend.
+-- Rollback-only verification for the cash deposit management backend.
 --
--- This script targets the current Issue #19 canonical identity schema. It creates synthetic members/donations and exercises the operational
+-- This script targets the current canonical identity schema. It creates synthetic members/donations and exercises the operational
 -- invariants inside one transaction. No test data survives.
 
 \set ON_ERROR_STOP on
@@ -10,13 +10,13 @@ DO $$
 BEGIN
   IF to_regprocedure('public.create_cash_deposit_batch(uuid,date,text,text)') IS NULL
      OR to_regprocedure('public.add_cash_deposit_item(uuid,uuid,uuid)') IS NULL
-     OR to_regprocedure('public.remove_cash_deposit_item(uuid,uuid,uuid)') IS NULL
+     OR to_regprocedure('public.remove_cash_deposit_item(uuid,uuid,uuid,text)') IS NULL
      OR to_regprocedure('public.confirm_cash_deposit_batch(uuid,uuid,integer,date,text,text)') IS NULL
      OR to_regprocedure('public.cancel_cash_deposit_batch(uuid,uuid,text)') IS NULL
      OR to_regprocedure('public.cash_on_hand_donations()') IS NULL
      OR to_regclass('public.cash_deposit_batches') IS NULL
   THEN
-    RAISE EXCEPTION 'Issue #17 cash deposit backend is not installed.';
+    RAISE EXCEPTION 'Cash deposit backend is not installed.';
   END IF;
 END
 $$;
@@ -41,23 +41,23 @@ DECLARE
 BEGIN
   INSERT INTO public.people (person_id, display_name, first_name, last_name)
   VALUES
-    (v_preparer_person, 'Issue17 Preparer', 'Issue17', 'Preparer'),
-    (v_reviewer_person, 'Issue17 Reviewer', 'Issue17', 'Reviewer'),
-    (v_non_reviewer_person, 'Issue17 Other', 'Issue17', 'Other'),
-    (v_person, 'Issue17 Donor', 'Issue17', 'Donor');
+    (v_preparer_person, 'Cash Deposit Preparer', 'Cash', 'Deposit Preparer'),
+    (v_reviewer_person, 'Cash Deposit Reviewer', 'Cash', 'Deposit Reviewer'),
+    (v_non_reviewer_person, 'Cash Deposit Other', 'Cash', 'Deposit Other'),
+    (v_person, 'Cash Deposit Donor', 'Cash', 'Deposit Donor');
 
   INSERT INTO public.members (
     member_id, person_id, email, status,
     is_facilitator, is_donations_reviewer
   )
   VALUES
-    (v_preparer, v_preparer_person, 'issue17-preparer@example.invalid',
+    (v_preparer, v_preparer_person, 'cash-deposit-preparer@example.invalid',
      'active', true, false),
-    (v_reviewer, v_reviewer_person, 'issue17-reviewer@example.invalid',
+    (v_reviewer, v_reviewer_person, 'cash-deposit-reviewer@example.invalid',
      'active', true, true),
-    (v_non_reviewer, v_non_reviewer_person, 'issue17-other@example.invalid',
+    (v_non_reviewer, v_non_reviewer_person, 'cash-deposit-other@example.invalid',
      'active', true, false),
-    (v_member, v_person, 'issue17-donor@example.invalid',
+    (v_member, v_person, 'cash-deposit-donor'@example.invalid',
      'active', false, false);
 
   v_contributor := public.ensure_member_contributor(v_member);
@@ -85,7 +85,7 @@ BEGIN
 
   SELECT * INTO v_batch
   FROM public.create_cash_deposit_batch(
-    v_preparer, CURRENT_DATE, 'ISSUE17-SMOKE-001', 'rollback-only smoke test'
+    v_preparer, CURRENT_DATE, 'SMOKE-001', 'rollback-only smoke test'
   );
 
   SELECT * INTO v_item
@@ -165,7 +165,7 @@ BEGIN
 
   BEGIN
     PERFORM public.remove_cash_deposit_item(
-      v_batch.deposit_batch_id, v_donation_a, v_preparer
+      v_batch.deposit_batch_id, v_donation_a, v_preparer, 'confirmed item mutation test'
     );
     RAISE EXCEPTION 'Confirmed batch item was mutable.';
   EXCEPTION WHEN OTHERS THEN
@@ -200,7 +200,7 @@ BEGIN
 
   SELECT * INTO v_batch
   FROM public.create_cash_deposit_batch(
-    v_preparer, CURRENT_DATE, 'ISSUE17-SMOKE-002', NULL
+    v_preparer, CURRENT_DATE, 'SMOKE-002', NULL
   );
 
   PERFORM public.add_cash_deposit_item(
