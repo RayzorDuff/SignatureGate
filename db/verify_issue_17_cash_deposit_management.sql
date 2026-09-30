@@ -27,6 +27,8 @@ DECLARE
   v_reviewer uuid := public.uuid_generate_v4();
   v_non_reviewer uuid := public.uuid_generate_v4();
   v_member uuid := public.uuid_generate_v4();
+  v_person uuid := public.uuid_generate_v4();
+  v_contributor uuid;
   v_donation_a uuid := public.uuid_generate_v4();
   v_donation_b uuid := public.uuid_generate_v4();
   v_batch public.cash_deposit_batches%ROWTYPE;
@@ -34,26 +36,31 @@ DECLARE
   v_count integer;
   v_total bigint;
 BEGIN
+  INSERT INTO public.people (person_id, display_name, first_name, last_name)
+  VALUES (v_person, 'Issue17 Donor', 'Issue17', 'Donor');
+
   INSERT INTO public.members (
-    member_id, first_name, last_name, email, status,
+    member_id, person_id, email, status,
     is_facilitator, is_donations_reviewer
   )
   VALUES
-    (v_preparer, 'Issue17', 'Preparer', 'issue17-preparer@example.invalid',
+    (v_preparer, public.uuid_generate_v4(), 'issue17-preparer@example.invalid',
      'active', true, false),
-    (v_reviewer, 'Issue17', 'Reviewer', 'issue17-reviewer@example.invalid',
+    (v_reviewer, public.uuid_generate_v4(), 'issue17-reviewer@example.invalid',
      'active', true, true),
-    (v_non_reviewer, 'Issue17', 'Other', 'issue17-other@example.invalid',
+    (v_non_reviewer, public.uuid_generate_v4(), 'issue17-other@example.invalid',
      'active', true, false),
-    (v_member, 'Issue17', 'Donor', 'issue17-donor@example.invalid',
+    (v_member, v_person, 'issue17-donor@example.invalid',
      'active', false, false);
 
+  v_contributor := public.ensure_member_contributor(v_member);
+
   INSERT INTO public.donations (
-    donation_id, member_id, donor_kind, provider, amount_cents,
+    donation_id, member_id, contributor_id, donor_kind, provider, amount_cents,
     currency, donated_at, status, facilitator_id
   )
   VALUES
-    (v_donation_a, v_member, 'identified', 'cash', 12500, 'USD',
+    (v_donation_a, v_member, v_contributor, 'identified', 'cash', 12500, 'USD',
      now(), 'verified', v_preparer),
     (v_donation_b, NULL, 'anonymous', 'cash', 7500, 'USD',
      now(), 'verified', v_preparer);
@@ -175,11 +182,11 @@ BEGIN
   v_donation_a := public.uuid_generate_v4();
 
   INSERT INTO public.donations (
-    donation_id, member_id, donor_kind, provider, amount_cents,
+    donation_id, member_id, contributor_id, donor_kind, provider, amount_cents,
     currency, donated_at, status, facilitator_id
   )
   VALUES (
-    v_donation_a, v_member, 'identified', 'cash', 3000, 'USD',
+    v_donation_a, v_member, v_contributor, 'identified', 'cash', 3000, 'USD',
     now(), 'verified', v_preparer
   );
 
