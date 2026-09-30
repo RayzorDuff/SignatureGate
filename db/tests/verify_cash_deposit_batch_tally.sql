@@ -15,15 +15,22 @@ DECLARE
   v_total integer;
 BEGIN
   INSERT INTO public.people (person_id, display_name, first_name, last_name)
-  VALUES (v_person, 'Tally Test', 'Tally', 'Test');
+  VALUES
+    (v_person, 'Tally Test', 'Tally', 'Test'),
+    (public.uuid_generate_v4(), 'Tally Preparer', 'Tally', 'Preparer');
 
   INSERT INTO public.members (
     member_id, person_id, email, status, is_facilitator
   )
-  VALUES (
+  SELECT
     v_member, v_person, 'cash-deposit-tally@example.invalid',
     'active', true
-  );
+  UNION ALL
+  SELECT
+    v_preparer, p.person_id, 'cash-deposit-tally-preparer@example.invalid',
+    'active', true
+  FROM public.people p
+  WHERE p.display_name = 'Tally Preparer';
 
   v_contributor := public.ensure_member_contributor(v_member);
 
