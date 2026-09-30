@@ -57,7 +57,7 @@ BEGIN
      'active', true, true),
     (v_non_reviewer, v_non_reviewer_person, 'cash-deposit-other@example.invalid',
      'active', true, false),
-    (v_member, v_person, 'cash-deposit-donor'@example.invalid',
+    (v_member, v_person, 'cash-deposit-donor@example.invalid',
      'active', false, false);
 
   v_contributor := public.ensure_member_contributor(v_member);
@@ -120,7 +120,7 @@ BEGIN
   BEGIN
     PERFORM public.confirm_cash_deposit_batch(
       v_batch.deposit_batch_id, v_non_reviewer, 20000,
-      CURRENT_DATE, 'ISSUE17-SMOKE-001', NULL
+      CURRENT_DATE, 'SMOKE-001', NULL
     );
     RAISE EXCEPTION 'Non-reviewer confirmed a cash deposit batch.';
   EXCEPTION WHEN OTHERS THEN
