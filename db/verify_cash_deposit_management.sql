@@ -69,7 +69,7 @@ BEGIN
   VALUES
     (v_donation_a, v_member, v_contributor, 'identified', 'cash', 12500, 'USD',
      now(), 'verified', v_preparer),
-    (v_donation_b, NULL, 'anonymous', 'cash', 7500, 'USD',
+    (v_donation_b, NULL, NULL, 'anonymous', 'cash', 7500, 'USD',
      now(), 'verified', v_preparer);
 
   SELECT count(*), COALESCE(sum(amount_cents), 0)
