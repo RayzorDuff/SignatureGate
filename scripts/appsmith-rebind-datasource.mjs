@@ -168,19 +168,29 @@ function inspectMetadata(file, text) {
   const refs = [];
   for (const span of spans) {
     const props = objectPropertySpans(text, span.start);
+    const pluginId = props.get('pluginId');
+    if (!pluginId) fail(`${file}: datasource object is missing pluginId`);
+    let pluginValue;
+    try {
+      pluginValue = JSON.parse(text.slice(pluginId.valueStart, pluginId.valueEnd));
+    } catch {
+      fail(`${file}: datasource pluginId contains invalid JSON`);
+    }
+    if (pluginValue !== 'postgres-plugin') continue;
+
     const id = props.get('id');
     const name = props.get('name');
-    if (!id || !name) fail(`${file}: datasource object must contain both id and name`);
+    if (!id || !name) fail(`${file}: PostgreSQL datasource object must contain both id and name`);
     let idValue, nameValue;
     try {
       idValue = JSON.parse(text.slice(id.valueStart, id.valueEnd));
       nameValue = JSON.parse(text.slice(name.valueStart, name.valueEnd));
     } catch {
-      fail(`${file}: datasource id/name contains invalid JSON`);
+      fail(`${file}: PostgreSQL datasource id/name contains invalid JSON`);
     }
-    if (typeof idValue !== 'string' || typeof nameValue !== 'string') fail(`${file}: datasource id/name must be strings`);
-    if (idValue !== nameValue) fail(`${file}: datasource id (${idValue}) does not match name (${nameValue})`);
-    refs.push({ span, datasource: idValue });
+    if (typeof idValue !== 'string' || typeof nameValue !== 'string') fail(`${file}: PostgreSQL datasource id/name must be strings`);
+    if (idValue !== nameValue) fail(`${file}: PostgreSQL datasource id (${idValue}) does not match name (${nameValue})`);
+    refs.push({ span, datasource: idValue, pluginId: pluginValue });
   }
   return { parsed, refs };
 }
