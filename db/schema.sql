@@ -10865,7 +10865,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$
+$;
 
 DROP TRIGGER IF EXISTS trg_cash_deposit_items_exclusion_guard
   ON public.cash_deposit_batch_items;
