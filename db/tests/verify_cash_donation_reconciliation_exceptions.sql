@@ -15,6 +15,19 @@ BEGIN
   IF to_regprocedure('public.cash_on_hand_donations()') IS NULL THEN
     RAISE EXCEPTION 'cash_on_hand_donations function is missing';
   END IF;
+
+  IF to_regprocedure('public.prevent_excluded_cash_deposit_item()') IS NULL THEN
+    RAISE EXCEPTION 'excluded donation guard function is missing';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_trigger
+    WHERE tgname = 'trg_cash_deposit_items_exclusion_guard'
+      AND tgrelid = 'public.cash_deposit_batch_items'::regclass
+  ) THEN
+    RAISE EXCEPTION 'excluded donation guard trigger is missing';
+  END IF;
 END
 $$;
 
