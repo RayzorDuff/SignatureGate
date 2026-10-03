@@ -4595,11 +4595,9 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM public.people WHERE person_id = p_person_id) THEN
     RAISE EXCEPTION 'Person not found';
   END IF;
-  IF EXISTS (SELECT 1 FROM public.person_app_accounts
-    WHERE person_id = p_person_id
-      AND email_normalized = lower(btrim(p_actor_email))) THEN
-    RAISE EXCEPTION 'A directory manager cannot change their own roles';
-  END IF;
+  -- directory_manager is intentionally excluded from this function. It is an
+  -- operator-level role established through the explicit bootstrap/
+  -- administration path. Operational roles may be assigned to oneself.
   IF p_enabled THEN
     INSERT INTO public.person_roles(person_id, role_key, assigned_by)
     VALUES (p_person_id, p_role_key, lower(btrim(p_actor_email)))
