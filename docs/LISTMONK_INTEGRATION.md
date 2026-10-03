@@ -4,7 +4,7 @@ This integration keeps SignatureGate as the system of record for member identity
 
 ## Database model
 
-`db/migrations_listmonk_mailing_list.sql` adds mailing-list state to `member_emails` and creates `listmonk_sync_queue` as an outbox for n8n.
+`db/migrations_listmonk_mailing_list.sql` adds mailing-list state to `member_emails` and `contributor_emails`, and uses `listmonk_sync_queue` as the outbox for n8n. Each queue row belongs to exactly one domain email contact.
 
 New email rows default to `mailing_subscription_status = 'subscribed'`. Appsmith creation flows can opt out by passing `not_subscribed` instead.
 
@@ -15,6 +15,8 @@ Important statuses:
 - `unsubscribed`: the email has opted out, either from SignatureGate or from Listmonk.
 - `suppressed`: manually suppressed; do not add to Listmonk.
 - `sync_error`: n8n/Listmonk sync failed and needs review.
+
+Contributor email records use the same subscription states, but default to `not_subscribed` so existing contributor contacts are not silently opted into mailing. Intake explicitly records the user's checkbox choice. Contributor subscribers are kept off the member-communications Listmonk list.
 
 ## n8n workflows
 
