@@ -157,7 +157,8 @@ The current pending production migrations are:
 - `db/migrations/cash_deposit_management.sql`
 - `db/migrations/cash_deposit_batch_lifecycle.sql`
 - `db/migrations/cash_deposit_batch_tally.sql`
-- `db/migrations/person_role_self_assignment.sql`
+- `db/migrations/person_role_self_assignment.sql
+    - db/migrations/cash_deposit_batch_print.sql`
 
 Apply and verify each pending migration against the test database before applying it to production. In particular, `person_role_self_assignment.sql` changes the Issue #19 role-administration boundary so a directory manager may assign or revoke their own operational roles, including `donations_reviewer`; it does not permit this function to grant or revoke `directory_manager`.
 
