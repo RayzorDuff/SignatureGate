@@ -10851,7 +10851,7 @@ CREATE OR REPLACE FUNCTION public.prevent_excluded_cash_deposit_item()
 RETURNS trigger
 LANGUAGE plpgsql
 SET search_path = public, pg_temp
-AS $
+AS $$
 BEGIN
   IF EXISTS (
     SELECT 1
@@ -10865,7 +10865,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$;
+$$
 
 DROP TRIGGER IF EXISTS trg_cash_deposit_items_exclusion_guard
   ON public.cash_deposit_batch_items;
