@@ -41,13 +41,22 @@ BEGIN
   EXCEPTION WHEN raise_exception THEN
     IF SQLERRM <> 'Directory manager permission required' THEN RAISE; END IF;
   END;
-  BEGIN
-    PERFORM public.issue19_set_person_role('issue19-admin-verify@example.invalid',
-      v_admin, 'practitioner', true, 'Self test');
-    RAISE EXCEPTION 'Manager changed their own role';
-  EXCEPTION WHEN raise_exception THEN
-    IF SQLERRM <> 'A directory manager cannot change their own roles' THEN RAISE; END IF;
-  END;
+  v_changed := public.issue19_set_person_role('issue19-admin-verify@example.invalid',
+    v_admin, 'donations_reviewer', true, 'Self role administration test');
+  IF NOT v_changed OR NOT EXISTS (
+    SELECT 1 FROM public.person_roles
+    WHERE person_id = v_admin AND role_key = 'donations_reviewer'
+  ) THEN
+    RAISE EXCEPTION 'Directory manager could not assign an operational role to themselves';
+  END IF;
+  v_changed := public.issue19_set_person_role('issue19-admin-verify@example.invalid',
+    v_admin, 'donations_reviewer', false, 'Self role revocation test');
+  IF NOT v_changed OR EXISTS (
+    SELECT 1 FROM public.person_roles
+    WHERE person_id = v_admin AND role_key = 'donations_reviewer'
+  ) THEN
+    RAISE EXCEPTION 'Directory manager could not revoke their own operational role';
+  END IF;
   BEGIN
     PERFORM public.issue19_set_person_role('issue19-admin-verify@example.invalid',
       v_target, 'directory_manager', true, 'Escalation test');
