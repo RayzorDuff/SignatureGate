@@ -36,7 +36,7 @@ BEGIN
   IF EXISTS (SELECT 1 FROM public.listmonk_sync_queue WHERE contributor_email_id=v_email)
     THEN RAISE EXCEPTION 'Not-subscribed contributor email was queued'; END IF;
 
-  INSERT INTO public.members(person_id,email,source,notes) VALUES (v_person,'listmonk-member@example.invalid','listmonk_test','synthetic test member') RETURNING member_id INTO v_member_email;
+  INSERT INTO public.members(person_id,email,notes) VALUES (v_person,'listmonk-member@example.invalid','synthetic test member') RETURNING member_id INTO v_member_email;
   INSERT INTO public.member_emails(member_id,email,is_primary,source,mailing_subscription_status)
     SELECT v_member_email,'listmonk-member-contact@example.invalid',true,'listmonk_test','subscribed';
   IF NOT EXISTS (SELECT 1 FROM public.listmonk_sync_queue q JOIN public.member_emails me ON me.member_email_id=q.member_email_id WHERE me.email='listmonk-member-contact@example.invalid' AND q.contributor_email_id IS NULL)
