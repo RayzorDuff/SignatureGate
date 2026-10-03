@@ -10752,6 +10752,101 @@ BEGIN
 END;
 $$;
 
+-- Cash donation reconciliation exceptions
+
+CREATE TABLE IF NOT EXISTS public.cash_deposit_donation_exclusions (
+  exclusion_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  donation_id uuid NOT NULL
+    REFERENCES public.donations(donation_id)
+    ON DELETE RESTRICT,
+  excluded_at timestamptz NOT NULL DEFAULT now(),
+  excluded_by uuid NOT NULL REFERENCES public.members(member_id),
+  reason text NOT NULL,
+  notes text,
+  CONSTRAINT cash_deposit_donation_exclusions_reason_check
+    CHECK (NULLIF(btrim(reason), '') IS NOT NULL)
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_cash_deposit_donation_exclusions_active
+  ON public.cash_deposit_donation_exclusions (donation_id);
+
+CREATE INDEX IF NOT EXISTS idx_cash_deposit_donation_exclusions_excluded_at
+  ON public.cash_deposit_donation_exclusions (excluded_at DESC);
+
+CREATE OR REPLACE FUNCTION public.exclude_cash_donation_from_deposit(
+  p_donation_id uuid,
+  p_actor_id uuid,
+  p_reason text,
+  p_notes text DEFAULT NULL
+)
+RETURNS public.cash_deposit_donation_exclusions
+LANGUAGE plpgsql
+VOLATILE
+SECURITY INVOKER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_donation public.donations%ROWTYPE;
+  v_exclusion public.cash_deposit_donation_exclusions%ROWTYPE;
+BEGIN
+  PERFORM public.assert_cash_deposit_verifier(p_actor_id);
+
+  SELECT * INTO v_donation
+  FROM public.donations
+  WHERE donation_id = p_donation_id
+  FOR UPDATE;
+
+  IF NOT FOUND THEN RAISE EXCEPTION 'Donation % was not found.', p_donation_id; END IF;
+
+  IF v_donation.provider <> 'cash'
+     OR v_donation.status <> 'verified'
+     OR v_donation.donor_kind NOT IN ('identified', 'anonymous')
+     OR v_donation.amount_cents IS NULL
+     OR v_donation.amount_cents <= 0
+  THEN
+    RAISE EXCEPTION
+      'Donation % is not a verified, positive cash donation eligible for reconciliation disposition.',
+      p_donation_id;
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM public.cash_deposit_batch_items i
+    WHERE i.donation_id = p_donation_id AND i.removed_at IS NULL
+  ) THEN
+    RAISE EXCEPTION
+      'Donation % is already assigned to an active deposit batch.', p_donation_id;
+  END IF;
+
+  IF NULLIF(btrim(p_reason), '') IS NULL THEN
+    RAISE EXCEPTION
+      'A reason is required when excluding a cash donation from deposit reconciliation.';
+  END IF;
+
+  INSERT INTO public.cash_deposit_donation_exclusions (
+    donation_id, excluded_by, reason, notes
+  )
+  VALUES (
+    p_donation_id, p_actor_id, btrim(p_reason), NULLIF(btrim(p_notes), '')
+  )
+  RETURNING * INTO v_exclusion;
+
+  INSERT INTO public.audit_log (actor, action, entity_type, entity_id, details)
+  VALUES (
+    public.cash_deposit_actor_email(p_actor_id),
+    'cash_donation.deposit_reconciliation_excluded',
+    'donation',
+    p_donation_id::text,
+    jsonb_build_object(
+      'exclusion_id', v_exclusion.exclusion_id,
+      'reason', v_exclusion.reason,
+      'notes', v_exclusion.notes
+    )
+  );
+
+  RETURN v_exclusion;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION public.cash_on_hand_donations()
 RETURNS TABLE (
   donation_id uuid,
