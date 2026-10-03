@@ -45,10 +45,15 @@ SET search_path = public, pg_temp
 AS $$
 DECLARE
   v_exclusion public.cash_deposit_donation_exclusions%ROWTYPE;
+  v_provider text;
+  v_status text;
+  v_donor_kind text;
+  v_amount_cents integer;
 BEGIN
   PERFORM public.assert_cash_deposit_verifier(p_actor_id);
 
-  PERFORM 1
+  SELECT provider, status, donor_kind, amount_cents
+  INTO v_provider, v_status, v_donor_kind, v_amount_cents
   FROM public.donations
   WHERE donation_id = p_donation_id
   FOR UPDATE;
@@ -57,16 +62,12 @@ BEGIN
     RAISE EXCEPTION 'Donation % was not found.', p_donation_id;
   END IF;
 
-  IF NOT EXISTS (
-    SELECT 1
-    FROM public.donations
-    WHERE donation_id = p_donation_id
-      AND provider = 'cash'
-      AND status = 'verified'
-      AND donor_kind IN ('identified', 'anonymous')
-      AND amount_cents IS NOT NULL
-      AND amount_cents > 0
-  ) THEN
+  IF v_provider <> 'cash'
+     OR v_status <> 'verified'
+     OR v_donor_kind NOT IN ('identified', 'anonymous')
+     OR v_amount_cents IS NULL
+     OR v_amount_cents <= 0
+  THEN
     RAISE EXCEPTION
       'Donation % is not a verified, positive cash donation eligible for reconciliation disposition.',
       p_donation_id;
