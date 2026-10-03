@@ -11599,6 +11599,11 @@ AS $$
       WHERE i.donation_id = d.donation_id
         AND i.removed_at IS NULL
     )
+    AND NOT EXISTS (
+      SELECT 1
+      FROM public.cash_deposit_donation_exclusions e
+      WHERE e.donation_id = d.donation_id
+    )
   ORDER BY d.donated_at NULLS LAST, d.created_at, d.donation_id;
 $$;
 
