@@ -12020,3 +12020,64 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.issue19_create_contributor_with_mailing(
+  p_actor_email text,
+  p_party_kind text,
+  p_first_name text,
+  p_last_name text,
+  p_organization_name text,
+  p_email text,
+  p_phone text,
+  p_reason text,
+  p_subscribe_to_mailing_list boolean DEFAULT false
+) RETURNS TABLE(party_kind text, party_id uuid, contributor_id uuid)
+LANGUAGE plpgsql
+SET search_path = public, pg_temp
+AS $
+DECLARE
+  v_result record;
+  v_email_id uuid;
+BEGIN
+  SELECT * INTO STRICT v_result
+  FROM public.issue19_create_contributor(
+    p_actor_email,p_party_kind,p_first_name,p_last_name,
+    p_organization_name,p_email,p_phone,p_reason
+  );
+
+  IF COALESCE(p_subscribe_to_mailing_list,false)
+     AND NULLIF(lower(btrim(p_email)),'') IS NOT NULL THEN
+    UPDATE public.contributor_emails
+    SET mailing_subscription_status='subscribed',
+        mailing_subscription_source='intake',
+        mailing_unsubscribed_at=NULL,
+        mailing_unsubscribe_source=NULL,
+        mailing_unsubscribe_reason=NULL,
+        listmonk_sync_status='pending',
+        listmonk_sync_error=NULL,
+        updated_at=now()
+    WHERE contributor_email_id = (
+      SELECT ce.contributor_email_id
+      FROM public.contributor_emails ce
+      WHERE ce.contributor_id=v_result.contributor_id
+        AND ce.email_normalized=lower(btrim(p_email))
+        AND ce.status='active'
+      ORDER BY ce.created_at DESC
+      LIMIT 1
+    )
+    RETURNING contributor_email_id INTO v_email_id;
+
+    IF v_email_id IS NOT NULL THEN
+      PERFORM public.enqueue_listmonk_contributor_email_sync(
+        v_email_id,'subscribe','intake',p_actor_email,
+        jsonb_build_object('source','issue19_create_contributor_with_mailing')
+      );
+    END IF;
+  END IF;
+
+  party_kind:=v_result.party_kind;
+  party_id:=v_result.party_id;
+  contributor_id:=v_result.contributor_id;
+  RETURN NEXT;
+END;
+$;
+
