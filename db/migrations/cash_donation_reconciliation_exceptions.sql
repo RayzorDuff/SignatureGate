@@ -116,6 +116,34 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.prevent_excluded_cash_deposit_item()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = public, pg_temp
+AS $
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM public.cash_deposit_donation_exclusions e
+    WHERE e.donation_id = NEW.donation_id
+  ) THEN
+    RAISE EXCEPTION
+      'Donation % is excluded from cash-deposit reconciliation.',
+      NEW.donation_id;
+  END IF;
+
+  RETURN NEW;
+END;
+$;
+
+DROP TRIGGER IF EXISTS trg_cash_deposit_items_exclusion_guard
+  ON public.cash_deposit_batch_items;
+
+CREATE TRIGGER trg_cash_deposit_items_exclusion_guard
+BEFORE INSERT ON public.cash_deposit_batch_items
+FOR EACH ROW
+EXECUTE FUNCTION public.prevent_excluded_cash_deposit_item();
+
 CREATE OR REPLACE FUNCTION public.cash_on_hand_donations()
 RETURNS TABLE (
   donation_id uuid,
