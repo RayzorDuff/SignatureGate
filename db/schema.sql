@@ -10786,24 +10786,29 @@ SECURITY INVOKER
 SET search_path = public, pg_temp
 AS $$
 DECLARE
-  v_donation public.donations%ROWTYPE;
   v_exclusion public.cash_deposit_donation_exclusions%ROWTYPE;
 BEGIN
   PERFORM public.assert_cash_deposit_verifier(p_actor_id);
 
-  SELECT * INTO v_donation
+  PERFORM 1
   FROM public.donations
   WHERE donation_id = p_donation_id
   FOR UPDATE;
 
-  IF NOT FOUND THEN RAISE EXCEPTION 'Donation % was not found.', p_donation_id; END IF;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Donation % was not found.', p_donation_id;
+  END IF;
 
-  IF v_donation.provider <> 'cash'
-     OR v_donation.status <> 'verified'
-     OR v_donation.donor_kind NOT IN ('identified', 'anonymous')
-     OR v_donation.amount_cents IS NULL
-     OR v_donation.amount_cents <= 0
-  THEN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM public.donations
+    WHERE donation_id = p_donation_id
+      AND provider = 'cash'
+      AND status = 'verified'
+      AND donor_kind IN ('identified', 'anonymous')
+      AND amount_cents IS NOT NULL
+      AND amount_cents > 0
+  ) THEN
     RAISE EXCEPTION
       'Donation % is not a verified, positive cash donation eligible for reconciliation disposition.',
       p_donation_id;
