@@ -10784,7 +10784,7 @@ LANGUAGE plpgsql
 VOLATILE
 SECURITY INVOKER
 SET search_path = public, pg_temp
-AS $$
+AS $exclude_cash_donation$
 DECLARE
   v_exclusion public.cash_deposit_donation_exclusions%ROWTYPE;
   v_provider text;
@@ -10851,7 +10851,7 @@ BEGIN
 
   RETURN v_exclusion;
 END;
-$$;
+$exclude_cash_donation$;
 
 CREATE OR REPLACE FUNCTION public.prevent_excluded_cash_deposit_item()
 RETURNS trigger
