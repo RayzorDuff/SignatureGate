@@ -152,4 +152,14 @@ The database follows a canonical-schema model with a small deployment-migration 
 - Do not add historical installation migrations for schema changes that are already incorporated into the canonical schema.
 - Production upgrades that cannot safely be represented by replacing the schema bootstrap should be handled as explicit, separately reviewed deployment operations.
 
+The current pending production migrations are:
+
+- `db/migrations/cash_deposit_management.sql`
+- `db/migrations/cash_deposit_batch_lifecycle.sql`
+- `db/migrations/cash_deposit_batch_tally.sql`
+- `db/migrations/person_role_self_assignment.sql`
+
+Apply and verify each pending migration against the test database before applying it to production. In particular, `person_role_self_assignment.sql` changes the Issue #19 role-administration boundary so a directory manager may assign or revoke their own operational roles, including `donations_reviewer`; it does not permit this function to grant or revoke `directory_manager`.
+
+
 The historical migration chain has been removed from the active database installation surface. `db/migrations/` contains only the forward deployment migration still required by current production; once that migration has been deployed and verified, future schema changes should normally be consolidated directly into `db/schema.sql` rather than accumulated as historical migrations.
