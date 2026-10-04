@@ -2977,8 +2977,9 @@ DECLARE
   v_status text := lower(NULLIF(btrim(p_status),''));
 BEGIN
   SELECT * INTO v_actor FROM public.issue19_current_release_actor(p_actor_email);
-  IF v_actor.person_id IS NULL OR NOT v_actor.is_practitioner THEN
-    RAISE EXCEPTION 'Practitioner appointment required to create a member agreement';
+  IF v_actor.person_id IS NULL
+     OR (NOT v_actor.is_practitioner AND NOT v_actor.is_document_reviewer) THEN
+    RAISE EXCEPTION 'Practitioner appointment or document reviewer permission required to create a member agreement';
   END IF;
   IF p_member_id IS NULL OR p_practitioner_person_id IS NULL
      OR v_method IS NULL OR v_status IS NULL THEN
@@ -2990,7 +2991,20 @@ BEGIN
   END IF;
   IF NOT EXISTS (SELECT 1 FROM public.issue19_release_practitioners(
       p_actor_email,p_member_id) available
-      WHERE available.practitioner_person_id=p_practitioner_person_id) THEN
+      WHERE available.practitioner_person_id=p_practitioner_person_id)
+     AND NOT (
+       v_actor.is_document_reviewer
+       AND EXISTS (
+         SELECT 1
+         FROM public.member_practitioner_assignments assignment
+         JOIN public.person_roles role
+           ON role.person_id=assignment.practitioner_person_id
+          AND role.role_key='practitioner'
+         WHERE assignment.member_id=p_member_id
+           AND assignment.practitioner_person_id=p_practitioner_person_id
+           AND assignment.status='active'
+       )
+     ) THEN
     RAISE EXCEPTION 'Selected practitioner is not available for this member';
   END IF;
   IF (v_method='documenso' AND v_status<>'pending_email_send')
