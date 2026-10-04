@@ -12033,7 +12033,7 @@ CREATE OR REPLACE FUNCTION public.issue19_create_contributor_with_mailing(
 ) RETURNS TABLE(party_kind text, party_id uuid, contributor_id uuid)
 LANGUAGE plpgsql
 SET search_path = public, pg_temp
-AS $
+AS $function$
 DECLARE
   v_result record;
   v_email_id uuid;
@@ -12079,7 +12079,7 @@ BEGIN
   contributor_id:=v_result.contributor_id;
   RETURN NEXT;
 END;
-$;
+$function$;
 
 CREATE OR REPLACE FUNCTION public.issue19_add_contributor_email_with_mailing(
   p_actor_email text,
@@ -12091,7 +12091,7 @@ CREATE OR REPLACE FUNCTION public.issue19_add_contributor_email_with_mailing(
 ) RETURNS uuid
 LANGUAGE plpgsql
 SET search_path = public, pg_temp
-AS $
+AS $function$
 DECLARE
   v_email_id uuid;
 BEGIN
@@ -12139,5 +12139,4 @@ BEGIN
 
   RETURN v_email_id;
 END;
-$;
-
+$function$;
