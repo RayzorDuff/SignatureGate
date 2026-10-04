@@ -273,7 +273,7 @@ CREATE OR REPLACE FUNCTION public.issue19_create_contributor_with_mailing(
 ) RETURNS TABLE(party_kind text, party_id uuid, contributor_id uuid)
 LANGUAGE plpgsql
 SET search_path = public, pg_temp
-AS $
+AS $$
 DECLARE
   v_result record;
   v_email_id uuid;
@@ -319,6 +319,6 @@ BEGIN
   contributor_id:=v_result.contributor_id;
   RETURN NEXT;
 END;
-$;
+$$;
 
 COMMIT;
