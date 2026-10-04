@@ -10,6 +10,7 @@ DECLARE
   v_target_person uuid;
   v_target_member uuid;
   v_unassigned_practitioner uuid;
+  v_outsider_person uuid;
   v_assignment uuid;
   v_reviewer_agreement uuid;
   v_practitioner_agreement uuid;
@@ -50,6 +51,12 @@ BEGIN
     VALUES (v_unassigned_practitioner,'issue19-agreement-unassigned@example.invalid');
   INSERT INTO public.person_roles(person_id,role_key,assigned_by)
     VALUES (v_unassigned_practitioner,'practitioner','issue19_verify');
+
+  INSERT INTO public.people(display_name)
+    VALUES ('Issue 19 Agreement Outsider')
+    RETURNING person_id INTO v_outsider_person;
+  INSERT INTO public.person_app_accounts(person_id,email)
+    VALUES (v_outsider_person,'issue19-agreement-outsider@example.invalid');
 
   SELECT public.issue19_assign_member_practitioner(
     'issue19-agreement-reviewer@example.invalid',
@@ -94,7 +101,7 @@ BEGIN
 
   BEGIN
     PERFORM public.issue19_create_member_agreement(
-      'issue19-agreement-unassigned@example.invalid',
+      'issue19-agreement-outsider@example.invalid',
       v_target_member,
       v_practitioner_person,
       NULL,
