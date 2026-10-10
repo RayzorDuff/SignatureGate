@@ -14,6 +14,8 @@ DECLARE
   v_contact_id uuid;
   v_kind text;
   v_source_table text;
+  v_canonical_before uuid;
+  v_canonical_after uuid;
 BEGIN
   IF to_regprocedure('public.issue19_reassign_organization_contact(text,uuid,text,uuid,uuid,text)') IS NULL THEN
     RAISE EXCEPTION 'Organization contact reassignment function is missing';
@@ -55,10 +57,32 @@ BEGIN
     UNION ALL SELECT 'phone',v_phone,'contributor_phones'
     UNION ALL SELECT 'address',v_address,'contributor_addresses'
   LOOP
+    SELECT pcs.party_contact_id INTO STRICT v_canonical_before
+    FROM public.party_contact_sources pcs
+    WHERE pcs.source_table=v_source_table AND pcs.source_id=v_contact_id
+      AND pcs.status='active';
+
     IF NOT public.issue19_reassign_organization_contact(
       v_actor,v_source.party_id,v_kind,v_contact_id,v_target.party_id,
       'Correct organization contact ownership') THEN
       RAISE EXCEPTION 'Reassignment returned false for %',v_kind;
+    END IF;
+
+    SELECT pcs.party_contact_id INTO STRICT v_canonical_after
+    FROM public.party_contact_sources pcs
+    WHERE pcs.source_table=v_source_table AND pcs.source_id=v_contact_id
+      AND pcs.status='active';
+    IF v_canonical_after IS DISTINCT FROM v_canonical_before THEN
+      RAISE EXCEPTION 'Canonical contact ID changed during % reassignment',v_kind;
+    END IF;
+    IF (SELECT count(*) FROM public.party_contacts pc
+        WHERE pc.organization_id=v_target.party_id AND pc.status='active'
+          AND pc.contact_kind=v_kind
+          AND pc.identity_key=(
+            SELECT identity_key FROM public.party_contacts
+            WHERE party_contact_id=v_canonical_after
+          )) <> 1 THEN
+      RAISE EXCEPTION 'Canonical contact was duplicated during % reassignment',v_kind;
     END IF;
 
     IF NOT EXISTS (
