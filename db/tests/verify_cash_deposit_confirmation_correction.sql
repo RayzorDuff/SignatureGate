@@ -74,6 +74,20 @@ BEGIN
     last_error = 'Synthetic failed bank match'
   WHERE deposit_batch_id = v_batch.deposit_batch_id;
 
+  BEGIN
+    UPDATE public.cash_deposit_batches
+    SET deposit_date = CURRENT_DATE - 1
+    WHERE deposit_batch_id = v_batch.deposit_batch_id;
+
+    RAISE EXCEPTION
+      'Direct confirmed-batch deposit-date mutation unexpectedly succeeded.';
+  EXCEPTION
+    WHEN raise_exception THEN
+      IF SQLERRM NOT LIKE 'Confirmed cash deposit batch % is immutable.' THEN
+        RAISE;
+      END IF;
+  END;
+
   SELECT * INTO v_batch
   FROM public.correct_confirmed_cash_deposit_date(
     v_batch.deposit_batch_id,
