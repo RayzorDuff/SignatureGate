@@ -6054,9 +6054,31 @@ $$;
 CREATE FUNCTION public.prevent_confirmed_cash_deposit_mutation() RETURNS trigger
     LANGUAGE plpgsql
     SET search_path TO 'public', 'pg_temp'
-    AS $$
+    AS $
+DECLARE
+  v_sync_status text;
 BEGIN
   IF OLD.status = 'confirmed' THEN
+    IF TG_OP = 'UPDATE'
+       AND NEW.deposit_date IS DISTINCT FROM OLD.deposit_date
+       AND (
+         to_jsonb(NEW) - 'deposit_date' - 'updated_at'
+       ) = (
+         to_jsonb(OLD) - 'deposit_date' - 'updated_at'
+       )
+    THEN
+      SELECT status
+      INTO v_sync_status
+      FROM public.cash_deposit_erp_sync
+      WHERE deposit_batch_id = OLD.deposit_batch_id;
+
+      IF v_sync_status IS NULL
+         OR v_sync_status IN ('pending', 'failed')
+      THEN
+        RETURN NEW;
+      END IF;
+    END IF;
+
     RAISE EXCEPTION
       'Confirmed cash deposit batch % is immutable.',
       OLD.deposit_batch_id;
@@ -6068,7 +6090,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$;
+$;
 
 
 --
