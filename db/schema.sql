@@ -3924,6 +3924,26 @@ BEGIN
       AND pc.contact_kind=p_contact_kind FOR UPDATE;
   IF NOT FOUND THEN RAISE EXCEPTION 'Canonical contact does not belong to source organization'; END IF;
   v_identity := v_contact.identity_key;
+  -- Check genuine destination collisions BEFORE firing contributor source triggers.
+  -- Otherwise the synchronization trigger creates a new canonical destination
+  -- contact and the later duplicate check rejects the reassignment itself.
+  IF EXISTS (
+    SELECT 1 FROM public.party_contacts pc
+    WHERE pc.organization_id=p_target_organization_id
+      AND pc.status='active'
+      AND pc.contact_kind=p_contact_kind
+      AND pc.identity_key=v_identity
+      AND pc.party_contact_id<>v_mapping.party_contact_id
+  ) THEN
+    RAISE EXCEPTION 'Target already has canonical contact with same identity';
+  END IF;
+
+  -- Pre-transfer ownership so the domain UPDATE trigger reuses the existing
+  -- canonical contact rather than creating a second one at the destination.
+  UPDATE public.party_contacts
+  SET organization_id=p_target_organization_id,updated_at=now()
+  WHERE party_contact_id=v_mapping.party_contact_id;
+
   IF p_contact_kind='email' THEN
     SELECT is_primary INTO v_primary FROM public.contributor_emails
       WHERE contributor_email_id=p_contact_id AND contributor_id=v_source AND status='active' FOR UPDATE;
@@ -3952,14 +3972,7 @@ BEGIN
       notes=concat_ws(E'\n',NULLIF(notes,''),'Reassigned from organization '||p_source_organization_id||': '||btrim(p_reason))
       WHERE contributor_address_id=p_contact_id;
   END IF;
-  -- Keep the canonical owner consistent with the transferred domain record.
-  IF EXISTS (SELECT 1 FROM public.party_contacts WHERE organization_id=p_target_organization_id
-     AND status='active' AND contact_kind=p_contact_kind AND identity_key=v_identity
-     AND party_contact_id<>v_mapping.party_contact_id) THEN
-    RAISE EXCEPTION 'Target already has canonical contact with same identity';
-  END IF;
-  UPDATE public.party_contacts SET organization_id=p_target_organization_id,updated_at=now()
-    WHERE party_contact_id=v_mapping.party_contact_id;
+  -- The source trigger has now refreshed this same canonical mapping.
   UPDATE public.party_contact_sources SET is_primary=false,updated_at=now()
     WHERE source_table=v_table AND source_id=p_contact_id;
   INSERT INTO public.audit_log(actor,action,entity_type,entity_id,details)
