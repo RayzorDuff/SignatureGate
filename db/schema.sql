@@ -12346,7 +12346,7 @@ BEGIN
       'signaturegate:deposit_batch:' || NEW.deposit_batch_id::text,
       'pending'
     )
-    ON CONFLICT (deposit_batch_id) DO NOTHING;
+    ON CONFLICT ON CONSTRAINT cash_deposit_erp_sync_pkey DO NOTHING;
 
     INSERT INTO public.audit_log (
       actor,
@@ -12394,7 +12394,7 @@ SELECT
   'pending'
 FROM public.cash_deposit_batches b
 WHERE b.status = 'confirmed'
-ON CONFLICT (deposit_batch_id) DO NOTHING;
+ON CONFLICT ON CONSTRAINT cash_deposit_erp_sync_pkey DO NOTHING;
 
 CREATE OR REPLACE FUNCTION public.begin_cash_deposit_erp_sync(
   p_deposit_batch_id uuid
@@ -12454,7 +12454,7 @@ BEGIN
     'signaturegate:deposit_batch:' || v_batch.deposit_batch_id::text,
     'pending'
   )
-  ON CONFLICT (deposit_batch_id) DO NOTHING;
+  ON CONFLICT ON CONSTRAINT cash_deposit_erp_sync_pkey DO NOTHING;
 
   SELECT *
   INTO v_sync
@@ -12486,7 +12486,7 @@ BEGIN
   UPDATE public.cash_deposit_erp_sync
   SET
     status = 'processing',
-    attempt_count = attempt_count + 1,
+    attempt_count = cash_deposit_erp_sync.attempt_count + 1,
     last_attempt_at = now(),
     last_error = NULL
   WHERE cash_deposit_erp_sync.deposit_batch_id = p_deposit_batch_id
