@@ -6054,9 +6054,11 @@ $$;
 CREATE FUNCTION public.prevent_confirmed_cash_deposit_mutation() RETURNS trigger
     LANGUAGE plpgsql
     SET search_path TO 'public', 'pg_temp'
-    AS $
+    AS $sg$
 DECLARE
   v_sync_status text;
+  v_actor_id uuid;
+  v_reason text;
 BEGIN
   IF OLD.status = 'confirmed' THEN
     IF TG_OP = 'UPDATE'
@@ -6067,15 +6069,42 @@ BEGIN
          to_jsonb(OLD) - 'deposit_date' - 'updated_at'
        )
     THEN
-      SELECT status
-      INTO v_sync_status
-      FROM public.cash_deposit_erp_sync
-      WHERE deposit_batch_id = OLD.deposit_batch_id;
+      BEGIN
+        v_actor_id := NULLIF(
+          current_setting(
+            'signaturegate.cash_deposit_correction_actor',
+            true
+          ),
+          ''
+        )::uuid;
+      EXCEPTION
+        WHEN invalid_text_representation THEN
+          v_actor_id := NULL;
+      END;
 
-      IF v_sync_status IS NULL
-         OR v_sync_status IN ('pending', 'failed')
-      THEN
-        RETURN NEW;
+      v_reason := NULLIF(
+        btrim(
+          current_setting(
+            'signaturegate.cash_deposit_correction_reason',
+            true
+          )
+        ),
+        ''
+      );
+
+      IF v_actor_id IS NOT NULL AND v_reason IS NOT NULL THEN
+        PERFORM public.assert_cash_deposit_verifier(v_actor_id);
+
+        SELECT status
+        INTO v_sync_status
+        FROM public.cash_deposit_erp_sync
+        WHERE deposit_batch_id = OLD.deposit_batch_id;
+
+        IF v_sync_status IS NULL
+           OR v_sync_status IN ('pending', 'failed')
+        THEN
+          RETURN NEW;
+        END IF;
       END IF;
     END IF;
 
@@ -6090,8 +6119,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$;
-
+$sg$;
 
 --
 -- Name: reconcile_linked_person(); Type: FUNCTION; Schema: public; Owner: -
@@ -12761,10 +12789,32 @@ BEGIN
     RETURN v_batch;
   END IF;
 
+  PERFORM set_config(
+    'signaturegate.cash_deposit_correction_actor',
+    p_actor_id::text,
+    true
+  );
+  PERFORM set_config(
+    'signaturegate.cash_deposit_correction_reason',
+    btrim(p_reason),
+    true
+  );
+
   UPDATE public.cash_deposit_batches
   SET deposit_date = p_deposit_date
   WHERE deposit_batch_id = p_deposit_batch_id
   RETURNING * INTO v_batch;
+
+  PERFORM set_config(
+    'signaturegate.cash_deposit_correction_actor',
+    '',
+    true
+  );
+  PERFORM set_config(
+    'signaturegate.cash_deposit_correction_reason',
+    '',
+    true
+  );
 
   IF v_sync_status IS NOT NULL THEN
     UPDATE public.cash_deposit_erp_sync
