@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Added an audited correction path for confirmed cash-deposit dates when ERP synchronization has not succeeded; corrections reset failed/pending ERP sync state for retry while preserving the attempt count (#18).
 - Added durable ERP synchronization state for confirmed cash deposit batches, including stable `signaturegate:deposit_batch:<uuid>` source keys, retry state, ERP document identity, and audited success/failure transitions (#18).
 - Added canonical person attribution for agreement practitioners, guarded agreement creation, nonmember-practitioner Documenso delivery, legacy member-ID synchronization, and rollback-only checks (#19, #20).
 - Added canonical person-based practitioner attribution and storage-location authorization for sacrament releases, including nonmember practitioners, audited release writes, legacy storage synchronization, configured practitioner labels, and rollback-only authorization checks (#19, #20).
