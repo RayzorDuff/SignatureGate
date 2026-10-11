@@ -54,6 +54,26 @@ function collectWidgets(dir) {
   }
   return result;
 }
+function collectAssets(dir) {
+  if (!exists(dir)) return [];
+  return fs.readdirSync(dir).sort().flatMap(file => {
+    const full = path.join(dir, file);
+    if (fs.statSync(full).isDirectory()) return collectAssets(full);
+    return file.endsWith('.json') ? [readJson(full)] : [];
+  });
+}
+function uniqueAssets(assets, kind) {
+  const result = new Map();
+  for (const asset of assets) {
+    if (!asset.name) throw new Error(`${kind} descriptor has no name`);
+    const key = asset.uidString ?? asset.name;
+    if (result.has(key) && JSON.stringify(result.get(key)) !== JSON.stringify(asset)) {
+      throw new Error(`Conflicting ${kind} descriptor: ${key}`);
+    }
+    result.set(key, asset);
+  }
+  return [...result.values()];
+}
 function buildPage(pageDir) {
   const files = fs.readdirSync(pageDir).filter(f => f.endsWith(".json") && f !== "metadata.json");
   const pageFile = files.find(f => f.toLowerCase().includes(path.basename(pageDir).toLowerCase())) ?? files[0];
@@ -63,20 +83,37 @@ function buildPage(pageDir) {
   if (!unpublished) return null;
   const widgets = collectWidgets(path.join(pageDir, "widgets"));
   const byParent = new Map();
+  const byId = new Map();
   for (const widget of widgets) {
+    if (byId.has(widget.widgetId)) throw new Error(`Duplicate widget ID in ${pageDir}: ${widget.widgetId}`);
+    byId.set(widget.widgetId, widget);
     const parent = widget.parentId ?? "0";
     if (!byParent.has(parent)) byParent.set(parent, []);
     byParent.get(parent).push(widget);
   }
-  function attach(widget) {
-    const children = byParent.get(widget.widgetId);
-    if (children?.length) widget.children = children.sort((a,b) => (a.topRow ?? 0) - (b.topRow ?? 0) || (a.leftColumn ?? 0) - (b.leftColumn ?? 0)).map(attach);
+  const exportedIds = new Set();
+  function attach(input, seen) {
+    const widget = clone(byId.get(input.widgetId) ?? input);
+    if (seen.has(widget.widgetId)) throw new Error(`Repeated/cyclic widget ID in ${pageDir}: ${widget.widgetId}`);
+    seen.add(widget.widgetId);
+    exportedIds.add(widget.widgetId);
+    // Canvases may be embedded in a Form/Container JSON file rather than
+    // having their own file. Recurse into them before attaching their files.
+    const children = new Map((widget.children ?? []).map(child => [child.widgetId, child]));
+    for (const child of byParent.get(widget.widgetId) ?? []) children.set(child.widgetId, child);
+    if (children.size || Array.isArray(widget.children)) {
+      widget.children = [...children.values()]
+        .sort((a,b) => (a.topRow ?? 0) - (b.topRow ?? 0) || (a.leftColumn ?? 0) - (b.leftColumn ?? 0))
+        .map(child => attach(child, seen));
+    }
     return widget;
   }
   for (const layout of unpublished.layouts ?? []) {
     const dsl = layout.dsl;
-    if (dsl) dsl.children = (byParent.get(dsl.widgetId ?? "0") ?? byParent.get("0") ?? []).sort((a,b) => (a.topRow ?? 0) - (b.topRow ?? 0) || (a.leftColumn ?? 0) - (b.leftColumn ?? 0)).map(attach);
+    if (dsl) layout.dsl = attach(dsl, new Set());
   }
+  const orphaned = widgets.filter(widget => !exportedIds.has(widget.widgetId));
+  if (orphaned.length) throw new Error(`Unattached widgets in ${pageDir}: ${orphaned.map(widget => widget.widgetName).join(', ')}`);
   return { deleted:false, gitSyncId:page.gitSyncId, publishedPage:clone(unpublished), unpublishedPage:unpublished };
 }
 
@@ -85,11 +122,7 @@ const metadata = readJson(path.join(source, "metadata.json"));
 const theme = exists(path.join(source, "theme.json")) ? readJson(path.join(source, "theme.json")) : null;
 const pageRoot = path.join(source, "pages");
 const pageList = listDirs(pageRoot).map(name => buildPage(path.join(pageRoot, name))).filter(Boolean);
-const datasourceRoot = path.join(source, "datasources");
-const datasourceList = listDirs(datasourceRoot).map(name => {
-  const file = path.join(datasourceRoot, name + ".json");
-  return exists(file) ? readJson(file) : null;
-}).filter(Boolean);
+const datasourceList = uniqueAssets(collectAssets(path.join(source, 'datasources')), 'datasource');
 
 const actionList = [];
 for (const pageName of listDirs(pageRoot)) {
@@ -107,11 +140,10 @@ for (const pageName of listDirs(pageRoot)) {
     if (collection) actionCollectionList.push(collection);
   }
 }
-const customJSLibRoot = path.join(source, "customJSLibs");
-const customJSLibList = listDirs(customJSLibRoot).map(name => {
-  const file = path.join(customJSLibRoot, name + ".json");
-  return exists(file) ? readJson(file) : null;
-}).filter(Boolean);
+const customJSLibList = uniqueAssets([
+  ...collectAssets(path.join(source, 'jslibs')),
+  ...collectAssets(path.join(source, 'customJSLibs'))
+], 'JS library');
 
 const result = {
   actionCollectionList, actionList,

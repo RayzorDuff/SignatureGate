@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Preserved datasource/library descriptors and widgets beneath embedded canvases in generated Appsmith exports; added source/export preservation checks before the export action commits JSON. Current role controls remain required by terminology validation, while retired assignment controls are checked when present.
+- Corrected malformed dollar quotes in the canonical donation-financial permission helpers so a fresh database bootstrap succeeds.
+
 - Registered the Sacrament Release practitioner selector label as an Appsmith dynamic binding so deployed pages render the configured term instead of raw moustache text (#20).
 - Fixed Givebutter webhook ingestion when a numeric Givebutter `contact_id` is passed as the external provider identity; the workflow now normalizes the identity to text and explicitly casts database parameters to the `ingest_provider_donation(...)` signature (#19).
 - Made the Sacrament Release gate honor signed sacrament agreements from inactive older template versions, and added rollback-only coverage for old/new versions, unrelated scopes, pending status, and reviewed manual agreements (#19).
@@ -22,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Restored visible Directory and profile contact columns in Appsmith and corrected the Individual Profile role selector's option keys (#19).
 
 ### Added
+
+- Added document-reviewer Agreement Type creation on Agreement Templates with key, display name, description, sort order and active state; canonical authorization works without membership, creation/audit is atomic, and the form validates duplicates and refreshes selectors (SignatureGate-Appsmith #2).
 
 - Added an audited correction path for confirmed cash-deposit dates when ERP synchronization has not succeeded; corrections reset failed/pending ERP sync state for retry while preserving the attempt count (#18).
 - Added durable ERP synchronization state for confirmed cash deposit batches, including stable `signaturegate:deposit_batch:<uuid>` source keys, retry state, ERP document identity, and audited success/failure transitions (#18).

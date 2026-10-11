@@ -10,7 +10,7 @@ The release plan is committed on SignatureGate `main` at `f6372147cb247f6fc62410
 
 Phase 1 source/issue inventory is recorded in [PHASE_1_AUDIT.md](PHASE_1_AUDIT.md), with a 97-row [acceptance ledger](ACCEPTANCE_LEDGER.csv), [environment/migration inventory](ENVIRONMENT_AND_MIGRATIONS.md), and [changelog audit](CHANGELOG_AUDIT.md). Its live deployment exit gate remains open until test/production catalogs and deployed revisions are compared.
 
-Additional packaging findings from Phase 1: the current export generator omits the flat datasource files and `jslibs` directory; a fresh export contains zero datasource/library entries. The fresh candidate also produces 14 validator findings for seven removed Individual Profile widgets. Existing validation of the older bundled JSON does not establish current-source export validity. Repair and verify both before release packaging.
+Phase 2 has commenced: audited Agreement Type administration, canonical Agreement Templates actor lookup, exporter dependency/nested-widget preservation and current-page terminology checks are implemented. See [PHASE_2_PROGRESS.md](PHASE_2_PROGRESS.md) for passing isolated/source tests and the remaining live acceptance. The earlier 14 export findings were ten obsolete checks for five retired controls and four caused by the exporter dropping two existing role controls; that diagnosis and both defects are corrected. [PHASE_1_VALIDATION.md](PHASE_1_VALIDATION.md) gives the exact live evidence, commands and pass conditions required to close Phase 1. These blockers remain part of the release work.
 
 ## Release objective
 
@@ -167,7 +167,7 @@ Appsmith checks must include all active pages, empty table results, and denied-a
 
 Build an explicit dependency-ordered manifest; do not blindly run every migration alphabetically. Earlier files use CREATE OR REPLACE FUNCTION and can overwrite later behavior when replayed out of order.
 
-The current migration surface contains these **15 files**; inclusion here does not establish whether they are pending in production:
+The initial Phase 1 migration snapshot contained **15 files**; Phase 2 adds `agreement_type_administration.sql` (16 candidates now). The original candidates are below; inclusion here does not establish whether they are pending in production:
 
 | Area | Candidate migration files |
 | --- | --- |
@@ -177,7 +177,7 @@ The current migration surface contains these **15 files**; inclusion here does n
 | Canonical identity/roles/contact administration | person_role_self_assignment.sql; organization_contact_reassignment.sql; member_agreement_reviewer_on_behalf.sql; party_identity_notes.sql |
 | Mailing integration | listmonk_contributor_email_support.sql; listmonk_dual_capacity_contributor_email.sql |
 
-**db/README.md lists only eight pending migrations and still contains pre-deployment language despite later production acceptance comments.** Update it from evidence. The historical #19/#20 migration chain has been removed from the active installation surface, so the fifteen files alone may not upgrade an older production schema to the target. Compare the actual database and reconstruct a forward upgrade for any missing canonical objects/backfills. Add new migrations for work completed in Phases 2–3 where required.
+**db/README.md now lists all 16 candidate forward migrations with applied state explicitly unknown.** Update deployed status from live evidence. The historical #19/#20 migration chain has been removed from the active installation surface, so the fifteen files alone may not upgrade an older production schema to the target. Compare the actual database and reconstruct a forward upgrade for any missing canonical objects/backfills. Add new migrations for work completed in Phases 2–3 where required.
 
 Each manifest entry records path, checksum, prerequisites, effective object/data preconditions, already-applied evidence, transactional strategy, verification, and recovery procedure. Verify function bodies and data invariants, not just names.
 
@@ -243,5 +243,5 @@ Before publication, retain the previous master/Appsmith revision and the tested 
 
 **Acceptance inventory → functional gaps and Agreement Types → terminology and navigation → full development acceptance → production upgrade → production configuration and master publication → production verification and closure.**
 
-This pass produced the initial source assessment and this plan. Implementation repairs, live database verification, migration execution, datasource changes, publishing, and issue closure remain work items in the phases above.
+The source assessment and plan are committed, and the first Phase 2 implementation is recorded in PHASE_2_PROGRESS.md. Live database comparison, remaining functional gaps, deployment acceptance, datasource changes, publishing and issue closure remain work items in the phases above.
 

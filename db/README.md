@@ -18,7 +18,7 @@ Before applying it to a database that contains data, take an appropriate backup.
 
 ## Current production upgrade
 
-The canonical schema includes the current cash-deposit management definition. The production database has not yet been changed by this branch; do not load `db/schema.sql` over the existing production database as an upgrade mechanism.
+The canonical schema includes current cash-deposit and identity definitions. Production acceptance has been reported for some features, but the effective deployed catalog and migration state have not been inventoried for v1.2.0. Do not load `db/schema.sql` over the existing production database as an upgrade mechanism. Use [the release validation checklist](../releases/v1.2.0/PHASE_1_VALIDATION.md) to establish required forward upgrades.
 
 Production deployment should use the reviewed database change procedure for the current release rather than treating the canonical bootstrap as an in-place upgrade.
 
@@ -143,7 +143,7 @@ The audit log is not intended for debugging or analytics and should not be trunc
 
 ## Database development model
 
-The database follows a canonical-schema model with a small deployment-migration surface for changes that are still pending in production.
+The database follows a canonical-schema model with a small deployment-migration surface for changes whose deployed state must be verified against the production catalog.
 
 - Change the database definition through normal development and testing.
 - Validate the resulting schema against a clean database.
@@ -152,18 +152,30 @@ The database follows a canonical-schema model with a small deployment-migration 
 - Do not add historical installation migrations for schema changes that are already incorporated into the canonical schema.
 - Production upgrades that cannot safely be represented by replacing the schema bootstrap should be handled as explicit, separately reviewed deployment operations.
 
-The current pending production migrations are:
+The current candidate forward migrations are listed below. Presence in this directory does not establish whether a migration is already applied or required. Phase 1 must compare effective definitions and produce the dependency-ordered manifest; do not run this list alphabetically.
 
-- `db/migrations/cash_deposit_management.sql`
+- `db/migrations/agreement_type_administration.sql`
 - `db/migrations/cash_deposit_batch_lifecycle.sql`
-- `db/migrations/cash_deposit_batch_tally.sql`
-- `db/migrations/person_role_self_assignment.sql`
 - `db/migrations/cash_deposit_batch_print.sql`
-- `db/migrations/cash_deposit_erp_sync.sql`
+- `db/migrations/cash_deposit_batch_tally.sql`
 - `db/migrations/cash_deposit_confirmation_correction.sql`
+- `db/migrations/cash_deposit_erp_sync.sql`
+- `db/migrations/cash_deposit_management.sql`
+- `db/migrations/cash_donation_reconciliation_exceptions.sql`
+- `db/migrations/cash_donation_reconciliation_revive.sql`
+- `db/migrations/donation_financial_access.sql`
 - `db/migrations/listmonk_contributor_email_support.sql`
+- `db/migrations/listmonk_dual_capacity_contributor_email.sql`
+- `db/migrations/member_agreement_reviewer_on_behalf.sql`
+- `db/migrations/organization_contact_reassignment.sql`
+- `db/migrations/party_identity_notes.sql`
+- `db/migrations/person_role_self_assignment.sql`
 
-Apply and verify each pending migration against the test database before applying it to production. In particular, `person_role_self_assignment.sql` changes the Issue #19 role-administration boundary so a directory manager may assign or revoke their own operational roles, including `donations_reviewer`; it does not permit this function to grant or revoke `directory_manager`.
+Apply and verify each required migration against the test database before applying it to production. In particular, `person_role_self_assignment.sql` changes the Issue #19 role-administration boundary so a directory manager may assign or revoke their own operational roles, including `donations_reviewer`; it does not permit this function to grant or revoke `directory_manager`.
 
 
-The historical migration chain has been removed from the active database installation surface. `db/migrations/` contains only the forward deployment migration still required by current production; once that migration has been deployed and verified, future schema changes should normally be consolidated directly into `db/schema.sql` rather than accumulated as historical migrations.
+The historical migration chain has been removed from the active database installation surface. `db/migrations/` retains candidate forward deployment changes; required/applied state must be established from evidence. Future changes must update the canonical schema and supply a forward migration whenever existing deployments need one. Preserve release migration provenance through deployment verification.
+
+## Agreement Type administration (v1.2.0)
+
+`agreement_type_administration.sql` adds canonical document-reviewer authorization and atomic creation/audit. It requires canonical person accounts/roles, `agreement_types` and `audit_log`; membership is not required. Deploy this migration to test before pulling the new Agreement Templates page. Run `db/tests/verify_agreement_type_administration.sql` only on test/disposable databases. [Phase 2 progress](../releases/v1.2.0/PHASE_2_PROGRESS.md) includes exact commands, isolated test results and required live acceptance.

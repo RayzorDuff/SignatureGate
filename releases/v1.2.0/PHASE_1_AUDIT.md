@@ -19,7 +19,7 @@ There are 176 SignatureGate implementation commits since v1.1.0. Appsmith has no
 
 ## Requirement dispositions
 
-The 97 rows include each acceptance clause from issue bodies, #17's extended anonymous-cash criteria, #23's original defects, later scope/user decisions, and coordinated release dependencies.
+The original audit disposition counts below describe the pinned baseline; the acceptance ledger is updated as Phase 2 implementation proceeds. The 97 rows include each acceptance clause from issue bodies, #17's extended anonymous-cash criteria, #23's original defects, later scope/user decisions, and coordinated release dependencies.
 
 | Status | Rows | Meaning |
 | --- | ---: | --- |
@@ -92,9 +92,9 @@ The user has verified Company Profile initialization after recreating its JS obj
 
 The fresh export has 18 pages, 335 actions and 14 collections but **zero datasource entries and zero custom libraries**. `appsmith-export.mjs` enumerates directories inside `datasources/`, while the actual descriptors are flat files; it looks under `customJSLibs/`, while the current jsPDF descriptor is under `jslibs/`. This would omit required packaging dependencies even when JSON shape checks pass.
 
-The same fresh export produces 14 release-validator findings: seven removed Individual Profile widgets are still required by the terminology checks, once each for published and unpublished pages. Their names are `txtIndividualPractitionerManagementNote`, `selIndividualPractitionerToAssign`, `btnAssignIndividualPractitioner`, `txtPersonAccessCurrent`, `tblIndividualPractitionerAssignments`, `txtIndividualPractitionersHeading` and `selPersonAccessRole`. Reconcile the checks with approved final page ownership and retain meaningful configuration coverage. Do not simply delete terminology validation to make packaging pass.
+The baseline fresh export produced 14 release-validator findings. **Corrected diagnosis during Phase 2:** five retired practitioner-assignment controls caused ten obsolete checks (published/unpublished); the exporter dropped two existing controls, `txtPersonAccessCurrent` and `selPersonAccessRole`, beneath an embedded canvas, causing the remaining four. These two controls already have configured terminology bindings in source. The exporter now retains them and validation still requires them; the five legacy controls are checked when present. See PHASE_2_PROGRESS.md for repaired export and semantic-check evidence.
 
-Existing release checks therefore do **not** validate the current split Appsmith tree. The exporter and validator need repair before first-release JSON generation, followed by Appsmith import/pull and actual runtime tests. No synthetic data or external operations were executed by this source audit.
+Existing release checks therefore do **not** validate the current split Appsmith tree. The exporter and validator have since been repaired in Phase 2; Appsmith import/pull and actual runtime tests remain required before first-release JSON generation. No synthetic data or external operations were executed by this source audit.
 
 ## Deployment and changelog evidence
 
@@ -131,3 +131,5 @@ The ledger/history files are the reviewed baseline; re-review them against subse
 ## Phase 1 exit gate
 
 All issue criteria now have an owner and a recorded disposition. Source-level inventories and release dependencies are checked in. **Production differences remain unknown**: obtaining test/production inventories and deployed version evidence is still required before Phase 1 is marked complete or any ordered manifest is approved. Functional gap work can proceed on the test-bound development branch while that read-only evidence is gathered.
+
+Specific live-gate instructions are in [PHASE_1_VALIDATION.md](PHASE_1_VALIDATION.md). Subsequent implementation and deployment instructions are in [PHASE_2_PROGRESS.md](PHASE_2_PROGRESS.md); the evidence directory remains the original pinned audit snapshot.

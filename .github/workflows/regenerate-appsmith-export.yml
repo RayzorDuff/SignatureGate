@@ -36,6 +36,14 @@ jobs:
             --source .appsmith-source \
             --output "appsmith/Rooted Psyche Membership Ops.json"
 
+      - name: Verify source and export preservation
+        run: |
+          node scripts/test-appsmith-export.mjs
+          python3 scripts/validate_appsmith_source_export.py \
+            --source .appsmith-source \
+            --export "appsmith/Rooted Psyche Membership Ops.json"
+          python3 scripts/validate_release.py --assets
+
       - name: Validate generated export
         run: |
           node --input-type=module <<'NODE'

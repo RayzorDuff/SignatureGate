@@ -171,6 +171,10 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
     required_terminology_widgets = {
         "selPersonAccessRole",
         "txtPersonAccessCurrent",
+    }
+    # Assignment operations have moved to the operational workspaces. Retained
+    # legacy widgets must still use terminology, but their absence is valid.
+    legacy_terminology_widgets = {
         "txtIndividualPractitionersHeading",
         "txtIndividualPractitionerManagementNote",
         "selIndividualPractitionerToAssign",
@@ -210,7 +214,8 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
                 for item in objects(page_entry.get(variant_name, {}))
                 if item.get("widgetName")
             }
-            for widget_name in required_terminology_widgets:
+            expected_widgets = required_terminology_widgets | (legacy_terminology_widgets & widgets.keys())
+            for widget_name in expected_widgets:
                 serialized = json.dumps(widgets.get(widget_name, {}), sort_keys=True)
                 if "practitioner_singular_label" not in serialized \
                    and "practitioner_plural_label" not in serialized:
