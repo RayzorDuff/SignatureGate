@@ -1,653 +1,97 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/).
+Public release notes describe software behavior without organization names, product information, operational examples or private records. Earlier versions retain their original version/date markers and concise behavior summaries; detailed historical source remains in repository history.
 
 ## [Unreleased]
 
-### Fixed
-
-- Preserved datasource/library descriptors and widgets beneath embedded canvases in generated Appsmith exports; added source/export preservation checks before the export action commits JSON. Current role controls remain required by terminology validation, while retired assignment controls are checked when present.
-- Corrected malformed dollar quotes in the canonical donation-financial permission helpers and closed the appended ERP transaction so a fresh `psql` bootstrap retains ERP and later release APIs.
-
-- Registered the Sacrament Release practitioner selector label as an Appsmith dynamic binding so deployed pages render the configured term instead of raw moustache text (#20).
-- Fixed Givebutter webhook ingestion when a numeric Givebutter `contact_id` is passed as the external provider identity; the workflow now normalizes the identity to text and explicitly casts database parameters to the `ingest_provider_donation(...)` signature (#19).
-- Made the Sacrament Release gate honor signed sacrament agreements from inactive older template versions, and added rollback-only coverage for old/new versions, unrelated scopes, pending status, and reviewed manual agreements (#19).
-- Corrected the membership-contact verification fixture after canonical identity removed copied contributor name columns (#19).
-- Removed the contributor prerequisite from membership closure: ending membership no longer creates or requires contributor capacity, while an existing contributor, link history, and donation attribution are preserved (#19).
-- Registered the new profile-history tables' Appsmith visibility bindings, based their rendering on the loaded profile instead of a projected contributor ID, and made contributor apartment/suite inputs explicitly optional (#19).
-- Corrected the former-member contact migration's missing SQL output alias and shortened its Individual Profile guidance (#19).
-- Kept active contact sources from ended memberships visible on Individual Profile to authorized reviewers; member-only contacts now appear before contributor enrollment and can be assigned after enrollment. Corrected the contact selector labels and refreshed contact lists when a capacity changes (#19).
-- Kept Issue #19 membership closure visible with a specific eligibility reason and a disabled action when a contributor, agreement, or operational-role condition blocks closure.
-- Corrected the Issue #19 contributor-contact ownership guard for contacts on a different person or company; added a forward repair for databases where the original contact migration had already committed.
-- Restored visible Directory and profile contact columns in Appsmith and corrected the Individual Profile role selector's option keys (#19).
-
 ### Added
 
-- Added document-reviewer Agreement Type creation on Agreement Templates with key, display name, description, sort order and active state; canonical authorization works without membership, creation/audit is atomic, and the form validates duplicates and refreshes selectors (SignatureGate-Appsmith #2).
-
-- Added an audited correction path for confirmed cash-deposit dates when ERP synchronization has not succeeded; corrections reset failed/pending ERP sync state for retry while preserving the attempt count (#18).
-- Added durable ERP synchronization state for confirmed cash deposit batches, including stable `signaturegate:deposit_batch:<uuid>` source keys, retry state, ERP document identity, and audited success/failure transitions (#18).
-- Added canonical person attribution for agreement practitioners, guarded agreement creation, nonmember-practitioner Documenso delivery, legacy member-ID synchronization, and rollback-only checks (#19, #20).
-- Added canonical person-based practitioner attribution and storage-location authorization for sacrament releases, including nonmember practitioners, audited release writes, legacy storage synchronization, configured practitioner labels, and rollback-only authorization checks (#19, #20).
-- Added a stable terminology concept registry, audited organization-level labels, Rooted Psyche **Spiritual Practitioner** defaults, and compatibility tests that keep a future regulated facilitator distinct (#20).
-- Added canonical person-based practitioner assignments with audited assign/end actions on Individual Profile, nonmember-practitioner access, legacy assignment synchronization, and rollback-only permission checks (#19).
-- Added document-reviewer maintenance of membership-purpose mailing addresses on Individual Profile, with normalized physical-address identity, audited archive/primary promotion, and no implicit contributor-address changes (#19).
-- Added document-reviewer maintenance of membership-purpose email and phone records on Individual Profile, with read-only assigned-practitioner visibility, audit reasons, safe primary promotion, and no implicit contributor-contact changes (#19).
-- Added permission-scoped agreement and practitioner-assignment history to Individual Profile, with direct handoffs to member operations and Sacrament Release (#19).
-- Added a sacrament-only release constraint with rollback-only verification and a canonical Directory shortcut for active members (#19).
-- Added directory-manager identity correction on Individual and Company Profiles, with stale-edit protection and audited old/new canonical values (#19).
-- Added reasoned, audited archive/reactivation for individual and organization contributors, retaining their contacts, provider identities, donation history, and independent membership state (#19).
-- Added permission-scoped contribution history and external provider identities to Individual Profile and Company Profile, without coupling donations to membership (#19).
-- Added reasoned, audited cross-role assignment of an individual's existing email, phone or address, preserving the central party contact and leaving new membership emails unsubscribed (#19).
-- Added reviewer-controlled contributor mailing addresses on Individual and Company Profile, with physical-address duplicate protection, primary promotion, party-contact synchronization, and audit records (#19).
-- Added reviewed, audited membership closure on Individual Profile with separate contributor continuity, preserved financial/release history, and guards for pending agreements and active operational roles (#19).
-- Added reviewed membership enrollment from Individual Profile for existing people, retaining contributor identity and historical donation attribution (#19).
-- Added scoped, audited contributor email and phone maintenance on Individual and Company Profile, with legacy contact synchronization and rollback-only checks (#19).
-- Added audited contributor creation for individuals and companies in Directory, and controlled contributor enrollment for existing people on Individual Profile (#19).
-- Added person-owned practitioner/reviewer roles, explicit Appsmith account ownership, audited directory-manager role controls on Individual Profile, and rollback-only permission checks for Issue #19.
-- Added a scoped Directory and read-only Individual Profile and Company Profile in Appsmith. Member work remains reachable through the existing Members - Profile page.
-- Added database directory/contact query helpers with a rollback-only test of document-reviewer and donations-reviewer visibility.
-- Added Issue #19 person/organization-owned contact records and source mappings, plus a rollback-only integration check for matching, archiving, and owner changes.
-- Added canonical person and organization identity migration and role profile views, with a rollback-only integration smoke test.
-- Added shared person/organization identities under Issue #19 member and contributor APIs, with identity reconciliation review and combined read views for individual contact methods.
-- Added explicit `member`, `anonymous`, and `unresolved` donation identity states for Issue #17.
-- Added anonymous cash intake and reviewer verification/rejection without creating a synthetic member.
-- Added contributor identities for individuals and organizations, contributor contact/provider identities, and auditable contributor-to-member relationship history for Issue #19.
-- Added controlled database operations to resolve provider donations to contributors, create contributors or members from pending donations, and start/end contributor-member links.
-- Added contributor-first provider matching and idempotent Givebutter ingestion using provider contact identity, unique contributor email/phone, and member-contact fallback.
+- Independent individual and company identities, with Participant and Contributor capacities kept separate from system access permissions.
+- Canonical account ownership and operational role assignment, including authorized accounts without Participant capacity.
+- Directory and selected-identity profiles, with guarded identity correction and stale-edit protection.
+- Standalone Contributor creation, reviewed enrollment, archive/reactivation and capacity history.
+- Participant closure that preserves identity, contact and financial history without creating Contributor capacity.
+- Reasoned contact maintenance, primary promotion, physical-address duplicate protection and reviewed cross-capacity assignment/reassignment.
+- Profile contribution/provider history and permission-scoped agreement/assignment history.
+- Canonical practitioner assignment and agreement/release attribution, independent of the practitioner's Participant capacity.
+- Identity-level notes, historical-source preservation and transaction/provenance protection against duplicate import or cleared-note restoration.
+- A stable terminology registry, audited label administration and repeatable initialization that preserves installed overrides.
+- Reviewer-controlled agreement-type creation, field/duplicate validation, selector refresh and atomic audit.
+- Separate capacity-specific consent controls and mailing synchronization, including Contributor-only routing and external unsubscribe reflection.
+- Deposit lifecycle, composition snapshots, confirmation, reporting/printing, exception/revival paths and durable external synchronization state.
+- Audited confirmed-date correction before successful external accounting synchronization, with preserved attempt history.
+- Reporting that distinguishes linked and anonymous contributions while retaining aggregate totals.
+- Read-only deployment/catalog evidence tools, sanitized review records and explicit release acceptance/dependency gates.
 
 ### Changed
 
-- Renamed the Appsmith **Agreements - Templates** page to **Agreement Templates** and added release validation for the page identity and dynamic terminology binding (#20).
-- Member agreements remain membership records while their practitioner signer is now person-based; contributor status is neither created nor required (#19).
-- Sacrament Release now lists only practitioners assigned to the selected member, scopes inventory to that person's storage grants, and records the canonical practitioner person while retaining nullable legacy facilitator-member attribution for compatibility (#19, #20).
-- Individual Profile practitioner appointment and assignment labels now read the organization terminology profile instead of equating practitioner with facilitator (#19, #20).
-- Individual Profile now manages practitioner assignments directly; **Open agreement operations** remains as the transitional handoff for agreement writes that still require legacy member-based signer fields (#19).
-- Extended Individual Profile's role-aware contact editor to email, phone, and mailing address, replacing the separate contributor-address form while retaining independent capacity tables, permissions, and audit paths (#19).
-- Consolidated Individual Profile membership and contributor email/phone forms into one role-aware contact editor, reducing page length while retaining separate permissions, tables, and audit paths for each capacity (#19).
-- Renamed the Appsmith Release - Issue page to Sacrament Release, removed agreement categories as release choices, and limited agreement gating and release writes to tangible sacrament transfers (#19).
-- Existing member and contributor contact writes now feed the shared party-contact read model; agreement and Listmonk references retain their existing member email IDs during the UI migration.
-- Stored individual names and dates of birth only in `people` and organization names only in `organizations`; Appsmith and the Documenso release workflow read the role profile views.
-- Switched Appsmith product availability and shipment endpoints to the existing MushroomProcess PGSQL n8n workflows.
-- Preserved a person's identity when linking an individual contributor to a member, and stopped retroactively adding member IDs to the person's older donations.
-- Expanded the Donations review queue to include member-linked and anonymous pending cash donations alongside unresolved Givebutter imports.
-- Added compatibility enforcement to every Appsmith and n8n donation identity transition.
-- Added report metrics that separate member-linked and anonymous donation counts and dollar amounts while preserving the existing totals.
-- Migrated donation identity from the transitional `member` state to `identified`; `member_id` remains a compatibility projection while `contributor_id` is authoritative for identified donations.
-- Preserved staged deployment compatibility so the Issue #17 Appsmith and n8n exports can continue writing member-linked donations while Issue #19 UI/workflow changes are deployed.
-- Updated the existing Appsmith Donations page—without adding pages or widgets—to select contributors, create individual/organization contributors during review, create a linked member, and record contributor cash donations.
-- Updated donation reassignment and reports for the `identified` donor state while retaining member-linked reporting as the identified subset with a `member_id`.
+- Consolidated database bootstrap definitions and retained only reviewed forward deployment changes; added explicit deployment seeds.
+- Separated identity/profile administration from capacity-specific operational pages; legacy entry points remain until parity is accepted.
+- Made contact-method validation and capacity enrollment independent from identity notes and operational appointments.
+- Preserved compatibility identifiers and historical signed-document references while preparing Participant/practitioner presentation changes.
+- Documented the external accounting/reconciliation dependency and separate operational versus accounting authority.
+- Defined functional filenames/directories and make targets, with repository naming checks and updated active setup references.
+- Scheduled the final screen inventory after navigation acceptance and before application packaging.
+- Required exact accepted source/export consistency and the coordinated application export before final release tagging.
 
 ### Fixed
 
-- Prevented contributor/member selector values on Donations from overwriting the global member-profile UUID.
-- Made Members - Profile load its accessible member selector before running member-scoped queries and ignore stale or malformed stored member IDs.
-- Expanded Audit Log visibility to activity for members assigned to the current facilitator, including releases recorded by another facilitator.
-- Removed stale generated-query callbacks from client-paginated Appsmith tables and corrected release audit entries to store `release_id`.
-- Restored the complete Members - Profile JS object after a generated-export update dropped donation, agreement, upload, and release methods; this also restores facilitator selector loading.
-- Added release validation that rejects missing Appsmith JS methods, published/unpublished JS drift, and stale JS action metadata.
+- Corrected provider identity parameter normalization and typed ingestion calls.
+- Preserved valid signatures from older inactive template versions without allowing unrelated or pending documents through the release gate.
+- Preserved historical Participant contact visibility and guarded ownership in contact assignment/reassignment.
+- Corrected profile initialization, dynamic role/visibility bindings and optional contact fields.
+- Preserved datasource/library descriptors and nested widgets in generated exports; rejected conflicting/missing dependencies.
+- Corrected canonical function delimiters and transaction completion so fresh bootstrap APIs persist.
+- Added rollback-only behavioral checks for permissions, invalid/duplicate inputs, audit failure, historical-note reruns and provenance failure.
+- Distinguished a committed creation from a later selector-refresh failure to avoid duplicate operator writes.
+
+### Release status
+
+These changes remain unreleased. Test evidence and source checks are recorded separately from production acceptance. Remaining role/scoping, terminology/navigation, fresh/upgraded rehearsal, integration target/mode and packaging gates must pass before release.
 
 ## [v1.1.0] - 2026-08-13
 
-### Added
-
-- Cross-system specification for provider-neutral commerce, payment processing, Givebutter donation reporting, ERPNext accounting/purchasing, and ERPNext-to-MushroomProcess inventory integration.
-- Release metadata, versioned release notes, and repeatable local preparation/validation commands.
-
-### Changed
-
-- Hardened paper agreement uploads and synchronized the generated Members Profile actions.
-- Hid rejected profile donations by default.
-- Clarified duplicate-member responses when an existing member is outside a facilitator's access scope.
-- Recorded SignatureGate's future role as the controlled member/donation interface while ERPNext becomes the accounting authority.
-
-### Fixed
-
-- Repaired Agreement Type and facilitator-list initialization on Members Intake.
-- Blocked Member Intake when an exact normalized phone matches an active member.
-- Repaired the remaining active Issue #10 address duplicates and added a physical-address identity key that tolerates state, city, address-type, common street-suffix, unit-label, country-alias, and US ZIP+4 variations without merging different units.
-- Routed manual profile, pending-donation, manually linked Givebutter, and webhook Givebutter address writes through one database upsert function.
-- Excluded Sample-class MushroomProcess products from release inventory.
-
-### Notes
-
-- The cross-system specification describes the next architecture; this release does not claim that ERPNext posting, cash-deposit processing, or official Givebutter reporting is deployed.
-- Apply `db/migrations_member_intake_exact_phone_block.sql` after the v1.0.4 identity migrations and before importing the Appsmith export.
-- Apply `db/migrations_v1_1_0_member_address_identity_hardening.sql` before importing the matching Appsmith export or activating the matching Givebutter workflow. The production-only Issue #10 repair was executed separately and is intentionally not retained as a repository migration.
-- Coordinated with MushroomProcess `v1.2.0`, RootedOps `v1.1.0`, and BookWorks `bookworks-v3.3.0`.
+- Hardened contact/address identity, exact-contact duplicate protection and guarded contact upsert.
+- Expanded contribution resolution and external-system boundary documentation.
 
 ## [v1.0.4] - 2026-07-09
 
-## Added
-
-- Added normalized address fingerprints and per-member active address de-duplication for Givebutter and Appsmith contact creation flows.
-- Added Documenso expiration support, including `expired_at` tracking and webhook mapping for expired agreement events.
-- Add a Reports page to display graph and table data for new members, signed agreements, releases, dontations, and dollars contributed over time.
-
-## Changed
-
-- Members Directory and member-selection dropdowns now sort by last name and include active email, phone, and address contact data in searchable row data.
-- Member Intake duplicate detection now uses explicit current form parameters instead of stale widget/query state and reports the matched member and field that triggered the duplicate result.
-- Member Intake duplicate results now distinguish accessible members from records managed by another facilitator, redact inaccessible member details, and direct facilitators to request reviewer access or reassignment.
-- Member creation now uses a serialized database helper that rechecks hard duplicate identifiers at insert time, plus an active-email uniqueness guard for concurrent submissions.
-- Archived/inactive members no longer reserve active email, phone, or address contact rows; email can be reused after the old contact row is archived.
-- Shared phone numbers remain representable in the contact model, but an exact active phone match now blocks Member Intake and requires reviewer intervention.
-- Givebutter donation matching only uses a phone number for automatic verification when that phone resolves to exactly one active member.
-
-## Fixed
-
-- Fixed duplicate addresses being created from Givebutter contribution processing when casing or minor formatting varies. Fixes #10.
-- Fixed Documenso-expired agreements remaining effectively pending in SignatureGate/Appsmith after expiration webhooks. Fixes #11.
-- Fixed same-browser-session Member Intake duplicate failures after creating one member by passing fresh form values and clearing stale duplicate state on success. Fixes #12.
-- Fixed cancellation audit log actor display by passing the Appsmith user email through the cancellation workflow while retaining the actor member ID in audit details. Fixes #13.
-- Fixed unclear inactive-member email conflicts by archiving contact rows attached to inactive members and returning field-specific duplicate details. Fixes #14.
-- Fixed Members Directory search gaps so email, phone, and address fields are searchable without adding new Appsmith widgets. Fixes #9.
-- Fixed the confusing and privacy-leaking duplicate message shown when a facilitator attempts to create a member managed by another facilitator.
-- Fixed Member Intake allowing a probable duplicate when an exact normalized phone number already belonged to an active member.
-- Excluded products with `package_class = Sample` from both Airtable-backed and PostgreSQL-backed sacrament release inventory lists. Fixes #15.
-
-## Notes
-
-- Apply `db/migrations_v1_0_4_member_identity_hardening.sql` before deploying the Appsmith and Givebutter workflow changes.
-- Apply `db/migrations_v1_0_4_member_intake_duplicate_scope.sql` before importing the updated Appsmith export.
-- Apply `db/migrations_member_intake_exact_phone_block.sql` after the duplicate-scope migration and before importing the updated Appsmith export.
-- Apply `db/migrations_v1_0_4_documenso_expiration.sql` before deploying the Documenso webhook changes.
+- Hardened identity/contact duplicate checks, scoped access and document expiration handling.
+- Aligned inventory eligibility filtering across integration routes.
 
 ## [v1.0.3] - 2026-05-09
 
-## Added
-
-- Multi-facilitator member assignment architecture
-- Facilitator storage location access control
-- Member contact method normalization
-- Multiple email support
-- Multiple phone support
-- Multiple physical address support
-- Contact archival and reassignment workflows
-- Email verification support
-- Automatic Documenso email verification
-- Pending-review Givebutter donation workflow
-- Donation-to-member assignment UI
-- Create-member-from-donation workflow
-- Donation ignore/delete review workflow
-- Expanded audit logging coverage
-
-## Changed
-
-- Digital agreement sending now uses `member_emails`
-- Givebutter matching now uses normalized phones and multiple contact methods
-- Storage locations are no longer implicitly owned by a facilitator
-- `members.email` and `members.phone` are now compatibility fields only
-
-## Security / Compliance
-
-- Improved audit trail coverage
-- Improved identity verification evidence retention
-- Reduced risk of accidental duplicate member creation
-- Improved traceability of facilitator and reviewer actions
+- Expanded agreement and release administration, contact maintenance and audit coverage.
 
 ## [v1.0.2] — 2026-04-22
 
-### Added
-- `member_facilitators` table and migration to support explicit many-to-many facilitator-to-member assignments.
-- Backfill logic in the facilitator assignment migration to preserve existing relationships from historical member, agreement, release, and donation records where those columns exist.
-- Members - Profile interface controls for assigning additional facilitators to a member and deactivating facilitator assignments.
-- Donation reassignment workflow in the Members - Profile page for donations reviewers.
-- `n8n/GIVEBUTTER_INTEGRATION.md` documenting the Givebutter webhook endpoint, processing flow, duplicate handling, and optional shared-secret validation.
-
-### Changed
-- Member visibility and access control now resolve through `member_facilitators` rather than relying only on older single-facilitator relationship paths.
-- Members directory, member profile access checks, member releases, and member donations queries were updated to respect active facilitator assignments.
-- Member profile refresh behavior now loads assigned facilitators alongside agreements, releases, donations, and available facilitators.
-- Airtable-oriented n8n workflows now use `AIRTABLE_*` environment variables for base and table identifiers instead of hard-coded Airtable IDs.
-- Repository contents were further narrowed to SignatureGate-owned assets by removing `.env.example`, which belongs in RootedOps.
-
-### Fixed
-- Fixed stale references to the old `release.sacrement_release_id` column after the rename to `releases.release_id`.
-- Fixed inability to associate more than one facilitator with a member in the primary Appsmith workflow.
-- Fixed facilitator scoping gaps so assigned facilitators can see the members, donations, and releases they are responsible for.
-- Fixed donation administration workflow by allowing authorized users to reassign a donation to the correct member from the UI.
-- Fixed Airtable workflow portability issues caused by environment-specific hard-coded base and table IDs.
-
-### Notes
-- This release introduces a new database migration: `db/migrations_member_facilitators.sql`.
-- Existing installations should apply the migration before deploying the updated Appsmith interface.
+- Added multiple-practitioner assignments and scoped contribution/release operations.
+- Separated application-owned assets from shared deployment infrastructure.
 
 ## [v1.0.1] — 2026-03-14
 
-### Changed
-- Removed production deployment architecture from this repository.
-- Deployment, reverse proxy, backup, Grav, and ERPNext stack assets are now maintained in the separate RootedOps repository.
-- Documentation updated to clarify repository boundaries between SignatureGate application assets and shared business infrastructure.
-
-### Notes
-- SignatureGate continues to own its database schema, migrations, Appsmith assets, and application/integration documentation.
-- Shared deployment architecture is no longer versioned in this repository.
+- Moved shared infrastructure ownership into the companion deployment repository.
 
 ## [v1.0.0] — 2026-01-22
 
-### Overview
-This release marks the first stable, non-beta version of SignatureGate.  
-Core membership, agreement, release, donation, and audit-logging workflows are now fully implemented and internally consistent, with explicit support for multiple agreement types and templates.
-
----
-
-### Added
-
-#### Agreement Templates & Types
-- Agreement Templates management interface
-- Support for multiple agreement templates per agreement type
-- Database-backed agreement types (e.g. `sacrament_release`, `membership`, `retreat`, `sweat_lodge`)
-- Templates may be scoped to one or more agreement types
-- Support for multiple language variants of the same agreement type (e.g. English / Spanish)
-- Documenso integration fields stored on agreement templates:
-  - `documenso_template_envelope_id`
-  - `documenso_member_recipient_id`
-  - `documenso_facilitator_recipient_id`
-
-#### Agreement Lifecycle
-- Explicit selection of agreement template when issuing or sending agreements
-- Agreement Review Queue showing all pending agreements across members
-- Reviewer approval / rejection with audit logging
-- Deterministic agreement selection (no “latest template wins” behavior)
-
-#### Member Management
-- Member profile edit form allowing updates to:
-  - Name
-  - Email
-  - Phone
-  - Date of birth
-  - Notes
-  - Status
-- All member updates are audit logged with field-level change tracking
-
-#### Donations
-- Manual cash donation entry and verification workflow
-- Automated Givebutter donation ingestion via webhook
-- Case-insensitive email matching for donor → member association
-- Automatic member creation from Givebutter donations when no match exists
-- Donation lifecycle audit logging
-
-#### Audit Logging
-- Centralized, append-only audit log for:
-  - Member updates
-  - Agreement creation, approval, rejection
-  - Agreement status changes from Documenso (including cancelled events)
-  - Donation creation and verification
-- Audit log visibility scoped by role:
-  - Document reviewers may see all entries
-  - Other facilitators see only entries relevant to their actions
-
----
-
-### Changed
-
-- Agreement issuance now requires explicit template selection
-- Agreement types are no longer implicit or UI-hardcoded
-- Member agreement creation no longer relies on template creation order
-- Documenso webhook handling now records non-terminal events (e.g. cancellations) in the audit log
-- Member profile updates use prepared SQL statements and structured audit entries
-
----
-
-### Fixed
-
-- Removed ambiguous agreement selection when multiple templates exist
-- Prevented invalid agreement type values at the database level
-- Resolved JSON binding issues in webhook-driven audit logging
-- Correct handling of date-only fields (e.g. date of birth)
-
----
-
-### Known Limitations
-
-- Events functionality (creation, check-in, roster) is currently stubbed and non-functional
-- Audit log UI is read-only and minimal by design
-- Event-day workflows will be expanded in a future release
+- Established the stable agreement, contact, release and reviewer administration baseline.
 
 ## [v0.1.3-beta] — 2026-01-19
 
-### Added
-- Agreement approval and rejection workflow for manually uploaded agreements
-- Role-based reviewer controls for agreements and donations
-- Cash donation entry and verification workflow
-- Automated Givebutter donation ingestion via webhook
-- Automatic member creation from Givebutter donor data
-- Case-insensitive email uniqueness enforcement for members
-- Comprehensive audit logging for agreement and donation lifecycle events
-
-### Changed
-- Donations schema expanded to support review status and verification metadata
-- Member selection visibility respects `is_donations_reviewer` role
-- SQL queries updated to use prepared statements for safety
-
-### Fixed
-- SQL injection risks in reviewer actions
-- Duplicate donation ingestion from repeated webhook events
-- Inconsistent reviewer visibility logic across pages
+- Expanded agreement type/template selection and document integration handling.
 
 ## [v0.1.2-beta] — 2026-01-17
 
-### Added
-- **Comprehensive audit logging system** across Appsmith, n8n, and Postgres.
-- New `audit_log` entries now record all legally and operationally significant events, including:
-  - Authentication outcomes (`auth.granted`, `auth.denied`, `auth.failed`)
-  - Member creation and lifecycle changes
-  - Agreement creation, signing, and evidence attachment
-  - Sacrament release issuance
-  - Product shipment (final release completion step)
-- **Documenso integration auditing**
-  - When Documenso completes a signing event, n8n now records `member_agreement.signed` in `audit_log`.
-- **Release completion auditing**
-  - When a product is marked as shipped via n8n, `product.shipped` is recorded in `audit_log`.
-
-### Changed
-- **Audit responsibility clarified and consolidated**
-  - Appsmith is now the primary source of audit writes for user-initiated actions.
-  - n8n writes audit records only for external system callbacks and irreversible workflow steps.
-- **Audit schema usage aligned**
-  - Audit writes now conform to the existing `audit_log` schema:
-    - `actor`, `action`, `entity_type`, `entity_id`, `details`
-- **Improved correctness for JSON audit payloads**
-  - n8n Postgres nodes now correctly quote JSON payloads before casting to `jsonb`.
-
-### Fixed
-- Fixed missing audit coverage for:
-  - Agreement signing via Documenso
-  - Product shipment marking
-- Fixed JSON casting errors in n8n audit inserts.
-- Fixed cyclic dependency issues in Appsmith audit helpers.
-
-### Notes
-- This release introduces **non-optional audit logging** for core workflows.
-- Audit logging is append-only and is not intended for debugging or analytics.
-- Downstream changes must preserve audit behavior when modifying agreement, release, or shipment flows.
+- Improved authenticated actor context and scoped operational permissions.
 
 ## [v0.1.1-beta] — 2026-01-15
 
-### Added
-- **Role-based authentication and access control** using Appsmith authentication mapped to `public.members.email`.
-  - App access is now gated at page load based on database roles.
-  - Unauthorized users are redirected to an Unauthorized page in published mode.
-- **Facilitator role support** via `members.is_facilitator`.
-  - Facilitators may access the app and perform member, agreement, and release workflows.
-- **Document reviewer role support** via `members.is_document_reviewer`.
-  - Reviewers have global visibility of members and available products.
-  - Facilitators who are also reviewers effectively act as admins.
-- **Creator tracking for members** via `members.created_by_facilitator_id`.
-  - Used to scope member visibility for non-reviewer facilitators.
-- **Facilitator-scoped member directory**
-  - Non-reviewer facilitators only see:
-    - members they created
-    - members they are a facilitator for on an agreement
-    - members with sacrament releases issued by them
-  - Reviewers see all members.
-- **Facilitator-aware product availability filtering**
-  - In *Release → Issue*, non-reviewer facilitators only see products located in a storage location matching their `"FirstName LastName"`.
-  - Reviewers continue to see all available products.
-- **Improved n8n upload handling**
-  - The “SignatureGate – Upload Evidence via n8n (Base64 → NocoDB)” workflow now correctly preserves multiple uploaded files instead of dropping all but one.
-
----
-
-### Changed
-- **Authentication flow hardened**
-  - Appsmith user context (`appsmith.user.email`) is now awaited before authorization checks.
-  - Queries pass email as a parameter (`this.params.email`) instead of inlining Appsmith globals in SQL.
-- **Authorization semantics clarified**
-  - “Access denied” is now correctly distinguished from “Access check failed” (true errors vs. no role).
-- **Member directory query consolidated**
-  - Reviewer override logic moved into SQL, eliminating the need for UI-level conditional table bindings.
-- **n8n product listing workflow**
-  - Accepts an optional `storage_location` filter from Appsmith.
-  - Filters available products by facilitator location when provided.
-
----
-
-### Database
-- Added migrations:
-  - `migrations_facilitator_review.sql`
-    - Facilitator and reviewer role flags
-    - Agreement review support
-  - `migrations_facilitator_authentication.sql`
-    - `created_by_facilitator_id`
-  - `migrations_sacrament_release.sql`
-    - Facilitator linkage to sacrament releases
-- Documented and clarified **migration order**.
-- Documented **optional Documenso integration migrations**:
-  - `migrations_documenso_integration.sql`
-  - `migrations_documenso_integration_1.sql`
-
----
-
-### Documentation
-- Expanded `README.md` with:
-  - Appsmith authentication model
-  - Role definitions and behavior
-  - Documenso database migration notes
-- Expanded `db/README.md` with:
-  - Explicit migration order
-  - Verification steps
-- Expanded `appsmith/GETTING_STARTED.md` with:
-  - Required Appsmith configuration (non-public app)
-  - User creation and role mapping
-  - Runtime auth behavior
-  - Troubleshooting checklist
-
----
-
-### Fixed
-- Fixed n8n Code node output normalization that caused multi-file uploads to collapse to a single file.
-- Fixed inconsistent behavior between editor and published modes during authentication.
-- Fixed edge cases where zero-row SQL results were incorrectly treated as runtime failures.
-
----
-
-### Notes
-- This release introduces **breaking behavior** for existing installations that do not apply the new facilitator/reviewer migrations.
-- Appsmith apps **must not be public** for authentication to function correctly.
-- Product storage locations must exactly match facilitator `"FirstName LastName"` for location-based filtering to work as intended.
+- Added reviewer/practitioner access boundaries and corrected upload/authentication behavior.
 
 ## [v0.1.0-beta] – 2026-01-13
 
-End-to-end Digital Agreement + Sacrament Release Pipeline
-
-### Major Features
-- Added full Documenso → n8n → Postgres → Appsmith signing lifecycle
-- Agreements now transition automatically from:
-  - pending_email_send
-  - pending_signature
-  - signed / rejected / cancelled
-- Completed signed PDFs are now fetched from Documenso, Base64 encoded in n8n, and stored into NocoDB storage
-- Signed documents are written back into SignatureGate as structured JSON evidence
-
-### New Integrations
-- Documenso webhooks normalized and correlated using:
-  externalId = "ma:<member_agreement_id>"
-- n8n now acts as the system of record bridge between:
-  - Documenso
-  - SignatureGate (Postgres)
-  - NocoDB (file storage)
-  - Airtable (inventory source)
-
-### New Sacrament Gate
-- A member must have a signed agreement for the active “sacrament_release” agreement template
-- SignatureGate enforces agreement-template matching before sacrament issuance
-- Supports multiple agreement types (e.g., sweat lodge, sacrament, facilitation)
-
-### New Sacrament Release Workflow
-- Appsmith “Release – Issue” page
-- n8n workflows:
-  - List available sacrament products from Airtable
-  - Mark products as Shipped after issuance
-
-### Inventory Enforcement
-- Airtable products are filtered by:
-  - item_category = freezedriedmushrooms
-  - origin_strain_regulated = true
-  - storage_location NOT IN (Shipped, Consumed, Expired)
-- When issued, Airtable storage_location is updated to Shipped
-
-### File Upload Reliability
-- Switched NocoDB upload pipeline from multipart to Base64 JSON
-- Eliminated Appsmith large-file upload instability
-- n8n now handles all PDF ingestion for signed agreements
-
-### Database Enhancements
-- member_agreements now stores:
-  - documenso_document_id
-  - structured evidence JSON
-- Agreement templates support multiple “required_for” types
-
-### Operational Stability
-- Correlation via externalId ensures all webhook events update the correct agreement
-- Fully idempotent Documenso webhook processing
-
----
+- Added end-to-end digital signing, evidence retrieval and guarded release integration.
 
 ## [v0.0.1-alpha] – 2026-01-08
 
-### Summary
-Initial alpha release of **SignatureGate**, a member agreement and compliance tracking system designed to integrate with NocoDB, Appsmith, n8n, and Documenso.  
-This release establishes a working deployment on Linode, a functional data model, importable Appsmith UI screens, and importable (but not yet fully exercised) n8n automation workflows.
-
-This version is suitable for early adopters, developers, and system integrators, but **not yet recommended for production compliance use**.
-
----
-
-### Added
-
-#### Core Architecture
-- PostgreSQL-backed data model for:
-  - Members
-  - Agreements
-  - Agreement templates
-  - Facilitators
-  - Evidence (file attachments)
-- Separation of concerns between:
-  - Inventory systems (external / future integration)
-  - Member agreement lifecycle
-  - Signature and compliance workflows
-
-#### Deployment & Infrastructure
-- Linode deployment documentation and scripts
-- Docker-based stack including:
-  - NocoDB
-  - Appsmith
-  - n8n
-  - PostgreSQL (multiple logical databases)
-  - Documenso (self-hosted, glibc-based build)
-- Nginx reverse-proxy configuration with:
-  - HTTPS (Certbot)
-  - Correct WebSocket handling for n8n
-  - Separate virtual hosts per service
-- Environment variable templates (`.env.example`) for reproducible installs
-
-#### Appsmith Interface (Importable JSON)
-Three functional UI screens:
-1. **Members – Directory**
-   - Browse and select existing members
-   - View high-level agreement status
-2. **Members – Intake**
-   - Create new members
-   - Assign facilitator
-   - Choose agreement delivery method (digital or paper)
-   - Upload paper agreement evidence
-3. **Members – Profile**
-   - View member details
-   - View agreement history
-   - Upload additional evidence
-   - Trigger digital agreement workflows
-
-Validation logic includes:
-- Duplicate member detection (name, email, phone)
-- Conditional facilitator requirements
-- Conditional evidence upload requirements
-
-#### Agreement Evidence Handling
-- Support for multiple file uploads per agreement
-- Evidence stored using NocoDB Attachment fields
-- Downloadable evidence links rendered in Appsmith tables
-- Manual review workflow support for paper agreements
-
-#### Documenso Integration
-- Self-hosted Documenso deployment
-- Two-signer agreement model:
-  - Member
-  - Facilitator
-- Agreement template configuration using Documenso envelope recipients
-- PKCS#12 local signing certificate support
-
-#### n8n Automations (Importable JSON)
-- **Send Agreement Workflow**
-  - Accepts `member_agreement_id`
-  - Generates document from Documenso template
-  - Sends to both signers
-  - Updates agreement status in PostgreSQL
-- **Documenso Webhook Workflow**
-  - Receives document lifecycle events
-  - Updates agreement status on completion, rejection, or cancellation
-
-> Note: n8n workflows are importable and configured but **have not yet been fully end-to-end tested in production**.
-
-#### Documentation
-- Deployment guides
-- Architecture overview
-- n8n integration guide
-- Documenso integration guide
-- Troubleshooting documentation for:
-  - Alpine vs glibc issues
-  - Playwright / Chromium dependencies
-  - WebSocket proxying
-  - PKCS#12 certificate compatibility
-
----
-
-### Fixed
-
-#### Documenso Signing Failures
-- Resolved documents stuck in “Processing” state after all signers completed
-- Root cause identified as PKCS#12 incompatibility
-- Fixed by exporting signing certificate using **legacy algorithms**:
-  - `openssl pkcs12 -export -legacy`
-- Documented exact failure mode and resolution
-
-#### Chromium / Playwright Issues
-- Resolved missing Chromium binary and musl/glibc incompatibility
-- Migrated Documenso to Debian-based build
-- Ensured Playwright-managed Chromium runs reliably for PDF generation
-
-#### n8n WebSocket Stability
-- Fixed repeated `Connection lost (1006)` errors
-- Root causes:
-  - Incorrect nginx virtual host
-  - IPv6 loopback proxying
-  - Missing WebSocket upgrade headers
-- Added correct nginx configuration for stable long-lived WebSocket connections
-
----
-
-### Known Limitations / Alpha Notes
-- n8n workflows have not yet been exercised under real signing traffic
-- Inventory integration (Airtable or NocoDB-based) is not yet implemented
-- No role-based access control (RBAC) in Appsmith
-- No audit log UI beyond database records
-- No automated reminder or escalation workflows
-- No production hardening or security review yet
-
----
-
-### Next Planned Work
-- End-to-end testing of Documenso → n8n → PostgreSQL workflows
-- Agreement Templates management UI
-- Manual agreement reviewer workflow
-- Inventory linkage for sacrament release eligibility
-- RBAC and facilitator/reviewer role separation
-- Exportable compliance and audit reports
-
----
-
-**This release represents a solid technical foundation and learning milestone, not a finished compliance system.**
+- Introduced the initial authenticated operator application, database, agreements and integration documentation.

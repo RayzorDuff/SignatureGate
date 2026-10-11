@@ -1,58 +1,23 @@
-# Listmonk mailing-list integration
+# Mailing-list integration
 
-This integration keeps SignatureGate as the system of record for member identity and consent while using Listmonk for newsletter delivery, unsubscribe links, and campaign management.
+The application records purpose-specific contact consent and queues synchronization. The mailing service delivers messages and reflects external unsubscribes. Participant and Contributor capacities remain independent; a subscription does not grant either capacity or system access.
 
-## Database model
+## Contributor list configuration
 
-`db/migrations_listmonk_mailing_list.sql` adds mailing-list state to `member_emails` and `contributor_emails`, and uses `listmonk_sync_queue` as the outbox for n8n. Each queue row belongs to exactly one domain email contact.
+The committed queue worker supports **`LISTMONK_CONTRIBUTOR_LIST_ID`** for a separate Contributor mailing list. Set it to the intended list in private deployment configuration; do not record the actual list ID or mapping in Git. Processing a Contributor contact requires this configuration rather than borrowing the Participant list.
 
-New email rows default to `mailing_subscription_status = 'subscribed'`. Appsmith creation flows can opt out by passing `not_subscribed` instead.
+Related stable configuration keys are `LISTMONK_NEWSLETTER_LIST_ID`, `LISTMONK_MEMBER_COMMUNICATIONS_LIST_ID` and the legacy newsletter fallback `LISTMONK_DEFAULT_LIST_ID`. The existing `MEMBER` key is a compatibility identifier for Participant communications. Configure each intended list purpose explicitly and verify the effective mapping privately.
 
-Important statuses:
+Contributor contact rows route to the Contributor list. Participant contact rows follow the configured Participant/newsletter communications purposes. A second capacity must not imply consent to another list.
 
-- `subscribed`: SignatureGate should queue/sync this email to the configured Listmonk list.
-- `not_subscribed`: the email exists in SignatureGate but should not be added to Listmonk.
-- `unsubscribed`: the email has opted out, either from SignatureGate or from Listmonk.
-- `suppressed`: manually suppressed; do not add to Listmonk.
-- `sync_error`: n8n/Listmonk sync failed and needs review.
+## Consent and unsubscribe behavior
 
-Contributor email records use the same subscription states, but default to `not_subscribed` so existing contributor contacts are not silently opted into mailing. Intake explicitly records the user's checkbox choice. Contributor subscribers are kept off the member-communications Listmonk list.
+Consent defaults depend on the creation API. Current Participant contact maintenance begins unsubscribed; Intake records explicit checkbox choices. Existing Contributor contacts are not silently opted in. Subscription state, contact verification, contact purpose and capacity are separate.
 
-## n8n workflows
+The current unsubscribe poller reflects subscriber-wide unsubscribe state through the guarded application API. It does not independently poll each list. Shared-address and dual-capacity behavior must be verified explicitly, including retry and archived-contact cases.
 
-Import these workflows:
+## Private validation sequence
 
-- `n8n/workflows/SignatureGate - Listmonk - Process Sync Queue.json`
-- `n8n/workflows/SignatureGate - Listmonk - Poll Unsubscribes.json`
+Use synthetic contacts to verify opted-in Participant routing, Contributor-only routing, opt-out suppression, dual-capacity same-address behavior, external unsubscribe reflection, and retry without duplicate effects. Review the actual deployed worker/poller revisions, connection destinations, credentials and list mappings privately.
 
-Both workflows expect these environment variables in n8n:
-
-```env
-LISTMONK_API_URL=http://listmonk:9000/api
-LISTMONK_API_USER=signaturegate-sync
-LISTMONK_API_TOKEN=<api-token>
-LISTMONK_DEFAULT_LIST_ID=<numeric-list-id>
-```
-
-The workflows use HTTP header auth:
-
-```text
-Authorization: token <LISTMONK_API_USER>:<LISTMONK_API_TOKEN>
-```
-
-After import, attach your normal Postgres credential to every Postgres node.
-
-## Listmonk unsubscribe reflection
-
-Listmonk does not currently provide a general outbound webhook for normal subscriber unsubscribe events. The provided `Poll Unsubscribes` workflow queries the configured list for `subscription_status=unsubscribed` and records those changes back into SignatureGate using `public.listmonk_record_external_unsubscribe(...)`.
-
-Run the polling workflow every 5-15 minutes for normal use.
-
-## Appsmith changes
-
-Do not patch the Appsmith JSON directly. Add the widgets/actions described in the handoff notes from the chat response:
-
-- add opt-in checkboxes to new email flows, default checked;
-- pass `mailing_subscription_status` and `mailing_subscription_source` into email inserts;
-- add an `Unsubscribe` row action alongside Verify, Archive, and Reassign;
-- call `public.member_email_request_mailing_unsubscribe(...)` from the row action.
+Record only sanitized pass/fail, software/source revisions and remaining gaps in Git. Keep actual subscriber names/contacts, list identifiers, configuration values, credentials and operational screenshots outside the repository. The architecture guide describes system responsibility; published integration compatibility remains a release gate.

@@ -1,232 +1,68 @@
-# Architecture & interoperability
+# Architecture and interoperability
 
-## Repository boundaries
+## Identities, capacities and permissions
 
-This repository contains the SignatureGate application definition:
-- database schema and migrations
-- Appsmith assets
-- integration and workflow documentation
+SignatureGate stores individuals in `people` and companies/business entities in `organizations`. Participant and Contributor are capacities held by an identity; they are not identities themselves. Only an individual may hold Participant capacity. A Contributor may be an individual or a company.
 
-Shared infrastructure and deployment architecture are maintained in the separate RootedOps repository.
-That includes host provisioning, reverse proxy, container orchestration, ERPNext deployment, Grav deployment, and backup operations.
+For Rooted Psyche, use **Participant** and **Facilitator/Spiritual Practitioner** in operational documentation. The configured general practitioner label is **Spiritual Practitioner**. Participant presentation is being completed in v1.2.0; existing `member*` tables/API fields and current page names remain compatibility contracts. Appointments and permissions such as `practitioner`, `document_reviewer` and `donations_reviewer` characterize system access; they do not create a new individual, Participant or Contributor.
 
-## Goals
+See [the party identity model](PARTY_IDENTITY_AND_INVENTORY_MODEL.md) and [the terminology inventory](TERMINOLOGY_INVENTORY.md).
 
-1. Keep Nonprofit membership/legal agreements **separate** from MushroomProcess inventory.
-2. Maintain **traceability** from “sacrament release” → MushroomProcess `products.product_id`.
-3. Allow growth: additional agreements (retreats, sweat lodge), additional sacraments, additional funding sources.
+## System boundaries
 
-## Mental Model
+```mermaid
+flowchart TD
+  A[Appsmith] --> P[SignatureGate PostgreSQL]
+  A --> N[n8n]
+  P --> N
+  N --> D[Documenso]
+  N --> F[NocoDB evidence storage]
+  N --> M[MushroomProcess inventory]
+  N --> L[Listmonk]
+  N --> E[RootedOps and ERPNext]
+```
 
-                   ┌────────────┐
-                   │ Appsmith   │
-                   │ (UI Layer) │
-                   └─────┬──────┘
-                         │
-                         ▼
-                 SignatureGate API
-                  (Postgres DB)
-                         │
-      ┌──────────────────┼──────────────────┐
-      │                  │                  │
-      ▼                  ▼                  ▼
- Documenso            n8n Engine           NocoDB
- (Signing)           (Orchestration)       (File store)
-                        │
-                        ▼
-                    Airtable
-                (Inventory of sacrament SKUs)
+Arrows identify integration boundaries, not direct database access by every service. Completion callbacks return through n8n to SignatureGate. Appsmith and n8n use reviewed environment-specific credentials.
 
-## System Responsibility
+| System | Authority and responsibility |
+| --- | --- |
+| SignatureGate PostgreSQL | Canonical party identities, capacities, contact/consent sources, accounts/permissions, agreements, release attribution, contributions, cash-deposit composition/confirmation, synchronization state and operational audit |
+| Appsmith | Authenticated operator UI; calls guarded database APIs and n8n integration routes |
+| n8n | Orchestrates signing/evidence, provider ingestion, consent sync, inventory operations and deposit-to-ERP calls; preserves source identifiers and reports external outcomes |
+| Documenso | Template envelopes, recipient slots and document execution; SignatureGate retains agreement references/status/evidence |
+| NocoDB | Evidence upload/retrieval boundary and optional database administration surface |
+| MushroomProcess | Inventory identity, lifecycle, location and availability; current integration uses PostgreSQL-backed n8n routes. Older Airtable workflow exports remain compatibility artifacts |
+| Listmonk | Subscriber/list delivery state, campaigns and external unsubscribes; SignatureGate remains authoritative for recorded contact consent and queued synchronization |
+| RootedOps / ERPNext | Accounting documents, cash-deposit bank matching/reconciliation and durable external-event idempotency. RootedOps also owns shared infrastructure/deployment and the ERP n8n workflow exports |
 
-| System                       | Responsibility                                                                      |
-| ---------------------------- | ----------------------------------------------------------------------------------- |
-| **Appsmith**                 | Operator UI. Never talks to Documenso or Airtable directly.                         |
-| **SignatureGate (Postgres)** | Legal truth: members, agreements, evidence, issuance.                               |
-| **Documenso**                | Signing engine. Knows nothing about inventory or members.                           |
-| **n8n**                      | Orchestrator and glue. Converts between Documenso, Airtable, NocoDB, SignatureGate. |
-| **NocoDB**                   | Object store for PDFs and uploads.                                                  |
-| **Airtable**                 | Live product inventory from MushroomProcess.                                        |
+## Signing and release
 
-## Interop patterns (recommended)
+A guarded SignatureGate write records an agreement for a Participant and attributes the selected Facilitator/Spiritual Practitioner by canonical person ID. Appsmith invokes the n8n signing route; Documenso events update agreement status and completed evidence is retrieved through the evidence-storage boundary. Existing template recipient field names and historical signed documents are preserved.
 
-### Pattern A (simplest): ID-only link + on-demand lookup
-- SignatureGate stores:
-  - `mushroomprocess_product_id` (string)
-- UI/operator verifies lot exists by calling MushroomProcess API (n8n can cache).
-- Pros: simplest; minimal coupling.
-- Cons: requires MushroomProcess reachable at runtime.
+`Sacrament Release` checks eligible Participant capacity and a signed agreement whose scope includes `sacrament_release`. Deactivating a template affects new selection, not a valid older signature. Inventory operations use MushroomProcess identifiers and the selected Facilitator/Spiritual Practitioner's explicit storage grants. Physical location, owner/custodian and user access are separate concepts; donation amounts do not determine release eligibility.
 
-### Pattern B (recommended): “bridge cache” in Postgres #2
-- n8n periodically syncs selected fields from MushroomProcess into `mushroomprocess_bridge` schema:
-  - `product_id`, strain/species, regulated flag, produced_at, etc.
-- SignatureGate uses FK **within its own DB** to the cached lot table (or just joins by product_id string).
-- Pros: robust; allows offline-ish operation and faster UI.
-- Cons: slightly more plumbing (sync).
+## Contributions and cash deposits
 
-### Pattern C (advanced): Postgres FDW
-- Use `postgres_fdw` to expose MushroomProcess tables inside SignatureGate DB.
-- Pros: “real” joins without ETL.
-- Cons: more ops complexity, permissions, failure modes. Do this later if needed.
+Givebutter ingestion is contributor-first and idempotent. Ambiguous identity evidence remains in review; contact values or names do not automatically merge individuals. Anonymous contributions have no synthetic identity. Cash review and deposit administration require donation-review authority; assigned practitioner history/entry must remain scoped without granting organization-wide financial access.
 
-## NocoDB layout
+SignatureGate owns the verified donations selected into a deposit, the amount snapshots, custody/confirmation and `cash_deposit_erp_sync` state. Confirmation produces the stable source key `signaturegate:deposit_batch:<uuid>`.
 
-- Base: **SignatureGate**
-  - Primary data source: `signaturegate_db`
-  - Optional 2nd data source: `mushroomprocess_bridge_db`
+RootedOps owns two external n8n routes: bank-account lookup and confirmed-deposit synchronization. In production, the synchronization workflow reads the confirmed batch, invokes the RootedOps ERP API, and records success/failure back in SignatureGate. RootedOps creates/replays accounting through its durable integration registry and ERPNext bank reconciliation. Retries must not create duplicate accounting. A missing ERP document after recorded success or a changed request fingerprint requires review, not blind reposting.
 
-NocoDB supports connecting external databases as data sources inside a base. citeturn0search6
+Development requests explicitly pass `mode: "test"`; the current workflow returns a non-writing test response before accessing production SignatureGate or ERPNext. This proves route separation only after live validation; it does not validate actual accounting. ERP preview/rehearsal and production acceptance remain distinct gates.
 
-Note: relationships across different data sources may be limited; plan on joining in Appsmith / n8n rather than expecting cross-source relational UI to “just work.”
+See [the ERP integration boundary](../n8n/CASH_DEPOSIT_ERP_INTEGRATION.md). SignatureGate v1.2.0 requires a compatible **released RootedOps dependency** with pinned tag/SHA, deployed application revision and reviewed published workflow versions. Source inspection or an ERP app version alone does not establish deployment compatibility.
 
-## Document signing integration
+## Listmonk and consent
 
-SignatureGate uses Documenso for two-party signing (Member + Facilitator).
-The UI triggers signing via an n8n webhook, and Documenso webhooks update agreement status back into Postgres.
-See `n8n/DOCUMENSO_INTEGRATION.md`.
+SignatureGate records consent on purpose-specific contacts and queues changes in `listmonk_sync_queue`. Its committed n8n worker routes Participant contacts to the configured Participant/newsletter communications lists and Contributor contacts to the separate contributor list. Subscriber creation must not grant Participant capacity or imply consent for a second capacity.
 
-### Agreement Types
+Listmonk unsubscribe polling reflects external subscriber unsubscribe state back through the SignatureGate API. Review same-address/dual-capacity behavior, list separation, queue retry/idempotency and consent propagation before release. The current poller queries subscriber-wide unsubscribes; do not describe it as independently polling each list.
 
-Agreement types (e.g. `sacrament_release`, `membership`, `retreat`) are stored as
-first-class records in the database and act as the canonical source of truth for:
+Configure `LISTMONK_NEWSLETTER_LIST_ID`, `LISTMONK_MEMBER_COMMUNICATIONS_LIST_ID` and `LISTMONK_CONTRIBUTOR_LIST_ID`; `LISTMONK_DEFAULT_LIST_ID` remains a legacy newsletter fallback. Keep actual list mappings and credentials private. See [Listmonk integration](LISTMONK_INTEGRATION.md).
 
-- Which agreements apply to which workflows
-- Which templates may be selected by facilitators
-- Validation of agreement templates
+## Audit, initialization and release evidence
 
-Agreement templates may reference one or more agreement types and may exist in
-multiple variants (e.g. language versions).
+Guarded database changes must commit their audit records atomically; audit failure rolls back the write. External completion is recorded through integration APIs. Keep append-only history and existing party/document/deposit identifiers; presentation changes do not rewrite history or confer permissions.
 
-Agreement types describe what a document authorizes; they are not transaction
-types. `membership` governs membership lifecycle, while `sweat_lodge` and
-`retreat` govern event participation. Only `sacrament_release` authorizes a
-tangible inventory transfer recorded in `releases`.
-
-## End-to-End Flows
-
-### Digital Agreement Flow
-
-Appsmith → Postgres
-  INSERT member_agreements (pending_email_send)
-
-Appsmith → n8n → Documenso
-  externalId = "ma:<member_agreement_id>"
-
-Documenso → n8n Webhook
-  event: DOCUMENT_SENT → pending_signature
-  event: DOCUMENT_OPENED → pending_signature
-  event: DOCUMENT_COMPLETED → signed
-
-n8n → Documenso
-  GET PDF
-
-n8n → NocoDB
-  Upload Base64 PDF
-
-n8n → Postgres
-  UPDATE member_agreements
-    status = signed
-    evidence = [ { path, title, mimetype, size, signedPath } ]
-
-### Sacrament Release Gate
-
-member has member_agreements.status = 'signed'
-AND
-agreement_templates.required_for contains 'sacrament_release'
-
-The template version and current `active` flag do not affect an agreement that
-was already signed. `active` controls whether a template may be selected for a
-new agreement; it does not expire prior signatures.
-
-### Inventory Flow
-
-Appsmith → n8n → MushroomProcess PostgreSQL
-  List products WHERE:
-    item_category = freezedriedmushrooms
-    origin_strain_regulated = true
-    package_class != Sample
-    storage_location NOT IN (Shipped, Consumed, Expired)
-
-User selects product
-
-Appsmith → n8n → MushroomProcess PostgreSQL
-  Update product.storage_location = Shipped
-
-n8n → SignatureGate
-  Insert sacrament_release record
-
-## Audit Logging Model
-
-Audit logging in SignatureGate is designed to be:
-- authoritative
-- durable
-- legally defensible
-
-Audit logging is split by responsibility:
-- **Appsmith** records user intent and operator actions
-- **n8n** records completion of external or irreversible workflows
-
-Future changes must preserve this split.
-
-All audit records are append-only and retained indefinitely.
-
-## Donations Architecture
-
-Donations are tracked as first-class records within SignatureGate and are intentionally separated from sacrament release logic.
-
-### Donation Sources
-- **Cash**: entered manually by facilitators
-- **Givebutter**: ingested automatically via webhook
-
-### Processing Model
-- Cash donations require reviewer verification
-- Givebutter donations with a confident contributor match are verified automatically; ambiguous identities enter review
-- Donations are never used as gating criteria for sacrament release
-
-### Webhook Flow (Givebutter)
-
-Givebutter → n8n webhook → SignatureGate Postgres
-
-n8n responsibilities:
-- Validate webhook
-- Normalize donor identity
-- Call the contributor-first, idempotent database ingestion API
-- Return the resulting verified or pending-review status
-
-## Donations & External Funding Sources
-
-Donations are modeled as first-class records in SignatureGate but are intentionally
-decoupled from sacrament release logic.
-
-### Sources
-- Manual cash entry (facilitator → reviewer workflow)
-- Automated Givebutter ingestion via n8n webhook
-
-### Givebutter Webhook Flow
-
-Givebutter → n8n → SignatureGate (Postgres)
-
-n8n responsibilities:
-- Validate webhook (optional shared secret)
-- Normalize donor identity
-- Submit provider identity, transaction identity, and raw payload to Postgres
-- Let database functions match a contributor or retain the donation for review
-
-Donations do not participate in release gating logic.
-
-## Deployment terminology and stable concepts
-
-User-facing terminology is deployment configuration, not domain identity.
-`terminology_concepts` defines stable keys used by code, authorization, and
-data relationships. `organization_terminology` provides singular, plural, and
-short labels for the one organization served by a SignatureGate deployment.
-
-Rooted Psyche currently presents the general `practitioner` appointment as
-**Spiritual Practitioner**. A deployment may instead display that same concept
-as **Facilitator** without changing stored role keys. A future regulated
-`facilitator` is reserved as a separate concept so both appointments can exist
-at once. Terminology activation or editing never grants a role or permission.
-
-Historical audit records, API fields, database keys, and executed agreements
-are not rewritten when labels change. See
-`docs/ISSUE_20_TERMINOLOGY_INVENTORY.md` for the migration inventory.
+Fresh databases bootstrap from `db/schema.sql`, then use explicit deployment seeds such as `db/seeds/organization_terminology.sql`. Existing databases require a reviewed forward manifest and restored-copy rehearsal. Raw records, amounts, names, contacts, account identifiers, product information, screenshots and integration mappings remain outside Git. Public release evidence records sanitized findings, technical identifiers, software versions, source SHAs and validation status.

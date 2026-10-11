@@ -8,33 +8,29 @@ This project uses **n8n** as the integration/orchestration layer between:
 
 ## Prerequisites
 
-1. Documenso is reachable at your public URL (example: `https://documenso.danks.store`).
+1. Documenso is reachable at your public URL (example: `https://signing.example.invalid`).
 2. You have a Documenso API token.
-3. The Documenso template envelope exists (example: `envelope_hyneotebbuzwfzly`) and has two recipient slots:
-   - Recipient **5** = Member
-   - Recipient **6** = Facilitator
+3. The Documenso template envelope exists (deployment-specific envelope ID) and has two recipient slots:
+   - Participant recipient slot
+   - Practitioner recipient slot
 
-## Database migration / seeding
+## Database setup and template configuration
 
-Run:
+A fresh deployment loads `db/schema.sql`, which includes the Documenso columns and signing APIs. Follow `db/README.md` for bootstrap and initial agreement-template setup. For an existing database, apply only the reviewed forward changes in the release manifest; do not replay retired migration files or bootstrap over operational records.
 
-```bash
-psql "$SIGNATUREGATE_DATABASE_URL" -f db/migrations_documenso_integration.sql
-psql "$SIGNATUREGATE_DATABASE_URL" -f db/migrations_documenso_integration_1.sql
-```
+Configure the actual template through `Agreement Templates`. Review its envelope and recipient slots privately, then set:
 
-This adds the Documenso columns and seeds the active `sacrament_release` template row with:
 - `documenso_template_envelope_id`
 - `documenso_member_recipient_id`
 - `documenso_facilitator_recipient_id`
 
-If you have multiple templates, adjust the `UPDATE` in the migration.
+The last two field names are stable compatibility contracts; their labels may change with deployment terminology. Do not assume a recipient ID identifies a person or reuse another deployment's recipient IDs. Existing signed agreements are not rewritten by a label change.
 
 ## n8n environment variables
 
 Set these as environment variables for your n8n container (recommended), or configure directly in the workflow nodes:
 
-- `DOCUMENSO_BASE_URL` (example: `https://documenso.danks.store`)
+- `DOCUMENSO_BASE_URL` (example: `https://signing.example.invalid`)
 - `DOCUMENSO_API_TOKEN` (value looks like `api_...`)
 
 ## Import workflows
@@ -48,7 +44,7 @@ Two workflow exports are included under `n8n/workflows/`:
      { "member_agreement_id": "<uuid>" }
      ```
    - Behavior:
-     - Loads the member, the canonical practitioner person, and active template
+     - Loads the participant, the canonical practitioner person, and active template
        (the existing `facilitator_*` Documenso recipient fields are retained as
        compatibility contracts)
      - Calls Documenso `POST /api/v2/envelope/use` with `distributeDocument=true`
@@ -97,7 +93,7 @@ Create an Appsmith **API** (or JS fetch) to call n8n:
   { "member_agreement_id": "{{ AgreementsTable.selectedRow.member_agreement_id }}" }
   ```
 
-Attach this to your **Send Digital Release** button in Members – Profile.
+Attach this to your **Send Digital Release** button in Participants – Profile.
 
 After calling the webhook, refresh your `member_agreements` query to show the new status and Documenso ID.
 
