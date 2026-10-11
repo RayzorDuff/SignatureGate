@@ -67,3 +67,7 @@ Record deployed backend/frontend SHAs, Appsmith/PostgreSQL versions, actor roles
 ## Remaining Phase 2 work
 
 Complete reporting categories, practitioner-scoped cash/history access, remaining canonical actor paths, company contact-person representation, behavioral notes/backfill coverage, Intake parity and membership/provider-resolution regressions. Legacy Members – Intake remains until parity is proven. The 175 source fallback findings and obsolete upload reference remain tracked for contextual repair and runtime acceptance.
+
+## Linode validation follow-up
+
+The fresh bootstrap now closes the transaction opened by the appended ERP synchronization section. Without that closing COMMIT, psql disconnect would discard that section and later additions. Bootstrap persistence and Agreement Type behavior without a prerequisite migration pass on isolated PostgreSQL. The Linode helper verifies both release APIs through a separate psql connection before collecting the canonical catalog. See [LINODE_VALIDATION_COMMANDS.md](LINODE_VALIDATION_COMMANDS.md) for commands and deployment evidence tools; no current database has been changed by these tools here.

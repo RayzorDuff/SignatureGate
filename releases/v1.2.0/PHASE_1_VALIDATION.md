@@ -2,6 +2,8 @@
 
 **Source inventory complete; live deployment gate open. Phase 2 may proceed on the test-bound development branch.** These blockers are release work items, not exceptions to acceptance. Production promotion and upgrade approval remain blocked until the evidence below is reviewed.
 
+Copy-and-paste server commands for steps 2–5 are in [LINODE_VALIDATION_COMMANDS.md](LINODE_VALIDATION_COMMANDS.md).
+
 ## 1. Capture both deployed database catalogs
 
 Run from the server that hosts the existing PostgreSQL container:

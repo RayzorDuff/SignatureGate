@@ -13057,3 +13057,7 @@ $agreement_type$;
 
 COMMENT ON FUNCTION public.create_agreement_type(text, text, text, integer, boolean, text) IS
   'Creates and audits an Agreement Type atomically; requires a canonical document reviewer account, independent of membership.';
+
+-- Close the transaction opened by the appended ERP synchronization definition.
+-- Otherwise psql disconnect would discard this section and later additions.
+COMMIT;

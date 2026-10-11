@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 
 - Preserved datasource/library descriptors and widgets beneath embedded canvases in generated Appsmith exports; added source/export preservation checks before the export action commits JSON. Current role controls remain required by terminology validation, while retired assignment controls are checked when present.
-- Corrected malformed dollar quotes in the canonical donation-financial permission helpers so a fresh database bootstrap succeeds.
+- Corrected malformed dollar quotes in the canonical donation-financial permission helpers and closed the appended ERP transaction so a fresh `psql` bootstrap retains ERP and later release APIs.
 
 - Registered the Sacrament Release practitioner selector label as an Appsmith dynamic binding so deployed pages render the configured term instead of raw moustache text (#20).
 - Fixed Givebutter webhook ingestion when a numeric Givebutter `contact_id` is passed as the external provider identity; the workflow now normalizes the identity to text and explicitly casts database parameters to the `ingest_provider_donation(...)` signature (#19).

@@ -5,6 +5,7 @@ Status: **unreleased**. This is the first coordinated SignatureGate-Appsmith rel
 - [Release plan](RELEASE_PLAN.md)
 - [Phase 1 audit and work queue](PHASE_1_AUDIT.md)
 - [Phase 1 live validation requirements](PHASE_1_VALIDATION.md)
+- [Linode validation commands, steps 2–5](LINODE_VALIDATION_COMMANDS.md)
 - [Phase 2 implementation and test deployment](PHASE_2_PROGRESS.md)
 - [Acceptance ledger](ACCEPTANCE_LEDGER.csv)
 - [Environment and migration inventory](ENVIRONMENT_AND_MIGRATIONS.md)
