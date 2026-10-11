@@ -7625,6 +7625,7 @@ CREATE TABLE public.organizations (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     organization_name text NOT NULL,
+    notes text,
     CONSTRAINT organizations_name_check CHECK ((NULLIF(btrim(organization_name), ''::text) IS NOT NULL))
 );
 
@@ -7648,6 +7649,7 @@ CREATE TABLE public.people (
     first_name text,
     last_name text,
     date_of_birth date,
+    notes text,
     CONSTRAINT people_name_check CHECK ((NULLIF(btrim(display_name), ''::text) IS NOT NULL))
 );
 
@@ -12954,3 +12956,43 @@ BEGIN
 END;
 $$;
 
+
+
+-- Canonical identity notes functions (also deployed by migration party_identity_notes.sql).
+CREATE OR REPLACE FUNCTION public.issue19_party_notes(p_actor_email text,p_party_kind text,p_party_id uuid)
+RETURNS TABLE(notes text,can_edit boolean)
+LANGUAGE plpgsql STABLE SET search_path TO 'public','pg_temp' AS $$
+BEGIN
+ IF NOT (public.issue19_has_role(p_actor_email,'directory_manager')
+  OR public.issue19_has_role(p_actor_email,'document_reviewer')
+  OR public.issue19_has_role(p_actor_email,'donations_reviewer')) THEN RETURN; END IF;
+ IF NOT EXISTS (SELECT 1 FROM public.issue19_directory_entries(p_actor_email) d
+   WHERE d.party_kind=p_party_kind AND d.party_id=p_party_id) THEN RETURN; END IF;
+ IF p_party_kind='individual' THEN
+   RETURN QUERY SELECT p.notes,true FROM public.people p WHERE p.person_id=p_party_id;
+ ELSIF p_party_kind='organization' THEN
+   RETURN QUERY SELECT o.notes,true FROM public.organizations o WHERE o.organization_id=p_party_id;
+ END IF;
+END; $$;
+
+CREATE OR REPLACE FUNCTION public.issue19_set_party_notes(p_actor_email text,p_party_kind text,p_party_id uuid,p_notes text,p_reason text)
+RETURNS uuid LANGUAGE plpgsql SET search_path TO 'public','pg_temp' AS $$
+DECLARE v_old text; v_new text:=NULLIF(btrim(p_notes),'');
+BEGIN
+ IF NULLIF(btrim(p_reason),'') IS NULL THEN RAISE EXCEPTION 'A reason for changing notes is required'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM public.issue19_party_notes(p_actor_email,p_party_kind,p_party_id)) THEN
+   RAISE EXCEPTION 'Not authorized to edit identity notes';
+ END IF;
+ IF p_party_kind='individual' THEN
+   SELECT p.notes INTO v_old FROM public.people p WHERE p.person_id=p_party_id FOR UPDATE;
+   UPDATE public.people SET notes=v_new WHERE person_id=p_party_id;
+ ELSIF p_party_kind='organization' THEN
+   SELECT o.notes INTO v_old FROM public.organizations o WHERE o.organization_id=p_party_id FOR UPDATE;
+   UPDATE public.organizations SET notes=v_new WHERE organization_id=p_party_id;
+ ELSE RAISE EXCEPTION 'Invalid party kind'; END IF;
+ IF v_old IS NOT DISTINCT FROM v_new THEN RETURN p_party_id; END IF;
+ INSERT INTO public.audit_log(actor,action,entity_type,entity_id,details)
+ VALUES (lower(btrim(p_actor_email)),'party.notes_updated',p_party_kind,p_party_id::text,
+ jsonb_build_object('reason',btrim(p_reason),'previous',v_old,'current',v_new));
+ RETURN p_party_id;
+END; $$;
