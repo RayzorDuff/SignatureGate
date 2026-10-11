@@ -1,0 +1,25 @@
+# v1.2.0 changelog coverage audit
+
+The authoritative release changelog is `docs/CHANGELOG.md`. Keep its work in **Unreleased** until packaging/acceptance completes. The actual v1.1.0 tag resolves to `654b02c00dd39165a65a6ab3aebd28455264b70a`; the audited source baseline `9fb5aa53b60baa670fe86fabe63e6b5752be0109` contains **176 subsequent commits**. Their exact SHAs and subjects are in `evidence/commits_since_v1.1.0.csv`.
+
+The goal is substantive behavior coverage, not one changelog bullet per intermediate repair commit. Release documentation itself also needs a short entry. Reconcile any subsequent implementation commits before finalizing v1.2.0.
+
+| Change family | Current Unreleased coverage | Required reconciliation |
+| --- | --- | --- |
+| Canonical people/organizations, independent contributors, contact ownership, lifecycle and donation attribution (#19) | Extensive existing entries | Rewrite around final domain/page boundaries; preserve historical-attribution and permission details |
+| Anonymous cash and Givebutter matching/review (#17/#19) | Existing entries | Include final contributor categories, scoped cash entry and the numeric provider-identity fix |
+| Cash-on-hand, batch preparation/confirmation, tally and PDF printing (#17) | Anonymous intake listed; full operational batch feature lacks a consolidated entry | Add lifecycle, mixed-donor batching, exact snapshots, preparation vs deposit dates, printing and confirmed-composition protection |
+| Reconciliation exclusion/revival and donation financial visibility | No clear consolidated entries | Add audited exclusions, reasoned revival and final reviewer/practitioner access policy |
+| ERP synchronization, retry and confirmed-date correction (#18) | Sync/correction listed | Include durable source key, failed-sync custody preservation, bank-account selection and correction boundary; identify external RootedOps dependency |
+| Canonical practitioner assignment, storage grants, agreement signing and sacrament gating (#19/#20) | Existing entries | Reconcile final operational pages and current permission behavior; preserve old signed template eligibility |
+| Contributor/dual-capacity Listmonk subscriptions | Member email references present; new contributor worker/list behavior lacks complete coverage | Add independent opt-in/out, contributor list and worker/unsubscribe behavior |
+| Organization contact reassignment and identity notes | Not captured in current Unreleased section | Add canonical ownership preservation, audited notes and member-note migration once validated |
+| Directory, Intake and operational workspace consolidation | Transitional references still say Members - Profile/Donations | Record current four Directory actions, retired Directory, Member Functions cleanup, Intake parity/collision/email validation, Company JS registration repair, and legacy Intake retirement when verified |
+| Configurable Spiritual Practitioner/Participant terminology and grouped navigation (#20/Appsmith #4) | Practitioner foundation listed | Add final Participant display migration and navigation when complete; document external Documenso/legal dependency without claiming document revision |
+| Agreement Type administration (Appsmith #2) and Reports regression (#23) | Type creation absent; historical report summaries listed | Add implemented type administration and restored Reports behavior only after acceptance |
+| Export regeneration/datasource rebinding and release validation | Some validation repairs listed | Include first Appsmith release, exact-source monolithic JSON packaging, retained jsPDF/datasource definitions and source/export verification once repaired |
+| Physical address identity hardening after v1.1.0 | Earlier address notes span multiple releases | Audit commit `3d07fd0` and resulting schema against tag; capture any additional post-v1.1.0 behavior without duplicating earlier release claims |
+
+Appsmith has **no prior release tag** at this audit. Its first-release notes should describe the resulting application, identify the pinned Appsmith production-bound commit, reference the combined SignatureGate v1.2.0 changelog, and specify database/integration prerequisites. The current `master` comparison is useful for promotion review; it is not a substitute for comparing the Appsmith JSON shipped in SignatureGate v1.1.0 with the final packaged JSON.
+
+Final gate: review history, acceptance ledger and old/new packaged artifacts together; include changes from every subproject; remove superseded transitional descriptions from the new release summary; update VERSION/README/dated v1.2.0 release notes; commit the exact-source generated JSON; run current source/export checks and `make release-check`; then create release tags.

@@ -1,0 +1,1119 @@
+status,path
+M,application.json
+D,datasources/Google Calendar.json
+A,datasources/signaturegate-postgres-test.json
+D,datasources/signaturegate-postgres.json
+M,pages/Agreement Templates/Agreement Templates.json
+M,pages/Agreement Templates/jsobjects/agreementTemplateFlows/agreementTemplateFlows.js
+M,pages/Agreement Templates/queries/qAgreementTemplateInsert/metadata.json
+M,pages/Agreement Templates/queries/qAgreementTemplateUpdate/metadata.json
+M,pages/Agreement Templates/queries/qAgreementTemplatesList/metadata.json
+M,pages/Agreement Templates/queries/qAgreementTypesList/metadata.json
+M,pages/Agreement Templates/queries/qAuditLogInsert/metadata.json
+M,pages/Agreement Templates/queries/qCurrentFacilitator/metadata.json
+A,pages/Agreement Templates/queries/qTerminology/metadata.json
+A,pages/Agreement Templates/queries/qTerminology/qTerminology.txt
+M,pages/Agreement Templates/widgets/tblAgreementTemplates.json
+M,pages/Agreements - Queue/Agreements - Queue.json
+M,pages/Agreements - Queue/queries/qAgreementsPendingReview/metadata.json
+M,pages/Audit Log/Audit Log.json
+M,pages/Audit Log/jsobjects/auditLogFlows/auditLogFlows.js
+M,pages/Audit Log/queries/qAuditLogInsert/metadata.json
+M,pages/Audit Log/queries/qAuditLogList/metadata.json
+M,pages/Audit Log/queries/qCurrentFacilitator/metadata.json
+A,pages/Audit Log/queries/qTerminology/metadata.json
+A,pages/Audit Log/queries/qTerminology/qTerminology.txt
+M,pages/Audit Log/widgets/mdlAuditDetails/btnOpenFacilitator.json
+M,pages/Cash Deposits/jsobjects/cashDepositFlows/cashDepositFlows.js
+A,pages/Cash Deposits/queries/apiCashDepositBankAccounts/apiCashDepositBankAccounts.txt
+M,pages/Cash Deposits/queries/apiSyncCashDepositToERPNext/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-addSelectedDonationToBatch/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-confirmBatch/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-createBatch/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-excludeDonationFromReconciliation/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-facilitatorId/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-isDonationsReviewer/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-prepareBatch/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-printBatch/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-refresh/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-rejectDonation/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-requireDonationsReviewer/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-requireFacilitator/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-retryERPSync/metadata.json
+A,pages/Cash Deposits/queries/cashDepositFlows-reviveDonationFromReconciliation/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-selectedBatch/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-selectedDonation/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-setHideIneligible/metadata.json
+M,pages/Cash Deposits/queries/cashDepositFlows-verifyDonation/metadata.json
+M,pages/Cash Deposits/queries/qAddCashDepositItem/metadata.json
+M,pages/Cash Deposits/queries/qCashDepositBatchPrint/metadata.json
+M,pages/Cash Deposits/queries/qCashDepositBatches/metadata.json
+A,pages/Cash Deposits/queries/qCashDepositBatches/qCashDepositBatches.txt
+M,pages/Cash Deposits/queries/qCashDepositCashOnHand/metadata.json
+M,pages/Cash Deposits/queries/qCashDepositCurrentFacilitator/metadata.json
+M,pages/Cash Deposits/queries/qConfirmCashDepositBatch/metadata.json
+M,pages/Cash Deposits/queries/qCreateCashDepositBatch/metadata.json
+M,pages/Cash Deposits/queries/qExcludeCashDonation/metadata.json
+M,pages/Cash Deposits/queries/qPrepareCashDepositBatch/metadata.json
+M,pages/Cash Deposits/queries/qReviewCashDonation/metadata.json
+M,pages/Cash Deposits/queries/qReviveCashDonation/metadata.json
+M,pages/Cash Deposits/widgets/btnCashDepositsRefresh.json
+M,pages/Cash Deposits/widgets/chkCashDepositHideIneligible.json
+M,pages/Cash Deposits/widgets/inpCashDepositActualAmount.json
+M,pages/Cash Deposits/widgets/selCashDepositStatus.json
+M,pages/Cash Deposits/widgets/tblCashDepositBatches.json
+M,pages/Cash Deposits/widgets/tblCashDeposits.json
+M,pages/Company Profile/Company Profile.json
+A,pages/Company Profile/jsobjects/CompanyProfileFlows/CompanyProfileFlows.js
+A,pages/Company Profile/jsobjects/CompanyProfileFlows/metadata.json
+D,pages/Company Profile/jsobjects/issue19CompanyProfileFlows/issue19CompanyProfileFlows.js
+D,pages/Company Profile/jsobjects/issue19CompanyProfileFlows/metadata.json
+A,pages/Company Profile/queries/CompanyProfileFlows-load/metadata.json
+D,pages/Company Profile/queries/issue19CompanyProfileFlows-load/metadata.json
+M,pages/Company Profile/queries/qAddCompanyDonorAddress/metadata.json
+M,pages/Company Profile/queries/qAddCompanyDonorContact/metadata.json
+M,pages/Company Profile/queries/qArchiveCompanyDonorAddress/metadata.json
+M,pages/Company Profile/queries/qArchiveCompanyDonorContact/metadata.json
+M,pages/Company Profile/queries/qCompanyCanEditDonorContacts/metadata.json
+M,pages/Company Profile/queries/qCompanyContacts/metadata.json
+M,pages/Company Profile/queries/qCompanyContributionHistory/metadata.json
+M,pages/Company Profile/queries/qCompanyContributorStatusState/metadata.json
+M,pages/Company Profile/queries/qCompanyDonorAddresses/metadata.json
+M,pages/Company Profile/queries/qCompanyDonorContacts/metadata.json
+M,pages/Company Profile/queries/qCompanyDonorContacts/qCompanyDonorContacts.txt
+A,pages/Company Profile/queries/qCompanyIdentityNotes/metadata.json
+A,pages/Company Profile/queries/qCompanyIdentityNotes/qCompanyIdentityNotes.txt
+M,pages/Company Profile/queries/qCompanyPartyIdentity/metadata.json
+M,pages/Company Profile/queries/qCompanyProfile/metadata.json
+M,pages/Company Profile/queries/qCompanyProfile/qCompanyProfile.txt
+M,pages/Company Profile/queries/qCompanyProviderIdentities/metadata.json
+A,pages/Company Profile/queries/qCompanyReassignTargets/metadata.json
+A,pages/Company Profile/queries/qCompanyReassignTargets/qCompanyReassignTargets.txt
+A,pages/Company Profile/queries/qReassignCompanyContact/metadata.json
+A,pages/Company Profile/queries/qReassignCompanyContact/qReassignCompanyContact.txt
+A,pages/Company Profile/queries/qSaveCompanyIdentityNotes/metadata.json
+A,pages/Company Profile/queries/qSaveCompanyIdentityNotes/qSaveCompanyIdentityNotes.txt
+M,pages/Company Profile/queries/qSetCompanyContributorStatus/metadata.json
+A,pages/Company Profile/queries/qSetCompanyEmailPrimary/metadata.json
+A,pages/Company Profile/queries/qSetCompanyEmailPrimary/qSetCompanyEmailPrimary.txt
+A,pages/Company Profile/queries/qToggleCompanyEmailSubscription/metadata.json
+A,pages/Company Profile/queries/qToggleCompanyEmailSubscription/qToggleCompanyEmailSubscription.txt
+M,pages/Company Profile/queries/qUpdateCompanyPartyIdentity/metadata.json
+A,pages/Company Profile/queries/qVerifyCompanyEmail/metadata.json
+A,pages/Company Profile/queries/qVerifyCompanyEmail/qVerifyCompanyEmail.txt
+D,pages/Company Profile/widgets/btnAddCompanyDonorAddress.json
+D,pages/Company Profile/widgets/btnAddCompanyDonorContact.json
+D,pages/Company Profile/widgets/btnArchiveCompanyContributor.json
+D,pages/Company Profile/widgets/btnArchiveCompanyDonorAddress.json
+D,pages/Company Profile/widgets/btnArchiveCompanyDonorContact.json
+D,pages/Company Profile/widgets/btnBackToDirectory.json
+D,pages/Company Profile/widgets/btnReactivateCompanyContributor.json
+D,pages/Company Profile/widgets/btnSaveCompanyIdentity.json
+A,pages/Company Profile/widgets/companyContactsContainer/btnAddCompanyDonorAddress.json
+A,pages/Company Profile/widgets/companyContactsContainer/btnAddCompanyDonorContact.json
+A,pages/Company Profile/widgets/companyContactsContainer/btnArchiveCompanyDonorAddress.json
+A,pages/Company Profile/widgets/companyContactsContainer/btnArchiveCompanyDonorContact.json
+A,pages/Company Profile/widgets/companyContactsContainer/btnReassignCompanyContact.json
+A,pages/Company Profile/widgets/companyContactsContainer/btnSetCompanyEmailPrimary.json
+A,pages/Company Profile/widgets/companyContactsContainer/btnToggleCompanyEmailSubscription.json
+A,pages/Company Profile/widgets/companyContactsContainer/btnVerifyCompanyEmail.json
+A,pages/Company Profile/widgets/companyContactsContainer/companyContactsContainer.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyAddressCity.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyAddressCountry.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyAddressPostal.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyAddressReason.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyAddressState.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyAddressStreet.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyAddressUnit.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyDonorContactReason.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyDonorEmail.json
+A,pages/Company Profile/widgets/companyContactsContainer/inpCompanyDonorPhone.json
+A,pages/Company Profile/widgets/companyContactsContainer/selCompanyContactReassignTarget.json
+A,pages/Company Profile/widgets/companyContactsContainer/selCompanyDonorAddressToArchive.json
+A,pages/Company Profile/widgets/companyContactsContainer/selCompanyDonorContactKind.json
+A,pages/Company Profile/widgets/companyContactsContainer/selCompanyDonorContactToArchive.json
+A,pages/Company Profile/widgets/companyContactsContainer/tblCompanyContacts.json
+A,pages/Company Profile/widgets/companyContactsContainer/txtCompanyContactsHeading.json
+A,pages/Company Profile/widgets/companyContactsContainer/txtCompanyDonorAddressHeading.json
+A,pages/Company Profile/widgets/companyContactsContainer/txtCompanyDonorAddressList.json
+A,pages/Company Profile/widgets/companyContactsContainer/txtCompanyDonorContactsHeading.json
+A,pages/Company Profile/widgets/companyContactsContainer/txtCompanyDonorContactsNote.json
+A,pages/Company Profile/widgets/companyHistoryContainer/companyHistoryContainer.json
+A,pages/Company Profile/widgets/companyHistoryContainer/tblCompanyContributionHistory.json
+A,pages/Company Profile/widgets/companyHistoryContainer/tblCompanyProviderIdentities.json
+A,pages/Company Profile/widgets/companyHistoryContainer/txtCompanyContributionHistoryHeading.json
+A,pages/Company Profile/widgets/companyHistoryContainer/txtCompanyProviderIdentitiesHeading.json
+A,pages/Company Profile/widgets/companyIdentityContainer/btnBackToDirectory.json
+A,pages/Company Profile/widgets/companyIdentityContainer/btnSaveCompanyIdentity.json
+A,pages/Company Profile/widgets/companyIdentityContainer/btnSaveCompanyNotes.json
+A,pages/Company Profile/widgets/companyIdentityContainer/companyIdentityContainer.json
+A,pages/Company Profile/widgets/companyIdentityContainer/inpCompanyIdentityName.json
+A,pages/Company Profile/widgets/companyIdentityContainer/inpCompanyIdentityReason.json
+A,pages/Company Profile/widgets/companyIdentityContainer/inpCompanyNotes.json
+A,pages/Company Profile/widgets/companyIdentityContainer/inpCompanyNotesReason.json
+A,pages/Company Profile/widgets/companyIdentityContainer/txtCompanyIdentityHeading.json
+A,pages/Company Profile/widgets/companyIdentityContainer/txtCompanyName.json
+A,pages/Company Profile/widgets/companyIdentityContainer/txtCompanyRoles.json
+A,pages/Company Profile/widgets/companyStatusContainer/btnArchiveCompanyContributor.json
+A,pages/Company Profile/widgets/companyStatusContainer/btnReactivateCompanyContributor.json
+A,pages/Company Profile/widgets/companyStatusContainer/companyStatusContainer.json
+A,pages/Company Profile/widgets/companyStatusContainer/inpCompanyContributorStatusReason.json
+A,pages/Company Profile/widgets/companyStatusContainer/txtCompanyContributorStatusHeading.json
+A,pages/Company Profile/widgets/companyStatusContainer/txtCompanyContributorStatusNote.json
+D,pages/Company Profile/widgets/inpCompanyAddressCity.json
+D,pages/Company Profile/widgets/inpCompanyAddressCountry.json
+D,pages/Company Profile/widgets/inpCompanyAddressPostal.json
+D,pages/Company Profile/widgets/inpCompanyAddressReason.json
+D,pages/Company Profile/widgets/inpCompanyAddressState.json
+D,pages/Company Profile/widgets/inpCompanyAddressStreet.json
+D,pages/Company Profile/widgets/inpCompanyAddressUnit.json
+D,pages/Company Profile/widgets/inpCompanyContributorStatusReason.json
+D,pages/Company Profile/widgets/inpCompanyDonorContactReason.json
+D,pages/Company Profile/widgets/inpCompanyDonorContactValue.json
+D,pages/Company Profile/widgets/inpCompanyIdentityName.json
+D,pages/Company Profile/widgets/inpCompanyIdentityReason.json
+D,pages/Company Profile/widgets/selCompanyDonorAddressToArchive.json
+D,pages/Company Profile/widgets/selCompanyDonorContactKind.json
+D,pages/Company Profile/widgets/selCompanyDonorContactToArchive.json
+D,pages/Company Profile/widgets/tblCompanyContacts.json
+D,pages/Company Profile/widgets/tblCompanyContributionHistory.json
+D,pages/Company Profile/widgets/tblCompanyProviderIdentities.json
+D,pages/Company Profile/widgets/txtCompanyContactsHeading.json
+D,pages/Company Profile/widgets/txtCompanyContributionHistoryHeading.json
+D,pages/Company Profile/widgets/txtCompanyContributorStatusHeading.json
+D,pages/Company Profile/widgets/txtCompanyContributorStatusNote.json
+D,pages/Company Profile/widgets/txtCompanyDonorAddressHeading.json
+D,pages/Company Profile/widgets/txtCompanyDonorAddressList.json
+D,pages/Company Profile/widgets/txtCompanyDonorContactsHeading.json
+D,pages/Company Profile/widgets/txtCompanyDonorContactsNote.json
+D,pages/Company Profile/widgets/txtCompanyIdentityHeading.json
+D,pages/Company Profile/widgets/txtCompanyName.json
+D,pages/Company Profile/widgets/txtCompanyProviderIdentitiesHeading.json
+D,pages/Company Profile/widgets/txtCompanyRoles.json
+A,pages/Contributor Functions/Contributor Functions.json
+A,pages/Contributor Functions/jsobjects/cashDonationFlows/cashDonationFlows.js
+A,pages/Contributor Functions/jsobjects/cashDonationFlows/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-_normalizeUploadResponse/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-auditLog/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-createMemberFromPendingDonation/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-ignorePendingDonation/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-linkPendingGivebutterDonation/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-openReassignModal/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-reassignDonation/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-refresh/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-refreshDonations/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-submitDonation/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-verifyDonation/metadata.json
+A,pages/Contributor Functions/queries/cashDonationFlows-verifyaccess/metadata.json
+A,pages/Contributor Functions/queries/qAddGivebutterAddressToMember/metadata.json
+A,pages/Contributor Functions/queries/qAddGivebutterAddressToMember/qAddGivebutterAddressToMember.txt
+A,pages/Contributor Functions/queries/qAddGivebutterEmailToMember/metadata.json
+A,pages/Contributor Functions/queries/qAddGivebutterEmailToMember/qAddGivebutterEmailToMember.txt
+A,pages/Contributor Functions/queries/qAddGivebutterPhoneToMember/metadata.json
+A,pages/Contributor Functions/queries/qAddGivebutterPhoneToMember/qAddGivebutterPhoneToMember.txt
+A,pages/Contributor Functions/queries/qAuditLogInsert/metadata.json
+A,pages/Contributor Functions/queries/qAuditLogInsert/qAuditLogInsert.txt
+A,pages/Contributor Functions/queries/qCreateMemberFromDonation/metadata.json
+A,pages/Contributor Functions/queries/qCreateMemberFromDonation/qCreateMemberFromDonation.txt
+A,pages/Contributor Functions/queries/qCurrentFacilitator/metadata.json
+A,pages/Contributor Functions/queries/qCurrentFacilitator/qCurrentFacilitator.txt
+A,pages/Contributor Functions/queries/qIgnorePendingDonation/metadata.json
+A,pages/Contributor Functions/queries/qIgnorePendingDonation/qIgnorePendingDonation.txt
+A,pages/Contributor Functions/queries/qInsertCashDonation/metadata.json
+A,pages/Contributor Functions/queries/qInsertCashDonation/qInsertCashDonation.txt
+A,pages/Contributor Functions/queries/qLinkDonationToMember/metadata.json
+A,pages/Contributor Functions/queries/qLinkDonationToMember/qLinkDonationToMember.txt
+A,pages/Contributor Functions/queries/qMemberDonations/metadata.json
+A,pages/Contributor Functions/queries/qMemberDonations/qMemberDonations.txt
+A,pages/Contributor Functions/queries/qMembersDirectory/metadata.json
+A,pages/Contributor Functions/queries/qMembersDirectory/qMembersDirectory.txt
+A,pages/Contributor Functions/queries/qPendingGivebutterDonations/metadata.json
+A,pages/Contributor Functions/queries/qPendingGivebutterDonations/qPendingGivebutterDonations.txt
+A,pages/Contributor Functions/queries/qReassignDonationMember/metadata.json
+A,pages/Contributor Functions/queries/qReassignDonationMember/qReassignDonationMember.txt
+A,pages/Contributor Functions/queries/qVerifyDonation/metadata.json
+A,pages/Contributor Functions/queries/qVerifyDonation/qVerifyDonation.txt
+A,pages/Contributor Functions/widgets/Donations.json
+A,pages/Contributor Functions/widgets/DonationsTable.json
+A,pages/Contributor Functions/widgets/Donations_CashEntryForm/Donations_CashEntryForm.json
+A,pages/Contributor Functions/widgets/Donations_CashEntryForm/Reset.json
+A,pages/Contributor Functions/widgets/Donations_CashEntryForm/btnSubmitDonation.json
+A,pages/Contributor Functions/widgets/Donations_CashEntryForm/inpDonationAmount.json
+A,pages/Contributor Functions/widgets/Donations_CashEntryForm/inpDonationDate.json
+A,pages/Contributor Functions/widgets/Donations_CashEntryForm/inpDonationNotes.json
+A,pages/Contributor Functions/widgets/Header.json
+A,pages/Contributor Functions/widgets/ReassignDonationModal/ReassignDonationCloseButton.json
+A,pages/Contributor Functions/widgets/ReassignDonationModal/ReassignDonationModal.json
+A,pages/Contributor Functions/widgets/ReassignDonationModal/TxtReassignDonationTitle.json
+A,pages/Contributor Functions/widgets/ReassignDonationModal/btnReassignDonationClose.json
+A,pages/Contributor Functions/widgets/ReassignDonationModal/btnReassignDonationConfirm.json
+A,pages/Contributor Functions/widgets/ReassignDonationModal/selReassignDonationMember.json
+A,pages/Contributor Functions/widgets/ReassignDonationModal/txtReassignDonationContent.json
+A,pages/Contributor Functions/widgets/ReassignDonationModal/txtReassignDonationID.json
+A,pages/Contributor Functions/widgets/btnBackToDirectory.json
+A,pages/Contributor Functions/widgets/chkShowRejectedDonations.json
+A,pages/Contributor Functions/widgets/cntrPendingDonations/btnAssignDonation.json
+A,pages/Contributor Functions/widgets/cntrPendingDonations/btnCreateMemberFromDonation.json
+A,pages/Contributor Functions/widgets/cntrPendingDonations/btnIgnoreDonation.json
+A,pages/Contributor Functions/widgets/cntrPendingDonations/chkGivebutterSubscribeListmonk.json
+A,pages/Contributor Functions/widgets/cntrPendingDonations/cntrPendingDonations.json
+A,pages/Contributor Functions/widgets/cntrPendingDonations/tblPendingGivebutterDonations.json
+A,pages/Contributor Functions/widgets/cntrPendingDonations/txtDonationReviews.json
+A,pages/Contributor Functions/widgets/selDonationMember.json
+M,pages/Directory/Directory.json
+M,pages/Directory/jsobjects/issue19DirectoryFlows/issue19DirectoryFlows.js
+A,pages/Directory/queries/issue19DirectoryFlows-openContributorFunctions/metadata.json
+A,pages/Directory/queries/issue19DirectoryFlows-openMemberFunctions/metadata.json
+A,pages/Directory/queries/issue19DirectoryFlows-openProfile/metadata.json
+A,pages/Directory/queries/issue19DirectoryFlows-openSacramentRelease/metadata.json
+D,pages/Directory/queries/qCreateDirectoryContributor/metadata.json
+D,pages/Directory/queries/qCreateDirectoryContributor/qCreateDirectoryContributor.txt
+D,pages/Directory/queries/qDirectoryCanCreateContributor/metadata.json
+D,pages/Directory/queries/qDirectoryCanCreateContributor/qDirectoryCanCreateContributor.txt
+M,pages/Directory/queries/qPartyDirectory/metadata.json
+D,pages/Directory/widgets/btnCreateContributor.json
+D,pages/Directory/widgets/inpNewContributorCompany.json
+D,pages/Directory/widgets/inpNewContributorEmail.json
+D,pages/Directory/widgets/inpNewContributorFirst.json
+D,pages/Directory/widgets/inpNewContributorLast.json
+D,pages/Directory/widgets/inpNewContributorPhone.json
+D,pages/Directory/widgets/inpNewContributorReason.json
+D,pages/Directory/widgets/selNewContributorKind.json
+M,pages/Directory/widgets/tblDirectory.json
+D,pages/Directory/widgets/txtDirectoryContributorHeading.json
+M,pages/Directory/widgets/txtDirectoryNote.json
+M,pages/Directory/widgets/txtDirectoryTitle.json
+D,pages/Donations/Donations.json
+D,pages/Donations/jsobjects/cashDonationFlows/cashDonationFlows.js
+D,pages/Donations/jsobjects/cashDonationFlows/metadata.json
+D,pages/Donations/queries/cashDonationFlows-_normalizeUploadResponse/metadata.json
+D,pages/Donations/queries/cashDonationFlows-auditLog/metadata.json
+D,pages/Donations/queries/cashDonationFlows-createMemberFromPendingDonation/metadata.json
+D,pages/Donations/queries/cashDonationFlows-ignorePendingDonation/metadata.json
+D,pages/Donations/queries/cashDonationFlows-linkPendingGivebutterDonation/metadata.json
+D,pages/Donations/queries/cashDonationFlows-refresh/metadata.json
+D,pages/Donations/queries/cashDonationFlows-submitDonation/metadata.json
+D,pages/Donations/queries/cashDonationFlows-verifyaccess/metadata.json
+D,pages/Donations/queries/qAddGivebutterAddressToMember/metadata.json
+D,pages/Donations/queries/qAddGivebutterAddressToMember/qAddGivebutterAddressToMember.txt
+D,pages/Donations/queries/qAddGivebutterEmailToMember/metadata.json
+D,pages/Donations/queries/qAddGivebutterEmailToMember/qAddGivebutterEmailToMember.txt
+D,pages/Donations/queries/qAddGivebutterPhoneToMember/metadata.json
+D,pages/Donations/queries/qAddGivebutterPhoneToMember/qAddGivebutterPhoneToMember.txt
+D,pages/Donations/queries/qAuditLogInsert/metadata.json
+D,pages/Donations/queries/qAuditLogInsert/qAuditLogInsert.txt
+D,pages/Donations/queries/qCreateMemberFromDonation/metadata.json
+D,pages/Donations/queries/qCreateMemberFromDonation/qCreateMemberFromDonation.txt
+D,pages/Donations/queries/qCurrentFacilitator/metadata.json
+D,pages/Donations/queries/qCurrentFacilitator/qCurrentFacilitator.txt
+D,pages/Donations/queries/qIgnorePendingDonation/metadata.json
+D,pages/Donations/queries/qIgnorePendingDonation/qIgnorePendingDonation.txt
+D,pages/Donations/queries/qInsertCashDonation/metadata.json
+D,pages/Donations/queries/qInsertCashDonation/qInsertCashDonation.txt
+D,pages/Donations/queries/qLinkDonationToMember/metadata.json
+D,pages/Donations/queries/qLinkDonationToMember/qLinkDonationToMember.txt
+D,pages/Donations/queries/qMembersDirectory/metadata.json
+D,pages/Donations/queries/qMembersDirectory/qMembersDirectory.txt
+D,pages/Donations/queries/qPendingGivebutterDonations/metadata.json
+D,pages/Donations/queries/qPendingGivebutterDonations/qPendingGivebutterDonations.txt
+D,pages/Donations/widgets/Donations_CashEntryForm/Back.json
+D,pages/Donations/widgets/Donations_CashEntryForm/Donations_CashEntryForm.json
+D,pages/Donations/widgets/Donations_CashEntryForm/Reset.json
+D,pages/Donations/widgets/Donations_CashEntryForm/btnSubmitDonation.json
+D,pages/Donations/widgets/Donations_CashEntryForm/inpDonationAmount.json
+D,pages/Donations/widgets/Donations_CashEntryForm/inpDonationDate.json
+D,pages/Donations/widgets/Donations_CashEntryForm/inpDonationNotes.json
+D,pages/Donations/widgets/Donations_CashEntryForm/selDonationMember.json
+D,pages/Donations/widgets/Header.json
+D,pages/Donations/widgets/cntrPendingDonations/btnAssignDonation.json
+D,pages/Donations/widgets/cntrPendingDonations/btnCreateMemberFromDonation.json
+D,pages/Donations/widgets/cntrPendingDonations/btnIgnoreDonation.json
+D,pages/Donations/widgets/cntrPendingDonations/chkGivebutterSubscribeListmonk.json
+D,pages/Donations/widgets/cntrPendingDonations/cntrPendingDonations.json
+D,pages/Donations/widgets/cntrPendingDonations/tblPendingGivebutterDonations.json
+M,pages/Events - Check In/Events - Check In.json
+M,pages/Events - Check In/queries/qEventCheckinAudit/metadata.json
+M,pages/Events - Check In/queries/qEventsList/metadata.json
+M,pages/Events - Check In/queries/qMembersForEventCheckin/metadata.json
+M,pages/Events - Create/Events - Create.json
+M,pages/Events - Create/queries/qCreateEvent/metadata.json
+M,pages/Events - Create/queries/qEventsList/metadata.json
+A,pages/Facilitator Functions/Facilitator Functions.json
+A,pages/Facilitator Functions/jsobjects/facilitatorFlows/facilitatorFlows.js
+A,pages/Facilitator Functions/jsobjects/facilitatorFlows/metadata.json
+A,pages/Facilitator Functions/queries/apiAvailableStorageProducts/apiAvailableStorageProducts.txt
+A,pages/Facilitator Functions/queries/apiAvailableStorageProducts/metadata.json
+A,pages/Facilitator Functions/queries/facilitatorFlows-assignParticipant/metadata.json
+A,pages/Facilitator Functions/queries/facilitatorFlows-assignStorageLocation/metadata.json
+A,pages/Facilitator Functions/queries/facilitatorFlows-auditLog/metadata.json
+A,pages/Facilitator Functions/queries/facilitatorFlows-refresh/metadata.json
+A,pages/Facilitator Functions/queries/facilitatorFlows-removeParticipant/metadata.json
+A,pages/Facilitator Functions/queries/facilitatorFlows-removeStorageLocation/metadata.json
+A,pages/Facilitator Functions/queries/facilitatorFlows-setSelectedFacilitatorId/metadata.json
+A,pages/Facilitator Functions/queries/facilitatorFlows-verifyaccess/metadata.json
+A,pages/Facilitator Functions/queries/qAssignMemberStorageLocation/metadata.json
+A,pages/Facilitator Functions/queries/qAssignMemberStorageLocation/qAssignMemberStorageLocation.txt
+A,pages/Facilitator Functions/queries/qAssignParticipant/metadata.json
+A,pages/Facilitator Functions/queries/qAssignParticipant/qAssignParticipant.txt
+A,pages/Facilitator Functions/queries/qAssignedParticipants/metadata.json
+A,pages/Facilitator Functions/queries/qAssignedParticipants/qAssignedParticipants.txt
+A,pages/Facilitator Functions/queries/qAuditLogInsert/metadata.json
+A,pages/Facilitator Functions/queries/qAuditLogInsert/qAuditLogInsert.txt
+A,pages/Facilitator Functions/queries/qCurrentFacilitator/metadata.json
+A,pages/Facilitator Functions/queries/qCurrentFacilitator/qCurrentFacilitator.txt
+A,pages/Facilitator Functions/queries/qDeactivateMemberStorageLocati/metadata.json
+A,pages/Facilitator Functions/queries/qDeactivateMemberStorageLocati/qDeactivateMemberStorageLocati.txt
+A,pages/Facilitator Functions/queries/qDistinctStorageLocationNames/metadata.json
+A,pages/Facilitator Functions/queries/qDistinctStorageLocationNames/qDistinctStorageLocationNames.txt
+A,pages/Facilitator Functions/queries/qEndParticipantAssignment/metadata.json
+A,pages/Facilitator Functions/queries/qEndParticipantAssignment/qEndParticipantAssignment.txt
+A,pages/Facilitator Functions/queries/qListFacilitators/metadata.json
+A,pages/Facilitator Functions/queries/qListFacilitators/qListFacilitators.txt
+A,pages/Facilitator Functions/queries/qLocationNameSuggestions/metadata.json
+A,pages/Facilitator Functions/queries/qLocationNameSuggestions/qLocationNameSuggestions.txt
+A,pages/Facilitator Functions/queries/qMemberById/metadata.json
+A,pages/Facilitator Functions/queries/qMemberById/qMemberById.txt
+A,pages/Facilitator Functions/queries/qMemberStorageLocations/metadata.json
+A,pages/Facilitator Functions/queries/qMemberStorageLocations/qMemberStorageLocations.txt
+A,pages/Facilitator Functions/queries/qParticipantCandidates/metadata.json
+A,pages/Facilitator Functions/queries/qParticipantCandidates/qParticipantCandidates.txt
+A,pages/Facilitator Functions/widgets/AssignStorageLocation.json
+A,pages/Facilitator Functions/widgets/AssignedParticipantsHeading.json
+A,pages/Facilitator Functions/widgets/StorageLocations.json
+A,pages/Facilitator Functions/widgets/btnAssignParticipant.json
+A,pages/Facilitator Functions/widgets/btnAssignStorageLocation.json
+A,pages/Facilitator Functions/widgets/btnBackToDirectory.json
+A,pages/Facilitator Functions/widgets/inpAssignStorageLocation.json
+A,pages/Facilitator Functions/widgets/inpAssignStorageLocationNotes.json
+A,pages/Facilitator Functions/widgets/inpParticipantAssignmentNotes.json
+A,pages/Facilitator Functions/widgets/inpParticipantAssignmentReason.json
+A,pages/Facilitator Functions/widgets/lstAssignStorageLocation/ContainerAssignStorageLocation/ContainerAssignStorageLocation.json
+A,pages/Facilitator Functions/widgets/lstAssignStorageLocation/ContainerAssignStorageLocation/txtAssignStorageLocation.json
+A,pages/Facilitator Functions/widgets/lstAssignStorageLocation/lstAssignStorageLocation.json
+A,pages/Facilitator Functions/widgets/selMember.json
+A,pages/Facilitator Functions/widgets/selParticipantToAssign.json
+A,pages/Facilitator Functions/widgets/tblAssignedParticipants.json
+A,pages/Facilitator Functions/widgets/tblMemberStorageLocations.json
+M,pages/Individual Profile/Individual Profile.json
+A,pages/Individual Profile/jsobjects/IndividualProfileFlows/IndividualProfileFlows.js
+A,pages/Individual Profile/jsobjects/IndividualProfileFlows/metadata.json
+D,pages/Individual Profile/jsobjects/issue19IndividualProfileFlows/issue19IndividualProfileFlows.js
+D,pages/Individual Profile/jsobjects/issue19IndividualProfileFlows/metadata.json
+A,pages/Individual Profile/queries/IndividualProfileFlows-load/metadata.json
+A,pages/Individual Profile/queries/apiTriggerIndividualDocumenso/apiTriggerIndividualDocumenso.txt
+A,pages/Individual Profile/queries/apiTriggerIndividualDocumenso/metadata.json
+A,pages/Individual Profile/queries/apiUploadIndividualEvidence/apiUploadIndividualEvidence.txt
+A,pages/Individual Profile/queries/apiUploadIndividualEvidence/metadata.json
+D,pages/Individual Profile/queries/issue19IndividualProfileFlows-load/metadata.json
+M,pages/Individual Profile/queries/qAddIndividualDonorAddress/metadata.json
+M,pages/Individual Profile/queries/qAddIndividualDonorContact/metadata.json
+M,pages/Individual Profile/queries/qAddIndividualMembershipAddress/metadata.json
+M,pages/Individual Profile/queries/qAddIndividualMembershipContact/metadata.json
+M,pages/Individual Profile/queries/qArchiveIndividualDonorAddress/metadata.json
+M,pages/Individual Profile/queries/qArchiveIndividualDonorContact/metadata.json
+M,pages/Individual Profile/queries/qArchiveIndividualMembershipAddress/metadata.json
+M,pages/Individual Profile/queries/qArchiveIndividualMembershipContact/metadata.json
+M,pages/Individual Profile/queries/qAssignIndividualPractitioner/metadata.json
+M,pages/Individual Profile/queries/qAssignPersonContactRole/metadata.json
+M,pages/Individual Profile/queries/qCanAssignPersonContact/metadata.json
+A,pages/Individual Profile/queries/qCreateIndividualAgreement/metadata.json
+A,pages/Individual Profile/queries/qCreateIndividualAgreement/qCreateIndividualAgreement.txt
+A,pages/Individual Profile/queries/qCreateIndividualPaperAgreement/metadata.json
+A,pages/Individual Profile/queries/qCreateIndividualPaperAgreement/qCreateIndividualPaperAgreement.txt
+M,pages/Individual Profile/queries/qDirectoryCanManage/metadata.json
+M,pages/Individual Profile/queries/qEnableProfileContributor/metadata.json
+M,pages/Individual Profile/queries/qEnableProfileMembership/metadata.json
+M,pages/Individual Profile/queries/qEndIndividualPractitioner/metadata.json
+M,pages/Individual Profile/queries/qEndPersonMembership/metadata.json
+M,pages/Individual Profile/queries/qIndividualAccount/metadata.json
+A,pages/Individual Profile/queries/qIndividualAgreementEmails/metadata.json
+A,pages/Individual Profile/queries/qIndividualAgreementEmails/qIndividualAgreementEmails.txt
+A,pages/Individual Profile/queries/qIndividualAgreementTemplates/metadata.json
+A,pages/Individual Profile/queries/qIndividualAgreementTemplates/qIndividualAgreementTemplates.txt
+A,pages/Individual Profile/queries/qIndividualAgreementTypes/metadata.json
+A,pages/Individual Profile/queries/qIndividualAgreementTypes/qIndividualAgreementTypes.txt
+M,pages/Individual Profile/queries/qIndividualAvailablePractitioners/metadata.json
+M,pages/Individual Profile/queries/qIndividualCanEditDonorContacts/metadata.json
+M,pages/Individual Profile/queries/qIndividualContacts/metadata.json
+M,pages/Individual Profile/queries/qIndividualContributionHistory/metadata.json
+M,pages/Individual Profile/queries/qIndividualContributorStatusState/metadata.json
+M,pages/Individual Profile/queries/qIndividualDonorAddresses/metadata.json
+M,pages/Individual Profile/queries/qIndividualDonorContacts/metadata.json
+M,pages/Individual Profile/queries/qIndividualDonorContacts/qIndividualDonorContacts.txt
+A,pages/Individual Profile/queries/qIndividualIdentityNotes/metadata.json
+A,pages/Individual Profile/queries/qIndividualIdentityNotes/qIndividualIdentityNotes.txt
+M,pages/Individual Profile/queries/qIndividualMemberAgreements/metadata.json
+M,pages/Individual Profile/queries/qIndividualMemberOperationsState/metadata.json
+M,pages/Individual Profile/queries/qIndividualMembershipAddresses/metadata.json
+M,pages/Individual Profile/queries/qIndividualMembershipContacts/metadata.json
+M,pages/Individual Profile/queries/qIndividualPartyIdentity/metadata.json
+M,pages/Individual Profile/queries/qIndividualPractitionerAssignments/metadata.json
+M,pages/Individual Profile/queries/qIndividualProfile/metadata.json
+M,pages/Individual Profile/queries/qIndividualProfile/qIndividualProfile.txt
+A,pages/Individual Profile/queries/qIndividualProfileDiagnostic/metadata.json
+A,pages/Individual Profile/queries/qIndividualProfileDiagnostic/qIndividualProfileDiagnostic.txt
+M,pages/Individual Profile/queries/qIndividualProviderIdentities/metadata.json
+A,pages/Individual Profile/queries/qIndividualReassignTargets/metadata.json
+A,pages/Individual Profile/queries/qIndividualReassignTargets/qIndividualReassignTargets.txt
+M,pages/Individual Profile/queries/qIndividualRoles/metadata.json
+M,pages/Individual Profile/queries/qMembershipIdentity/metadata.json
+M,pages/Individual Profile/queries/qProfileCanCreateContributor/metadata.json
+M,pages/Individual Profile/queries/qProfileCanCreateMember/metadata.json
+M,pages/Individual Profile/queries/qProfileMembershipState/metadata.json
+A,pages/Individual Profile/queries/qReassignIndividualContact/metadata.json
+A,pages/Individual Profile/queries/qReassignIndividualContact/qReassignIndividualContact.txt
+M,pages/Individual Profile/queries/qReusablePersonContacts/metadata.json
+A,pages/Individual Profile/queries/qSaveIndividualIdentityNotes/metadata.json
+A,pages/Individual Profile/queries/qSaveIndividualIdentityNotes/qSaveIndividualIdentityNotes.txt
+M,pages/Individual Profile/queries/qSetIndividualAccount/metadata.json
+M,pages/Individual Profile/queries/qSetIndividualContributorStatus/metadata.json
+A,pages/Individual Profile/queries/qSetIndividualEmailPrimary/metadata.json
+A,pages/Individual Profile/queries/qSetIndividualEmailPrimary/qSetIndividualEmailPrimary.txt
+M,pages/Individual Profile/queries/qSetIndividualRole/metadata.json
+A,pages/Individual Profile/queries/qSubscribeIndividualEmail/metadata.json
+A,pages/Individual Profile/queries/qSubscribeIndividualEmail/qSubscribeIndividualEmail.txt
+A,pages/Individual Profile/queries/qToggleIndividualContributorEmailSubscription/metadata.json
+A,pages/Individual Profile/queries/qToggleIndividualContributorEmailSubscription/qToggleIndividualContributorEmailSubscription.txt
+A,pages/Individual Profile/queries/qUnsubscribeIndividualEmail/metadata.json
+A,pages/Individual Profile/queries/qUnsubscribeIndividualEmail/qUnsubscribeIndividualEmail.txt
+M,pages/Individual Profile/queries/qUpdateIndividualPartyIdentity/metadata.json
+A,pages/Individual Profile/queries/qVerifyIndividualEmail/metadata.json
+A,pages/Individual Profile/queries/qVerifyIndividualEmail/qVerifyIndividualEmail.txt
+A,pages/Individual Profile/widgets/appointmentsContainer/appointmentsContainer.json
+A,pages/Individual Profile/widgets/appointmentsContainer/btnAssignPersonRole.json
+A,pages/Individual Profile/widgets/appointmentsContainer/btnRemovePersonRole.json
+A,pages/Individual Profile/widgets/appointmentsContainer/btnSavePersonAppAccount.json
+A,pages/Individual Profile/widgets/appointmentsContainer/inpPersonAccessReason.json
+A,pages/Individual Profile/widgets/appointmentsContainer/inpPersonAppAccountEmail.json
+A,pages/Individual Profile/widgets/appointmentsContainer/selPersonAccessRole.json
+A,pages/Individual Profile/widgets/appointmentsContainer/txtPersonAccessCurrent.json
+A,pages/Individual Profile/widgets/appointmentsContainer/txtPersonAccessHeading.json
+D,pages/Individual Profile/widgets/btnAddIndividualRoleContact.json
+D,pages/Individual Profile/widgets/btnArchiveIndividualContributor.json
+D,pages/Individual Profile/widgets/btnArchiveIndividualRoleContact.json
+D,pages/Individual Profile/widgets/btnAssignIndividualPractitioner.json
+D,pages/Individual Profile/widgets/btnAssignPersonContactRole.json
+D,pages/Individual Profile/widgets/btnAssignPersonRole.json
+D,pages/Individual Profile/widgets/btnEnablePersonContributor.json
+D,pages/Individual Profile/widgets/btnEnablePersonMembership.json
+D,pages/Individual Profile/widgets/btnEndIndividualPractitioner.json
+D,pages/Individual Profile/widgets/btnEndPersonMembership.json
+D,pages/Individual Profile/widgets/btnIndividualSacramentRelease.json
+D,pages/Individual Profile/widgets/btnOpenMemberWork.json
+D,pages/Individual Profile/widgets/btnReactivateIndividualContributor.json
+D,pages/Individual Profile/widgets/btnRemovePersonRole.json
+M,pages/Individual Profile/widgets/btnSaveIndividualIdentity.json
+A,pages/Individual Profile/widgets/btnSaveIndividualNotes.json
+D,pages/Individual Profile/widgets/btnSavePersonAppAccount.json
+A,pages/Individual Profile/widgets/enableContributorContainer/btnEnablePersonContributor.json
+A,pages/Individual Profile/widgets/enableContributorContainer/enableContributorContainer.json
+A,pages/Individual Profile/widgets/enableContributorContainer/inpEnableContributorReason.json
+A,pages/Individual Profile/widgets/enableMemberContainer/btnEnablePersonMembership.json
+A,pages/Individual Profile/widgets/enableMemberContainer/enableMemberContainer.json
+A,pages/Individual Profile/widgets/enableMemberContainer/inpEnrollmentFirstName.json
+A,pages/Individual Profile/widgets/enableMemberContainer/inpEnrollmentLastName.json
+A,pages/Individual Profile/widgets/enableMemberContainer/inpEnrollmentReason.json
+A,pages/Individual Profile/widgets/enableMemberContainer/txtMemberEnrollmentHeading.json
+D,pages/Individual Profile/widgets/inpEnableContributorReason.json
+D,pages/Individual Profile/widgets/inpEndMembershipReason.json
+D,pages/Individual Profile/widgets/inpEnrollmentFirstName.json
+D,pages/Individual Profile/widgets/inpEnrollmentLastName.json
+D,pages/Individual Profile/widgets/inpEnrollmentReason.json
+D,pages/Individual Profile/widgets/inpIndividualContributorStatusReason.json
+M,pages/Individual Profile/widgets/inpIndividualIdentityBirthDate.json
+M,pages/Individual Profile/widgets/inpIndividualIdentityDisplayName.json
+M,pages/Individual Profile/widgets/inpIndividualIdentityFirstName.json
+M,pages/Individual Profile/widgets/inpIndividualIdentityLastName.json
+M,pages/Individual Profile/widgets/inpIndividualIdentityReason.json
+A,pages/Individual Profile/widgets/inpIndividualNotes.json
+A,pages/Individual Profile/widgets/inpIndividualNotesReason.json
+D,pages/Individual Profile/widgets/inpIndividualPractitionerNotes.json
+D,pages/Individual Profile/widgets/inpIndividualPractitionerReason.json
+D,pages/Individual Profile/widgets/inpIndividualRoleAddressCity.json
+D,pages/Individual Profile/widgets/inpIndividualRoleAddressCountry.json
+D,pages/Individual Profile/widgets/inpIndividualRoleAddressPostal.json
+D,pages/Individual Profile/widgets/inpIndividualRoleAddressState.json
+D,pages/Individual Profile/widgets/inpIndividualRoleAddressStreet.json
+D,pages/Individual Profile/widgets/inpIndividualRoleAddressUnit.json
+D,pages/Individual Profile/widgets/inpIndividualRoleContactReason.json
+D,pages/Individual Profile/widgets/inpIndividualRoleContactValue.json
+D,pages/Individual Profile/widgets/inpPersonAccessReason.json
+D,pages/Individual Profile/widgets/inpPersonAppAccountEmail.json
+D,pages/Individual Profile/widgets/inpPersonContactReuseReason.json
+A,pages/Individual Profile/widgets/manageContactsContainer/btnAddIndividualRoleContact.json
+A,pages/Individual Profile/widgets/manageContactsContainer/btnArchiveIndividualRoleContact.json
+A,pages/Individual Profile/widgets/manageContactsContainer/btnAssignPersonContactRole.json
+A,pages/Individual Profile/widgets/manageContactsContainer/btnReassignIndividualContact.json
+A,pages/Individual Profile/widgets/manageContactsContainer/btnSetIndividualEmailPrimary.json
+A,pages/Individual Profile/widgets/manageContactsContainer/btnToggleIndividualEmailSubscription.json
+A,pages/Individual Profile/widgets/manageContactsContainer/btnVerifyIndividualEmail.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpIndividualRoleAddressCity.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpIndividualRoleAddressCountry.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpIndividualRoleAddressPostal.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpIndividualRoleAddressState.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpIndividualRoleAddressStreet.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpIndividualRoleAddressUnit.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpIndividualRoleContactReason.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpIndividualRoleEmail.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpIndividualRolePhone.json
+A,pages/Individual Profile/widgets/manageContactsContainer/inpPersonContactReuseReason.json
+A,pages/Individual Profile/widgets/manageContactsContainer/manageContactsContainer.json
+A,pages/Individual Profile/widgets/manageContactsContainer/selIndividualContactCapacity.json
+A,pages/Individual Profile/widgets/manageContactsContainer/selIndividualContactReassignTarget.json
+A,pages/Individual Profile/widgets/manageContactsContainer/selIndividualRoleContactKind.json
+A,pages/Individual Profile/widgets/manageContactsContainer/selIndividualRoleContactToArchive.json
+A,pages/Individual Profile/widgets/manageContactsContainer/selPersonContactToReuse.json
+A,pages/Individual Profile/widgets/manageContactsContainer/tblIndividualContacts.json
+A,pages/Individual Profile/widgets/manageContactsContainer/txtFormerMembershipStatus.json
+A,pages/Individual Profile/widgets/manageContactsContainer/txtIndividualContactsHeading.json
+A,pages/Individual Profile/widgets/manageContactsContainer/txtIndividualRoleContactsHeading.json
+A,pages/Individual Profile/widgets/manageContactsContainer/txtIndividualRoleContactsNote.json
+A,pages/Individual Profile/widgets/manageContactsContainer/txtPersonContactReuseHeading.json
+A,pages/Individual Profile/widgets/manageContactsContainer/txtPersonContactReuseNote.json
+D,pages/Individual Profile/widgets/selIndividualContactCapacity.json
+D,pages/Individual Profile/widgets/selIndividualPractitionerToAssign.json
+D,pages/Individual Profile/widgets/selIndividualRoleContactKind.json
+D,pages/Individual Profile/widgets/selIndividualRoleContactToArchive.json
+D,pages/Individual Profile/widgets/selPersonAccessRole.json
+D,pages/Individual Profile/widgets/selPersonContactToReuse.json
+D,pages/Individual Profile/widgets/tblIndividualContacts.json
+D,pages/Individual Profile/widgets/tblIndividualContributionHistory.json
+D,pages/Individual Profile/widgets/tblIndividualMemberAgreements.json
+D,pages/Individual Profile/widgets/tblIndividualPractitionerAssignments.json
+D,pages/Individual Profile/widgets/tblIndividualProviderIdentities.json
+D,pages/Individual Profile/widgets/txtEndPersonMembershipHeading.json
+D,pages/Individual Profile/widgets/txtEndPersonMembershipNote.json
+D,pages/Individual Profile/widgets/txtFormerMembershipStatus.json
+D,pages/Individual Profile/widgets/txtIndividualContactsHeading.json
+D,pages/Individual Profile/widgets/txtIndividualContributionHistoryHeading.json
+D,pages/Individual Profile/widgets/txtIndividualContributorStatusHeading.json
+D,pages/Individual Profile/widgets/txtIndividualContributorStatusNote.json
+M,pages/Individual Profile/widgets/txtIndividualIdentityHeading.json
+D,pages/Individual Profile/widgets/txtIndividualMemberAgreementsHeading.json
+D,pages/Individual Profile/widgets/txtIndividualMemberOperationsHeading.json
+D,pages/Individual Profile/widgets/txtIndividualMemberOperationsNote.json
+M,pages/Individual Profile/widgets/txtIndividualName.json
+D,pages/Individual Profile/widgets/txtIndividualPractitionerManagementNote.json
+D,pages/Individual Profile/widgets/txtIndividualPractitionersHeading.json
+D,pages/Individual Profile/widgets/txtIndividualProviderIdentitiesHeading.json
+D,pages/Individual Profile/widgets/txtIndividualRoleContactsHeading.json
+D,pages/Individual Profile/widgets/txtIndividualRoleContactsNote.json
+M,pages/Individual Profile/widgets/txtIndividualRoles.json
+D,pages/Individual Profile/widgets/txtMemberEnrollmentHeading.json
+D,pages/Individual Profile/widgets/txtPersonAccessCurrent.json
+D,pages/Individual Profile/widgets/txtPersonAccessHeading.json
+D,pages/Individual Profile/widgets/txtPersonContactReuseHeading.json
+D,pages/Individual Profile/widgets/txtPersonContactReuseNote.json
+A,pages/Intake/Intake.json
+A,pages/Intake/jsobjects/intakeFlows/intakeFlows.js
+A,pages/Intake/jsobjects/intakeFlows/metadata.json
+A,pages/Intake/queries/apiTriggerDocumenso/apiTriggerDocumenso.txt
+A,pages/Intake/queries/apiTriggerDocumenso/metadata.json
+A,pages/Intake/queries/apiUploadEvidenceViaN8n/apiUploadEvidenceViaN8n.txt
+A,pages/Intake/queries/apiUploadEvidenceViaN8n/metadata.json
+A,pages/Intake/queries/intakeFlows-auditLog/metadata.json
+A,pages/Intake/queries/intakeFlows-reset/metadata.json
+A,pages/Intake/queries/intakeFlows-submit/metadata.json
+A,pages/Intake/queries/qAddContributorAddress/metadata.json
+A,pages/Intake/queries/qAddContributorAddress/qAddContributorAddress.txt
+A,pages/Intake/queries/qAddContributorEmailForDualCapacity/metadata.json
+A,pages/Intake/queries/qAddContributorEmailForDualCapacity/qAddContributorEmailForDualCapacity.txt
+A,pages/Intake/queries/qAddMemberEmail/metadata.json
+A,pages/Intake/queries/qAddMemberEmail/qAddMemberEmail.txt
+A,pages/Intake/queries/qAddMemberPhone/metadata.json
+A,pages/Intake/queries/qAddMemberPhone/qAddMemberPhone.txt
+A,pages/Intake/queries/qAddMembershipAddress/metadata.json
+A,pages/Intake/queries/qAddMembershipAddress/qAddMembershipAddress.txt
+A,pages/Intake/queries/qAgreementTemplatesByType/metadata.json
+A,pages/Intake/queries/qAgreementTemplatesByType/qAgreementTemplatesByType.txt
+A,pages/Intake/queries/qAgreementTypesList/metadata.json
+A,pages/Intake/queries/qAgreementTypesList/qAgreementTypesList.txt
+A,pages/Intake/queries/qAssignMemberPractitioner/metadata.json
+A,pages/Intake/queries/qAssignMemberPractitioner/qAssignMemberPractitioner.txt
+A,pages/Intake/queries/qAssignPersonContactRole/metadata.json
+A,pages/Intake/queries/qAssignPersonContactRole/qAssignPersonContactRole.txt
+A,pages/Intake/queries/qAuditLog/metadata.json
+A,pages/Intake/queries/qAuditLog/qAuditLog.txt
+A,pages/Intake/queries/qCheckContributorListmonkQueue/metadata.json
+A,pages/Intake/queries/qCheckContributorListmonkQueue/qCheckContributorListmonkQueue.txt
+A,pages/Intake/queries/qCheckMemberDuplicate/metadata.json
+A,pages/Intake/queries/qCheckMemberDuplicate/qCheckMemberDuplicate.txt
+A,pages/Intake/queries/qCreateContributor/metadata.json
+A,pages/Intake/queries/qCreateContributor/qCreateContributor.txt
+A,pages/Intake/queries/qCreateIntakeAgreement/metadata.json
+A,pages/Intake/queries/qCreateIntakeAgreement/qCreateIntakeAgreement.txt
+A,pages/Intake/queries/qCreateMember/metadata.json
+A,pages/Intake/queries/qCreateMember/qCreateMember.txt
+A,pages/Intake/queries/qCurrentFacilitator/metadata.json
+A,pages/Intake/queries/qCurrentFacilitator/qCurrentFacilitator.txt
+A,pages/Intake/queries/qEnablePersonContributor/metadata.json
+A,pages/Intake/queries/qEnablePersonContributor/qEnablePersonContributor.txt
+A,pages/Intake/queries/qGetMemberPerson/metadata.json
+A,pages/Intake/queries/qGetMemberPerson/qGetMemberPerson.txt
+A,pages/Intake/queries/qIntakeActorRoles/metadata.json
+A,pages/Intake/queries/qIntakeActorRoles/qIntakeActorRoles.txt
+A,pages/Intake/queries/qLinkContributorMember/metadata.json
+A,pages/Intake/queries/qLinkContributorMember/qLinkContributorMember.txt
+A,pages/Intake/queries/qListFacilitators/metadata.json
+A,pages/Intake/queries/qListFacilitators/qListFacilitators.txt
+A,pages/Intake/queries/qSetIntakeIdentityNotes/metadata.json
+A,pages/Intake/queries/qSetIntakeIdentityNotes/qSetIntakeIdentityNotes.txt
+A,pages/Intake/widgets/frmIntake/btnIntakeReset.json
+A,pages/Intake/widgets/frmIntake/btnIntakeSubmitNew.json
+A,pages/Intake/widgets/frmIntake/frmIntake.json
+A,pages/Intake/widgets/frmIntake/inpIntakeAddress.json
+A,pages/Intake/widgets/frmIntake/inpIntakeCity.json
+A,pages/Intake/widgets/frmIntake/inpIntakeEmail.json
+A,pages/Intake/widgets/frmIntake/inpIntakeIdentityNotes.json
+A,pages/Intake/widgets/frmIntake/inpIntakePhone.json
+A,pages/Intake/widgets/frmIntake/inpIntakePostalCode.json
+A,pages/Intake/widgets/frmIntake/inpIntakeState.json
+A,pages/Intake/widgets/frmIntake/selIntakeEntityType.json
+A,pages/Intake/widgets/frmIntake/tabsContributorEnrollment/chkIntakeSubscribeContributorListmonk.json
+A,pages/Intake/widgets/frmIntake/tabsContributorEnrollment/inpContributorReason.json
+A,pages/Intake/widgets/frmIntake/tabsContributorEnrollment/tabsContributorEnrollment.json
+A,pages/Intake/widgets/frmIntake/tabsContributorEnrollment/txtContributorSection.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/chkCompanyContributor.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/chkIntakeContributor.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/chkIntakeMember.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/dateIntakeBirthDate.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/inpIntakeCompanyName.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/inpIntakeFirstName.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/inpIntakeLastName.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/tabsIndividualCompany.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/txtCompanySection.json
+A,pages/Intake/widgets/frmIntake/tabsIndividualCompany/txtIndividualSection.json
+A,pages/Intake/widgets/frmIntake/tabsMemberEnrollment/FilePickerAgreement.json
+A,pages/Intake/widgets/frmIntake/tabsMemberEnrollment/chkIntakeSubscribeMemberListmonk.json
+A,pages/Intake/widgets/frmIntake/tabsMemberEnrollment/selAgreementDelivery.json
+A,pages/Intake/widgets/frmIntake/tabsMemberEnrollment/selAgreementTemplate.json
+A,pages/Intake/widgets/frmIntake/tabsMemberEnrollment/selAgreementType.json
+A,pages/Intake/widgets/frmIntake/tabsMemberEnrollment/selIntakePractitioner.json
+A,pages/Intake/widgets/frmIntake/tabsMemberEnrollment/tabsMemberEnrollment.json
+A,pages/Intake/widgets/frmIntake/tabsMemberEnrollment/txtMemberSection.json
+A,pages/Intake/widgets/frmIntake/txtContactSection.json
+A,pages/Intake/widgets/frmIntake/txtIntakeIntro.json
+A,pages/Intake/widgets/frmIntake/txtIntakeTitle.json
+A,pages/Member Functions/Member Functions.json
+A,pages/Member Functions/jsobjects/memberProfile/memberProfile.js
+A,pages/Member Functions/jsobjects/memberProfile/metadata.json
+A,pages/Member Functions/queries/apiCancelDocumensoAgreement/apiCancelDocumensoAgreement.txt
+A,pages/Member Functions/queries/apiCancelDocumensoAgreement/metadata.json
+A,pages/Member Functions/queries/apiMarkProductUnShipped/apiMarkProductUnShipped.txt
+A,pages/Member Functions/queries/apiMarkProductUnShipped/metadata.json
+A,pages/Member Functions/queries/apiTriggerDocumenso/apiTriggerDocumenso.txt
+A,pages/Member Functions/queries/apiTriggerDocumenso/metadata.json
+A,pages/Member Functions/queries/apiUploadEvidence/apiUploadEvidence.txt
+A,pages/Member Functions/queries/apiUploadEvidence/metadata.json
+A,pages/Member Functions/queries/apiUploadEvidencePublic/apiUploadEvidencePublic.txt
+A,pages/Member Functions/queries/apiUploadEvidencePublic/metadata.json
+A,pages/Member Functions/queries/apiUploadEvidenceViaN8n/apiUploadEvidenceViaN8n.txt
+A,pages/Member Functions/queries/apiUploadEvidenceViaN8n/metadata.json
+A,pages/Member Functions/queries/memberProfile-_normalizeUploadResponse/metadata.json
+A,pages/Member Functions/queries/memberProfile-_requireAgreementTemplate/metadata.json
+A,pages/Member Functions/queries/memberProfile-_requireAgreementType/metadata.json
+A,pages/Member Functions/queries/memberProfile-_requireFacilitator/metadata.json
+A,pages/Member Functions/queries/memberProfile-_requireMemberId/metadata.json
+A,pages/Member Functions/queries/memberProfile-assignFacilitator/metadata.json
+A,pages/Member Functions/queries/memberProfile-auditLog/metadata.json
+A,pages/Member Functions/queries/memberProfile-cancelDocumensoAgreement/metadata.json
+A,pages/Member Functions/queries/memberProfile-ensureMemberAccess/metadata.json
+A,pages/Member Functions/queries/memberProfile-evidenceLinks/metadata.json
+A,pages/Member Functions/queries/memberProfile-init/metadata.json
+A,pages/Member Functions/queries/memberProfile-openPaperUpload/metadata.json
+A,pages/Member Functions/queries/memberProfile-refresh/metadata.json
+A,pages/Member Functions/queries/memberProfile-refreshAgreements/metadata.json
+A,pages/Member Functions/queries/memberProfile-removeFacilitator/metadata.json
+A,pages/Member Functions/queries/memberProfile-sendDigitalAgreement/metadata.json
+A,pages/Member Functions/queries/memberProfile-setMemberId/metadata.json
+A,pages/Member Functions/queries/memberProfile-verifyAgreement/metadata.json
+A,pages/Member Functions/queries/memberProfile-voidRelease/metadata.json
+A,pages/Member Functions/queries/qAgreementTemplatesByType/metadata.json
+A,pages/Member Functions/queries/qAgreementTemplatesByType/qAgreementTemplatesByType.txt
+A,pages/Member Functions/queries/qAgreementTypesList/metadata.json
+A,pages/Member Functions/queries/qAgreementTypesList/qAgreementTypesList.txt
+A,pages/Member Functions/queries/qApproveAgreement/metadata.json
+A,pages/Member Functions/queries/qApproveAgreement/qApproveAgreement.txt
+A,pages/Member Functions/queries/qAssignMemberFacilitator/metadata.json
+A,pages/Member Functions/queries/qAssignMemberFacilitator/qAssignMemberFacilitator.txt
+A,pages/Member Functions/queries/qAuditLogInsert/metadata.json
+A,pages/Member Functions/queries/qAuditLogInsert/qAuditLogInsert.txt
+A,pages/Member Functions/queries/qCreatePendingAgreement/metadata.json
+A,pages/Member Functions/queries/qCreatePendingAgreement/qCreatePendingAgreement.txt
+A,pages/Member Functions/queries/qCurrentFacilitator/metadata.json
+A,pages/Member Functions/queries/qCurrentFacilitator/qCurrentFacilitator.txt
+A,pages/Member Functions/queries/qDeactivateMemberFacilitator/metadata.json
+A,pages/Member Functions/queries/qDeactivateMemberFacilitator/qDeactivateMemberFacilitator.txt
+A,pages/Member Functions/queries/qListFacilitators/metadata.json
+A,pages/Member Functions/queries/qListFacilitators/qListFacilitators.txt
+A,pages/Member Functions/queries/qMemberAccessCheck/metadata.json
+A,pages/Member Functions/queries/qMemberAccessCheck/qMemberAccessCheck.txt
+A,pages/Member Functions/queries/qMemberAgreements/metadata.json
+A,pages/Member Functions/queries/qMemberAgreements/qMemberAgreements.txt
+A,pages/Member Functions/queries/qMemberById/metadata.json
+A,pages/Member Functions/queries/qMemberById/qMemberById.txt
+A,pages/Member Functions/queries/qMemberEmails/metadata.json
+A,pages/Member Functions/queries/qMemberEmails/qMemberEmails.txt
+A,pages/Member Functions/queries/qMemberFacilitators/metadata.json
+A,pages/Member Functions/queries/qMemberFacilitators/qMemberFacilitators.txt
+A,pages/Member Functions/queries/qMemberReleases/metadata.json
+A,pages/Member Functions/queries/qMemberReleases/qMemberReleases.txt
+A,pages/Member Functions/queries/qMembersDirectory/metadata.json
+A,pages/Member Functions/queries/qMembersDirectory/qMembersDirectory.txt
+A,pages/Member Functions/queries/qPrimaryMemberEmail/metadata.json
+A,pages/Member Functions/queries/qPrimaryMemberEmail/qPrimaryMemberEmail.txt
+A,pages/Member Functions/queries/qVerifyAgreement/metadata.json
+A,pages/Member Functions/queries/qVerifyAgreement/qVerifyAgreement.txt
+A,pages/Member Functions/queries/qVerifyAgreementEmail/metadata.json
+A,pages/Member Functions/queries/qVerifyAgreementEmail/qVerifyAgreementEmail.txt
+A,pages/Member Functions/queries/qVoidRelease/metadata.json
+A,pages/Member Functions/queries/qVoidRelease/qVoidRelease.txt
+A,pages/Member Functions/widgets/Agreements.json
+A,pages/Member Functions/widgets/AgreementsTable.json
+A,pages/Member Functions/widgets/Facilitators.json
+A,pages/Member Functions/widgets/FilePicker1.json
+A,pages/Member Functions/widgets/NewFacilitator.json
+A,pages/Member Functions/widgets/Releases.json
+A,pages/Member Functions/widgets/ReleasesTable.json
+A,pages/Member Functions/widgets/SendRelease.json
+A,pages/Member Functions/widgets/UploadRelease.json
+A,pages/Member Functions/widgets/btnAssignFacilitator.json
+A,pages/Member Functions/widgets/btnBackToDirectory.json
+A,pages/Member Functions/widgets/inpEmailAgreementTo.json
+A,pages/Member Functions/widgets/inpFacilitator.json
+A,pages/Member Functions/widgets/inpFacilitatorAssignmentNotes.json
+A,pages/Member Functions/widgets/selAgreementTemplate.json
+A,pages/Member Functions/widgets/selAgreementType.json
+A,pages/Member Functions/widgets/selAssignedFacilitator.json
+A,pages/Member Functions/widgets/selMember.json
+A,pages/Member Functions/widgets/tblMemberFacilitators.json
+D,pages/Members - Directory/Members - Directory.json
+D,pages/Members - Directory/jsobjects/memberDirectoryFlows/memberDirectoryFlows.js
+D,pages/Members - Directory/jsobjects/memberDirectoryFlows/metadata.json
+D,pages/Members - Directory/queries/Api1/Api1.txt
+D,pages/Members - Directory/queries/Api1/metadata.json
+D,pages/Members - Directory/queries/memberDirectoryFlows-auditLog/metadata.json
+D,pages/Members - Directory/queries/memberDirectoryFlows-newMember/metadata.json
+D,pages/Members - Directory/queries/memberDirectoryFlows-openSelected/metadata.json
+D,pages/Members - Directory/queries/memberDirectoryFlows-refresh/metadata.json
+D,pages/Members - Directory/queries/memberDirectoryFlows-verifyaccess/metadata.json
+D,pages/Members - Directory/queries/qAuditLogInsert/metadata.json
+D,pages/Members - Directory/queries/qAuditLogInsert/qAuditLogInsert.txt
+D,pages/Members - Directory/queries/qCurrentFacilitator/metadata.json
+D,pages/Members - Directory/queries/qCurrentFacilitator/qCurrentFacilitator.txt
+D,pages/Members - Directory/queries/qDeactivateMember/metadata.json
+D,pages/Members - Directory/queries/qDeactivateMember/qDeactivateMember.txt
+D,pages/Members - Directory/queries/qMemberPreview/metadata.json
+D,pages/Members - Directory/queries/qMemberPreview/qMemberPreview.txt
+D,pages/Members - Directory/queries/qMembersDirectory/metadata.json
+D,pages/Members - Directory/queries/qMembersDirectory/qMembersDirectory.txt
+D,pages/Members - Directory/widgets/Text1.json
+D,pages/Members - Directory/widgets/btnNewMember.json
+D,pages/Members - Directory/widgets/btnRefresh.json
+D,pages/Members - Directory/widgets/tblMembers.json
+D,pages/Members - Profile/Members - Profile.json
+D,pages/Members - Profile/jsobjects/memberProfile/memberProfile.js
+D,pages/Members - Profile/jsobjects/memberProfile/metadata.json
+D,pages/Members - Profile/queries/apiCancelDocumensoAgreement/apiCancelDocumensoAgreement.txt
+D,pages/Members - Profile/queries/apiCancelDocumensoAgreement/metadata.json
+D,pages/Members - Profile/queries/apiMarkProductUnShipped/apiMarkProductUnShipped.txt
+D,pages/Members - Profile/queries/apiMarkProductUnShipped/metadata.json
+D,pages/Members - Profile/queries/apiTriggerDocumenso/apiTriggerDocumenso.txt
+D,pages/Members - Profile/queries/apiTriggerDocumenso/metadata.json
+D,pages/Members - Profile/queries/apiUploadEvidence/apiUploadEvidence.txt
+D,pages/Members - Profile/queries/apiUploadEvidence/metadata.json
+D,pages/Members - Profile/queries/apiUploadEvidencePublic/apiUploadEvidencePublic.txt
+D,pages/Members - Profile/queries/apiUploadEvidencePublic/metadata.json
+D,pages/Members - Profile/queries/apiUploadEvidenceViaN8n/apiUploadEvidenceViaN8n.txt
+D,pages/Members - Profile/queries/apiUploadEvidenceViaN8n/metadata.json
+D,pages/Members - Profile/queries/memberProfile-_diff/metadata.json
+D,pages/Members - Profile/queries/memberProfile-_normEmail/metadata.json
+D,pages/Members - Profile/queries/memberProfile-_normText/metadata.json
+D,pages/Members - Profile/queries/memberProfile-_normalizeUploadResponse/metadata.json
+D,pages/Members - Profile/queries/memberProfile-_requireAgreementTemplate/metadata.json
+D,pages/Members - Profile/queries/memberProfile-_requireAgreementType/metadata.json
+D,pages/Members - Profile/queries/memberProfile-_requireFacilitator/metadata.json
+D,pages/Members - Profile/queries/memberProfile-_requireMemberId/metadata.json
+D,pages/Members - Profile/queries/memberProfile-_toDateOnly/metadata.json
+D,pages/Members - Profile/queries/memberProfile-addMemberAddress/metadata.json
+D,pages/Members - Profile/queries/memberProfile-addMemberEmail/metadata.json
+D,pages/Members - Profile/queries/memberProfile-addMemberPhone/metadata.json
+D,pages/Members - Profile/queries/memberProfile-archiveMemberAddress/metadata.json
+D,pages/Members - Profile/queries/memberProfile-archiveMemberEmail/metadata.json
+D,pages/Members - Profile/queries/memberProfile-archiveMemberPhone/metadata.json
+D,pages/Members - Profile/queries/memberProfile-assignFacilitator/metadata.json
+D,pages/Members - Profile/queries/memberProfile-assignStorageLocation/metadata.json
+D,pages/Members - Profile/queries/memberProfile-auditLog/metadata.json
+D,pages/Members - Profile/queries/memberProfile-cancelDocumensoAgreement/metadata.json
+D,pages/Members - Profile/queries/memberProfile-ensureMemberAccess/metadata.json
+D,pages/Members - Profile/queries/memberProfile-evidenceLinks/metadata.json
+D,pages/Members - Profile/queries/memberProfile-init/metadata.json
+D,pages/Members - Profile/queries/memberProfile-openPaperUpload/metadata.json
+D,pages/Members - Profile/queries/memberProfile-openReassignModal/metadata.json
+D,pages/Members - Profile/queries/memberProfile-reassignDonation/metadata.json
+D,pages/Members - Profile/queries/memberProfile-reassignMemberAddress/metadata.json
+D,pages/Members - Profile/queries/memberProfile-reassignMemberEmail/metadata.json
+D,pages/Members - Profile/queries/memberProfile-reassignMemberPhone/metadata.json
+D,pages/Members - Profile/queries/memberProfile-refresh/metadata.json
+D,pages/Members - Profile/queries/memberProfile-refreshAgreements/metadata.json
+D,pages/Members - Profile/queries/memberProfile-refreshDonations/metadata.json
+D,pages/Members - Profile/queries/memberProfile-removeFacilitator/metadata.json
+D,pages/Members - Profile/queries/memberProfile-removeStorageLocation/metadata.json
+D,pages/Members - Profile/queries/memberProfile-sendDigitalAgreement/metadata.json
+D,pages/Members - Profile/queries/memberProfile-setMemberId/metadata.json
+D,pages/Members - Profile/queries/memberProfile-setPrimaryMemberEmail/metadata.json
+D,pages/Members - Profile/queries/memberProfile-submitMemberUpdate/metadata.json
+D,pages/Members - Profile/queries/memberProfile-subscribeMemberEmail/metadata.json
+D,pages/Members - Profile/queries/memberProfile-unsubscribeMemberEmail/metadata.json
+D,pages/Members - Profile/queries/memberProfile-verifyAgreement/metadata.json
+D,pages/Members - Profile/queries/memberProfile-verifyDonation/metadata.json
+D,pages/Members - Profile/queries/memberProfile-verifyMemberEmail/metadata.json
+D,pages/Members - Profile/queries/memberProfile-voidRelease/metadata.json
+D,pages/Members - Profile/queries/qAddMemberAddress/metadata.json
+D,pages/Members - Profile/queries/qAddMemberAddress/qAddMemberAddress.txt
+D,pages/Members - Profile/queries/qAddMemberEmail/metadata.json
+D,pages/Members - Profile/queries/qAddMemberEmail/qAddMemberEmail.txt
+D,pages/Members - Profile/queries/qAddMemberPhone/metadata.json
+D,pages/Members - Profile/queries/qAddMemberPhone/qAddMemberPhone.txt
+D,pages/Members - Profile/queries/qAgreementTemplatesByType/metadata.json
+D,pages/Members - Profile/queries/qAgreementTemplatesByType/qAgreementTemplatesByType.txt
+D,pages/Members - Profile/queries/qAgreementTypesList/metadata.json
+D,pages/Members - Profile/queries/qAgreementTypesList/qAgreementTypesList.txt
+D,pages/Members - Profile/queries/qApproveAgreement/metadata.json
+D,pages/Members - Profile/queries/qApproveAgreement/qApproveAgreement.txt
+D,pages/Members - Profile/queries/qArchiveMemberAddress/metadata.json
+D,pages/Members - Profile/queries/qArchiveMemberAddress/qArchiveMemberAddress.txt
+D,pages/Members - Profile/queries/qArchiveMemberEmail/metadata.json
+D,pages/Members - Profile/queries/qArchiveMemberEmail/qArchiveMemberEmail.txt
+D,pages/Members - Profile/queries/qArchiveMemberPhone/metadata.json
+D,pages/Members - Profile/queries/qArchiveMemberPhone/qArchiveMemberPhone.txt
+D,pages/Members - Profile/queries/qAssignMemberFacilitator/metadata.json
+D,pages/Members - Profile/queries/qAssignMemberFacilitator/qAssignMemberFacilitator.txt
+D,pages/Members - Profile/queries/qAssignMemberStorageLocation/metadata.json
+D,pages/Members - Profile/queries/qAssignMemberStorageLocation/qAssignMemberStorageLocation.txt
+D,pages/Members - Profile/queries/qAuditLogInsert/metadata.json
+D,pages/Members - Profile/queries/qAuditLogInsert/qAuditLogInsert.txt
+D,pages/Members - Profile/queries/qCreatePendingAgreement/metadata.json
+D,pages/Members - Profile/queries/qCreatePendingAgreement/qCreatePendingAgreement.txt
+D,pages/Members - Profile/queries/qCurrentFacilitator/metadata.json
+D,pages/Members - Profile/queries/qCurrentFacilitator/qCurrentFacilitator.txt
+D,pages/Members - Profile/queries/qDeactivateMemberFacilitator/metadata.json
+D,pages/Members - Profile/queries/qDeactivateMemberFacilitator/qDeactivateMemberFacilitator.txt
+D,pages/Members - Profile/queries/qDeactivateMemberStorageLocati/metadata.json
+D,pages/Members - Profile/queries/qDeactivateMemberStorageLocati/qDeactivateMemberStorageLocati.txt
+D,pages/Members - Profile/queries/qDistinctStorageLocationNames/metadata.json
+D,pages/Members - Profile/queries/qDistinctStorageLocationNames/qDistinctStorageLocationNames.txt
+D,pages/Members - Profile/queries/qListFacilitators/metadata.json
+D,pages/Members - Profile/queries/qListFacilitators/qListFacilitators.txt
+D,pages/Members - Profile/queries/qLocationNameSuggestions/metadata.json
+D,pages/Members - Profile/queries/qLocationNameSuggestions/qLocationNameSuggestions.txt
+D,pages/Members - Profile/queries/qMemberAccessCheck/metadata.json
+D,pages/Members - Profile/queries/qMemberAccessCheck/qMemberAccessCheck.txt
+D,pages/Members - Profile/queries/qMemberAddresses/metadata.json
+D,pages/Members - Profile/queries/qMemberAddresses/qMemberAddresses.txt
+D,pages/Members - Profile/queries/qMemberAgreements/metadata.json
+D,pages/Members - Profile/queries/qMemberAgreements/qMemberAgreements.txt
+D,pages/Members - Profile/queries/qMemberById/metadata.json
+D,pages/Members - Profile/queries/qMemberById/qMemberById.txt
+D,pages/Members - Profile/queries/qMemberDonations/metadata.json
+D,pages/Members - Profile/queries/qMemberDonations/qMemberDonations.txt
+D,pages/Members - Profile/queries/qMemberEmails/metadata.json
+D,pages/Members - Profile/queries/qMemberEmails/qMemberEmails.txt
+D,pages/Members - Profile/queries/qMemberFacilitators/metadata.json
+D,pages/Members - Profile/queries/qMemberFacilitators/qMemberFacilitators.txt
+D,pages/Members - Profile/queries/qMemberPhones/metadata.json
+D,pages/Members - Profile/queries/qMemberPhones/qMemberPhones.txt
+D,pages/Members - Profile/queries/qMemberReleases/metadata.json
+D,pages/Members - Profile/queries/qMemberReleases/qMemberReleases.txt
+D,pages/Members - Profile/queries/qMemberStorageLocations/metadata.json
+D,pages/Members - Profile/queries/qMemberStorageLocations/qMemberStorageLocations.txt
+D,pages/Members - Profile/queries/qMemberUpdate/metadata.json
+D,pages/Members - Profile/queries/qMemberUpdate/qMemberUpdate.txt
+D,pages/Members - Profile/queries/qMembersDirectory/metadata.json
+D,pages/Members - Profile/queries/qMembersDirectory/qMembersDirectory.txt
+D,pages/Members - Profile/queries/qPrimaryMemberEmail/metadata.json
+D,pages/Members - Profile/queries/qPrimaryMemberEmail/qPrimaryMemberEmail.txt
+D,pages/Members - Profile/queries/qReassignDonationMember/metadata.json
+D,pages/Members - Profile/queries/qReassignDonationMember/qReassignDonationMember.txt
+D,pages/Members - Profile/queries/qReassignMemberAddress/metadata.json
+D,pages/Members - Profile/queries/qReassignMemberAddress/qReassignMemberAddress.txt
+D,pages/Members - Profile/queries/qReassignMemberEmail/metadata.json
+D,pages/Members - Profile/queries/qReassignMemberEmail/qReassignMemberEmail.txt
+D,pages/Members - Profile/queries/qReassignMemberPhone/metadata.json
+D,pages/Members - Profile/queries/qReassignMemberPhone/qReassignMemberPhone.txt
+D,pages/Members - Profile/queries/qSetPrimaryMemberEmail/metadata.json
+D,pages/Members - Profile/queries/qSetPrimaryMemberEmail/qSetPrimaryMemberEmail.txt
+D,pages/Members - Profile/queries/qSubscribeMemberEmail/metadata.json
+D,pages/Members - Profile/queries/qSubscribeMemberEmail/qSubscribeMemberEmail.txt
+D,pages/Members - Profile/queries/qUnsubscribeMemberEmail/metadata.json
+D,pages/Members - Profile/queries/qUnsubscribeMemberEmail/qUnsubscribeMemberEmail.txt
+D,pages/Members - Profile/queries/qVerifyAgreement/metadata.json
+D,pages/Members - Profile/queries/qVerifyAgreement/qVerifyAgreement.txt
+D,pages/Members - Profile/queries/qVerifyAgreementEmail/metadata.json
+D,pages/Members - Profile/queries/qVerifyAgreementEmail/qVerifyAgreementEmail.txt
+D,pages/Members - Profile/queries/qVerifyDonation/metadata.json
+D,pages/Members - Profile/queries/qVerifyDonation/qVerifyDonation.txt
+D,pages/Members - Profile/queries/qVerifyMemberEmail/metadata.json
+D,pages/Members - Profile/queries/qVerifyMemberEmail/qVerifyMemberEmail.txt
+D,pages/Members - Profile/queries/qVoidRelease/metadata.json
+D,pages/Members - Profile/queries/qVoidRelease/qVoidRelease.txt
+D,pages/Members - Profile/widgets/AddCashDonation.json
+D,pages/Members - Profile/widgets/Addresses.json
+D,pages/Members - Profile/widgets/Agreements.json
+D,pages/Members - Profile/widgets/AgreementsTable.json
+D,pages/Members - Profile/widgets/AssignStorageLocation.json
+D,pages/Members - Profile/widgets/Back.json
+D,pages/Members - Profile/widgets/Donations.json
+D,pages/Members - Profile/widgets/DonationsTable.json
+D,pages/Members - Profile/widgets/Emails.json
+D,pages/Members - Profile/widgets/Facilitators.json
+D,pages/Members - Profile/widgets/FilePicker1.json
+D,pages/Members - Profile/widgets/IssueRelease.json
+D,pages/Members - Profile/widgets/NewFacilitator.json
+D,pages/Members - Profile/widgets/PhoneNumbers.json
+D,pages/Members - Profile/widgets/ReassignAddressModal/ReassignAddressCloseButton.json
+D,pages/Members - Profile/widgets/ReassignAddressModal/ReassignAddressModal.json
+D,pages/Members - Profile/widgets/ReassignAddressModal/TxtReassignAddressTitle.json
+D,pages/Members - Profile/widgets/ReassignAddressModal/btnReassignAddressClose.json
+D,pages/Members - Profile/widgets/ReassignAddressModal/btnReassignAddressConfirm.json
+D,pages/Members - Profile/widgets/ReassignAddressModal/selReassignAddressMember.json
+D,pages/Members - Profile/widgets/ReassignAddressModal/txtReassignAddressContent.json
+D,pages/Members - Profile/widgets/ReassignDonationModal/ReassignDonationCloseButton.json
+D,pages/Members - Profile/widgets/ReassignDonationModal/ReassignDonationModal.json
+D,pages/Members - Profile/widgets/ReassignDonationModal/TxtReassignDonationTitle.json
+D,pages/Members - Profile/widgets/ReassignDonationModal/btnReassignDonationClose.json
+D,pages/Members - Profile/widgets/ReassignDonationModal/btnReassignDonationConfirm.json
+D,pages/Members - Profile/widgets/ReassignDonationModal/selReassignDonationMember.json
+D,pages/Members - Profile/widgets/ReassignDonationModal/txtReassignDonationContent.json
+D,pages/Members - Profile/widgets/ReassignDonationModal/txtReassignDonationID.json
+D,pages/Members - Profile/widgets/ReassignEmailModal/ReassignEmailCloseButton.json
+D,pages/Members - Profile/widgets/ReassignEmailModal/ReassignEmailModal.json
+D,pages/Members - Profile/widgets/ReassignEmailModal/TxtReassignEmailTitle.json
+D,pages/Members - Profile/widgets/ReassignEmailModal/btnReassignEmailClose.json
+D,pages/Members - Profile/widgets/ReassignEmailModal/btnReassignEmailConfirm.json
+D,pages/Members - Profile/widgets/ReassignEmailModal/selReassignEmailMember.json
+D,pages/Members - Profile/widgets/ReassignEmailModal/txtReassignEmailContent.json
+D,pages/Members - Profile/widgets/ReassignPhoneModal/ReassignPhoneCloseButton.json
+D,pages/Members - Profile/widgets/ReassignPhoneModal/ReassignPhoneModal.json
+D,pages/Members - Profile/widgets/ReassignPhoneModal/TxtReassignPhoneTitle.json
+D,pages/Members - Profile/widgets/ReassignPhoneModal/btnReassignPhoneClose.json
+D,pages/Members - Profile/widgets/ReassignPhoneModal/btnReassignPhoneConfirm.json
+D,pages/Members - Profile/widgets/ReassignPhoneModal/selReassignPhoneMember.json
+D,pages/Members - Profile/widgets/ReassignPhoneModal/txtReassignPhoneContent.json
+D,pages/Members - Profile/widgets/Releases.json
+D,pages/Members - Profile/widgets/ReleasesTable.json
+D,pages/Members - Profile/widgets/SendRelease.json
+D,pages/Members - Profile/widgets/StorageLocations.json
+D,pages/Members - Profile/widgets/UploadRelease.json
+D,pages/Members - Profile/widgets/btnAssignFacilitator.json
+D,pages/Members - Profile/widgets/btnAssignStorageLocation.json
+D,pages/Members - Profile/widgets/chkShowRejectedDonations.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/btnAddMemberAddress.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/chkNewMemberAddressPrimary.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/frmAddMemberAddress.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/inpNewMemberAddress1.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/inpNewMemberAddress2.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/inpNewMemberAddressNotes.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/inpNewMemberAddressType.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/inpNewMemberCity.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/inpNewMemberCountry.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/inpNewMemberPostalCode.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/inpNewMemberState.json
+D,pages/Members - Profile/widgets/frmAddMemberAddress/tblMemberAddresses.json
+D,pages/Members - Profile/widgets/frmAddMemberEmail/btnAddMemberEmail.json
+D,pages/Members - Profile/widgets/frmAddMemberEmail/chkNewMemberEmailPrimary.json
+D,pages/Members - Profile/widgets/frmAddMemberEmail/chkNewMemberEmailSubscribeList.json
+D,pages/Members - Profile/widgets/frmAddMemberEmail/frmAddMemberEmail.json
+D,pages/Members - Profile/widgets/frmAddMemberEmail/inpNewMemberEmail.json
+D,pages/Members - Profile/widgets/frmAddMemberEmail/inpNewMemberEmailNotes.json
+D,pages/Members - Profile/widgets/frmAddMemberEmail/tblMemberEmails.json
+D,pages/Members - Profile/widgets/frmAddMemberPhone/btnAddMemberPhone.json
+D,pages/Members - Profile/widgets/frmAddMemberPhone/chkNewMemberPhonePrimary.json
+D,pages/Members - Profile/widgets/frmAddMemberPhone/frmAddMemberPhone.json
+D,pages/Members - Profile/widgets/frmAddMemberPhone/inpNewMemberPhone.json
+D,pages/Members - Profile/widgets/frmAddMemberPhone/inpNewMemberPhoneNotes.json
+D,pages/Members - Profile/widgets/frmAddMemberPhone/tblMemberPhones.json
+D,pages/Members - Profile/widgets/frmUpdateMember/btnRename.json
+D,pages/Members - Profile/widgets/frmUpdateMember/btnSubmit.json
+D,pages/Members - Profile/widgets/frmUpdateMember/frmUpdateMember.json
+D,pages/Members - Profile/widgets/frmUpdateMember/inpDOB.json
+D,pages/Members - Profile/widgets/frmUpdateMember/inpFirstName.json
+D,pages/Members - Profile/widgets/frmUpdateMember/inpLastName.json
+D,pages/Members - Profile/widgets/frmUpdateMember/inpNotes.json
+D,pages/Members - Profile/widgets/inpAssignStorageLocation.json
+D,pages/Members - Profile/widgets/inpAssignStorageLocationNotes.json
+D,pages/Members - Profile/widgets/inpCreated.json
+D,pages/Members - Profile/widgets/inpEmailAgreementTo.json
+D,pages/Members - Profile/widgets/inpFacilitator.json
+D,pages/Members - Profile/widgets/inpFacilitatorAssignmentNotes.json
+D,pages/Members - Profile/widgets/inpRoles.json
+D,pages/Members - Profile/widgets/inpStatus.json
+D,pages/Members - Profile/widgets/lstAssignStorageLocation/ContainerAssignStorageLocation/ContainerAssignStorageLocation.json
+D,pages/Members - Profile/widgets/lstAssignStorageLocation/ContainerAssignStorageLocation/txtAssignStorageLocation.json
+D,pages/Members - Profile/widgets/lstAssignStorageLocation/lstAssignStorageLocation.json
+D,pages/Members - Profile/widgets/selAgreementTemplate.json
+D,pages/Members - Profile/widgets/selAgreementType.json
+D,pages/Members - Profile/widgets/selAssignedFacilitator.json
+D,pages/Members - Profile/widgets/selMember.json
+D,pages/Members - Profile/widgets/tblMemberFacilitators.json
+D,pages/Members - Profile/widgets/tblMemberStorageLocations.json
+M,"""pages/Members \342\200\223 Intake/Members \342\200\223 Intake.json"""
+M,"""pages/Members \342\200\223 Intake/jsobjects/memberFlows/memberFlows.js"""
+M,"""pages/Members \342\200\223 Intake/queries/qAddMemberEmailForNewMember/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qAddMemberPhoneForNewMember/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qAgreementTemplatesByType/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qAgreementTypesList/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qAssignMemberFacilitator/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qAuditLogInsert/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qCheckMemberDuplicate/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qCreateMember/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qCreatePendingAgreement/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qCurrentFacilitator/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/queries/qListFacilitators/metadata.json"""
+M,"""pages/Members \342\200\223 Intake/widgets/Members_IntakeForm/Back.json"""
+M,pages/Reports/Reports.json
+M,pages/Reports/queries/qCurrentFacilitator/metadata.json
+M,pages/Reports/queries/qReportTimeSeries/metadata.json
+M,pages/Sacrament Release/Sacrament Release.json
+M,pages/Sacrament Release/jsobjects/releaseFlows/releaseFlows.js
+M,pages/Sacrament Release/queries/qAccessibleStorageLocations/metadata.json
+M,pages/Sacrament Release/queries/qAuditLogInsert/metadata.json
+M,pages/Sacrament Release/queries/qCreateRelease/metadata.json
+M,pages/Sacrament Release/queries/qCurrentFacilitator/metadata.json
+M,pages/Sacrament Release/queries/qGateCheckAgreement/metadata.json
+M,pages/Sacrament Release/queries/qListFacilitators/metadata.json
+M,pages/Sacrament Release/queries/qMembersDirectory/metadata.json
+M,pages/Sacrament Release/queries/qReleaseMemberActive/metadata.json
+A,pages/Sacrament Release/queries/qTerminology/metadata.json
+A,pages/Sacrament Release/queries/qTerminology/qTerminology.txt
+D,pages/Sacrament Release/widgets/Back.json
+A,pages/Sacrament Release/widgets/btnBackToDirectory.json
+M,pages/Sacrament Release/widgets/btnIssueRelease.json
+M,pages/Sacrament Release/widgets/btnLoadProducts.json
+D,pages/Sacrament Release/widgets/btnMemberProfile.json
+M,pages/Sacrament Release/widgets/selFacilitator.json
+M,pages/Sacrament Release/widgets/tblProducts.json
+M,pages/Sacrament Release/widgets/txtEligibility.json
+A,pages/Terminology Administration/Terminology Administration.json
+A,pages/Terminology Administration/jsobjects/terminologyAdminFlows/metadata.json
+A,pages/Terminology Administration/jsobjects/terminologyAdminFlows/terminologyAdminFlows.js
+A,pages/Terminology Administration/queries/qSetTerminology/metadata.json
+A,pages/Terminology Administration/queries/qSetTerminology/qSetTerminology.txt
+A,pages/Terminology Administration/queries/qTerminology/metadata.json
+A,pages/Terminology Administration/queries/qTerminology/qTerminology.txt
+A,pages/Terminology Administration/queries/qTerminologyAccess/metadata.json
+A,pages/Terminology Administration/queries/qTerminologyAccess/qTerminologyAccess.txt
+A,pages/Terminology Administration/queries/terminologyAdminFlows-initialize/metadata.json
+A,pages/Terminology Administration/widgets/btnSaveTerminology.json
+A,pages/Terminology Administration/widgets/inpTermPlural.json
+A,pages/Terminology Administration/widgets/inpTermReason.json
+A,pages/Terminology Administration/widgets/inpTermShort.json
+A,pages/Terminology Administration/widgets/inpTermSingular.json
+A,pages/Terminology Administration/widgets/selTermActive.json
+A,pages/Terminology Administration/widgets/selTerminologyConcept.json
+A,pages/Terminology Administration/widgets/txtTerminologyDenied.json
+A,pages/Terminology Administration/widgets/txtTerminologyIntro.json
+A,pages/Terminology Administration/widgets/txtTerminologyPreview.json
+A,pages/Terminology Administration/widgets/txtTerminologySafety.json
+A,pages/Terminology Administration/widgets/txtTerminologyTitle.json
+M,pages/Unauthorized/Unauthorized.json

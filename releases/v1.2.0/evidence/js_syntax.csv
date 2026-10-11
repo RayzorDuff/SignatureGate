@@ -1,0 +1,15 @@
+path,syntax_ok
+pages/Agreement Templates/jsobjects/agreementTemplateFlows/agreementTemplateFlows.js,True
+pages/Audit Log/jsobjects/auditLogFlows/auditLogFlows.js,True
+pages/Cash Deposits/jsobjects/cashDepositFlows/cashDepositFlows.js,True
+pages/Company Profile/jsobjects/CompanyProfileFlows/CompanyProfileFlows.js,True
+pages/Contributor Functions/jsobjects/cashDonationFlows/cashDonationFlows.js,True
+pages/Directory/jsobjects/issue19DirectoryFlows/issue19DirectoryFlows.js,True
+pages/Facilitator Functions/jsobjects/facilitatorFlows/facilitatorFlows.js,True
+pages/Individual Profile/jsobjects/IndividualProfileFlows/IndividualProfileFlows.js,True
+pages/Intake/jsobjects/intakeFlows/intakeFlows.js,True
+pages/Member Functions/jsobjects/memberProfile/memberProfile.js,True
+pages/Members – Intake/jsobjects/memberFlows/memberFlows.js,True
+pages/Reports/jsobjects/reports/reports.js,True
+pages/Sacrament Release/jsobjects/releaseFlows/releaseFlows.js,True
+pages/Terminology Administration/jsobjects/terminologyAdminFlows/terminologyAdminFlows.js,True

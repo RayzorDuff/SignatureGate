@@ -4,6 +4,14 @@ Planned release: **v1.2.0** (unreleased). This is the first coordinated release 
 
 Prepared October 11, 2026, for SignatureGate #17, #18, #19, #20, and #23, and SignatureGate-Appsmith #2 and #4.
 
+## Execution progress
+
+The release plan is committed on SignatureGate `main` at `f6372147cb247f6fc62410643e4bdc456d278ac6`.
+
+Phase 1 source/issue inventory is recorded in [PHASE_1_AUDIT.md](PHASE_1_AUDIT.md), with a 97-row [acceptance ledger](ACCEPTANCE_LEDGER.csv), [environment/migration inventory](ENVIRONMENT_AND_MIGRATIONS.md), and [changelog audit](CHANGELOG_AUDIT.md). Its live deployment exit gate remains open until test/production catalogs and deployed revisions are compared.
+
+Additional packaging findings from Phase 1: the current export generator omits the flat datasource files and `jslibs` directory; a fresh export contains zero datasource/library entries. The fresh candidate also produces 14 validator findings for seven removed Individual Profile widgets. Existing validation of the older bundled JSON does not establish current-source export validity. Repair and verify both before release packaging.
+
 ## Release objective
 
 Complete and validate the application on **SignatureGate-Appsmith/chatgpt_development**, prove the production database upgrade, switch the release candidate from test configuration to production configuration, and merge and publish that exact candidate on **master**. SignatureGate database and integration changes belong on **SignatureGate/main**.

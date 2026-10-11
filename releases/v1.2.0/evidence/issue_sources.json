@@ -1,0 +1,170 @@
+{
+  "SignatureGate#17": {
+    "url": "https://github.com/RayzorDuff/SignatureGate/issues/17",
+    "title": "Feature: Cash Deposit Management",
+    "state": "open",
+    "updated_at": "2026-10-10T20:07:47Z",
+    "body_sha256": "c15f1a4bd9ca78f9e7b6d79c27d00fc82d37c89519d2772941ffd4852238ce4d",
+    "comments": [
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/17#issuecomment-5258312094",
+        "body_sha256": "615bcf9a623bdcf562946ee41cfc172866d91e2992e534ffc88c30aa165b9a49"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/17#issuecomment-5459954369",
+        "body_sha256": "29ded8e61344b7cbce6bb4ceef981a98930eec0db02b28e1ae96c64107f00aba"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/17#issuecomment-5752663352",
+        "body_sha256": "d37176d07958d54c529e06327b35a257643f5f0c25635e498febd9d2b1371552"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/17#issuecomment-5753474763",
+        "body_sha256": "2e437350fd4967e7d3e0b40c4f516d732a31603a5f7a2dfaf943b436b3d65b6c"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/17#issuecomment-5985395608",
+        "body_sha256": "1cf825c71037979ecef3522d6e901394611fffcd34bfd3423d7ba58160b32087"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/17#issuecomment-6101679501",
+        "body_sha256": "b2e323205036fbce4dfae8cd7a2bab7bf68f872a192980c2af5c4b128283f746"
+      }
+    ]
+  },
+  "SignatureGate#18": {
+    "url": "https://github.com/RayzorDuff/SignatureGate/issues/18",
+    "title": "Feature: Synchronize Contributions and Deposit Batches with ERPNext through RootedOps",
+    "state": "open",
+    "updated_at": "2026-10-10T20:07:49Z",
+    "body_sha256": "886277e0533e076f10b23c87d52d019cb44704ea71a1dd81ddf065e712203324",
+    "comments": [
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/18#issuecomment-5459956678",
+        "body_sha256": "b0ac3f0f51fc6f26817b0fb2baa925917a6184fa0fa2be1d22de376155d8118d"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/18#issuecomment-6100356723",
+        "body_sha256": "d5dfc8f69433f2afcc584121290413e1cace6ab4e00ed843305b548d8783d4cf"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/18#issuecomment-6100863509",
+        "body_sha256": "56741907ef3a1820e8bb169cd3335ebf12e4c9327014e748059d18d454a61cb6"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/18#issuecomment-6101051982",
+        "body_sha256": "25040c90878a8bcd4bcd32b81494dc19b41e163cc6e8a0624956f9a887103a73"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/18#issuecomment-6101180686",
+        "body_sha256": "60d5fcdda3a57e7187ec4d0a3032e3c18d76fc68e123fd90f5b0d296270964d8"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/18#issuecomment-6101361022",
+        "body_sha256": "5072e149e9c99da06650f37138011283f85843db5cbe20a8f33de3eea7229669"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/18#issuecomment-6101472026",
+        "body_sha256": "8117ce37939e9c448137e7d88f29786dcb81b90376288b4c299b1cbe25b9fb31"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/18#issuecomment-6101609988",
+        "body_sha256": "91151c3ec56b1d2c15b7fd0a02f93cfb57b7924f3fc70c38b10cf208c362b4b6"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/18#issuecomment-6101679736",
+        "body_sha256": "1038bd9bee4360982646c0a9c6911475a5e104f3553b387e0d94a06ed1d0763e"
+      }
+    ]
+  },
+  "SignatureGate#19": {
+    "url": "https://github.com/RayzorDuff/SignatureGate/issues/19",
+    "title": "Contributor identity independent of membership for donations",
+    "state": "open",
+    "updated_at": "2026-09-29T02:43:19Z",
+    "body_sha256": "5bc72339365f1ec67cba2d10624971544276d2106cfb1374820373b880a99db7",
+    "comments": [
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5754775125",
+        "body_sha256": "5723fb3228e4dd7b9d4f0efab500488fc68727e66a96b3229aeb765922b976c0"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5770046513",
+        "body_sha256": "0ee86b88bd4e17f90c1fcd2feea86475e4391c45e103750b49f1abbab3e9847d"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5783983182",
+        "body_sha256": "6d9cd5058ae6af935f758170f3c5be95e51eb4ca33c90a2b1f0d3e8d9b7e0897"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5787980910",
+        "body_sha256": "5ed49ab538ab4bd2cacdc8cddec57b85297040d5e92171738f96f318523af7bd"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5802664353",
+        "body_sha256": "e4d51bdded6fdb937d2f9230fc203581354c8edf292038e34ccae9f3e72e083a"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5881908973",
+        "body_sha256": "861bb33dce9844c47a0ffd5fad9ed034db68fae419895ebca5666f649f49eca4"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5882053582",
+        "body_sha256": "89dbf031c0361869ac1c2071b0b21482ae94d55b7f1ff5796016835d4a781a93"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5882116963",
+        "body_sha256": "15bd99e198de5f664beabec03d2a450feb33acd6cb21654f2671b51026001fe5"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5882269100",
+        "body_sha256": "b350c168c2dc1fcb1b2e18f1ca579654a1a3f932857aa18d2a5b53ee1ea2b435"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5882549890",
+        "body_sha256": "1a2afc15599d05031cf597396f6e8e29d4258521ace0b907dd46746d07d97623"
+      },
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/19#issuecomment-5882635851",
+        "body_sha256": "fedeedfb17cfa9e7bc32752948d09c96b427d74ff327ddd8de7da8dad7da6998"
+      }
+    ]
+  },
+  "SignatureGate#20": {
+    "url": "https://github.com/RayzorDuff/SignatureGate/issues/20",
+    "title": "Configurable organizational terminology and Rooted Psyche \u201cSpiritual Practitioner\u201d migration",
+    "state": "open",
+    "updated_at": "2026-10-10T15:48:17Z",
+    "body_sha256": "95b6ed6bd5ed287856549d2a12080086c10cf8255439fc941b9aeb06f0f1c26a",
+    "comments": [
+      {
+        "url": "https://github.com/RayzorDuff/SignatureGate/issues/20#issuecomment-6099300953",
+        "body_sha256": "eda09229123a8def49dedb82fb53537cb550fa8715607b7a13e12830e33bd06d"
+      }
+    ]
+  },
+  "SignatureGate#23": {
+    "url": "https://github.com/RayzorDuff/SignatureGate/issues/23",
+    "title": "Appsmith Git-sync regression: Reports access check and Members Directory population",
+    "state": "open",
+    "updated_at": "2026-09-28T02:32:16Z",
+    "body_sha256": "70c6cf44b545136a45e0fec574129c822ebb374ffe9da7fd7267f1e3b0b453f3",
+    "comments": []
+  },
+  "SignatureGate-Appsmith#2": {
+    "url": "https://github.com/RayzorDuff/SignatureGate-Appsmith/issues/2",
+    "title": "Add Agreement Type administration to Agreement Templates",
+    "state": "open",
+    "updated_at": "2026-10-04T14:50:34Z",
+    "body_sha256": "1235f23bdbb285955edcbe06fcc31211543ecc80e59fac3faaff89835af52d48",
+    "comments": []
+  },
+  "SignatureGate-Appsmith#4": {
+    "url": "https://github.com/RayzorDuff/SignatureGate-Appsmith/issues/4",
+    "title": "Organize Appsmith navigation into grouped workflow menus",
+    "state": "open",
+    "updated_at": "2026-10-11T13:40:55Z",
+    "body_sha256": "d2e635be91f63dda1ef360fc4f67a282d6b72414f70cf9596ae219446bc62504",
+    "comments": []
+  }
+}

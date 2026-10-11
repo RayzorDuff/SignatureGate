@@ -1,0 +1,19 @@
+page,hidden,widget_count,sql_actions,api_actions,js_actions,on_load_actions,outgoing_literal_routes,url_params,store_keys,role_terms
+Agreement Templates,False,19,7,1,17,verifyaccess;qAgreementTemplatesList,Unauthorized,,documenso_templates;facilitator_email;facilitator_full_name;facilitator_id;facilitator_is_donations_reviewer;facilitator_is_reviewer,is_document_reviewer;is_donations_reviewer;is_facilitator
+Agreements - Queue,True,2,1,0,0,,,,,
+Audit Log,False,11,4,0,4,verifyaccess;qAuditLogList,Unauthorized,,facilitator_email;facilitator_full_name;facilitator_id;facilitator_is_donations_reviewer;facilitator_is_reviewer,is_document_reviewer;is_donations_reviewer;is_facilitator
+Cash Deposits,False,22,11,2,18,,,,cash_deposit_batch_id;cash_deposit_hide_ineligible;facilitator_id;facilitator_is_donations_reviewer,is_document_reviewer;is_donations_reviewer;is_facilitator
+Company Profile,False,51,22,0,1,load,Directory,organization_id,selected_organization_profile_id,donations_reviewer
+Contributor Functions,False,27,14,0,12,verifyaccess,Directory;Member Functions;Unauthorized,contributor_id;member_id,donation_donor_selection;donation_reassign_row;facilitator_email;facilitator_full_name;facilitator_id;facilitator_is_donations_reviewer;facilitator_is_reviewer;member_id,document_reviewer;donations_reviewer;is_document_reviewer;is_donations_reviewer;is_facilitator
+Directory,False,4,1,0,5,load,Contributor Functions;Member Functions;Sacrament Release,,donation_donor_selection;member_id,
+Events - Check In,True,6,3,0,0,,,,facilitator_email;facilitator_id;facilitator_is_reviewer,is_document_reviewer;is_facilitator
+Events - Create,True,7,2,0,0,,,,,
+Facilitator Functions,False,17,13,1,8,verifyaccess,Directory;Unauthorized,,facilitator_email;facilitator_full_name;facilitator_id;facilitator_is_donations_reviewer;facilitator_is_reviewer;selected_facilitator_id,document_reviewer;donations_reviewer;is_document_reviewer;is_donations_reviewer;is_facilitator
+Individual Profile,False,61,57,2,1,,Directory,person_id,selected_individual_profile_id,directory_manager;document_reviewer;donations_reviewer;is_document_reviewer;is_donations_reviewer;is_facilitator
+Intake,False,36,22,2,3,,,,,directory_manager;document_reviewer;donations_reviewer;is_document_reviewer;is_donations_reviewer;is_facilitator
+Member Functions,False,19,20,6,19,init;qMemberReleases,Directory;Unauthorized,member_id,NC_PUBLIC_URL;agreement_template_id;agreement_type_id;facilitator_email;facilitator_full_name;facilitator_id;facilitator_is_donations_reviewer;facilitator_is_reviewer;member_id,document_reviewer;donations_reviewer;is_document_reviewer;is_donations_reviewer;is_facilitator
+Members – Intake,False,20,11,3,6,verifyaccess,Unauthorized,,facilitator_email;facilitator_full_name;facilitator_id;facilitator_is_donations_reviewer;facilitator_is_reviewer;memberDupes;new_member_id,is_document_reviewer;is_donations_reviewer;is_facilitator
+Reports,False,10,2,0,13,,Unauthorized,,facilitator_email;facilitator_full_name;facilitator_id;facilitator_is_donations_reviewer;facilitator_is_reviewer,is_document_reviewer;is_donations_reviewer;is_facilitator
+Sacrament Release,False,8,9,2,6,verifyaccess,Directory;Unauthorized,member_id,facilitator_email;facilitator_full_name;facilitator_id;facilitator_is_donations_reviewer;facilitator_is_reviewer;member_id;practitioner_person_id;practitioner_plural_label;practitioner_singular_label;release_practitioner_person_id,is_document_reviewer;is_donations_reviewer
+Terminology Administration,False,12,3,0,1,,,,,directory_manager
+Unauthorized,True,1,0,0,0,,,,,

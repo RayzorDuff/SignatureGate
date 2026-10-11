@@ -1,0 +1,55 @@
+{
+  "appsmith_revision": "2746b2712f2bd91b508c1d58f7025ce444abef78",
+  "signaturegate_source_revision": "9fb5aa53b60baa670fe86fabe63e6b5752be0109",
+  "baseline_v1_1_0": "654b02c00dd39165a65a6ab3aebd28455264b70a",
+  "commits_since_v1_1_0": 176,
+  "json_files": 708,
+  "pages": 18,
+  "actions": 335,
+  "js_objects": 14,
+  "js_syntax_all_pass": true,
+  "datasource_descriptors": 4,
+  "jslib_descriptors": 1,
+  "findings_by_kind": {
+    "bare_table_fallback": 175,
+    "missing_widget_reference": 1
+  },
+  "action_datasources": {
+    "N8N": 16,
+    "signaturegate-postgres-test": 202,
+    "NocoDB danks.store": 2,
+    "NocoDB danks.store public": 1
+  },
+  "multiply_defined_migration_objects": {
+    "prevent_confirmed_cash_deposit_item_mutation": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "add_cash_deposit_item": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "remove_cash_deposit_item": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "cancel_cash_deposit_batch": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "confirm_cash_deposit_batch": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "cash_on_hand_donations": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql",
+      "cash_donation_reconciliation_exceptions.sql"
+    ],
+    "prevent_confirmed_cash_deposit_mutation": [
+      "cash_deposit_confirmation_correction.sql",
+      "cash_deposit_management.sql"
+    ]
+  },
+  "live_environment_verified": false
+}
