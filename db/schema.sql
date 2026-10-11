@@ -10382,15 +10382,67 @@ BEFORE UPDATE ON public.cash_deposit_batches
 FOR EACH ROW
 EXECUTE FUNCTION public.set_updated_at();
 
--- Confirmed batches are an accounting/physical-custody fact and may not be
--- edited or deleted. Cancellation is the only supported draft cleanup path.
+-- Confirmed composition remains immutable. Preserve the audited deposit-date
+-- correction allowed before successful ERP synchronization; do not replace the
+-- deployed correction guard with an earlier unconditional rejection.
 CREATE OR REPLACE FUNCTION public.prevent_confirmed_cash_deposit_mutation()
 RETURNS trigger
 LANGUAGE plpgsql
 SET search_path = public, pg_temp
-AS $$
+AS $sg$
+DECLARE
+  v_sync_status text;
+  v_actor_id uuid;
+  v_reason text;
 BEGIN
   IF OLD.status = 'confirmed' THEN
+    IF TG_OP = 'UPDATE'
+       AND NEW.deposit_date IS DISTINCT FROM OLD.deposit_date
+       AND (
+         to_jsonb(NEW) - 'deposit_date' - 'updated_at'
+       ) = (
+         to_jsonb(OLD) - 'deposit_date' - 'updated_at'
+       )
+    THEN
+      BEGIN
+        v_actor_id := NULLIF(
+          current_setting(
+            'signaturegate.cash_deposit_correction_actor',
+            true
+          ),
+          ''
+        )::uuid;
+      EXCEPTION
+        WHEN invalid_text_representation THEN
+          v_actor_id := NULL;
+      END;
+
+      v_reason := NULLIF(
+        btrim(
+          current_setting(
+            'signaturegate.cash_deposit_correction_reason',
+            true
+          )
+        ),
+        ''
+      );
+
+      IF v_actor_id IS NOT NULL AND v_reason IS NOT NULL THEN
+        PERFORM public.assert_cash_deposit_verifier(v_actor_id);
+
+        SELECT status
+        INTO v_sync_status
+        FROM public.cash_deposit_erp_sync
+        WHERE deposit_batch_id = OLD.deposit_batch_id;
+
+        IF v_sync_status IS NULL
+           OR v_sync_status IN ('pending', 'failed')
+        THEN
+          RETURN NEW;
+        END IF;
+      END IF;
+    END IF;
+
     RAISE EXCEPTION
       'Confirmed cash deposit batch % is immutable.',
       OLD.deposit_batch_id;
@@ -10402,7 +10454,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$;
+$sg$;
 
 DROP TRIGGER IF EXISTS trg_cash_deposit_batches_immutable
   ON public.cash_deposit_batches;

@@ -10,7 +10,7 @@ The release plan is committed on SignatureGate `main` at `f6372147cb247f6fc62410
 
 Phase 1 source/issue inventory is recorded in [PHASE_1_AUDIT.md](PHASE_1_AUDIT.md), with a 97-row [acceptance ledger](ACCEPTANCE_LEDGER.csv), [environment/migration inventory](ENVIRONMENT_AND_MIGRATIONS.md), and [changelog audit](CHANGELOG_AUDIT.md). Its live deployment exit gate remains open until test/production catalogs and deployed revisions are compared.
 
-Phase 2 has commenced: audited Agreement Type administration, canonical Agreement Templates actor lookup, exporter dependency/nested-widget preservation and current-page terminology checks are implemented. See [PHASE_2_PROGRESS.md](PHASE_2_PROGRESS.md) for passing isolated/source tests and the remaining live acceptance. The earlier 14 export findings were ten obsolete checks for five retired controls and four caused by the exporter dropping two existing role controls; that diagnosis and both defects are corrected. [PHASE_1_VALIDATION.md](PHASE_1_VALIDATION.md) gives the exact live evidence, commands and pass conditions required to close Phase 1. These blockers remain part of the release work.
+Phase 2 has commenced: audited Agreement Type administration, canonical `Agreement Templates` actor lookup, exporter dependency/nested-widget preservation and current-page terminology checks are implemented. See [PHASE_2_PROGRESS.md](PHASE_2_PROGRESS.md) for passing isolated/source tests and the remaining live acceptance. The earlier 14 export findings were ten obsolete checks for five retired controls and four caused by the exporter dropping two existing role controls; that diagnosis and both defects are corrected. [PHASE_1_VALIDATION.md](PHASE_1_VALIDATION.md) gives the exact live evidence, commands and pass conditions required to close Phase 1. These blockers remain part of the release work.
 
 ## Release objective
 
@@ -46,22 +46,22 @@ The final packaging gate is: production-bound Appsmith source frozen and publish
 | SignatureGate-Appsmith/master | 0b7739f2a4a20ef89808d2c76658682b3a1c39c4 |
 | SignatureGate-Appsmith/production_development | 7c0a7e7cc48e5b522744bb0b934b636b9eb4857f |
 
-The development-to-master snapshot differs across **818 files**. This is a coordinated application release, rather than another isolated Cash Deposits cherry-pick. Re-fetch these refs before implementation or promotion.
+The development-to-master snapshot differs across **818 files**. This is a coordinated application release, rather than another isolated `Cash Deposits` cherry-pick. Re-fetch these refs before implementation or promotion.
 
 Checks actually performed for this plan:
 
 - **make validate** and **make release-check** passed in SignatureGate.
 - All **708 Appsmith JSON files** parsed.
 - All **14 Appsmith JS objects** passed Node JavaScript syntax checks.
-- No remaining literal Members - Directory page-name references were found in current Appsmith page files, including the dash variants checked.
-- Reports now contains both **qCurrentFacilitator** and **qReportTimeSeries**.
+- No remaining literal Participants - `Directory` page-name references were found in current Appsmith page files, including the dash variants checked.
+- `Reports` now contains both **qCurrentFacilitator** and **qReportTimeSeries**.
 - A source scan found **175 table-column expressions with bare generated fallback identifiers** across ten pages. This is a source-pattern count, not a measured live Appsmith linter count. These need contextual repair and import/pull verification.
 - **202 SQL actions** reference **signaturegate-postgres-test**. The exported datasource is a descriptor; its actual database connection must be verified in Appsmith.
-- Both Individual Profile and Company Profile are still directly visible in navigation.
-- Members – Intake still exists and is visible.
+- Both `Individual Profile` and `Company Profile` are still directly visible in navigation.
+- `Members – Intake` still exists and is visible.
 - No Appsmith-specific validation scripts, Makefile, or CI workflow are present in the inspected Appsmith tree.
 
-The recent user-verified Company Profile repair is the working baseline: recreating its JS object in Appsmith restored page-load execution. Preserve the recreated object and its Appsmith-generated registration metadata. Do not normalize its execution settings just because earlier exported metadata appeared inconsistent.
+The recent user-verified `Company Profile` repair is the working baseline: recreating its JS object in Appsmith restored page-load execution. Preserve the recreated object and its Appsmith-generated registration metadata. Do not normalize its execution settings just because earlier exported metadata appeared inconsistent.
 
 Production database state, deployed n8n/RootedOps versions, Appsmith runtime linter state, and the complete live permissions matrix have **not** been inspected during this planning pass.
 
@@ -71,21 +71,21 @@ Production database state, deployed n8n/RootedOps versions, Appsmith runtime lin
 | --- | --- | --- |
 | [SignatureGate #17](https://github.com/RayzorDuff/SignatureGate/issues/17) — Cash Deposit Management | Latest issue comment reports a real production batch, preparation/confirmation, date correction, ERP bank-account choices, and successful downstream reconciliation. Operational work is substantially implemented. | Verify every donor type, exclusions/revival, print output, exact totals, concurrent assignment prevention, prepared vs actual deposit date, audit records, and confirmed composition immutability on the final candidate. Reconcile the original criteria with later scope comments separating ERP ownership into #18. |
 | [SignatureGate #18](https://github.com/RayzorDuff/SignatureGate/issues/18) — RootedOps/ERPNext synchronization | Latest comments report successful production Journal Entry creation and Bank Transaction reconciliation, preserved failed attempts, stable idempotency, retries, and non-writing development mode. | Retain that evidence; verify retry/idempotency, failure recovery, synchronization status, correction/reversal policy, and already-confirmed batches missing ERP documents. Confirm deployed RootedOps/n8n compatibility and production routing. |
-| [SignatureGate #19](https://github.com/RayzorDuff/SignatureGate/issues/19) — Independent contributor identity | Directory/profile/intake consolidation and contributor actions are present; recent work adds identity notes and richer collision reporting. Contact reassignment has earlier live verification. | Full acceptance audit across all identity/capacity combinations, migration integrity, Givebutter resolution, contact ownership, membership ending/re-entry, company contacts, notes, mailing preferences, practitioner scope, and contributor reporting. Retire Members – Intake after parity tests. |
-| [SignatureGate #20](https://github.com/RayzorDuff/SignatureGate/issues/20) — Configurable terminology | Terminology registry, administration page, and inventory exist. An October 10 comment adds **Member → Participant** to the display migration. | Complete active UI/generated-text terminology, including Participant labels and navigation; demonstrate an alternate configuration without source edits; update the Documenso inventory and documentation. Preserve internal identifiers and historical signed documents. |
-| [SignatureGate-Appsmith #2](https://github.com/RayzorDuff/SignatureGate-Appsmith/issues/2) — Agreement Type administration | Agreement Types can be listed/selected, but the inspected Agreement Templates page has no Agreement Type creation form or creation action. | Implement authorized, audited creation with type key, display name, sort order, and active state; validate required fields/duplicate keys; verify empty-table setup and selector refresh. |
-| [SignatureGate-Appsmith #4](https://github.com/RayzorDuff/SignatureGate-Appsmith/issues/4) — Grouped navigation | Current export still has flat native navigation and visible profile pages. Unauthorized and event pages are already hidden; Agreements - Queue is also hidden. | Inspect installed Appsmith capabilities, choose and document a maintainable grouped-menu approach, implement capability-aware entries, hide context-dependent profiles, preserve routes, and test Git synchronization, keyboard access, and ordinary mobile widths. Do not expose unfinished event/queue pages automatically. |
-| [SignatureGate #23](https://github.com/RayzorDuff/SignatureGate/issues/23) — Git-sync regression | Its two missing Reports SQL actions now exist. Members - Directory has been retired and replaced by Directory, whose loader catches query failures. | Original missing-source defect appears repaired and legacy-directory portion is superseded. Confirm Reports execution and Directory refresh/profile navigation in the deployed candidate before closing. Remaining canonical-role and report-category work belongs in #19/#20 unless the original regression still reproduces. |
+| [SignatureGate #19](https://github.com/RayzorDuff/SignatureGate/issues/19) — Independent contributor identity | `Directory`/profile/intake consolidation and contributor actions are present; recent work adds identity notes and richer collision reporting. Contact reassignment has earlier live verification. | Full acceptance audit across all identity/capacity combinations, migration integrity, Givebutter resolution, contact ownership, membership ending/re-entry, company contacts, notes, mailing preferences, practitioner scope, and contributor reporting. Retire `Members – Intake` after parity tests. |
+| [SignatureGate #20](https://github.com/RayzorDuff/SignatureGate/issues/20) — Configurable terminology | Terminology registry, administration page, and inventory exist. An October 10 comment adds **`Member` → Participant** to the display migration. | Complete active UI/generated-text terminology, including Participant labels and navigation; demonstrate an alternate configuration without source edits; update the Documenso inventory and documentation. Preserve internal identifiers and historical signed documents. |
+| [SignatureGate-Appsmith #2](https://github.com/RayzorDuff/SignatureGate-Appsmith/issues/2) — Agreement Type administration | Agreement Types can be listed/selected, but the inspected `Agreement Templates` page has no Agreement Type creation form or creation action. | Implement authorized, audited creation with type key, display name, sort order, and active state; validate required fields/duplicate keys; verify empty-table setup and selector refresh. |
+| [SignatureGate-Appsmith #4](https://github.com/RayzorDuff/SignatureGate-Appsmith/issues/4) — Grouped navigation | Current export still has flat native navigation and visible profile pages. `Unauthorized` and event pages are already hidden; `Agreements - Queue` is also hidden. | Inspect installed Appsmith capabilities, choose and document a maintainable grouped-menu approach, implement capability-aware entries, hide context-dependent profiles, preserve routes, and test Git synchronization, keyboard access, and ordinary mobile widths. Do not expose unfinished event/queue pages automatically. |
+| [SignatureGate #23](https://github.com/RayzorDuff/SignatureGate/issues/23) — Git-sync regression | Its two missing `Reports` SQL actions now exist. Participants - `Directory` has been retired and replaced by `Directory`, whose loader catches query failures. | Original missing-source defect appears repaired and legacy-directory portion is superseded. Confirm `Reports` execution and `Directory` refresh/profile navigation in the deployed candidate before closing. Remaining canonical-role and report-category work belongs in #19/#20 unless the original regression still reproduces. |
 
 ## Phase 1 — Establish the complete acceptance and deployment inventory
 
 **Purpose:** turn the broad issues into a bounded list of missing implementation, missing evidence, and deployment dependencies.
 
-1. Preserve all current Appsmith editor commits and the working Company Profile object. Record exact Git SHAs, deployed Appsmith version, current production app revision, database versions, and n8n/RootedOps revisions.
+1. Preserve all current Appsmith editor commits and the working `Company Profile` object. Record exact Git SHAs, deployed Appsmith version, current production app revision, database versions, and n8n/RootedOps revisions.
 2. Build one acceptance ledger. Each row records issue, requirement, owning repository, implementation location, test evidence, environment, and status: **implemented and verified**, **implemented but unverified**, **missing**, or **explicitly out of scope**.
 3. Review issue bodies and later comments together. In particular:
    - #17 owns cash custody; #18 owns cross-system accounting.
-   - #19's canonical contributor identity supersedes older donor-as-member wording.
+   - #19's canonical contributor identity supersedes older donor-as-participant wording.
    - #20 includes both Spiritual Practitioner and Participant display changes.
 4. Inventory every current page, incoming route parameter, selected-record store key, SQL/API action, capability check, hidden state, and integration credential.
 5. Obtain read-only schema/function inventories from both **signaturegate_test** and **signaturegate**, plus upgrade/application records if available. Compare effective function bodies, signatures, views, constraints, triggers, and seed/configuration data with the canonical target.
@@ -99,32 +99,32 @@ Production database state, deployed n8n/RootedOps versions, Appsmith runtime lin
 
 **Purpose:** finish #19 and Appsmith #2 before final navigation and terminology cleanup.
 
-- Verify the unified Directory's four actions: View Profile; Member/Participant Functions; Contributor Functions; Sacrament Release. Eligibility and authorization must both be enforced. Companies and contributor-only individuals cannot obtain sacrament-release eligibility.
-- Verify Individual and Company Profile identity editing, canonical contacts, addresses, provider matching references, audited notes, archive/reactivation, and correct selected-record behavior.
-- Finish Intake parity: two contact methods, stronger email validation, optional DOB, individual/company capacities, paper and digital agreement paths, practitioner assignment, independent mailing choices, and detailed accessible/inaccessible collision reporting.
-- Test legacy member-note migration to people, preservation of existing identity notes and original member notes, safe reapplication, blank/changed/cleared notes, required reasons, and access/audit behavior. The current notes verification script checks object existence only; add meaningful behavior/backfill coverage.
+- Verify the unified `Directory`'s four actions: View Profile; Participant/Participant Functions; `Contributor Functions`; `Sacrament Release`. Eligibility and authorization must both be enforced. Companies and contributor-only individuals cannot obtain sacrament-release eligibility.
+- Verify Individual and `Company Profile` identity editing, canonical contacts, addresses, provider matching references, audited notes, archive/reactivation, and correct selected-record behavior.
+- Finish `Intake` parity: two contact methods, stronger email validation, optional DOB, individual/company capacities, paper and digital agreement paths, practitioner assignment, independent mailing choices, and detailed accessible/inaccessible collision reporting.
+- Test legacy participant-note migration to people, preservation of existing identity notes and original participant notes, safe reapplication, blank/changed/cleared notes, required reasons, and access/audit behavior. Behavioral/backfill/permission/failure checks are now implemented and pass in isolation; run the live test sequence in NOTES_VALIDATION_COMMANDS.md and rehearse against restored production.
 - Verify membership can be added or ended without changing contributor IDs or historical donations, agreements, and audit records. Contributor status changes must not silently change membership.
 - Verify all Givebutter resolution options: existing individual/company contributor, linked participant, new individual/company contributor, new participant with linked contributor, and ignore/reject as appropriate. Ambiguous provider matches must remain unresolved.
-- Complete reporting categories required by #19: individual, organization, anonymous, unresolved, and currently linked/unlinked identities. Current Reports metrics retain member-linked/anonymous summaries and exclude unresolved records; they do not supply the complete requested breakdown.
-- Review canonical actor authorization across Reports, Agreement Templates, cash entry, review, and deposits. Some queries still require a legacy active member/facilitator identity; test reviewers and practitioners whose canonical person account has no active membership.
-- Restore/verify a scoped manual-cash entry path for practitioner-only users and read-only donation history for assigned participants. Current Contributor Functions entry guard requires a reviewer role, so this requirement needs a concrete permitted path without exposing organization-wide financials.
+- Complete reporting categories required by #19: individual, organization, anonymous, unresolved, and currently linked/unlinked identities. Current `Reports` metrics retain participant-linked/anonymous summaries and exclude unresolved records; they do not supply the complete requested breakdown.
+- Review canonical actor authorization across `Reports`, `Agreement Templates`, cash entry, review, and deposits. Some queries still require a legacy active participant/Facilitator/Spiritual Practitioner identity; test reviewers and practitioners whose canonical person account has no active membership.
+- Restore/verify a scoped manual-cash entry path for practitioner-only users and read-only donation history for assigned participants. Current `Contributor Functions` entry guard requires a reviewer role, so this requirement needs a concrete permitted path without exposing organization-wide financials.
 - Implement Appsmith #2 with an authoritative authorization check and atomic audit on creation. Verify duplicate type keys and empty Agreement Type setup.
-- Remove Members – Intake only after all parity cases pass. Audit page links, selectors, SQL actions, JS registrations, and application page entries afterward. Retain email reads needed for agreement delivery; remove obsolete actions only after checking their consumers.
+- Remove `Members – Intake` only after all parity cases pass. Audit page links, selectors, SQL actions, JS registrations, and application page entries afterward. Retain email reads needed for agreement delivery; remove obsolete actions only after checking their consumers.
 
-**Exit gate:** required participant/contributor/company workflows work on the test database; legacy Intake adds no essential capability; Appsmith #2 passes all six acceptance criteria.
+**Exit gate:** required participant/contributor/company workflows work on the test database; legacy `Intake` adds no essential capability; Appsmith #2 passes all six acceptance criteria.
 
 ## Phase 3 — Finish terminology and navigation together
 
 **Purpose:** complete #20 and Appsmith #4 against the finalized page set.
 
 - Audit visible text, headings, columns, messages, selectors, tooltips, generated emails, operator documentation, and new audit rendering. Consume centralized singular/plural labels for **Participant** and **Spiritual Practitioner**.
-- Keep stable internal keys such as member_id and facilitator compatibility fields where still needed. Display labels must not determine permissions or rewrite historical records.
-- Demonstrate at least two terminology configurations, including one displaying Facilitator, and prove labels change without source editing or relationship changes.
+- Keep stable internal keys such as member_id and Facilitator/Spiritual Practitioner compatibility fields where still needed. Display labels must not determine permissions or rewrite historical records.
+- Demonstrate at least two terminology configurations, including one displaying Facilitator/Spiritual Practitioner, and prove labels change without source editing or relationship changes.
 - Update the terminology and Documenso inventories to reflect the actual current pages. Inventory existing templates/recipient roles and the future approved Spiritual Practitioner Agreement handoff. Legal/board agreement approval remains outside this release; historical executed agreements retain their wording.
 - Determine whether the deployed Appsmith version supports the requested grouping. If a custom component is required, define one source and a documented generation/synchronization process for page copies.
 - Use the proposed workflow groups as a starting point: People & Organizations; Membership & Practice; Contributions; Reporting & Administration. Include Events or Agreements Queue only when their active workflows and permissions warrant exposure.
-- Hide Individual Profile and Company Profile from direct navigation; preserve Directory entry and Back to Directory. Define behavior for a fresh direct link, missing/invalid ID, inaccessible party, and stale saved selection.
-- Preserve Unauthorized as hidden. Exclude retired pages and prevent stale routes from reopening them.
+- Hide `Individual Profile` and `Company Profile` from direct navigation; preserve `Directory` entry and Back to `Directory`. Define behavior for a fresh direct link, missing/invalid ID, inaccessible party, and stale saved selection.
+- Preserve `Unauthorized` as hidden. Exclude retired pages and prevent stale routes from reopening them.
 - Test every menu/action for each relevant role and on narrow screens, including keyboard operation and active-page indication.
 
 **Exit gate:** active user-facing terminology follows configuration; navigation is maintainable and correctly scoped; both profile pages initialize after a pull/reload without manual JS execution.
@@ -142,21 +142,21 @@ The repository's rollback-only verification scripts belong on test/disposable da
 | Identity and capacities | Participant-only; contributor-only individual; dual capacity; company; former participant; archived contributor; duplicate/ambiguous identity. |
 | Permissions | Practitioner-only; document reviewer; donations reviewer; directory manager; combined roles; unauthorized user; canonical actor without active membership. |
 | Contacts and notes | Add/archive/primary/verify; purpose reuse and reassignment; company contacts; historical-note backfill; blank/update/clear; audit and denied access. |
-| Intake and mailing | Every supported pair of contact methods; malformed email; optional DOB; duplicate blocked/warned; restricted collision messaging; opt-in/out and dual-capacity subscription behavior. |
+| `Intake` and mailing | Every supported pair of contact methods; malformed email; optional DOB; duplicate blocked/warned; restricted collision messaging; opt-in/out and dual-capacity subscription behavior. |
 | Agreements and releases | Digital/paper creation; upload; approve/reject/cancel; reviewer on behalf; practitioner attribution; release eligibility, storage/product access and voiding; donations do not affect eligibility. |
 | Contributions | Identified individual/company; anonymous; unresolved Givebutter; verify/reject/reassign; historical attribution after membership change; all reporting categories. |
 | Deposits | Mixed donors; ineligible exclusion; add/remove/re-add; competing batch assignment; exact cents/snapshots; print/tally; prepared/actual dates; confirmation; audited exceptions/revival; confirmed composition protection. |
 | ERP integration | Non-writing development route; canonical bank-account choices; succeeded/failed/processing states; repeat delivery/idempotency; retry; date-correction boundary; reconciliation status; missing ERP-document detection. |
-| Navigation/runtime | Four Directory actions; direct/deep links; Back; refresh; role changes; no-selection states; fresh page load and record A → B switches. |
+| Navigation/runtime | Four `Directory` actions; direct/deep links; Back; refresh; role changes; no-selection states; fresh page load and record A → B switches. |
 
 Appsmith checks must include all active pages, empty table results, and denied-access results:
 
 1. Repair remaining linter errors and generated fallback references with contextual tests.
 2. Check widget/query/JS references, registered methods, metadata/body consistency, route names, prepared parameters, and execution dependencies.
 3. Pull in Appsmith, reload, exercise the workflows, commit editor-generated metadata, and re-pull. A fix that disappears after synchronization fails this gate.
-4. Verify Company Profile's recreated object remains registered and runs on navigation; do not repeat earlier speculative metadata changes.
+4. Verify `Company Profile`'s recreated object remains registered and runs on navigation; do not repeat earlier speculative metadata changes.
 5. Re-run SignatureGate validation/release checks and add focused Appsmith source checks for recurring defects.
-6. Verify #23's original failures no longer reproduce. Close its retired-directory portion as superseded and missing-Reports-source portion as fixed only with recorded runtime evidence.
+6. Verify #23's original failures no longer reproduce. Close its retired-directory portion as superseded and missing-`Reports`-source portion as fixed only with recorded runtime evidence.
 7. Audit the master/development diff for production hotfixes, datasource differences, hidden states, integration URLs, dependencies, and test-only behavior. Preserve existing production fixes.
 
 **Exit gate:** no unresolved active-page linter/runtime defects or unmet in-scope acceptance criteria; passing tests are tied to exact candidate SHAs. Mark issues code complete, with production verification still pending.
@@ -184,7 +184,7 @@ Each manifest entry records path, checksum, prerequisites, effective object/data
 Execution order:
 
 1. Back up production and verify a restore into an isolated database.
-2. Rehearse the exact upgrade against that restored copy; compare row counts, IDs, donor classifications, contributor/member links, notes, contacts, signed-document references, confirmed batch snapshots, audit history, and ERP source/document identities.
+2. Rehearse the exact upgrade against that restored copy; compare row counts, IDs, donor classifications, contributor/participant links, notes, contacts, signed-document references, confirmed batch snapshots, audit history, and ERP source/document identities.
 3. Run relevant behavioral tests there and verify final effective definitions match the intended target.
 4. Coordinate workflow workers with changed queue/schema contracts so they cannot execute half an upgrade.
 5. Apply only the reviewed required upgrade steps to **signaturegate**, stopping on errors and recording each successful step.
@@ -219,13 +219,13 @@ If Appsmith requires an intermediate branch for environment-specific configurati
 
 ## Phase 7 — Production acceptance, documentation, and issue closure
 
-- Confirm Directory loading and all eligible actions, Individual/Company page initialization, scoped access, Reports, Agreement Types, agreements/releases, contributor history, navigation, and terminology in published mode.
+- Confirm `Directory` loading and all eligible actions, Individual/Company page initialization, scoped access, `Reports`, Agreement Types, agreements/releases, contributor history, navigation, and terminology in published mode.
 - Reuse the established #17/#18 production success evidence and check it against the new release. Perform the next legitimate operational transaction under the normal workflow; do not create synthetic live donations, signed agreements, or accounting entries solely for a smoke test.
 - Check successful ERP event/document identity and reconciliation, failure visibility, and no duplicate accounting. Monitor the integration and mailing queues through their normal processing cycles.
 - Record database-upgrade verification, final Git SHAs, Appsmith published revision, RootedOps/n8n compatibility, remaining external dependencies, and operator instructions.
 - Complete the v1.2.0 changelog reconciliation since v1.1.0 and Appsmith-specific first-release notes. Run the pinned-source export action described above and verify its resulting JSON commit. Follow SignatureGate's version/release process: VERSION, README, CHANGELOG, release notes, packaged JSON, recorded source revisions, and release tag must agree.
 - Close each issue against its own acceptance evidence. #20's legal/board template replacement remains a separately identified external follow-up, not unfinished software hidden by closure.
-- Close #23 with a concise account of the repaired Reports source and the retired legacy Directory, including current runtime evidence.
+- Close #23 with a concise account of the repaired `Reports` source and the retired legacy `Directory`, including current runtime evidence.
 
 **Exit gate:** every scoped issue has a requirement-to-evidence record and the production release is verified.
 
@@ -245,3 +245,22 @@ Before publication, retain the previous master/Appsmith revision and the tested 
 
 The source assessment and plan are committed, and the first Phase 2 implementation is recorded in PHASE_2_PROGRESS.md. Live database comparison, remaining functional gaps, deployment acceptance, datasource changes, publishing and issue closure remain work items in the phases above.
 
+
+
+## Latest evidence and Phase 2 increment
+
+October 11 follow-up: live PostgreSQL 16.13 inventories and service evidence have been privately reviewed. Appsmith Community v2.4.2 and n8n 2.16.1 are confirmed; Agreement Type migration/SQL verification and a normal form creation pass are operator-reported on test. Identity notes now have transaction/provenance protection and behavioral regression checks. [LIVE_EVIDENCE_REVIEW.md](LIVE_EVIDENCE_REVIEW.md) records only sanitized findings; [NOTES_VALIDATION_COMMANDS.md](NOTES_VALIDATION_COMMANDS.md) provides the next steps. Effective SQL differences, actual publication/datasource proof and integration target/mapping review remain release blockers. Phase 1 is open; Phase 2 continues; later phase gates remain unchanged.
+
+
+## Documentation and seed completion requirements
+
+- Before Phase 3 closes, complete the `Member` → Participant presentation changes and revise `db/seeds/organization_terminology.sql`, terminology regression expectations and the terminology inventory together. Preserve stable keys and executed documents. Existing accepted label changes use the audited API; the repeatable initializer preserves installed overrides.
+- After navigation grouping/profile visibility/deep-link acceptance, replace `appsmith/SCREENS.md` with the final page/group inventory, role matrix, profile entry points and purposes. Complete this before Phase 6 packaging; its historical starter checklist is not acceptance evidence.
+- Keep filenames/directories and make targets functional and descriptive, without issue names/numbers. Update active documentation links/commands when files are moved or historical migrations are retired; issue references in explanatory prose and existing API identifiers may remain.
+
+
+## RootedOps release dependency
+
+A compatible released RootedOps is required for SignatureGate v1.2.0 cash-deposit ERP accounting/reconciliation. Before Phases 5–6 close, release/select the accepted RootedOps version, record its tag and resolved SHA, verify the deployed custom ERP application and published deposit/bank-lookup workflow revisions, and complete mode/idempotency/accounting acceptance. The inspected repository version is 1.5.25 at `c40bce97f60164e93d7b6d4cdf16c7658e62dae6`; this is provisional source evidence, not the final dependency pin. See `n8n/CASH_DEPOSIT_ERP_INTEGRATION.md`. No RootedOps tag/release is created by these documentation changes.
+
+October 11 notes follow-up: live test migration/reapplication and rollback behavioral checks pass at `f45bd0a`; actual Appsmith datasource is confirmed as `signaturegate_test`/16.13. Effective SQL dispositions remove unnecessary function/view replacements and identify a canonical bootstrap override of the deployed date-correction guard, now repaired. Reports canonical access and six contribution groups pass isolated tests; live acceptance is tracked in REPORTS_VALIDATION.md. Phase 1 remains open for production/integration proof and upgrade rehearsal. Phase 2 continues; no later deployment/packaging gate is waived.

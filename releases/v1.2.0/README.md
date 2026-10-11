@@ -14,3 +14,7 @@ Status: **unreleased**. This is the first coordinated SignatureGate-Appsmith rel
 - [Source inventory summary](evidence/source_summary.json)
 
 Source/issue inventory is complete. Actual test/production database differences, deployed integration revisions and live Appsmith acceptance remain open gates. No v1.2.0 release notes/tag are final yet.
+
+- [Sanitized live evidence review](LIVE_EVIDENCE_REVIEW.md): received catalog dispositions, confirmed software versions and open deployment gates.
+- [Next identity-notes validation commands](NOTES_VALIDATION_COMMANDS.md): private effective-definition capture, test migration/reapplication and Profile/`Intake` checks.
+- [Current migration candidates](CURRENT_MIGRATION_CANDIDATES.md): current checksums and prerequisite/recovery review; not a production execution manifest.

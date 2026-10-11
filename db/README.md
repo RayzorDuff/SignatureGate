@@ -4,21 +4,22 @@
 
 `db/schema.sql` is the authoritative, self-contained database definition for SignatureGate.
 
-It is a complete schema bootstrap, including tables, constraints, indexes, functions, triggers, views, and the current seed data represented by the repository. A new SignatureGate database should be initialized from this file alone.
+It is a complete schema bootstrap, including tables, constraints, indexes, functions, triggers and views. Bootstrap a fresh database from this file, then apply the explicit deployment seeds below. The schema does not contain operational records or default terminology rows.
 
 From the server where the SignatureGate PostgreSQL container runs:
 
 ```bash
 sudo docker exec -i signaturegate-postgres \
-  psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate \
+  psql -X -v ON_ERROR_STOP=1 -U signaturegate \
+  -d "${release_fresh_db:?Set this to a new empty database first}" \
   < db/schema.sql
 ```
 
-Before applying it to a database that contains data, take an appropriate backup. `schema.sql` is intended as a bootstrap definition, not as an in-place upgrade script for an existing production database.
+Create and verify an empty target before setting `release_fresh_db`; neither existing `signaturegate` nor `signaturegate_test` is a fresh-bootstrap target. Use the reviewed forward migration process for existing data. A backup does not make schema replay an in-place upgrade.
 
 ## Current production upgrade
 
-The canonical schema includes current cash-deposit and identity definitions. Production acceptance has been reported for some features, but the effective deployed catalog and migration state have not been inventoried for v1.2.0. Do not load `db/schema.sql` over the existing production database as an upgrade mechanism. Use [the release validation checklist](../releases/v1.2.0/PHASE_1_VALIDATION.md) to establish required forward upgrades.
+The canonical schema includes current cash-deposit and identity definitions. Production acceptance has been reported for some features, but the initial v1.2.0 live catalogs have been reviewed and targeted effective definitions have been dispositioned in the release review. Do not load `db/schema.sql` over the existing production database as an upgrade mechanism. Use [the release validation checklist](../releases/v1.2.0/PHASE_1_VALIDATION.md) to establish required forward upgrades.
 
 Production deployment should use the reviewed database change procedure for the current release rather than treating the canonical bootstrap as an in-place upgrade.
 
@@ -69,8 +70,8 @@ A new installation may need an active agreement template if the canonical seed d
 
 ```bash
 sudo docker exec -it signaturegate-postgres psql \
-  -U signaturegate -d signaturegate -c "INSERT INTO agreement_templates (name, version, required_for, doc_url, active) \
-VALUES ('Member Acknowledgment & Liability Release', '2025-12-01', ARRAY['membership','sacrament_release'], \
+  -U signaturegate -d "${release_fresh_db:?Select the reviewed new database}" -c "INSERT INTO agreement_templates (name, version, required_for, doc_url, active) \
+VALUES ('Synthetic Participant Agreement', '1.0', ARRAY['membership','sacrament_release'], \
 'DOCUMENSO_TEMPLATE_OR_PDF_URL', true) ON CONFLICT DO NOTHING;"
 ```
 
@@ -106,22 +107,15 @@ Password: ${SIG_DB_PASSWORD}
 
 ## Directory manager bootstrap
 
-The canonical schema contains the directory-manager account and authorization model. When a new deployment requires an initial directory manager, review the available application accounts first:
+The canonical schema contains the directory-manager account and authorization model. When a new deployment requires an initial directory manager, select the intended account privately. Do not export a directory of names or contact information as release evidence.
 
-```bash
-sudo docker exec signaturegate-postgres psql \
-  -U signaturegate -d signaturegate -c \
-  "SELECT p.person_id, p.display_name, a.email
-     FROM public.person_app_accounts a
-     JOIN public.people p USING (person_id)
-     ORDER BY a.email;"
-```
-
-Then bootstrap the intended account with the operator-only helper:
+Then bootstrap the intended account with the operator-only helper. All three values are required. This legacy bootstrap creates or uses an active membership and practitioner compatibility flags; it refuses a second manager bootstrap. Keep actual names/contact values and command output private:
 
 ```bash
 sudo docker exec -i signaturegate-postgres psql \
   -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' \
+  -v admin_first_name='INITIAL_MANAGER_FIRST_NAME' \
+  -v admin_last_name='INITIAL_MANAGER_LAST_NAME' \
   -U signaturegate -d signaturegate \
   < db/bootstrap_directory_manager.sql
 ```
@@ -179,3 +173,28 @@ The historical migration chain has been removed from the active database install
 ## Agreement Type administration (v1.2.0)
 
 `agreement_type_administration.sql` adds canonical document-reviewer authorization and atomic creation/audit. It requires canonical person accounts/roles, `agreement_types` and `audit_log`; membership is not required. Deploy this migration to test before pulling the new Agreement Templates page. Run `db/tests/verify_agreement_type_administration.sql` only on test/disposable databases. [Phase 2 progress](../releases/v1.2.0/PHASE_2_PROGRESS.md) includes exact commands, isolated test results and required live acceptance.
+
+
+## Identity notes migration and reapplication (v1.2.0)
+
+`party_identity_notes.sql` atomically installs canonical note APIs and initializes one historical import decision per membership. Original member notes remain intact. `member_identity_note_backfill` stores provenance/outcomes without copied note text; `backfill_member_identity_notes()` is an invoker-rights operator helper, revoked from PUBLIC. Reruns do not reimport changed/blank legacy sources or undo canonical clears. Previously audited canonical edits take precedence; privately review sources marked `preserved_edit` rather than automatically appending them. Keep historical member notes read-only after cutover and use the canonical Profile/Intake APIs for new notes.
+
+Run `verify_party_identity_notes.sql` only on test/disposable databases. It rolls back synthetic fixtures and checks behavior, permissions, migration reapplication and failure atomicity. Follow [the notes validation sequence](../releases/v1.2.0/NOTES_VALIDATION_COMMANDS.md); production requires a restored-copy rehearsal first. Live PostgreSQL 16.13 SQL migration/reapplication and behavioral checks have passed on test; UI acceptance remains pending.
+
+
+## Organization terminology seed
+
+After fresh schema bootstrap, run `db/seeds/organization_terminology.sql`. It reconstructs the earlier 14 stable concepts and deployment defaults: `practitioner` displays as **Spiritual Practitioner**, while the distinct regulated `facilitator` concept stays inactive. This seed contains public presentation configuration only; no production identities, contacts or operational data. It inserts missing rows and preserves existing labels, active states and update attribution when rerun.
+
+```bash
+sudo docker exec -i signaturegate-postgres \
+  psql -X -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
+  < db/seeds/organization_terminology.sql
+sudo docker exec -i signaturegate-postgres \
+  psql -X -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
+  < db/tests/verify_organization_terminology.sql
+```
+
+Use these test commands for validation; new production installations select their intended database only after setup review. The behavioral check expects the current deployment defaults; an intentionally customized installation may require separately reviewed expectations rather than resetting its labels.
+
+**Phase 3 requirement:** update this seed and its checks with the accepted Member → Participant presentation changes, and verify every active UI/document surface agrees. This preparation seed retains the current `Member` label and separate inactive Participant concept. Stable tables/role keys and historical signed documents must not be renamed by a label seed. An existing deployment's accepted label change must use the audited terminology API; rerunning this seed deliberately does not overwrite it.

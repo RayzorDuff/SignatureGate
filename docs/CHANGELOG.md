@@ -1,6 +1,6 @@
 # Changelog
 
-Public release notes describe software behavior without organization names, product information, operational examples or private records. Earlier versions retain their original version/date markers and concise behavior summaries; detailed historical source remains in repository history.
+Public release notes describe software behavior and technical contracts. Rooted Psyche and Dank Mushrooms may be named; actual individual names, other company names from operational records, contacts, financial values, product details, accounts and secrets remain private. Earlier versions retain their original version/date markers and concise behavior summaries; detailed historical source remains in repository history.
 
 ## [Unreleased]
 
@@ -20,7 +20,7 @@ Public release notes describe software behavior without organization names, prod
 - Separate capacity-specific consent controls and mailing synchronization, including Contributor-only routing and external unsubscribe reflection.
 - Deposit lifecycle, composition snapshots, confirmation, reporting/printing, exception/revival paths and durable external synchronization state.
 - Audited confirmed-date correction before successful external accounting synchronization, with preserved attempt history.
-- Reporting that distinguishes linked and anonymous contributions while retaining aggregate totals.
+- Reports count/dollar groups for overall, individual, company, anonymous, unresolved and Participant-linked contributions. Participant linkage uses current shared identity and active capacity; financial metrics require Donations Reviewer permission independently in SQL.
 - Read-only deployment/catalog evidence tools, sanitized review records and explicit release acceptance/dependency gates.
 
 ### Changed
@@ -35,6 +35,10 @@ Public release notes describe software behavior without organization names, prod
 - Required exact accepted source/export consistency and the coordinated application export before final release tagging.
 
 ### Fixed
+
+- Preserved the audited confirmed-deposit date-correction guard during fresh bootstrap; a later schema section no longer overwrites it with the earlier unconditional guard.
+- Verified notes migration, repeat application and rollback-only behavioral checks on live PostgreSQL 16.13. Profile/Intake UI and restored-production acceptance remain pending.
+- Enabled canonical Reports access without Participant capacity, used person-based practitioner assignments, and cleared stale authorization state and cached financial display after account changes.
 
 - Corrected provider identity parameter normalization and typed ingestion calls.
 - Preserved valid signatures from older inactive template versions without allowing unrelated or pending documents through the release gate.

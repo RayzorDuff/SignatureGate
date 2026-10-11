@@ -54,7 +54,7 @@ SELECT current_database() AS database_name,
        current_timestamp AS observed_at;
 ```
 
-Expected development result: `signaturegate_test`. Repeat using the production application's actual `signaturegate-postgres` datasource; expected result: `signaturegate`. Record each datasource/action identity and result, plus editor branch/commit and published revision/evidence. Check published bindings separately. Keep unknown published SHAs marked PENDING; a remote Git head cannot establish what is published. Remove the temporary query after recording the result, without committing/deploying it. Preserve preexisting editor work and defer pulling the new Agreement Templates implementation until its backend prerequisite is installed on test.
+Expected development result: `signaturegate_test`. Repeat using the production application's actual `signaturegate-postgres` datasource; expected result: `signaturegate`. Record each datasource/action identity and result, plus editor branch/commit and published revision/evidence. Check published bindings separately. Keep unknown published SHAs marked PENDING; a remote Git head cannot establish what is published. Remove the temporary query after recording the result, without committing/deploying it. Preserve preexisting editor work and defer pulling the new `Agreement Templates` implementation until its backend prerequisite is installed on test.
 
 Prepare a local review record without overwriting one already started:
 

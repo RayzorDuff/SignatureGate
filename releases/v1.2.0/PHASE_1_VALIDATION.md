@@ -2,6 +2,8 @@
 
 **Source inventory complete; live deployment gate open. Phase 2 may proceed on the test-bound development branch.** These blockers are release work items, not exceptions to acceptance. Production promotion and upgrade approval remain blocked until the evidence below is reviewed.
 
+The submitted PostgreSQL 16.13 catalog/service evidence has been reviewed privately, and the operator reports a successful test Agreement Type migration and form submission. See [LIVE_EVIDENCE_REVIEW.md](LIVE_EVIDENCE_REVIEW.md) for sanitized findings and remaining blockers; [NOTES_VALIDATION_COMMANDS.md](NOTES_VALIDATION_COMMANDS.md) gives the next exact sequence. Captures do not close the deployment gate.
+
 Copy-and-paste server commands for steps 2–5 are in [LINODE_VALIDATION_COMMANDS.md](LINODE_VALIDATION_COMMANDS.md).
 
 ## 1. Capture both deployed database catalogs

@@ -31,20 +31,20 @@ The original audit disposition counts below describe the pinned baseline; the ac
 | `scope_preserved` | 5 | Explicit boundary retained; does not substitute for functional testing |
 | `superseded` | 2 | Legacy requirement replaced by later approved model/page retirement |
 
-Code files and tests in the ledger are navigation aids, not claims that those tests ran. #17 and #18's production deposit/reconciliation reports are retained. Their accounting details are not copied into release documentation. #23's missing Reports source is restored, and its Members Directory portion is superseded; current runtime Reports execution remains unverified.
+Code files and tests in the ledger are navigation aids, not claims that those tests ran. #17 and #18's production deposit/reconciliation reports are retained. Their accounting details are not copied into release documentation. #23's missing `Reports` source is restored, and its Participants `Directory` portion is superseded; current runtime `Reports` execution remains unverified.
 
 ## Concrete work queue
 
 | Priority / next phase | Work | Acceptance/evidence |
 | --- | --- | --- |
 | Phase 2 | Add audited, authorized Agreement Type creation with key/name/order/active fields | Appsmith #2: all six clauses, including empty-table setup, selector refresh and duplicate keys |
-| Phase 2 | Complete Reports individual/company/anonymous/unresolved and current linked/unlinked categories | SG19-AC10; current SQL excludes unresolved and uses compatibility donation.member_id for member summaries |
-| Phase 2 | Restore practitioner-only scoped/anonymous cash entry and assigned-participant read-only donation history | SG17-EXT01 / SG19-S07; Member Functions no longer has donation actions, while Contributor Functions requires a reviewer |
-| Phase 2 | Reconcile canonical person-based authorization with remaining legacy member/facilitator actor queries | SG19-S06; Reports, Agreement Templates and Cash Deposits still use legacy actor lookup; financial helpers require active member/facilitator reviewer flags |
+| Phase 2 | Complete `Reports` individual/company/anonymous/unresolved and current linked/unlinked categories | SG19-AC10; current SQL excludes unresolved and uses compatibility donation.member_id for participant summaries |
+| Phase 2 | Restore practitioner-only scoped/anonymous cash entry and assigned-participant read-only donation history | SG17-EXT01 / SG19-S07; `Member Functions` no longer has donation actions, while `Contributor Functions` requires a reviewer |
+| Phase 2 | Reconcile canonical person-based authorization with remaining legacy participant/Facilitator/Spiritual Practitioner actor queries | SG19-S06; `Reports`, `Agreement Templates` and `Cash Deposits` still use legacy actor lookup; financial helpers require active participant/Facilitator/Spiritual Practitioner reviewer flags |
 | Phase 2 | Verify company contact-person association, distinct from organization contact methods | SG19-S02; no explicit association workflow identified; confirm intended representation |
-| Phase 2 | Strengthen notes migration/behavior verification, then validate Intake parity and retire legacy Intake | SG19-S03/S04/S05; notes test currently checks objects only; migration lacks explicit transaction and changed-source rerun needs protection |
+| Phase 2 | Strengthen notes migration/behavior verification, then validate `Intake` parity and retire legacy `Intake` | SG19-S03/S04/S05; notes test currently checks objects only; migration lacks explicit transaction and changed-source rerun needs protection |
 | Phase 3 | Finish configured Participant/Spiritual Practitioner display text and external terminology inventory | #20 including October 10 Participant extension; demonstrate alternate configuration without code edits |
-| Phase 3 | Establish installed Appsmith navigation capability, implement maintainable groups and hide profiles | Appsmith #4; preserve role checks, Directory selection, fresh/deep-link behavior and Git sync |
+| Phase 3 | Establish installed Appsmith navigation capability, implement maintainable groups and hide profiles | Appsmith #4; preserve role checks, `Directory` selection, fresh/deep-link behavior and Git sync |
 | Phase 4 | Repair source linter defects and validate fresh exported candidate | REL02/REL04; exact current-source findings below |
 | Phase 4 / packaging prerequisite | Fix datasource/library export collection and add semantic preservation checks | REL03; final export must retain four datasource descriptors and the jsPDF library |
 | Phase 1 then Phase 5 | Compare actual test/production catalogs and reconstruct only necessary forward upgrades | REL01/REL07; retained migration directory alone is not a production upgrade manifest |
@@ -54,18 +54,18 @@ Code files and tests in the ledger are navigation aids, not claims that those te
 
 The current source contains 18 pages, 335 actions (202 DB, 19 API, 114 JS function actions), 14 JS objects, four datasource descriptors and one jsPDF descriptor. Page inventory includes visibility, initialization flags, route/store references and role terms; action inventory includes binding, execution flags, explicit parameters and public function references.
 
-The lexical role-term inventory is not a proof of permission enforcement. Literal route extraction does not resolve conditional/external URLs; the Directory's conditional profile route is reviewed separately below. Appsmith-generated execution metadata records current exported settings and must be preserved where verified in the editor. In particular, do not normalize Company Profile metadata speculatively.
+The lexical role-term inventory is not a proof of permission enforcement. Literal route extraction does not resolve conditional/external URLs; the `Directory`'s conditional profile route is reviewed separately below. Appsmith-generated execution metadata records current exported settings and must be preserved where verified in the editor. In particular, do not normalize `Company Profile` metadata speculatively.
 
-| Directory action | Destination | Selection passed | Eligibility checked in current JS |
+| `Directory` action | Destination | Selection passed | Eligibility checked in current JS |
 | --- | --- | --- | --- |
-| View Profile | Individual Profile / Company Profile | `person_id` / `organization_id`; corresponding saved profile ID | Valid party ID/type; downstream accessible-directory query |
-| Member Functions | Member Functions | `member_id` in URL and store | Active individual membership |
-| Contributor Functions | Contributor Functions | `contributor_id` in URL; `donation_donor_selection=contributor:<uuid>` | Active contributor, individual or organization |
-| Sacrament Release | Sacrament Release | `member_id` in URL | Active individual membership; downstream agreement/storage authorization |
+| View Profile | `Individual Profile` / `Company Profile` | `person_id` / `organization_id`; corresponding saved profile ID | Valid party ID/type; downstream accessible-directory query |
+| `Member Functions` | `Member Functions` | `member_id` in URL and store | Active individual membership |
+| `Contributor Functions` | `Contributor Functions` | `contributor_id` in URL; `donation_donor_selection=contributor:<uuid>` | Active contributor, individual or organization |
+| `Sacrament Release` | `Sacrament Release` | `member_id` in URL | Active individual membership; downstream agreement/storage authorization |
 
-The profile pages remain visible in navigation. Members – Intake is present and visible; Members - Directory is absent. Agreements - Queue, both Events pages and Unauthorized are hidden. New grouped menus should not expose dormant pages simply to complete a group.
+The profile pages remain visible in navigation. `Members – Intake` is present and visible; Participants - `Directory` is absent. `Agreements - Queue`, both Events pages and `Unauthorized` are hidden. New grouped menus should not expose dormant pages simply to complete a group.
 
-The user has verified Company Profile initialization after recreating its JS object. Individual Profile also worked in that testing. Test their current registrations after any further editor pull/reload rather than overwriting their metadata based on older guesses.
+The user has verified `Company Profile` initialization after recreating its JS object. `Individual Profile` also worked in that testing. Test their current registrations after any further editor pull/reload rather than overwriting their metadata based on older guesses.
 
 ## Static checks actually performed
 
@@ -79,16 +79,16 @@ The user has verified Company Profile initialization after recreating its JS obj
 
 | Page | Bare table fallback properties |
 | --- | ---: |
-| Member Functions | 46 |
-| Cash Deposits | 41 |
-| Facilitator Functions | 21 |
-| Agreements - Queue | 12 |
-| Audit Log | 11 |
-| Agreement Templates | 10 |
-| Company Profile | 10 |
-| Directory | 10 |
-| Sacrament Release | 8 |
-| Reports | 6 |
+| `Member Functions` | 46 |
+| `Cash Deposits` | 41 |
+| `Facilitator Functions` | 21 |
+| `Agreements - Queue` | 12 |
+| `Audit Log` | 11 |
+| `Agreement Templates` | 10 |
+| `Company Profile` | 10 |
+| `Directory` | 10 |
+| `Sacrament Release` | 8 |
+| `Reports` | 6 |
 
 The fresh export has 18 pages, 335 actions and 14 collections but **zero datasource entries and zero custom libraries**. `appsmith-export.mjs` enumerates directories inside `datasources/`, while the actual descriptors are flat files; it looks under `customJSLibs/`, while the current jsPDF descriptor is under `jslibs/`. This would omit required packaging dependencies even when JSON shape checks pass.
 
