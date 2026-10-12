@@ -182,7 +182,7 @@ Member Functions,qAgreementTemplatesByType,DB,MANUAL,True,True,True,False,False
 Member Functions,qAgreementTypesList,DB,MANUAL,True,True,True,False,False
 Member Functions,qApproveAgreement,DB,MANUAL,True,True,True,False,False
 Member Functions,qAssignMemberFacilitator,DB,MANUAL,True,True,True,False,False
-Member Functions,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
+Member Functions,qAuditLogInsert,DB,MANUAL,True,True,True,True,False
 Member Functions,qCreatePendingAgreement,DB,MANUAL,True,True,True,False,False
 Member Functions,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
 Member Functions,qDeactivateMemberFacilitator,DB,MANUAL,True,True,True,False,False

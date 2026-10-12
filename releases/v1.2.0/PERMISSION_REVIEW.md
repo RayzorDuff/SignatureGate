@@ -42,3 +42,11 @@ Appsmith tests execute the actual source action SQL with bind parameters, and ch
 Follow [PERMISSION_VALIDATION.md](PERMISSION_VALIDATION.md). Return role/capability pass/fail and error classes; retain names, contacts, amounts, account values, screenshots and detailed logs privately.
 
 The n8n export was excluded after automatic approval review rejected its operational configuration. Only the isolated helper and synthetic tests are included; see [INVENTORY_LOCATION_SCOPE.md](../../n8n/INVENTORY_LOCATION_SCOPE.md). Its workflow integration remains pending.
+
+## Review follow-up
+
+Automatic approval review also rejected the proposed Member Functions audit action as unguarded and the upload-action metadata because its destination trust was unverified. The audit insert now enforces canonical `participant.manage` scope in SQL and takes its actor only from the signed application account. Artificial source-query checks deny Participant and unassigned-practitioner inserts and prove that a caller-supplied actor cannot impersonate another account.
+
+The upload metadata's only proposed change was a trailing newline; that file change is excluded. The development controller now sends no file, its upload button is disabled and its file picker is hidden until destination/authorization validation. This is an open release gate, not accepted paper-upload parity. Do not promote this development source to production while that gate remains open.
+
+Two later legacy Intake metadata rejections incorrectly described first-time uploads as retries. Those actions now have explicit canonical Document Reviewer checks; duplicate matching uses the canonical actor rather than legacy membership flags. Actual source-query tests cover nonmember reviewer creation/duplicate access and direct Participant denial.
