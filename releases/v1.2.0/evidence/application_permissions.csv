@@ -55,8 +55,8 @@ Company Profile,qVerifyCompanyEmail,DB,MANUAL,True,True,True,True,False
 Contributor Functions,qAddGivebutterAddressToMember,DB,MANUAL,True,False,False,False,False
 Contributor Functions,qAddGivebutterEmailToMember,DB,MANUAL,True,True,True,True,False
 Contributor Functions,qAddGivebutterPhoneToMember,DB,MANUAL,True,True,True,True,False
-Contributor Functions,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
-Contributor Functions,qCreateMemberFromDonation,DB,MANUAL,True,True,True,True,False
+Contributor Functions,qAuditLogInsert,DB,MANUAL,True,True,True,True,False
+Contributor Functions,qCreateMemberFromDonation,DB,MANUAL,True,True,True,False,False
 Contributor Functions,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
 Contributor Functions,qIgnorePendingDonation,DB,MANUAL,True,True,True,False,False
 Contributor Functions,qInsertCashDonation,DB,MANUAL,True,True,True,False,False
@@ -65,7 +65,7 @@ Contributor Functions,qMemberDonations,DB,MANUAL,True,True,True,False,False
 Contributor Functions,qMembersDirectory,DB,MANUAL,True,True,True,False,False
 Contributor Functions,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
 Contributor Functions,qPendingGivebutterDonations,DB,MANUAL,True,True,True,False,False
-Contributor Functions,qReassignDonationMember,DB,MANUAL,True,False,False,True,False
+Contributor Functions,qReassignDonationMember,DB,MANUAL,True,True,True,False,False
 Contributor Functions,qVerifyDonation,DB,MANUAL,True,True,True,False,False
 Directory,qPartyDirectory,DB,AUTOMATIC,True,True,True,False,False
 Events - Check In,qEventCheckinAudit,DB,MANUAL,True,False,False,True,False

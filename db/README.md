@@ -202,3 +202,7 @@ Use these test commands for validation; new production installations select thei
 ### Reason-aware cash reconciliation revival
 
 After canonical application authorization is installed, apply `db/migrations/cash_donation_reconciliation_revive.sql` to test first. Revival requires Donations Reviewer authority and a nonblank new reason; both original exclusion and new rationale are audited atomically without editing the donation. Two-argument legacy calls fail closed. Run `db/tests/verify_cash_donation_reconciliation_revive.sql` on test/disposable databases only. The v1.2.0 test runner is `bash releases/v1.2.0/validate_cash_reconciliation_test.sh`; production still requires the ordered restored-copy upgrade rehearsal.
+
+### Canonical provider donation review
+
+`db/migrations/provider_donation_administration.sql` follows canonical application authorization and the existing identity/contact/mailing models. It preserves UUID-based legacy entry points while supporting reviewers without Participant capacity, protects duplicate/ambiguous/provider identities and audits attribution correction atomically. Explicit Participant/Contributor creation retains Directory Manager and both reviewer requirements. Apply/verify test with `bash releases/v1.2.0/validate_provider_review_test.sh`; do not replay the canonical schema over an existing database or treat this as an approved production manifest.

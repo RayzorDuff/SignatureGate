@@ -35,6 +35,7 @@ Public release notes describe software behavior and technical contracts. Rooted 
 - Required exact accepted source/export consistency and the coordinated application export before final release tagging.
 
 ### Fixed
+- Removed legacy Participant requirements from provider review; made ambiguous matching conservative, prevented duplicate party creation, and guarded donor reassignment with atomic before/after audit and deposit-history protection.
 - Preserved deliberate Manual execution for guarded queries and bank/inventory APIs through Appsmith dependency recalculation after Git pull.
 - Required an explicit reason for cash reconciliation revival; preserved original exclusion rationale in atomic audit and added a reviewed Exclude/Revive dialog with committed-refresh recovery.
 - Guarded Participant and practitioner-administration audit insertion by canonical staff scope and signed actor; disabled development paper-evidence uploads pending destination and authorization validation.

@@ -21,3 +21,7 @@ Targeted definitions have been captured privately. Next: preserve reviewed owner
 ## Reason-aware reconciliation candidate
 
 `cash_donation_reconciliation_revive.sql` SHA-256: `bebbeed63af2df38f90be5951a73536187575d98ecf9278e304285243ee7bfa2`. Requires `application_authorization.sql`, existing cash exclusion/lifecycle objects and audit log. Installs the reason-aware overload and fail-closed legacy signature in one transaction. Repeat application, required-reason/permission/state/conflict/history and atomic audit rollback tests pass in isolation. `validate_cash_reconciliation_test.sh` applies it only to test; protected production upgrade/grant/lock/recovery review remains pending.
+
+## Canonical provider review candidate
+
+`provider_donation_administration.sql` SHA-256: `ba0023c9323dbdbe40b4a133e9cde2bc864474201327e852d25108f41ae7592c`. Requires canonical application authorization, contributor/Participant/contact/provider models, mailing support, audit and cash batch-item state. Keeps legacy UUID signatures with canonical authorization, adds authenticated-account wrappers and atomic correction, and conservatively matches all contact candidates. No fake staff membership, role grants or identity merges are introduced. Fresh bootstrap, repeat application and targeted SQL/source/controller regressions pass; test application, live dialog and protected restored-copy owner/grant/locking/recovery review remain pending. Use `validate_provider_review_test.sh` only for test.

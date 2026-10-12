@@ -23,3 +23,5 @@ Source/issue inventory is complete. Actual test/production database differences,
 - [Backend-first permission validation](PERMISSION_VALIDATION.md).
 
 - [Test confidence and focused manual validation](TEST_CONFIDENCE_AND_MANUAL_VALIDATION.md)
+
+- [Provider review increment and focused validation](PROVIDER_REVIEW_VALIDATION.md)
