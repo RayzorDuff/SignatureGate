@@ -198,3 +198,7 @@ sudo docker exec -i signaturegate-postgres \
 Use these test commands for validation; new production installations select their intended database only after setup review. The behavioral check expects the current deployment defaults; an intentionally customized installation may require separately reviewed expectations rather than resetting its labels.
 
 **Phase 3 requirement:** update this seed and its checks with the accepted Member → Participant presentation changes, and verify every active UI/document surface agrees. This preparation seed retains the current `Member` label and separate inactive Participant concept. Stable tables/role keys and historical signed documents must not be renamed by a label seed. An existing deployment's accepted label change must use the audited terminology API; rerunning this seed deliberately does not overwrite it.
+
+### Reason-aware cash reconciliation revival
+
+After canonical application authorization is installed, apply `db/migrations/cash_donation_reconciliation_revive.sql` to test first. Revival requires Donations Reviewer authority and a nonblank new reason; both original exclusion and new rationale are audited atomically without editing the donation. Two-argument legacy calls fail closed. Run `db/tests/verify_cash_donation_reconciliation_revive.sql` on test/disposable databases only. The v1.2.0 test runner is `bash releases/v1.2.0/validate_cash_reconciliation_test.sh`; production still requires the ordered restored-copy upgrade rehearsal.

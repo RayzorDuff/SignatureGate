@@ -77,7 +77,7 @@ Facilitator Functions,apiAvailableStorageProducts,API,MANUAL,False,False,False,F
 Facilitator Functions,qAssignMemberStorageLocation,DB,MANUAL,True,True,True,False,False
 Facilitator Functions,qAssignParticipant,DB,MANUAL,True,True,True,False,False
 Facilitator Functions,qAssignedParticipants,DB,MANUAL,True,True,True,False,False
-Facilitator Functions,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
+Facilitator Functions,qAuditLogInsert,DB,MANUAL,True,True,True,True,False
 Facilitator Functions,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
 Facilitator Functions,qDeactivateMemberStorageLocati,DB,MANUAL,True,True,True,False,False
 Facilitator Functions,qDistinctStorageLocationNames,DB,MANUAL,True,True,True,False,False

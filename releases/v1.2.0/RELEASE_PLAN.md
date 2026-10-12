@@ -105,9 +105,9 @@ Production database state, deployed n8n/RootedOps versions, Appsmith runtime lin
 - Test legacy participant-note migration to people, preservation of existing identity notes and original participant notes, safe reapplication, blank/changed/cleared notes, required reasons, and access/audit behavior. Behavioral/backfill/permission/failure checks are now implemented and pass in isolation; run the live test sequence in NOTES_VALIDATION_COMMANDS.md and rehearse against restored production.
 - Verify membership can be added or ended without changing contributor IDs or historical donations, agreements, and audit records. Contributor status changes must not silently change membership.
 - Verify all Givebutter resolution options: existing individual/company contributor, linked participant, new individual/company contributor, new participant with linked contributor, and ignore/reject as appropriate. Ambiguous provider matches must remain unresolved.
-- Complete reporting categories required by #19: individual, organization, anonymous, unresolved, and currently linked/unlinked identities. Current `Reports` metrics retain participant-linked/anonymous summaries and exclude unresolved records; they do not supply the complete requested breakdown.
+- Complete reporting categories required by #19: individual, organization, anonymous, unresolved, and currently linked/unlinked identities. Six implemented count/dollar groups cover overall, individual, company, anonymous, unresolved and Participant-linked contributions; actual query math and financial-scope checks pass. Preserve this automated evidence and validate any changed reporting dependency.
 - Review canonical actor authorization across `Reports`, `Agreement Templates`, cash entry, review, and deposits. Some queries still require a legacy active participant/Facilitator/Spiritual Practitioner identity; test reviewers and practitioners whose canonical person account has no active membership.
-- Restore/verify a scoped manual-cash entry path for practitioner-only users and read-only donation history for assigned participants. Current `Contributor Functions` entry guard requires a reviewer role, so this requirement needs a concrete permitted path without exposing organization-wide financials.
+- Restore/verify a scoped manual-cash entry path for practitioner-only users and read-only donation history for assigned participants. Canonical assigned-practitioner entry, scoped cash/history and denial of anonymous/global financial access are implemented and exercised automatically; remaining deployed integration boundaries stay open.
 - Implement Appsmith #2 with an authoritative authorization check and atomic audit on creation. Verify duplicate type keys and empty Agreement Type setup.
 - Remove `Members – Intake` only after all parity cases pass. Audit page links, selectors, SQL actions, JS registrations, and application page entries afterward. Retain email reads needed for agreement delivery; remove obsolete actions only after checking their consumers.
 
@@ -131,6 +131,8 @@ Production database state, deployed n8n/RootedOps versions, Appsmith runtime lin
 
 ## Phase 4 — Validate the development release candidate
 
+Use [TEST_CONFIDENCE_AND_MANUAL_VALIDATION.md](TEST_CONFIDENCE_AND_MANUAL_VALIDATION.md) to accept covered automated invariants and prioritize manual work. Reuse unchanged passing tests and operator observations; request manual scenarios only for consequential browser, external integration or deployment gaps without high-confidence coverage.
+
 **Purpose:** establish code completion before any production switch.
 
 Run the complete relevant database regression suite on an isolated target. Use both a **fresh canonical-schema database** and a **restored production copy upgraded through the release manifest**. The second case detects upgrade defects that a fresh bootstrap cannot reveal.
@@ -152,7 +154,7 @@ The repository's rollback-only verification scripts belong on test/disposable da
 Appsmith checks must include all active pages, empty table results, and denied-access results:
 
 1. Repair remaining linter errors and generated fallback references with contextual tests.
-2. Check widget/query/JS references, registered methods, metadata/body consistency, route names, prepared parameters, and execution dependencies.
+2. Check widget/query/JS references, registered methods, metadata/body consistency, route names, prepared parameters, and execution dependencies automatically where possible; reserve live checks for remaining SDK/import/runtime uncertainty.
 3. Pull in Appsmith, reload, exercise the workflows, commit editor-generated metadata, and re-pull. A fix that disappears after synchronization fails this gate.
 4. Verify `Company Profile`'s recreated object remains registered and runs on navigation; do not repeat earlier speculative metadata changes.
 5. Re-run SignatureGate validation/release checks and add focused Appsmith source checks for recurring defects.

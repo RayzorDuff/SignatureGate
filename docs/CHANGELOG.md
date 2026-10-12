@@ -35,7 +35,9 @@ Public release notes describe software behavior and technical contracts. Rooted 
 - Required exact accepted source/export consistency and the coordinated application export before final release tagging.
 
 ### Fixed
-- Guarded Participant audit insertion by canonical staff scope and signed actor; disabled development paper-evidence uploads pending destination and authorization validation.
+- Preserved deliberate Manual execution for guarded queries and bank/inventory APIs through Appsmith dependency recalculation after Git pull.
+- Required an explicit reason for cash reconciliation revival; preserved original exclusion rationale in atomic audit and added a reviewed Exclude/Revive dialog with committed-refresh recovery.
+- Guarded Participant and practitioner-administration audit insertion by canonical staff scope and signed actor; disabled development paper-evidence uploads pending destination and authorization validation.
 
 - Enforced canonical account/role and Participant self/assignment scope across Intake, operational pages and financial reads; retained navigation during denial and added Participant self-read access. Staff roles remain independent of Participant capacity and stale legacy flags.
 - Supported nonmember reviewers in pending cash recording/review and cash-deposit actor references; made cash writes/audits atomic, repaired prepared binding metadata/quoting, and separated committed writes from refresh failures.

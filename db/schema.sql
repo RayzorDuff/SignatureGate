@@ -11113,9 +11113,15 @@ BEGIN
 END;
 $exclude_cash_donation$;
 
+-- Restore an excluded cash donation to Cash on Hand.
+-- The original exclusion record is removed only after the donation is
+-- validated and any active deposit-batch assignment is ruled out.
+
 CREATE OR REPLACE FUNCTION public.revive_cash_donation_from_deposit(
   p_donation_id uuid,
-  p_actor_id uuid
+  p_actor_id uuid,
+  p_reason text,
+  p_notes text DEFAULT NULL
 )
 RETURNS public.cash_deposit_donation_exclusions
 LANGUAGE plpgsql
@@ -11130,7 +11136,13 @@ DECLARE
   v_donor_kind text;
   v_amount_cents integer;
 BEGIN
+  PERFORM public.application_require_permission(
+    public.application_actor_email(p_actor_id), 'cash_deposits');
   PERFORM public.assert_cash_deposit_verifier(p_actor_id);
+
+  IF NULLIF(btrim(p_reason), '') IS NULL THEN
+    RAISE EXCEPTION 'A reason is required when reviving a cash donation for deposit reconciliation.';
+  END IF;
 
   SELECT provider, status, donor_kind, amount_cents
   INTO v_provider, v_status, v_donor_kind, v_amount_cents
@@ -11142,8 +11154,9 @@ BEGIN
     RAISE EXCEPTION 'Donation % was not found.', p_donation_id;
   END IF;
 
-  IF v_provider <> 'cash'
-     OR v_status <> 'verified'
+  IF v_provider IS DISTINCT FROM 'cash'
+     OR v_status IS DISTINCT FROM 'verified'
+     OR v_donor_kind IS NULL
      OR v_donor_kind NOT IN ('identified', 'anonymous')
      OR v_amount_cents IS NULL
      OR v_amount_cents <= 0
@@ -11180,13 +11193,35 @@ BEGIN
       'excluded_at', v_exclusion.excluded_at,
       'excluded_by', v_exclusion.excluded_by,
       'reason', v_exclusion.reason,
-      'notes', v_exclusion.notes
+      'notes', v_exclusion.notes,
+      'revival_reason', btrim(p_reason),
+      'revival_notes', NULLIF(btrim(p_notes), '')
     )
   );
 
   RETURN v_exclusion;
 END;
 $revive_cash_donation$;
+
+-- Retain the old signature so callers get an actionable, fail-closed error.
+-- No implicit/default revival reason is assigned to historical callers.
+CREATE OR REPLACE FUNCTION public.revive_cash_donation_from_deposit(
+  p_donation_id uuid, p_actor_id uuid
+)
+RETURNS public.cash_deposit_donation_exclusions
+LANGUAGE plpgsql VOLATILE SECURITY INVOKER
+SET search_path = public, pg_temp
+AS $$
+BEGIN
+  PERFORM public.application_require_permission(
+    public.application_actor_email(p_actor_id), 'cash_deposits');
+  RAISE EXCEPTION 'A reason is required when reviving a cash donation for deposit reconciliation.';
+END;
+$$;
+
+COMMENT ON FUNCTION public.revive_cash_donation_from_deposit(uuid,uuid,text,text) IS
+  'Donations Reviewer-only revival with required reason; original exclusion and new revival rationale are audited atomically.';
+
 
 CREATE OR REPLACE FUNCTION public.prevent_excluded_cash_deposit_item()
 RETURNS trigger
