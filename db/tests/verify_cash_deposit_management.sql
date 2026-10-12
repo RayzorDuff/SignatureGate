@@ -59,6 +59,12 @@ BEGIN
      'active', true, false),
     (v_member, v_person, 'cash-deposit-donor@example.invalid',
      'active', false, false);
+  -- Positive actors have explicit canonical permissions; legacy flags grant nothing.
+  INSERT INTO public.person_app_accounts(person_id,email) VALUES(v_preparer_person,'cash-deposit-preparer@example.invalid');
+  INSERT INTO public.person_roles(person_id,role_key,assigned_by) VALUES(v_preparer_person,'donations_reviewer','synthetic_cash_test');
+  INSERT INTO public.person_app_accounts(person_id,email) VALUES(v_reviewer_person,'cash-deposit-reviewer@example.invalid');
+  INSERT INTO public.person_roles(person_id,role_key,assigned_by) VALUES(v_reviewer_person,'donations_reviewer','synthetic_cash_test');
+
 
   v_contributor := public.ensure_member_contributor(v_member);
 

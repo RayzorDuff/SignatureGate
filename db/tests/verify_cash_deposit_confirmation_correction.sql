@@ -25,6 +25,9 @@ BEGIN
     'active', true, true
   );
 
+  INSERT INTO public.person_app_accounts(person_id,email) VALUES(v_actor_person,'cash-deposit-correction@example.invalid');
+  INSERT INTO public.person_roles(person_id,role_key,assigned_by) VALUES(v_actor_person,'donations_reviewer','synthetic_correction_test');
+
   INSERT INTO public.donations (
     donation_id, donor_kind, provider, amount_cents, currency,
     donated_at, status, facilitator_id

@@ -36,6 +36,10 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ### Fixed
 
+- Enforced canonical account/role and Participant self/assignment scope across Intake, operational pages and financial reads; retained navigation during denial and added Participant self-read access. Staff roles remain independent of Participant capacity and stale legacy flags.
+- Supported nonmember reviewers in pending cash recording/review and cash-deposit actor references; made cash writes/audits atomic, repaired prepared binding metadata/quoting, and separated committed writes from refresh failures.
+- Corrected Intake email escaping and optional blank-email handling; prevented inventory loading/display when no location scope is authorized and added an isolated Code-node helper that denies requested empty/malformed inventory scopes (workflow integration pending).
+
 - Preserved the audited confirmed-deposit date-correction guard during fresh bootstrap; a later schema section no longer overwrites it with the earlier unconditional guard.
 - Verified notes migration, repeat application and rollback-only behavioral checks on live PostgreSQL 16.13. Profile/Intake UI and restored-production acceptance remain pending.
 - Enabled canonical Reports access without Participant capacity, used person-based practitioner assignments, and cleared stale authorization state and cached financial display after account changes.

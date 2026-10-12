@@ -1,0 +1,235 @@
+page,action,plugin,mode,body_binding_registered,signed_actor_reference,canonical_contract_marker,direct_write,quoted_sql_binding
+Agreement Templates,apiListDocumensoTemplates,API,MANUAL,False,False,False,False,False
+Agreement Templates,qAgreementTemplateInsert,DB,MANUAL,True,False,False,True,False
+Agreement Templates,qAgreementTemplateUpdate,DB,MANUAL,True,False,False,True,False
+Agreement Templates,qAgreementTemplatesList,DB,ON_PAGE_LOAD,True,True,True,False,False
+Agreement Templates,qAgreementTypesAdminList,DB,AUTOMATIC,True,True,True,False,False
+Agreement Templates,qAgreementTypesList,DB,AUTOMATIC,True,True,True,False,False
+Agreement Templates,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
+Agreement Templates,qCreateAgreementType,DB,MANUAL,True,True,False,False,False
+Agreement Templates,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
+Agreement Templates,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Agreement Templates,qTerminology,DB,AUTOMATIC,False,False,False,False,False
+Agreements - Queue,qAgreementsPendingReview,DB,AUTOMATIC,False,False,False,False,False
+Audit Log,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
+Audit Log,qAuditLogList,DB,ON_PAGE_LOAD,True,True,True,False,False
+Audit Log,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
+Audit Log,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Audit Log,qTerminology,DB,AUTOMATIC,False,False,False,False,False
+Cash Deposits,apiCashDepositBankAccounts,API,MANUAL,False,False,False,False,False
+Cash Deposits,apiSyncCashDepositToERPNext,API,MANUAL,True,False,False,False,False
+Cash Deposits,qAddCashDepositItem,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qCashDepositBatchPrint,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qCashDepositBatches,DB,AUTOMATIC,True,True,True,False,False
+Cash Deposits,qCashDepositCashOnHand,DB,AUTOMATIC,True,True,True,False,False
+Cash Deposits,qCashDepositCurrentFacilitator,DB,AUTOMATIC,True,True,True,False,False
+Cash Deposits,qConfirmCashDepositBatch,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qCreateCashDepositBatch,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qExcludeCashDonation,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Cash Deposits,qPrepareCashDepositBatch,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qReviewCashDonation,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qReviveCashDonation,DB,MANUAL,True,True,True,False,False
+Company Profile,qAddCompanyDonorAddress,DB,MANUAL,True,True,True,False,False
+Company Profile,qAddCompanyDonorContact,DB,MANUAL,True,True,True,False,False
+Company Profile,qArchiveCompanyDonorAddress,DB,MANUAL,True,True,True,False,False
+Company Profile,qArchiveCompanyDonorContact,DB,MANUAL,True,True,True,False,False
+Company Profile,qCompanyCanEditDonorContacts,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyContacts,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyContributionHistory,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyContributorStatusState,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyDonorAddresses,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyDonorContacts,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyIdentityNotes,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyPartyIdentity,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyProfile,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyProviderIdentities,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyReassignTargets,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qReassignCompanyContact,DB,MANUAL,True,True,True,False,False
+Company Profile,qSaveCompanyIdentityNotes,DB,MANUAL,True,True,True,False,False
+Company Profile,qSetCompanyContributorStatus,DB,MANUAL,True,True,True,False,False
+Company Profile,qSetCompanyEmailPrimary,DB,MANUAL,True,True,True,True,False
+Company Profile,qToggleCompanyEmailSubscription,DB,MANUAL,True,True,True,True,False
+Company Profile,qUpdateCompanyPartyIdentity,DB,MANUAL,True,True,True,False,False
+Company Profile,qVerifyCompanyEmail,DB,MANUAL,True,True,True,True,False
+Contributor Functions,qAddGivebutterAddressToMember,DB,MANUAL,True,False,False,False,False
+Contributor Functions,qAddGivebutterEmailToMember,DB,MANUAL,True,True,True,True,False
+Contributor Functions,qAddGivebutterPhoneToMember,DB,MANUAL,True,True,True,True,False
+Contributor Functions,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
+Contributor Functions,qCreateMemberFromDonation,DB,MANUAL,True,True,True,True,False
+Contributor Functions,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
+Contributor Functions,qIgnorePendingDonation,DB,MANUAL,True,True,True,False,False
+Contributor Functions,qInsertCashDonation,DB,MANUAL,True,True,True,False,False
+Contributor Functions,qLinkDonationToMember,DB,MANUAL,True,True,True,False,False
+Contributor Functions,qMemberDonations,DB,MANUAL,True,True,True,False,False
+Contributor Functions,qMembersDirectory,DB,MANUAL,True,True,True,False,False
+Contributor Functions,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Contributor Functions,qPendingGivebutterDonations,DB,MANUAL,True,True,True,False,False
+Contributor Functions,qReassignDonationMember,DB,MANUAL,True,False,False,True,False
+Contributor Functions,qVerifyDonation,DB,MANUAL,True,True,True,False,False
+Directory,qPartyDirectory,DB,AUTOMATIC,True,True,True,False,False
+Events - Check In,qEventCheckinAudit,DB,MANUAL,True,False,False,True,False
+Events - Check In,qEventsList,DB,AUTOMATIC,False,False,False,False,False
+Events - Check In,qMembersForEventCheckin,DB,AUTOMATIC,True,True,False,False,False
+Events - Create,qCreateEvent,DB,MANUAL,True,False,False,True,False
+Events - Create,qEventsList,DB,AUTOMATIC,False,False,False,False,False
+Facilitator Functions,apiAvailableStorageProducts,API,MANUAL,False,False,False,False,False
+Facilitator Functions,qAssignMemberStorageLocation,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qAssignParticipant,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qAssignedParticipants,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
+Facilitator Functions,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qDeactivateMemberStorageLocati,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qDistinctStorageLocationNames,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qEndParticipantAssignment,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qListFacilitators,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qLocationNameSuggestions,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qMemberById,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qMemberStorageLocations,DB,MANUAL,True,True,True,False,False
+Facilitator Functions,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Facilitator Functions,qParticipantCandidates,DB,MANUAL,True,True,True,False,False
+Individual Profile,apiTriggerIndividualDocumenso,API,MANUAL,True,False,False,False,False
+Individual Profile,apiUploadIndividualEvidence,API,MANUAL,True,False,False,False,False
+Individual Profile,qAddIndividualDonorAddress,DB,MANUAL,True,True,True,False,False
+Individual Profile,qAddIndividualDonorContact,DB,MANUAL,True,True,True,False,False
+Individual Profile,qAddIndividualMembershipAddress,DB,MANUAL,True,True,True,False,False
+Individual Profile,qAddIndividualMembershipContact,DB,MANUAL,True,True,True,False,False
+Individual Profile,qArchiveIndividualDonorAddress,DB,MANUAL,True,True,True,False,False
+Individual Profile,qArchiveIndividualDonorContact,DB,MANUAL,True,True,True,False,False
+Individual Profile,qArchiveIndividualMembershipAddress,DB,MANUAL,True,True,True,False,False
+Individual Profile,qArchiveIndividualMembershipContact,DB,MANUAL,True,True,True,False,False
+Individual Profile,qAssignIndividualPractitioner,DB,MANUAL,True,True,True,False,False
+Individual Profile,qAssignPersonContactRole,DB,MANUAL,True,True,True,False,False
+Individual Profile,qCanAssignPersonContact,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qCreateIndividualAgreement,DB,MANUAL,True,True,True,False,False
+Individual Profile,qCreateIndividualPaperAgreement,DB,MANUAL,True,True,True,False,False
+Individual Profile,qDirectoryCanManage,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qEnableProfileContributor,DB,MANUAL,True,True,True,False,False
+Individual Profile,qEnableProfileMembership,DB,MANUAL,True,True,True,False,False
+Individual Profile,qEndIndividualPractitioner,DB,MANUAL,True,True,True,False,False
+Individual Profile,qEndPersonMembership,DB,MANUAL,True,True,True,False,False
+Individual Profile,qIndividualAccount,DB,MANUAL,True,True,True,False,False
+Individual Profile,qIndividualAgreementEmails,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualAgreementTemplates,DB,MANUAL,True,False,False,False,False
+Individual Profile,qIndividualAgreementTypes,DB,AUTOMATIC,False,False,False,False,False
+Individual Profile,qIndividualAvailablePractitioners,DB,MANUAL,True,True,True,False,False
+Individual Profile,qIndividualCanEditDonorContacts,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualContacts,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualContributionHistory,DB,MANUAL,True,True,True,False,False
+Individual Profile,qIndividualContributorStatusState,DB,MANUAL,True,True,True,False,False
+Individual Profile,qIndividualDonorAddresses,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualDonorContacts,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualIdentityNotes,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualMemberAgreements,DB,MANUAL,True,True,True,False,False
+Individual Profile,qIndividualMemberOperationsState,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualMembershipAddresses,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualMembershipContacts,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualPartyIdentity,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualPractitionerAssignments,DB,MANUAL,True,True,True,False,False
+Individual Profile,qIndividualProfile,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualProfileDiagnostic,DB,MANUAL,True,True,True,False,False
+Individual Profile,qIndividualProviderIdentities,DB,MANUAL,True,True,True,False,False
+Individual Profile,qIndividualReassignTargets,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qIndividualRoles,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qMembershipIdentity,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qProfileCanCreateContributor,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qProfileCanCreateMember,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qProfileMembershipState,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qReassignIndividualContact,DB,MANUAL,True,True,True,False,False
+Individual Profile,qReusablePersonContacts,DB,AUTOMATIC,True,True,True,False,False
+Individual Profile,qSaveIndividualIdentityNotes,DB,MANUAL,True,True,True,False,False
+Individual Profile,qSetIndividualAccount,DB,MANUAL,True,True,True,False,False
+Individual Profile,qSetIndividualContributorStatus,DB,MANUAL,True,True,True,False,False
+Individual Profile,qSetIndividualEmailPrimary,DB,MANUAL,True,True,True,True,False
+Individual Profile,qSetIndividualRole,DB,MANUAL,True,True,True,False,False
+Individual Profile,qSubscribeIndividualEmail,DB,MANUAL,True,True,False,False,False
+Individual Profile,qToggleIndividualContributorEmailSubscription,DB,MANUAL,True,True,True,True,False
+Individual Profile,qUnsubscribeIndividualEmail,DB,MANUAL,True,True,False,False,False
+Individual Profile,qUpdateIndividualPartyIdentity,DB,MANUAL,True,True,True,False,False
+Individual Profile,qVerifyIndividualEmail,DB,MANUAL,True,True,True,True,False
+Intake,apiTriggerDocumenso,API,MANUAL,True,False,False,False,False
+Intake,apiUploadEvidenceViaN8n,API,MANUAL,True,False,False,False,False
+Intake,qAddContributorAddress,DB,MANUAL,True,True,True,False,False
+Intake,qAddContributorEmailForDualCapacity,DB,MANUAL,True,True,True,False,False
+Intake,qAddMemberEmail,DB,MANUAL,True,True,True,True,False
+Intake,qAddMemberPhone,DB,MANUAL,True,True,True,True,False
+Intake,qAddMembershipAddress,DB,MANUAL,True,True,True,False,False
+Intake,qAgreementTemplatesByType,DB,AUTOMATIC,True,True,True,False,False
+Intake,qAgreementTypesList,DB,AUTOMATIC,True,True,True,False,False
+Intake,qAssignMemberPractitioner,DB,MANUAL,True,True,True,False,False
+Intake,qAssignPersonContactRole,DB,MANUAL,True,True,True,False,False
+Intake,qAuditLog,DB,MANUAL,True,False,False,True,False
+Intake,qCheckContributorListmonkQueue,DB,MANUAL,True,True,True,False,False
+Intake,qCheckMemberDuplicate,DB,MANUAL,True,True,True,False,False
+Intake,qCreateContributor,DB,MANUAL,True,True,True,False,False
+Intake,qCreateIntakeAgreement,DB,MANUAL,True,True,True,False,False
+Intake,qCreateMember,DB,MANUAL,True,True,True,False,False
+Intake,qCurrentFacilitator,DB,AUTOMATIC,True,True,True,False,False
+Intake,qEnablePersonContributor,DB,MANUAL,True,True,True,False,False
+Intake,qGetMemberPerson,DB,MANUAL,True,True,True,False,False
+Intake,qIntakeActorRoles,DB,AUTOMATIC,True,True,True,False,False
+Intake,qLinkContributorMember,DB,MANUAL,True,True,True,False,False
+Intake,qListFacilitators,DB,AUTOMATIC,True,True,True,False,False
+Intake,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Intake,qSetIntakeIdentityNotes,DB,MANUAL,True,True,True,False,False
+Member Functions,apiCancelDocumensoAgreement,API,MANUAL,True,True,False,False,False
+Member Functions,apiMarkProductUnShipped,API,MANUAL,True,False,False,False,False
+Member Functions,apiTriggerDocumenso,API,MANUAL,True,False,False,False,False
+Member Functions,apiUploadEvidence,API,MANUAL,False,False,False,False,False
+Member Functions,apiUploadEvidencePublic,API,MANUAL,False,False,False,False,False
+Member Functions,apiUploadEvidenceViaN8n,API,MANUAL,True,False,False,False,False
+Member Functions,qAgreementTemplatesByType,DB,MANUAL,True,True,True,False,False
+Member Functions,qAgreementTypesList,DB,MANUAL,True,True,True,False,False
+Member Functions,qApproveAgreement,DB,MANUAL,True,True,True,False,False
+Member Functions,qAssignMemberFacilitator,DB,MANUAL,True,True,True,False,False
+Member Functions,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
+Member Functions,qCreatePendingAgreement,DB,MANUAL,True,True,True,False,False
+Member Functions,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
+Member Functions,qDeactivateMemberFacilitator,DB,MANUAL,True,True,True,False,False
+Member Functions,qListFacilitators,DB,MANUAL,True,True,True,False,False
+Member Functions,qMemberAccessCheck,DB,MANUAL,True,True,True,False,False
+Member Functions,qMemberAgreements,DB,MANUAL,True,True,True,False,False
+Member Functions,qMemberById,DB,MANUAL,True,True,True,False,False
+Member Functions,qMemberEmails,DB,MANUAL,True,True,True,False,False
+Member Functions,qMemberFacilitators,DB,MANUAL,True,True,True,False,False
+Member Functions,qMemberReleases,DB,MANUAL,True,True,True,False,False
+Member Functions,qMemberWriteAccess,DB,MANUAL,True,True,True,False,False
+Member Functions,qMembersDirectory,DB,MANUAL,True,True,True,False,False
+Member Functions,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Member Functions,qPrimaryMemberEmail,DB,MANUAL,True,True,True,False,False
+Member Functions,qVerifyAgreement,DB,MANUAL,True,True,True,False,False
+Member Functions,qVerifyAgreementEmail,DB,MANUAL,True,True,True,True,False
+Member Functions,qVoidRelease,DB,MANUAL,True,True,True,True,False
+Members – Intake,apiTriggerDocumenso,API,MANUAL,True,False,False,False,False
+Members – Intake,apiUploadEvidence,API,MANUAL,False,False,False,False,False
+Members – Intake,apiUploadEvidenceViaN8n,API,MANUAL,True,False,False,False,False
+Members – Intake,qAddMemberEmailForNewMember,DB,MANUAL,True,True,True,True,False
+Members – Intake,qAddMemberPhoneForNewMember,DB,MANUAL,True,True,True,True,False
+Members – Intake,qAgreementTemplatesByType,DB,AUTOMATIC,True,True,True,False,False
+Members – Intake,qAgreementTypesList,DB,AUTOMATIC,True,True,True,False,False
+Members – Intake,qAssignMemberFacilitator,DB,MANUAL,True,True,True,True,False
+Members – Intake,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
+Members – Intake,qCheckMemberDuplicate,DB,MANUAL,True,True,True,False,False
+Members – Intake,qCreateMember,DB,MANUAL,True,True,True,False,False
+Members – Intake,qCreatePendingAgreement,DB,MANUAL,True,True,True,False,False
+Members – Intake,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
+Members – Intake,qListFacilitators,DB,AUTOMATIC,True,True,True,False,False
+Members – Intake,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Reports,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
+Reports,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Reports,qReportTimeSeries,DB,MANUAL,True,True,True,False,False
+Sacrament Release,apiListAvailableProducts,API,MANUAL,False,False,False,False,False
+Sacrament Release,apiMarkProductShipped,API,MANUAL,True,False,False,False,False
+Sacrament Release,qAccessibleStorageLocations,DB,MANUAL,True,True,True,False,False
+Sacrament Release,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
+Sacrament Release,qCreateRelease,DB,MANUAL,True,True,True,False,False
+Sacrament Release,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
+Sacrament Release,qGateCheckAgreement,DB,MANUAL,True,False,True,False,False
+Sacrament Release,qListFacilitators,DB,MANUAL,True,True,True,False,False
+Sacrament Release,qMembersDirectory,DB,MANUAL,True,True,True,False,False
+Sacrament Release,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Sacrament Release,qReleaseMemberActive,DB,MANUAL,True,False,False,False,False
+Sacrament Release,qTerminology,DB,AUTOMATIC,False,False,False,False,False
+Terminology Administration,qSetTerminology,DB,MANUAL,True,False,False,False,False
+Terminology Administration,qTerminology,DB,AUTOMATIC,False,False,False,False,False
+Terminology Administration,qTerminologyAccess,DB,AUTOMATIC,True,True,True,False,False

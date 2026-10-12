@@ -108,3 +108,8 @@ Contribution reporting includes six count/dollar groups: all contributions, indi
 `tests/report-access.mjs` verifies canonical nonmember entry, denial/error state clearing, retained-selection denial and cached financial-result isolation. `tests/reporting-sql.mjs` executes the actual action SQL on an isolated canonical database with artificial fixtures and bind parameters. It checks all six groups, canonical assignment scope, direct financial selection denial, ending Participant capacity without changing historical contribution totals, removed roles and disabled accounts. Appsmith import/editor/Git round-trip validation is still pending; see [REPORTS_VALIDATION.md](REPORTS_VALIDATION.md).
 
 Cash Deposits, Audit Log, remaining legacy Intake paths, reason-aware revival, practitioner-scoped cash/history, and company contact-person representation remain separate Phase 2 work. This increment does not broaden practitioner financial visibility or promote development to production.
+
+
+## Permission regression follow-up
+
+Operator runtime feedback found critical permission and email/cash-refresh failures. [PERMISSION_REVIEW.md](PERMISSION_REVIEW.md) records the canonical role/resource model, repairs and regression evidence; [PERMISSION_VALIDATION.md](PERMISSION_VALIDATION.md) gives the backend-first test sequence. Participant capacity grants only self-read access. Document Reviewers can perform participant/practitioner operations and record pending anonymous cash without membership; financial review/deposits remain Donations Reviewer-only. Scope and atomic audit are enforced in the new database APIs, not inferred from cached flags. Live acceptance, provider-resolution/contact parity and external endpoint authorization remain open release gates.

@@ -1,6 +1,6 @@
 -- Rollback-only end-to-end verification for the cash deposit management flow.
 --
--- Uses the bootstrapped directory-manager identity as the preparer and a
+-- Uses an artificial canonical Donations Reviewer as the preparer and a
 -- synthetic donations reviewer as verifier. All synthetic records roll back.
 
 \set ON_ERROR_STOP on
@@ -9,6 +9,7 @@ BEGIN;
 DO $$
 DECLARE
   v_preparer uuid;
+  v_preparer_person uuid;
   v_reviewer uuid := public.uuid_generate_v4();
   v_reviewer_person uuid := public.uuid_generate_v4();
   v_donor_person uuid := public.uuid_generate_v4();
@@ -19,20 +20,10 @@ DECLARE
   v_tally record;
   v_audit_count integer;
 BEGIN
-  SELECT m.member_id
-  INTO v_preparer
-  FROM public.members m
-  JOIN public.people p ON p.person_id = m.person_id
-  JOIN public.person_app_accounts paa ON paa.person_id = p.person_id
-  WHERE lower(paa.email) = 'ray@edanks.com'
-    AND m.status = 'active'
-    AND m.is_facilitator = true
-  LIMIT 1;
-
-  IF v_preparer IS NULL THEN
-    RAISE EXCEPTION
-      'Bootstrapped preparer ray@edanks.com was not found as an active facilitator.';
-  END IF;
+  INSERT INTO public.people(display_name) VALUES('Synthetic E2E Preparer') RETURNING person_id INTO v_preparer_person;
+  INSERT INTO public.members(person_id,email,status) VALUES(v_preparer_person,'cash-e2e-preparer@example.invalid','active') RETURNING member_id INTO v_preparer;
+  INSERT INTO public.person_app_accounts(person_id,email) VALUES(v_preparer_person,'cash-e2e-preparer@example.invalid');
+  INSERT INTO public.person_roles(person_id,role_key,assigned_by) VALUES(v_preparer_person,'donations_reviewer','synthetic_e2e_test');
 
   INSERT INTO public.people (person_id, display_name, first_name, last_name)
   VALUES
@@ -50,6 +41,9 @@ BEGIN
     (v_donor_member, v_donor_person,
      'cash-deposit-e2e-donor@example.invalid',
      'active', false, false);
+  INSERT INTO public.person_app_accounts(person_id,email) VALUES(v_reviewer_person,'cash-deposit-e2e-reviewer@example.invalid');
+  INSERT INTO public.person_roles(person_id,role_key,assigned_by) VALUES(v_reviewer_person,'donations_reviewer','synthetic_e2e_test');
+
 
   v_contributor := public.ensure_member_contributor(v_donor_member);
 

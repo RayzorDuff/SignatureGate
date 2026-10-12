@@ -31,6 +31,9 @@ BEGIN
     'active', true
   FROM public.people p
   WHERE p.display_name = 'Tally Preparer';
+  INSERT INTO public.person_app_accounts(person_id,email) SELECT person_id,email FROM public.members WHERE member_id=v_preparer;
+  INSERT INTO public.person_roles(person_id,role_key,assigned_by) SELECT person_id,'donations_reviewer','synthetic_tally_test' FROM public.members WHERE member_id=v_preparer;
+
 
   v_contributor := public.ensure_member_contributor(v_member);
 

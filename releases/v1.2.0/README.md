@@ -18,3 +18,6 @@ Source/issue inventory is complete. Actual test/production database differences,
 - [Sanitized live evidence review](LIVE_EVIDENCE_REVIEW.md): received catalog dispositions, confirmed software versions and open deployment gates.
 - [Next identity-notes validation commands](NOTES_VALIDATION_COMMANDS.md): private effective-definition capture, test migration/reapplication and Profile/`Intake` checks.
 - [Current migration candidates](CURRENT_MIGRATION_CANDIDATES.md): current checksums and prerequisite/recovery review; not a production execution manifest.
+
+- [Permission repair and role matrix](PERMISSION_REVIEW.md).
+- [Backend-first permission validation](PERMISSION_VALIDATION.md).
