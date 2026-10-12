@@ -25,3 +25,9 @@ Targeted definitions have been captured privately. Next: preserve reviewed owner
 ## Canonical provider review candidate
 
 `provider_donation_administration.sql` SHA-256: `ba0023c9323dbdbe40b4a133e9cde2bc864474201327e852d25108f41ae7592c`. Requires canonical application authorization, contributor/Participant/contact/provider models, mailing support, audit and cash batch-item state. Keeps legacy UUID signatures with canonical authorization, adds authenticated-account wrappers and atomic correction, and conservatively matches all contact candidates. No fake staff membership, role grants or identity merges are introduced. Fresh bootstrap, repeat application and targeted SQL/source/controller regressions pass; test application, live dialog and protected restored-copy owner/grant/locking/recovery review remain pending. Use `validate_provider_review_test.sh` only for test.
+
+## Explicit company-contact relationship candidate
+
+`company_contact_people.sql` SHA-256: `c92a846c4b73d9001786c9bd5e6a0779f98d6f75250400915d41c8030f74d05f`. Requires canonical people/organizations/contributors, account/role access, Directory visibility and audit. Adds a relationship table and guarded APIs without identity/capacity/consent backfill. Atomic migration/reapplication and relationship/source/controller checks pass in isolation. Test deployment uses `validate_directory_review_test.sh`; final production owner/grant/lock review and protected restore rehearsal remain pending.
+
+Cash revival has operator-reported PostgreSQL 16.13 test evidence at `50f4650` (exit 0); its UI check is blocked by the cash-page access report. See DIRECTORY_REVIEW_VALIDATION.md.

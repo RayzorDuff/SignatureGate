@@ -1,0 +1,24 @@
+# v1.2.0 phase status
+
+Updated October 12, 2026. **Development continues; the release is not ready for production promotion.** No production migration, datasource switch, Appsmith master promotion, final packaged export or release tag has been performed.
+
+| Phase | Current state | Completed evidence / remaining gate |
+| --- | --- | --- |
+| 1 — Inventory and deployed baseline | Open; source inventory and initial live catalog review complete | Appsmith Community 2.4.2, n8n 2.16.1 and test datasource PostgreSQL 16.13 confirmed. Effective SQL dispositions and sanitized findings recorded. Still need actual production datasource/published revision, deployed integration destinations/modes/mappings, released/deployed RootedOps dependency and final checksum/order/precondition manifest |
+| 2 — Functional repairs and identity/access | In progress | Agreement Types and identity-note SQL pass live on test. Canonical permission migration/tests and major role/navigation/email observations accepted. Reports and provider resolution/correction have focused automated coverage; explicit company-contact relationships now implemented/tested. Cash revival backend passes live, but Cash Deposits access blocks dialog acceptance. Remaining Intake/contact/agreement parity, disabled paper-upload boundary, external principal/endpoint review and consolidated runtime/sync acceptance stay open |
+| 3 — Terminology and navigation | Prepared; not accepted | Repeatable Spiritual Practitioner terminology seed and naming/docs updates exist; operator reports fourteen test defaults inserted. Participant UI/default seed completion, maintainable grouped navigation, profile entry/deep-link behavior and final SCREENS guide remain. Labels never grant permissions or rewrite executed agreements |
+| 4 — Candidate validation | Focused automated checks underway; full gate open | Fresh canonical SQL, actual prepared source queries, controller fixtures and export preservation support covered invariants. Protected restored-production upgrade, remaining SDK/import/runtime and integration checks are required. Reuse unchanged passing evidence; no new browser harness this release |
+| 5 — Production upgrade | Not started | Build/select the required dependency-ordered migration manifest, verify backup restore and rehearse against protected production copy before any production change. Current retained migration candidates: 19; do not replay them alphabetically or load bootstrap over existing data |
+| 6 — Production configuration/promotion | Not started | Requires database/integration acceptance, exact test checkpoint and reviewed production environment delta; preserve master hotfixes and pin the accepted released RootedOps dependency |
+| 7 — Production acceptance and packaging | Not started | Verify published production behavior, reconcile changelog since v1.1.0, produce first Appsmith release notes, run the existing export action pinned to accepted production-bound source and commit resulting JSON in SignatureGate; align VERSION, release notes and tags |
+
+## Next implementation and validation
+
+1. Deploy the new provider/company APIs to test using `validate_directory_review_test.sh`, then pull the matching Appsmith development source.
+2. Confirm the Cash Deposits access repair against the intended signed-in account. If restricted, use the displayed safe boolean diagnostic to distinguish an absent/disabled account, missing canonical role and lookup/runtime failure. Keep private records and account values outside Git.
+3. Continue Intake parity and protected agreement/upload review. Keep the legacy Intake page until essential capabilities and authorization are accounted for; disabled upload is an open release gate, not a completed feature.
+4. Complete Participant presentation/defaults and navigation together; update SCREENS before packaging. In parallel prepare the final upgrade manifest from effective production definitions and collect the deployed dependency facts still unavailable in this workspace.
+
+Only the immediate cash access/dialog check is requested manually now. Company-link/provider-dialog rendering, Git synchronization persistence and final runtime gaps remain explicitly recorded for later consolidated candidate checks; their presence is not an instruction to repeat automatically covered role/contact cases.
+
+Provider increment provenance: SignatureGate `03a6be4`, SignatureGate-Appsmith `8b1208e`. Accepted operator cash backend provenance: SignatureGate `50f4650`, exit 0. The current increment's committed source defines the next candidate; source Git SHAs do not prove an editor pull or published deployment. See [DIRECTORY_REVIEW_VALIDATION.md](DIRECTORY_REVIEW_VALIDATION.md) and [TEST_CONFIDENCE_AND_MANUAL_VALIDATION.md](TEST_CONFIDENCE_AND_MANUAL_VALIDATION.md).

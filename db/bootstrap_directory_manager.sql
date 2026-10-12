@@ -4,24 +4,24 @@
 \set ON_ERROR_STOP on
 \if :{?admin_email}
 \else
-  \echo 'Provide -v admin_email=the-exact-Appsmith-sign-in-address'
-  \quit 1
+  DO $missing_input$ BEGIN RAISE EXCEPTION 'Provide -v admin_email=the-exact-Appsmith-sign-in-address'; END $missing_input$;
 \endif
 \if :{?admin_first_name}
 \else
-  \echo 'Provide -v admin_first_name=the-person-first-name'
-  \quit 1
+  DO $missing_input$ BEGIN RAISE EXCEPTION 'Provide -v admin_first_name=the-person-first-name'; END $missing_input$;
 \endif
 \if :{?admin_last_name}
 \else
-  \echo 'Provide -v admin_last_name=the-person-last-name'
-  \quit 1
+  DO $missing_input$ BEGIN RAISE EXCEPTION 'Provide -v admin_last_name=the-person-last-name'; END $missing_input$;
 \endif
 
 BEGIN;
-SELECT set_config('directory.bootstrap_email', lower(btrim(:'admin_email')), true);
-SELECT set_config('directory.bootstrap_first_name', btrim(:'admin_first_name'), true);
-SELECT set_config('directory.bootstrap_last_name', btrim(:'admin_last_name'), true);
+SELECT set_config('directory.bootstrap_email', lower(btrim(:'admin_email')), true) AS bootstrap_email
+\gset
+SELECT set_config('directory.bootstrap_first_name', btrim(:'admin_first_name'), true) AS bootstrap_first_name
+\gset
+SELECT set_config('directory.bootstrap_last_name', btrim(:'admin_last_name'), true) AS bootstrap_last_name
+\gset
 LOCK TABLE
   public.person_roles,
   public.person_app_accounts,

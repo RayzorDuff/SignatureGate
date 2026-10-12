@@ -14,7 +14,7 @@ Reassignment requires a correction reason and audits actual before/after attribu
 
 Confidence is high for these exercised SQL/controller contracts. Live PostgreSQL 16 application and the changed reassignment dialog still need integration evidence. SQL permission tests assume the supplied canonical account identity and validate the shipped action bindings; Appsmith execution-principal trust and external endpoint authentication remain separate deployment review boundaries. No production migration, master promotion or external workflow publication occurs here.
 
-At this pass, the Appsmith branch still ends at `cce43f3`. No later post-pull system commit was observed, so persistence of pinned execution settings is not yet accepted. The agent will inspect the next synchronization commit; no manual audit of every query is requested.
+Provider implementation is now published at Appsmith `8b1208e` / backend `03a6be4`; the preceding observed editor synchronization baseline was `cce43f3`. No later post-pull system commit was observed, so persistence of pinned execution settings is not yet accepted. The agent will inspect the next synchronization commit; no manual audit of every query is requested.
 
 ## Test deployment
 
@@ -33,3 +33,5 @@ After success, preserve unsynchronized editor work, pull Appsmith `chatgpt_devel
 As a Donations Reviewer, use a disposable synthetic donation outside any deposit batch and a synthetic active contributor. Open **Reassign** from that row, including when another row is selected. The dialog must show the clicked record and cents accurately; blank reason disables confirmation and Cancel makes no change. Reopen, choose the target and type a synthetic correction reason. Confirm changes only the intended donation's attribution with one success notification; its amount/currency/date remain unchanged.
 
 No hand-crafted negative SQL or repeated permission/email matrix is requested. Provider matching, duplicate creation, identity preservation, role denial, direct calls, atomic audit, mailing isolation, double clicks and refresh-failure logic are covered automatically. The prior Exclude/Revive dialog check remains pending unless the operator confirms it; it need not be repeated if already passed. Return script exit code and changed-dialog pass/fail/error class without operational records, contacts, amounts or screenshots.
+
+The subsequent DIRECTORY_REVIEW_VALIDATION.md sequence includes these provider prerequisites and the company-contact increment. Use that combined sequence now. The cash backend check has passed live at 50f4650; its UI check is specifically blocked by the reported Cash Deposits denial, rather than an unreported result. Provider reassignment rendering remains deferred to consolidated candidate acceptance.

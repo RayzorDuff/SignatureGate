@@ -19,14 +19,15 @@ Audit Log,qTerminology,DB,AUTOMATIC,False,False,False,False,False
 Cash Deposits,apiCashDepositBankAccounts,API,MANUAL,False,False,False,False,False
 Cash Deposits,apiSyncCashDepositToERPNext,API,MANUAL,True,False,False,False,False
 Cash Deposits,qAddCashDepositItem,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qCashDepositAccessDiagnostic,DB,MANUAL,True,False,True,False,False
 Cash Deposits,qCashDepositBatchPrint,DB,MANUAL,True,True,True,False,False
-Cash Deposits,qCashDepositBatches,DB,AUTOMATIC,True,True,True,False,False
-Cash Deposits,qCashDepositCashOnHand,DB,AUTOMATIC,True,True,True,False,False
-Cash Deposits,qCashDepositCurrentFacilitator,DB,AUTOMATIC,True,True,True,False,False
+Cash Deposits,qCashDepositBatches,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qCashDepositCashOnHand,DB,MANUAL,True,True,True,False,False
+Cash Deposits,qCashDepositCurrentFacilitator,DB,MANUAL,True,True,True,False,False
 Cash Deposits,qConfirmCashDepositBatch,DB,MANUAL,True,True,True,False,False
 Cash Deposits,qCreateCashDepositBatch,DB,MANUAL,True,True,True,False,False
 Cash Deposits,qExcludeCashDonation,DB,MANUAL,True,True,True,False,False
-Cash Deposits,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
+Cash Deposits,qPageAccess,DB,MANUAL,True,False,True,False,False
 Cash Deposits,qPrepareCashDepositBatch,DB,MANUAL,True,True,True,False,False
 Cash Deposits,qReviewCashDonation,DB,MANUAL,True,True,True,False,False
 Cash Deposits,qReviveCashDonation,DB,MANUAL,True,True,True,False,False
@@ -35,6 +36,9 @@ Company Profile,qAddCompanyDonorContact,DB,MANUAL,True,True,True,False,False
 Company Profile,qArchiveCompanyDonorAddress,DB,MANUAL,True,True,True,False,False
 Company Profile,qArchiveCompanyDonorContact,DB,MANUAL,True,True,True,False,False
 Company Profile,qCompanyCanEditDonorContacts,DB,AUTOMATIC,True,True,True,False,False
+Company Profile,qCompanyContactCandidates,DB,MANUAL,True,True,True,False,False
+Company Profile,qCompanyContactPeople,DB,MANUAL,True,True,True,False,False
+Company Profile,qCompanyContactPeopleAccess,DB,MANUAL,True,True,True,False,False
 Company Profile,qCompanyContacts,DB,AUTOMATIC,True,True,True,False,False
 Company Profile,qCompanyContributionHistory,DB,AUTOMATIC,True,True,True,False,False
 Company Profile,qCompanyContributorStatusState,DB,AUTOMATIC,True,True,True,False,False
@@ -47,6 +51,7 @@ Company Profile,qCompanyProviderIdentities,DB,AUTOMATIC,True,True,True,False,Fal
 Company Profile,qCompanyReassignTargets,DB,AUTOMATIC,True,True,True,False,False
 Company Profile,qReassignCompanyContact,DB,MANUAL,True,True,True,False,False
 Company Profile,qSaveCompanyIdentityNotes,DB,MANUAL,True,True,True,False,False
+Company Profile,qSetCompanyContactPerson,DB,MANUAL,True,True,True,False,False
 Company Profile,qSetCompanyContributorStatus,DB,MANUAL,True,True,True,False,False
 Company Profile,qSetCompanyEmailPrimary,DB,MANUAL,True,True,True,True,False
 Company Profile,qToggleCompanyEmailSubscription,DB,MANUAL,True,True,True,True,False

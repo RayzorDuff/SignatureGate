@@ -169,7 +169,7 @@ Appsmith checks must include all active pages, empty table results, and denied-a
 
 Build an explicit dependency-ordered manifest; do not blindly run every migration alphabetically. Earlier files use CREATE OR REPLACE FUNCTION and can overwrite later behavior when replayed out of order.
 
-The initial Phase 1 migration snapshot contained **15 files**; Phase 2 adds `agreement_type_administration.sql` (16 candidates now). The original candidates are below; inclusion here does not establish whether they are pending in production:
+The initial Phase 1 migration snapshot contained **15 files**. The current source has **19 candidates**, including Agreement Type administration, canonical application authorization, provider administration and company contact people. Current checksums/prerequisites are maintained in CURRENT_MIGRATION_CANDIDATES.md; the initial snapshot is historical evidence. The original candidates are below; inclusion here does not establish whether they are pending in production:
 
 | Area | Candidate migration files |
 | --- | --- |
@@ -179,7 +179,7 @@ The initial Phase 1 migration snapshot contained **15 files**; Phase 2 adds `agr
 | Canonical identity/roles/contact administration | person_role_self_assignment.sql; organization_contact_reassignment.sql; member_agreement_reviewer_on_behalf.sql; party_identity_notes.sql |
 | Mailing integration | listmonk_contributor_email_support.sql; listmonk_dual_capacity_contributor_email.sql |
 
-**db/README.md now lists all 16 candidate forward migrations with applied state explicitly unknown.** Update deployed status from live evidence. The historical #19/#20 migration chain has been removed from the active installation surface, so the fifteen files alone may not upgrade an older production schema to the target. Compare the actual database and reconstruct a forward upgrade for any missing canonical objects/backfills. Add new migrations for work completed in Phases 2–3 where required.
+**ENVIRONMENT_AND_MIGRATIONS.md lists the current 19 candidates; CURRENT_MIGRATION_CANDIDATES.md records updated/new source checksums and accepted test evidence. Production applied state must be established from effective definitions.** Update deployed status from live evidence. The historical #19/#20 migration chain has been removed from the active installation surface, so the fifteen files alone may not upgrade an older production schema to the target. Compare the actual database and reconstruct a forward upgrade for any missing canonical objects/backfills. Add new migrations for work completed in Phases 2–3 where required.
 
 Each manifest entry records path, checksum, prerequisites, effective object/data preconditions, already-applied evidence, transactional strategy, verification, and recovery procedure. Verify function bodies and data invariants, not just names.
 
@@ -268,3 +268,5 @@ A compatible released RootedOps is required for SignatureGate v1.2.0 cash-deposi
 October 11 notes follow-up: live test migration/reapplication and rollback behavioral checks pass at `f45bd0a`; actual Appsmith datasource is confirmed as `signaturegate_test`/16.13. Effective SQL dispositions remove unnecessary function/view replacements and identify a canonical bootstrap override of the deployed date-correction guard, now repaired. Reports canonical access and six contribution groups pass isolated tests; live acceptance is tracked in REPORTS_VALIDATION.md. Phase 1 remains open for production/integration proof and upgrade rehearsal. Phase 2 continues; no later deployment/packaging gate is waived.
 
 Permission regression gate: all reported unauthorized runtime cases are release blockers. Complete the canonical account/role matrix, Participant self-read/other/write checks, raw action denial, usable denied-page navigation, anonymous cash and post-write refresh behavior, and empty location scope per PERMISSION_REVIEW.md and PERMISSION_VALIDATION.md before Phase 2 exits. Actual external workflow authorization remains a Phase 5 gate.
+
+October 12 follow-up: provider administration is published at backend `03a6be4` / Appsmith `8b1208e`. Operator cash reconciliation test validation passes at `50f4650`; its live dialog check is blocked by a Cash Deposits access report. The new increment distinguishes canonical account/role state from lookup failures and records explicit company contact-person implementation/automated evidence. See STATUS.md and DIRECTORY_REVIEW_VALIDATION.md for current gates and the next test-only sequence. No production promotion, export replacement or release tagging is authorized by a passing isolated test.

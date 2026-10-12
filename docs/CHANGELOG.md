@@ -4,6 +4,11 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Add audited company contact-person links, archive/reactivation and Company Profile controls without enrollment, permission, consent or donation inheritance.
+- Make Cash Deposits initialization use one canonical sign-in authority, distinguish account/lookup/permission failures, retain retry and provide a privacy-safe read-only access diagnostic.
+- Make missing bootstrap inputs fail with a PostgreSQL script error and suppress supplied identity values in normal bootstrap output; clarify that first-manager bootstrap grants no Donations Reviewer role.
+
+
 ### Added
 
 - Independent individual and company identities, with Participant and Contributor capacities kept separate from system access permissions.

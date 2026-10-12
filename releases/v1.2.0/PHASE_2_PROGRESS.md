@@ -68,7 +68,7 @@ Record deployed backend/frontend SHAs, Appsmith/PostgreSQL versions, actor roles
 
 ## Remaining Phase 2 work
 
-Complete reporting categories, practitioner-scoped cash/history access, remaining canonical actor paths, company contact-person representation, live notes/`Intake` acceptance, `Intake` parity and membership/provider-resolution regressions. Legacy `Members – Intake` remains until parity is proven. The 175 source fallback findings and obsolete upload reference remain tracked for contextual repair and runtime acceptance.
+Reporting categories, canonical practitioner-scoped cash/history and core staff authorization have automated coverage; accepted operator permission observations are recorded below. Remaining gates include deployed canonical provider/company-contact acceptance, `Intake` contact/agreement parity, protected upload/integration/principal review and candidate runtime checks. Legacy `Members – Intake` remains until parity is proven. The 175 source fallback findings and obsolete upload reference remain tracked for contextual repair and runtime acceptance.
 
 ## Linode validation follow-up
 
@@ -135,3 +135,11 @@ Provider review still required legacy staff membership, and reassignment was a d
 Rollback SQL and actual action-binding tests cover duplicate/provider conflicts, ambiguous/contradictory contacts, nonmember reviewers, stale legacy flags, explicit enrollment, unchanged financial/provider history, active-batch protection and audit-failure rollback. Controller tests cover exact clicked-row/cents display, reasons, cancel/account/role changes, double clicks and singular write/refresh outcomes. The older on-load assertion now checks Appsmith's explicit Manual/true contract, consistent with the execution-setting repair; no action is changed back to automatic mode.
 
 [PROVIDER_REVIEW_VALIDATION.md](PROVIDER_REVIEW_VALIDATION.md) limits operator work to one test-only automated sequence and one changed-dialog check. The previous cash migration/dialog results are not assumed: the new runner includes its pending migration and tests. No post-pull system commit beyond `cce43f3` has been observed; execution-setting persistence remains pending automatic inspection. Company contact-person representation, remaining Intake/contact parity, disabled paper upload, external endpoint/principal trust, restored upgrade and navigation remain open. Phase 2 is not declared complete.
+
+## Company-contact and Cash Deposits access follow-up
+
+Provider review is published at backend `03a6be4` / Appsmith `8b1208e`. The operator reports successful cash test migration/reapplication and rollback validation at backend `50f4650` (exit 0); Exclude/Revive UI acceptance is blocked by Cash Deposits reporting missing permission. Profile roles without an account link do not prove the signed-in actor's authority. Cash initialization now uses one canonical returned authority with account/stale-refresh checks, explicit lookup invocation, distinct loading/error/unlinked/denied states and a safe boolean diagnostic. No role is implicitly granted. Automated startup/controller/prepared SQL checks pass; live account-state/runtime acceptance is pending.
+
+Explicit audited company-to-contact-person relationships and Company Profile link/archive/reactivate controls are implemented. Fresh/repeat SQL, permissions/directory scope, multiple/shared/standalone identities, optimistic versions, audit rollback and prepared bindings/controller checks pass in isolation. No identity merge, enrollment, permission, donation or mailing inheritance is introduced. This closes the source representation gap; deployment/rendering and protected-upgrade acceptance remain open. See DIRECTORY_REVIEW_VALIDATION.md for one backend-first command and the immediate cash-page check.
+
+Phase 2 remains open for Intake/contact/agreement parity, paper upload and external principal/endpoint trust, consolidated candidate runtime acceptance and live increment evidence. Terminology/navigation/SCREENS remain Phase 3 work; restored upgrade and release packaging have not commenced.

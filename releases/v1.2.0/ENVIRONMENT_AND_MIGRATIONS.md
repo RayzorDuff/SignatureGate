@@ -9,7 +9,7 @@ Prepared October 11, 2026. This is a source inventory, not an approved productio
 | Appsmith development | `chatgpt_development` at `2746b2712f2bd91b508c1d58f7025ce444abef78`; 202 DB actions reference `signaturegate-postgres-test` | Actual Appsmith connection now confirmed as `signaturegate_test`/PostgreSQL 16.13; runtime action registration/lint and published/editor revision remain pending |
 | Appsmith production | `master` at `0b7739f2a4a20ef89808d2c76658682b3a1c39c4` | Published revision and production datasource identity; actual connection returns `signaturegate` |
 | Additional Appsmith branch | `production_development` at `7c0a7e7cc48e5b522744bb0b934b636b9eb4857f` | Determine whether still used; preserve relevant changes during candidate comparison |
-| Database test/production | Canonical schema and 16 retained forward migration files in SignatureGate | Effective functions, columns, views, constraints, triggers, grants, seed/config data, application records; restored-copy upgrade |
+| Database test/production | Canonical schema and 19 current retained forward migration files (initial audit snapshot preserved separately) in SignatureGate | Effective functions, columns, views, constraints, triggers, grants, seed/config data, application records; restored-copy upgrade |
 | n8n | 16 Appsmith API actions use `N8N`; checked-in Givebutter, Listmonk and Documenso workflows | Deployed workflow IDs/revisions, activation, credential target, processing mode, queue behavior |
 | RootedOps/ERPNext | #18 comments report production posting/reconciliation; Appsmith Confirm/Retry each explicitly send `mode: "test"` in development | Deployed RootedOps revision, activated ERP sync/bank-account n8n routes, shared idempotency registry, bank-account choices and reconciliation status |
 | NocoDB/uploads | Two actions bind `NocoDB danks.store`; one binds `NocoDB danks.store public` | Upload storage target/permissions, file URLs, evidence retrieval and retention |
@@ -59,18 +59,22 @@ Checksums, defined objects, and transaction markers for every retained file are 
 | `cash_deposit_erp_sync.sql` | Deposit confirmation/lifecycle and existing durable batch identity | `verify_cash_deposit_erp_sync.sql` |
 | `cash_deposit_confirmation_correction.sql` | Base trigger and ERP sync state; must follow earlier versions of the batch-mutation trigger | `verify_cash_deposit_confirmation_correction.sql` |
 | `cash_donation_reconciliation_exceptions.sql` | Base/lifecycle; final cash-on-hand definition excludes reconciliation exceptions | `verify_cash_donation_reconciliation_exceptions.sql` |
-| `cash_donation_reconciliation_revive.sql` | Reconciliation exclusions and existing reviewer authorization | `verify_cash_donation_reconciliation_exceptions.sql` plus explicit revival/reason runtime cases |
-| `donation_financial_access.sql` | Legacy participant/Facilitator/Spiritual Practitioner reviewer flags; canonical-role compatibility remains a release gap | Canonical/legacy role matrix and scoped financial acceptance |
+| `cash_donation_reconciliation_revive.sql` | Canonical application authorization and reconciliation exclusions; install after legacy cash definitions | `verify_cash_donation_reconciliation_revive.sql`; operator test exit 0 at 50f4650, live UI blocked by access report |
+| `donation_financial_access.sql` | Historical financial definitions; newer canonical authorization must remain effective | `verify_application_authorization.sql` and scoped source-query tests; do not replay over later canonical helpers |
 | `person_role_self_assignment.sql` | Canonical person roles, account/role helpers, directory-manager boundary | `verify_person_roles.sql` |
 | `organization_contact_reassignment.sql` | Canonical organization contributor/contact identity and ownership synchronization | `verify_organization_contact_reassignment.sql` |
 | `member_agreement_reviewer_on_behalf.sql` | Canonical practitioner signer, participant agreement and reviewer helpers | `verify_member_agreement_reviewer_on_behalf.sql` |
 | `party_identity_notes.sql` | Canonical people/organizations, participant-person links, directory visibility and role helpers | `verify_party_identity_notes.sql` behavior/backfill/rerun/permission/failure coverage passes live on test; UI and restored-copy acceptance pending |
 | `listmonk_contributor_email_support.sql` | Existing Listmonk queue and contributor email schema | `verify_listmonk_contributor_email_support.sql` |
 | `listmonk_dual_capacity_contributor_email.sql` | Contributor Listmonk support and its wrapper/helper APIs | `verify_listmonk_contributor_email_support.sql` plus independent dual-capacity choices |
+| `agreement_type_administration.sql` | Canonical accounts/roles, Agreement Types and audit | `verify_agreement_type_administration.sql`; operator test/form evidence accepted |
+| `application_authorization.sql` | Canonical identity/contact/assignment, cash lifecycle and ERP objects; follow overlapping legacy cash helpers | `verify_application_authorization.sql`; operator test/permission evidence accepted |
+| `provider_donation_administration.sql` | Application authorization, provider/contact/Participant/Contributor models, mailing, audit and cash batch state | `verify_provider_donation_administration.sql`; isolated/source checks pass, live test pending |
+| `company_contact_people.sql` | Application authorization, Directory and canonical people/organizations/contributors/audit | `verify_company_contact_people.sql`; isolated/source checks pass, live test pending |
 
 Alphabetical execution is unsafe: `cash_deposit_management.sql` would run after `cash_deposit_batch_lifecycle.sql` and `cash_deposit_confirmation_correction.sql`, replacing refined definitions. `cash_on_hand_donations` is defined by three files; its final exception-aware definition must survive. The effective definition, not a filename/application timestamp alone, determines whether a step is needed.
 
-Three retained files have no explicit `BEGIN`/`COMMIT`: reviewer-on-behalf agreements, donation financial access, and reconciliation revival. Plan transaction handling explicitly. Notes now has its own explicit transaction and provenance; first/repeated application and behavioral checks passed on live test. Do not apply a blanket transaction wrapper to the whole mixed migration chain.
+Reviewer-on-behalf agreements and donation financial access have no explicit `BEGIN`/`COMMIT`. Reconciliation revival now has its own explicit transaction. Plan transaction handling explicitly. Notes now has its own explicit transaction and provenance; first/repeated application and behavioral checks passed on live test. Do not apply a blanket transaction wrapper to the whole mixed migration chain.
 
 ## Upgrade manifest still required
 

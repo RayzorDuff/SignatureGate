@@ -109,11 +109,11 @@ Password: ${SIG_DB_PASSWORD}
 
 The canonical schema contains the directory-manager account and authorization model. When a new deployment requires an initial directory manager, select the intended account privately. Do not export a directory of names or contact information as release evidence.
 
-Then bootstrap the intended account with the operator-only helper. All three values are required. This legacy bootstrap creates or uses an active membership and practitioner compatibility flags; it refuses a second manager bootstrap. Keep actual names/contact values and command output private:
+Then bootstrap the intended account with the operator-only helper. All three values are required. This legacy bootstrap creates or uses an active membership and practitioner compatibility flags; it refuses a second manager bootstrap. It grants only Directory Manager, not Donations Reviewer. Existing deployments should use the manager-controlled Individual Profile role/account controls. Do not run bootstrap to repair a cash-page denial. Keep actual names/contact values and command output private. Supply shell-quoted values without embedding SQL quotes inside them:
 
 ```bash
 sudo docker exec -i signaturegate-postgres psql \
-  -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' \
+  -X -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' \
   -v admin_first_name='INITIAL_MANAGER_FIRST_NAME' \
   -v admin_last_name='INITIAL_MANAGER_LAST_NAME' \
   -U signaturegate -d signaturegate \
@@ -206,3 +206,7 @@ After canonical application authorization is installed, apply `db/migrations/cas
 ### Canonical provider donation review
 
 `db/migrations/provider_donation_administration.sql` follows canonical application authorization and the existing identity/contact/mailing models. It preserves UUID-based legacy entry points while supporting reviewers without Participant capacity, protects duplicate/ambiguous/provider identities and audits attribution correction atomically. Explicit Participant/Contributor creation retains Directory Manager and both reviewer requirements. Apply/verify test with `bash releases/v1.2.0/validate_provider_review_test.sh`; do not replay the canonical schema over an existing database or treat this as an approved production manifest.
+
+## Company contact people
+
+`organization_contact_people` models company-to-individual relationships separately from organization email/phone/address ownership. The Company Profile controls link, archive and reactivate accessible existing identities with a reason and atomic audit. Multiple people and multiple companies are supported. Links grant no roles or capacity, copy no contacts or mailing consent, and do not attribute company donations to their representatives. Directory Manager or Donations Reviewer authority is required; archived companies cannot be changed. See [the increment validation guide](../releases/v1.2.0/DIRECTORY_REVIEW_VALIDATION.md) and `verify_company_contact_people.sql`.
