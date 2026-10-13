@@ -210,3 +210,10 @@ After canonical application authorization is installed, apply `db/migrations/cas
 ## Company contact people
 
 `organization_contact_people` models company-to-individual relationships separately from organization email/phone/address ownership. The Company Profile controls link, archive and reactivate accessible existing identities with a reason and atomic audit. Multiple people and multiple companies are supported. Links grant no roles or capacity, copy no contacts or mailing consent, and do not attribute company donations to their representatives. Directory Manager or Donations Reviewer authority is required; archived companies cannot be changed. See [the increment validation guide](../releases/v1.2.0/DIRECTORY_REVIEW_VALIDATION.md) and `verify_company_contact_people.sql`.
+
+
+## Participant display defaults and existing installation adoption
+
+`db/seeds/organization_terminology.sql` now defaults the `member` compatibility concept to Participant/Participants; it still preserves installed label/activation/attribution overrides on repeat. Individual and Company remain identities; Participant and Contributor are capacities, and Facilitator/Spiritual Practitioner and reviewers characterize access. Internal keys remain stable.
+
+For the authorized existing test installation use `env -u 'BASH_FUNC__sudo%%' bash releases/v1.2.0/validate_navigation_terminology_test.sh`. It asks privately for the intended Directory Manager account, calls `db/administration/adopt_participant_terminology.sql` through the audited API and runs rollback-only presentation invariants. It changes configuration, not schema or authority. Do not apply it to production until its reviewed release step. Missing/unauthorized accounts fail; bootstrap is not a repair mechanism.

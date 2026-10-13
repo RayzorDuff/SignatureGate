@@ -1,7 +1,7 @@
 -- Deployment terminology defaults, reconstructed from the earlier registry seed.
 -- No private production records or configuration values are copied.
 -- Existing labels, activation choices and stable keys are never overwritten.
--- Phase 3 must revise Member/Participant defaults after its UI changes are accepted.
+-- The member compatibility key presents the Participant enrollment capacity.
 \set ON_ERROR_STOP on
 BEGIN;
 INSERT INTO public.terminology_concepts
@@ -9,9 +9,9 @@ INSERT INTO public.terminology_concepts
 VALUES
   ('person','entity','Canonical individual identity.'),
   ('organization','entity','Canonical company or other organization identity.'),
-  ('member','entity','A person with membership capacity.'),
-  ('participant','entity','A person participating in a ceremony or event.'),
-  ('contributor','entity','An individual or organization with contributor capacity.'),
+  ('member','entity','Participant enrollment capacity of an individual; not a separate identity. Registry kind is retained for compatibility.'),
+  ('participant','entity','Reserved event-participation concept, distinct from the operational member compatibility key.'),
+  ('contributor','entity','Contributor capacity of an individual or company; not a separate identity.'),
   ('practitioner','appointment','Current general practitioner appointment used by member assignment and access workflows.'),
   ('spiritual_practitioner','appointment','Reserved distinct appointment if a deployment later separates spiritual practice from the general practitioner concept.'),
   ('traditional_practitioner','appointment','Reserved distinct traditional-practitioner appointment.'),
@@ -31,7 +31,7 @@ INSERT INTO public.organization_terminology
 VALUES
   ('person','Individual','Individuals','Person',true,'organization_terminology_seed'),
   ('organization','Company','Companies','Company',true,'organization_terminology_seed'),
-  ('member','Member','Members',NULL,true,'organization_terminology_seed'),
+  ('member','Participant','Participants','Participant',true,'organization_terminology_seed'),
   ('participant','Participant','Participants',NULL,false,'organization_terminology_seed'),
   ('contributor','Contributor','Contributors','Donor',true,'organization_terminology_seed'),
   ('practitioner','Spiritual Practitioner','Spiritual Practitioners','Practitioner',true,'organization_terminology_seed'),

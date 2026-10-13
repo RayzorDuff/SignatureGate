@@ -16,6 +16,9 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 - Hide context-dependent profiles from direct navigation, require explicit Directory/deep-link selection and isolate stale account/route loads.
 
+- Add generated capability-aware navigation with a persistent Directory escape, configurable Participant/practitioner captions and corrected retained audit links.
+- Default fresh terminology to Participant and provide an explicit audited adoption step that preserves unrelated installed overrides.
+
 ### Added
 
 - Independent individual and company identities, with Participant and Contributor capacities kept separate from system access permissions.

@@ -30,3 +30,5 @@ Source/issue inventory is complete. Actual test/production database differences,
 - [Company contacts and Cash Deposits access validation](DIRECTORY_REVIEW_VALIDATION.md)
 
 - [Current access and workflow-feedback validation](INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md): accepted operator results, read-only observation and two page openings.
+
+- [Grouped navigation and Participant presentation validation](NAVIGATION_AND_PARTICIPANT_VALIDATION.md).

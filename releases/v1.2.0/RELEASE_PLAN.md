@@ -275,3 +275,6 @@ October 12 follow-up: provider administration is published at backend `03a6be4` 
 ## Current checkpoint: access and workflow feedback
 
 Directory-review runner exit 0 at `8a08e74` and the final cash Exclude/Revive scenario are accepted operator evidence. Reuse passing backend/role/email evidence; request only the successor sequence in INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md. Iterative feedback is a release requirement for Intake, retained Member Functions and external multi-step operations; local creation, requested/queued work and confirmed external completion must remain distinguishable. Protected paper upload and safe partial-Intake recovery remain open; legacy Intake stays until parity. No production promotion is authorized by these development results.
+
+
+Phase 3 source checkpoint: generated capability-aware groups, hidden explicit-link profiles, Participant default/adoption helper and candidate SCREENS inventory are implemented. Live keyboard/mobile/SDK/source-sync, cold Terminology startup and remaining controller/service/document wording stay tracked in NAVIGATION_AND_PARTICIPANT_VALIDATION.md. This does not close earlier integration or upgrade gates.

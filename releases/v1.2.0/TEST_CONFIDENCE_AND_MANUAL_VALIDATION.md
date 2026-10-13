@@ -79,3 +79,8 @@ The operator will navigate interfaces independently. This walkthrough does not b
 Individual/Company profiles are hidden from direct native navigation. Directory opens them with an explicit person/company UUID. A link with no ID never reuses an old stored selection; malformed/inaccessible links show a safe message and Back to Directory. Loaders are explicitly on page load, use current-account/route tokens, retry one failed primary read and leave content hidden until dependent reads finish. Late A-to-B or account results cannot expose another profile. Profile DB actions are pinned Manual/true and run after the selected primary record is resolved; existing signed SQL/resource guards remain.
 
 Controller fixtures cover valid/missing/invalid/access-denied links, saved-selection refusal, cold/secondary read failures, route/account changes and late A-to-B primary responses. Company relationship regressions and exact-source export preservation pass. Real Appsmith dependency/SDK rendering remains a consolidated acceptance check; use the operator's forthcoming walkthrough, not another full role/identity matrix. No DB migration or permission grant is introduced.
+
+
+## Navigation/Participant successor sequence
+
+Use NAVIGATION_AND_PARTICIPANT_VALIDATION.md: one test-only configuration/rollback command and the existing operator walkthrough. High confidence applies to canonical menu SQL, generated 18-page dispositions, role/account cases, stable routes, alternate/colliding labels and profile controller isolation. Native keyboard/mobile/rendering and Git pull persistence still need targeted observation. No new browser harness, extra service request or broad role/contact/cash regression matrix is requested.

@@ -16,7 +16,9 @@ Different deployments may choose different display labels without conflating app
 
 The explicit repeatable initializer creates missing registered concepts and defaults. Reapplication preserves installed labels, activation choices and attribution; it does not grant roles. Existing accepted label changes require the audited terminology API, not a forced initializer overwrite.
 
-The initializer currently retains the legacy Participant-capacity display label. Phase 3 must revise that default to Participant together with the accepted interface changes and behavioral expectations. Do not claim the interface rename is complete just because documentation uses the intended term.
+The initializer now defaults the stable `member` concept to Participant/Participants. It preserves installed overrides; an existing installation uses the explicit audited adoption helper. The separate inactive `participant` concept remains reserved for event participation. Registry kind `entity` is retained compatibility metadata, not a claim that a capacity or appointment is a person.
+
+Generated navigation and static widget copy consume one shared presentation helper. Menu labels change without renaming source page IDs, role keys or executed documents. Remaining controller/generated-service/document captions are inventoried separately; live alternate-label, mobile/keyboard and source synchronization acceptance remains open. See [navigation validation](../releases/v1.2.0/NAVIGATION_AND_PARTICIPANT_VALIDATION.md).
 
 ## Phase 3 acceptance
 

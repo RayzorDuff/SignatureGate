@@ -11,6 +11,10 @@ DECLARE
 BEGIN
   IF NOT EXISTS (
       SELECT 1 FROM public.issue20_organization_terminology()
+      WHERE concept_key='member' AND singular_label='Participant'
+        AND plural_label='Participants' AND is_active)
+    OR NOT EXISTS (
+      SELECT 1 FROM public.issue20_organization_terminology()
       WHERE concept_key='practitioner'
         AND singular_label='Spiritual Practitioner'
         AND plural_label='Spiritual Practitioners' AND is_active)
