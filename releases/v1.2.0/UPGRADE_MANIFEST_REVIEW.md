@@ -2,13 +2,14 @@
 
 `UPGRADE_MANIFEST_DRAFT.json` pins the 19 retained migration sources and the explicit Participant configuration step in a conditional dependency order. **It is not an execution list. All 20 selections remain undecided and all final environment proofs remain open.** Do not run every listed file or load bootstrap over an existing database.
 
-The read-only validator checks source existence/checksums, unique step IDs, prerequisite order, review fields and the rule that older cash/financial helpers cannot follow canonical authorization. It has no SQL execution or deployment function:
+The read-only validator checks canonical-schema and step-source checksums, unique step IDs, prerequisite order, review fields, the complete nine-proof inventory and the rule that older cash/financial helpers cannot follow canonical authorization. Checks remain enabled under optimized Python (`-O`). It has no SQL execution or deployment function:
 
 ```bash
 python3 scripts/validate_upgrade_manifest.py releases/v1.2.0/UPGRADE_MANIFEST_DRAFT.json
+python3 scripts/test_upgrade_manifest.py
 ```
 
-Automatic checks reject changed checksums, reversed prerequisites, duplicate entries and selected/skipped steps without disposition evidence. Passing validates the draft's structure, not production readiness.
+Automatic CLI checks exercise normal and optimized Python, rejecting changed checksums, reversed prerequisites, duplicate entries, missing proofs, malformed review fields and selected/skipped steps without disposition evidence. Changing the required proof inventory requires an explicit validator update as well as a manifest change. Passing validates the draft's structure, not production readiness.
 
 ## Required review before a final manifest
 
