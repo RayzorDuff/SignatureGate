@@ -1,0 +1,392 @@
+{
+  "state": "draft_non_executable",
+  "release": "SignatureGate v1.2.0",
+  "purpose": "Conditional source ordering and checksum pinning only. Do not execute all entries. Each needs a reviewed selected/skipped disposition.",
+  "canonical_schema_sha256": "42c88d572446199259c6874f77212b9f25c942208bb7a52348e6080592a5f4f0",
+  "required_environment_proofs": {
+    "canonical_base_and_missing_forward_changes_reviewed": false,
+    "current_production_effective_definitions_reviewed": false,
+    "staff_account_ownership_and_roles_reviewed": false,
+    "owners_grants_and_data_invariants_reviewed": false,
+    "backup_restore_verified": false,
+    "worker_and_external_destination_isolation_verified": false,
+    "restored_copy_rehearsal_passed": false,
+    "released_deployed_rootedops_and_workflows_pinned": false,
+    "production_datasource_and_published_revision_verified": false
+  },
+  "steps": [
+    {
+      "id": "legacy_cash_base",
+      "path": "db/migrations/cash_deposit_management.sql",
+      "sha256": "153262ae269f481523f4050faecccd27bceab661117879f79c26ccbcdfa6cf9f",
+      "after": [],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_cash_deposit_management.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "legacy_cash_lifecycle",
+      "path": "db/migrations/cash_deposit_batch_lifecycle.sql",
+      "sha256": "65b71672115a1d75384505e0d4d1e5362000416322a960de2ea9a88d9d82f723",
+      "after": [
+        "legacy_cash_base"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_cash_deposit_batch_lifecycle.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "legacy_cash_tally",
+      "path": "db/migrations/cash_deposit_batch_tally.sql",
+      "sha256": "350d2f35871fab62d9e6f266aaf7c5d86370b4dda26d03a054969fec90b71fb9",
+      "after": [
+        "legacy_cash_lifecycle"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_cash_deposit_batch_tally.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "legacy_cash_print",
+      "path": "db/migrations/cash_deposit_batch_print.sql",
+      "sha256": "7edf01b1fb6f96f7f021ea1c77eef8039c75cd0095cdc3b0ab884fd53bc0d057",
+      "after": [
+        "legacy_cash_lifecycle"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_cash_deposit_batch_print.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "legacy_cash_exclusion",
+      "path": "db/migrations/cash_donation_reconciliation_exceptions.sql",
+      "sha256": "f399f899e947776e90491256ad3b1aaeef4c5c839ee07b7be1c1f8de2c9b5d11",
+      "after": [
+        "legacy_cash_lifecycle"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_cash_donation_reconciliation_exceptions.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "legacy_cash_erp",
+      "path": "db/migrations/cash_deposit_erp_sync.sql",
+      "sha256": "a1d9fce8d27d000c568306ac6d83597187dd99b9d1ded65bd23123ec7a37a2a2",
+      "after": [
+        "legacy_cash_lifecycle"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_cash_deposit_erp_sync.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "legacy_cash_date_correction",
+      "path": "db/migrations/cash_deposit_confirmation_correction.sql",
+      "sha256": "9b9bfbadcc34b4fc74b06acbd6905920645485954284ced14d330ac936b16ad0",
+      "after": [
+        "legacy_cash_erp"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_cash_deposit_confirmation_correction.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "legacy_financial_scope",
+      "path": "db/migrations/donation_financial_access.sql",
+      "sha256": "027c4999c0100c6e23d7630c8724b203df0e215a82cd808bf89f202821290335",
+      "after": [],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "Review effective definitions and scoped behavioral/data invariants in the protected restored copy; specify the exact query before selection."
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "role_self_assignment",
+      "path": "db/migrations/person_role_self_assignment.sql",
+      "sha256": "789d513918488fbabd5e6c57286a63a63ce5bf6e8969b4e561edafd07ec9f2aa",
+      "after": [],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "Review effective definitions and scoped behavioral/data invariants in the protected restored copy; specify the exact query before selection."
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "contributor_mailing",
+      "path": "db/migrations/listmonk_contributor_email_support.sql",
+      "sha256": "2777c9083570fbb469ac231eb2a843599af7e3780822074723df5db2ec3abd97",
+      "after": [],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_listmonk_contributor_email_support.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "dual_mailing",
+      "path": "db/migrations/listmonk_dual_capacity_contributor_email.sql",
+      "sha256": "9ed71b55db2bb447c0dc55bd6450b672da0038d83321f9080999b6fc50194a14",
+      "after": [
+        "contributor_mailing"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "Review effective definitions and scoped behavioral/data invariants in the protected restored copy; specify the exact query before selection."
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "identity_notes",
+      "path": "db/migrations/party_identity_notes.sql",
+      "sha256": "7c1737c58829913d34233ee0688000eff08ec3a0096579bd983b6ceac17fa6f3",
+      "after": [],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_party_identity_notes.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "agreement_types",
+      "path": "db/migrations/agreement_type_administration.sql",
+      "sha256": "574a862369297919a3d0b062acd9341ce6aaecc95edd01e139808939c6524abd",
+      "after": [],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_agreement_type_administration.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "reviewer_agreements",
+      "path": "db/migrations/member_agreement_reviewer_on_behalf.sql",
+      "sha256": "5fe7bd6bdbb0f118d340a92351af384368ac6b4dfa63712174f410579f8651d9",
+      "after": [],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_member_agreement_reviewer_on_behalf.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "organization_contacts",
+      "path": "db/migrations/organization_contact_reassignment.sql",
+      "sha256": "305d14749513812f791fd6c69f1ce4725cd7f5f056ba0905e1fe78f26f3b54d9",
+      "after": [],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_organization_contact_reassignment.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "application_authorization",
+      "path": "db/migrations/application_authorization.sql",
+      "sha256": "d3d417f45a4daf1e84ae76dee04ceb0b0c907c4a165ec36a6490d2a7238c7e5d",
+      "after": [
+        "legacy_cash_tally",
+        "legacy_cash_print",
+        "legacy_cash_exclusion",
+        "legacy_cash_date_correction",
+        "legacy_financial_scope",
+        "role_self_assignment",
+        "dual_mailing",
+        "reviewer_agreements"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_application_authorization.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "cash_revival",
+      "path": "db/migrations/cash_donation_reconciliation_revive.sql",
+      "sha256": "bebbeed63af2df38f90be5951a73536187575d98ecf9278e304285243ee7bfa2",
+      "after": [
+        "application_authorization"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_cash_donation_reconciliation_revive.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "provider_review",
+      "path": "db/migrations/provider_donation_administration.sql",
+      "sha256": "ba0023c9323dbdbe40b4a133e9cde2bc864474201327e852d25108f41ae7592c",
+      "after": [
+        "application_authorization",
+        "dual_mailing",
+        "cash_revival"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_provider_donation_administration.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "company_contacts",
+      "path": "db/migrations/company_contact_people.sql",
+      "sha256": "c92a846c4b73d9001786c9bd5e6a0779f98d6f75250400915d41c8030f74d05f",
+      "after": [
+        "provider_review"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_company_contact_people.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "participant_labels",
+      "path": "db/administration/adopt_participant_terminology.sql",
+      "sha256": "ea778181cec668402b7f761f04e1be93c277182c01481de14860fb2d6b825183",
+      "after": [
+        "company_contacts"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
+        "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
+      ],
+      "transaction": "Use the file transaction where declared; review multi-file boundaries and worker coordination before the final manifest.",
+      "verification": [
+        "db/tests/verify_participant_presentation.sql"
+      ],
+      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    }
+  ]
+}

@@ -83,3 +83,8 @@ The final manifest must record for each necessary step: live preconditions, prer
 Before deployment, reconstruct missing forward upgrades from the actual production baseline. Test on a restored production copy and preserve historical donation/provider IDs, contacts, membership/contributor links, agreement references, audit records, confirmed batch composition and ERP source identities. `db/schema.sql` is a fresh bootstrap, not an in-place production upgrade. No migration application or production-ready ordering is certified by this Phase 1 source audit.
 
 Effective function/view dispositions and the confirmed development datasource observation are recorded in [LIVE_EVIDENCE_REVIEW.md](LIVE_EVIDENCE_REVIEW.md). Preserve the deployed date-correction trigger; its canonical bootstrap parity fix requires no production trigger replacement.
+
+
+## Conditional manifest preparation
+
+UPGRADE_MANIFEST_DRAFT.json and UPGRADE_MANIFEST_REVIEW.md pin current retained sources and prevent legacy helper replay after canonical authorization. All selected/skipped dispositions and final environment proofs remain undecided. The read-only validator checks graph/checksum/review structure only; no production SQL is executed and no missing canonical forward change is assumed away. Current RootedOps source comparison preserves prior four-component review, while Frappe execution/deployment acceptance remains open.

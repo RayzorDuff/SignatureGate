@@ -34,3 +34,5 @@ Source/issue inventory is complete. Actual test/production database differences,
 - [Grouped navigation and Participant presentation validation](NAVIGATION_AND_PARTICIPANT_VALIDATION.md).
 
 First Appsmith release notes: [draft in the application source](https://github.com/RayzorDuff/SignatureGate-Appsmith/blob/chatgpt_development/releases/first-release/RELEASE_NOTES.md). Final version/tag and production provenance remain gated.
+
+- [Conditional upgrade-manifest review](UPGRADE_MANIFEST_REVIEW.md): checksum/order draft, undecided selections and required restore/dependency evidence.
