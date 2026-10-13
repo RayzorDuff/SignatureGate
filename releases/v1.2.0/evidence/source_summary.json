@@ -1,26 +1,52 @@
 {
-  "appsmith_revision": "2746b2712f2bd91b508c1d58f7025ce444abef78",
-  "signaturegate_source_revision": "9fb5aa53b60baa670fe86fabe63e6b5752be0109",
+  "appsmith_revision": "5e5bf6cbcb6f8e83ed4a6dfbb91d5b702e2f395c",
+  "appsmith_tree_sha": "69279aa7f7c1398a16f73d5418fdb807eb25a3a1",
+  "signaturegate_source_revision": "1ceb52ca00f88573d0fa6530fb2e932e5a864315",
+  "canonical_schema_sha256": "42c88d572446199259c6874f77212b9f25c942208bb7a52348e6080592a5f4f0",
+  "terminology_seed_sha256": "4f6b48262c6c7eac229671fa036d8539c7d38c8cc5b99730998ef6fedaa7d18d",
+  "appsmith_worktree_dirty": false,
+  "signaturegate_worktree_dirty": true,
   "baseline_v1_1_0": "654b02c00dd39165a65a6ab3aebd28455264b70a",
-  "commits_since_v1_1_0": 176,
-  "json_files": 708,
+  "commits_since_v1_1_0": 192,
+  "json_files": 979,
   "pages": 18,
-  "actions": 335,
-  "js_objects": 14,
+  "actions": 454,
+  "js_objects": 32,
   "js_syntax_all_pass": true,
   "datasource_descriptors": 4,
   "jslib_descriptors": 1,
-  "findings_by_kind": {
-    "bare_table_fallback": 175,
-    "missing_widget_reference": 1
-  },
+  "findings_by_kind": {},
   "action_datasources": {
-    "N8N": 16,
-    "signaturegate-postgres-test": 202,
+    "N8N": 15,
+    "signaturegate-postgres-test": 257,
     "NocoDB danks.store": 2,
     "NocoDB danks.store public": 1
   },
   "multiply_defined_migration_objects": {
+    "can_view_donation_financials": [
+      "application_authorization.sql",
+      "donation_financial_access.sql"
+    ],
+    "cash_deposit_actor_email": [
+      "application_authorization.sql",
+      "cash_deposit_management.sql"
+    ],
+    "assert_cash_deposit_preparer": [
+      "application_authorization.sql",
+      "cash_deposit_management.sql"
+    ],
+    "assert_cash_deposit_verifier": [
+      "application_authorization.sql",
+      "cash_deposit_management.sql"
+    ],
+    "cash_deposit_batch_tally": [
+      "application_authorization.sql",
+      "cash_deposit_batch_tally.sql"
+    ],
+    "cash_deposit_batch_print": [
+      "application_authorization.sql",
+      "cash_deposit_batch_print.sql"
+    ],
     "prevent_confirmed_cash_deposit_item_mutation": [
       "cash_deposit_batch_lifecycle.sql",
       "cash_deposit_management.sql"
@@ -49,6 +75,10 @@
     "prevent_confirmed_cash_deposit_mutation": [
       "cash_deposit_confirmation_correction.sql",
       "cash_deposit_management.sql"
+    ],
+    "revive_cash_donation_from_deposit": [
+      "cash_donation_reconciliation_revive.sql",
+      "cash_donation_reconciliation_revive.sql"
     ]
   },
   "live_environment_verified": false

@@ -5,6 +5,8 @@ Agreement Templates,_normArray,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreem
 Agreement Templates,_normInt,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreement Templates/queries/agreementTemplateFlows-_normInt/metadata.json
 Agreement Templates,_normText,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreement Templates/queries/agreementTemplateFlows-_normText/metadata.json
 Agreement Templates,auditLog,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreement Templates/queries/agreementTemplateFlows-auditLog/metadata.json
+Agreement Templates,canCreateAgreementType,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreement Templates/queries/agreementTemplateFlows-canCreateAgreementType/metadata.json
+Agreement Templates,createAgreementTypeFromForm,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreement Templates/queries/agreementTemplateFlows-createAgreementTypeFromForm/metadata.json
 Agreement Templates,createRowFromForm,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreement Templates/queries/agreementTemplateFlows-createRowFromForm/metadata.json
 Agreement Templates,createTemplateFromForm,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreement Templates/queries/agreementTemplateFlows-createTemplateFromForm/metadata.json
 Agreement Templates,documensoTemplateOptions,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreement Templates/queries/agreementTemplateFlows-documensoTemplateOptions/metadata.json
@@ -17,33 +19,54 @@ Agreement Templates,selectedDocumensoTemplate,JS,UNUSED_DATASOURCE,MANUAL,False,
 Agreement Templates,validateCreateRow,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Agreement Templates/queries/agreementTemplateFlows-validateCreateRow/metadata.json
 Agreement Templates,verifyaccess,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Agreement Templates/queries/agreementTemplateFlows-verifyaccess/metadata.json
 Agreement Templates,apiListDocumensoTemplates,API,N8N,MANUAL,False,,,/webhook/signaturegate/documenso/templates,pages/Agreement Templates/queries/apiListDocumensoTemplates/metadata.json
+Agreement Templates,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Agreement Templates/queries/navigationLabels-label/metadata.json
+Agreement Templates,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Agreement Templates/queries/navigationLabels-text/metadata.json
 Agreement Templates,qAgreementTemplateInsert,DB,signaturegate-postgres-test,MANUAL,False,active;actor;audit_details;doc_url;documenso_facilitator_recipient_id;documenso_member_recipient_id;documenso_template_envelope_id;documenso_template_id;name;required_for_json;version,agreement_templates;audit_log,,pages/Agreement Templates/queries/qAgreementTemplateInsert/metadata.json
 Agreement Templates,qAgreementTemplateUpdate,DB,signaturegate-postgres-test,MANUAL,False,active;actor;agreement_template_id;audit_details;doc_url;documenso_facilitator_recipient_id;documenso_member_recipient_id;documenso_template_envelope_id;documenso_template_id;name;required_for_json;version,audit_log,,pages/Agreement Templates/queries/qAgreementTemplateUpdate/metadata.json
-Agreement Templates,qAgreementTemplatesList,DB,signaturegate-postgres-test,ON_PAGE_LOAD,True,,,,pages/Agreement Templates/queries/qAgreementTemplatesList/metadata.json
-Agreement Templates,qAgreementTypesList,DB,signaturegate-postgres-test,AUTOMATIC,False,,,,pages/Agreement Templates/queries/qAgreementTypesList/metadata.json
+Agreement Templates,qAgreementTemplatesList,DB,signaturegate-postgres-test,ON_PAGE_LOAD,True,,issue19_has_role,,pages/Agreement Templates/queries/qAgreementTemplatesList/metadata.json
+Agreement Templates,qAgreementTypesAdminList,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Agreement Templates/queries/qAgreementTypesAdminList/metadata.json
+Agreement Templates,qAgreementTypesList,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Agreement Templates/queries/qAgreementTypesList/metadata.json
 Agreement Templates,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;actor_email;details_json;entity_id;entity_type,audit_log,,pages/Agreement Templates/queries/qAuditLogInsert/metadata.json
-Agreement Templates,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,email,,,pages/Agreement Templates/queries/qCurrentFacilitator/metadata.json
+Agreement Templates,qCreateAgreementType,DB,signaturegate-postgres-test,MANUAL,False,active;description;display_name;sort_order;type_key,create_agreement_type,,pages/Agreement Templates/queries/qCreateAgreementType/metadata.json
+Agreement Templates,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,,application_access,,pages/Agreement Templates/queries/qCurrentFacilitator/metadata.json
+Agreement Templates,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Agreement Templates/queries/qNavigationAccess/metadata.json
+Agreement Templates,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Agreement Templates/queries/qNavigationTerminology/metadata.json
+Agreement Templates,qPageAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Agreement Templates/queries/qPageAccess/metadata.json
 Agreement Templates,qTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Agreement Templates/queries/qTerminology/metadata.json
+Agreements - Queue,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Agreements - Queue/queries/navigationLabels-label/metadata.json
+Agreements - Queue,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Agreements - Queue/queries/navigationLabels-text/metadata.json
 Agreements - Queue,qAgreementsPendingReview,DB,signaturegate-postgres-test,AUTOMATIC,False,,,,pages/Agreements - Queue/queries/qAgreementsPendingReview/metadata.json
+Agreements - Queue,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Agreements - Queue/queries/qNavigationAccess/metadata.json
+Agreements - Queue,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Agreements - Queue/queries/qNavigationTerminology/metadata.json
 Audit Log,auditLog,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Audit Log/queries/auditLogFlows-auditLog/metadata.json
 Audit Log,formatDetails,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Audit Log/queries/auditLogFlows-formatDetails/metadata.json
 Audit Log,refresh,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Audit Log/queries/auditLogFlows-refresh/metadata.json
 Audit Log,verifyaccess,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Audit Log/queries/auditLogFlows-verifyaccess/metadata.json
+Audit Log,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Audit Log/queries/navigationLabels-label/metadata.json
+Audit Log,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Audit Log/queries/navigationLabels-text/metadata.json
 Audit Log,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;actor_email;details_json;entity_id;entity_type,audit_log,,pages/Audit Log/queries/qAuditLogInsert/metadata.json
-Audit Log,qAuditLogList,DB,signaturegate-postgres-test,ON_PAGE_LOAD,True,,,,pages/Audit Log/queries/qAuditLogList/metadata.json
-Audit Log,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,email,,,pages/Audit Log/queries/qCurrentFacilitator/metadata.json
+Audit Log,qAuditLogList,DB,signaturegate-postgres-test,ON_PAGE_LOAD,True,,application_access,,pages/Audit Log/queries/qAuditLogList/metadata.json
+Audit Log,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,,application_access,,pages/Audit Log/queries/qCurrentFacilitator/metadata.json
+Audit Log,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Audit Log/queries/qNavigationAccess/metadata.json
+Audit Log,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Audit Log/queries/qNavigationTerminology/metadata.json
+Audit Log,qPageAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Audit Log/queries/qPageAccess/metadata.json
 Audit Log,qTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Audit Log/queries/qTerminology/metadata.json
-Cash Deposits,apiCashDepositBankAccounts,API,N8N,AUTOMATIC,True,,,/webhook/signaturegate/erp/bank-accounts,pages/Cash Deposits/queries/apiCashDepositBankAccounts/metadata.json
-Cash Deposits,apiSyncCashDepositToERPNext,API,N8N,MANUAL,False,deposit_batch_id;mode,,/webhook/signaturegate/cash-deposit/erp-sync,pages/Cash Deposits/queries/apiSyncCashDepositToERPNext/metadata.json
+Cash Deposits,apiCashDepositBankAccounts,API,N8N,MANUAL,True,,,/webhook/signaturegate/erp/bank-accounts,pages/Cash Deposits/queries/apiCashDepositBankAccounts/metadata.json
+Cash Deposits,apiSyncCashDepositToERPNext,API,N8N,MANUAL,True,deposit_batch_id;mode,,/webhook/signaturegate/cash-deposit/erp-sync,pages/Cash Deposits/queries/apiSyncCashDepositToERPNext/metadata.json
+Cash Deposits,accessMessage,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Cash Deposits/queries/cashDepositFlows-accessMessage/metadata.json
+Cash Deposits,accessState,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Cash Deposits/queries/cashDepositFlows-accessState/metadata.json
 Cash Deposits,addSelectedDonationToBatch,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-addSelectedDonationToBatch/metadata.json
+Cash Deposits,clearDisposition,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Cash Deposits/queries/cashDepositFlows-clearDisposition/metadata.json
 Cash Deposits,confirmBatch,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-confirmBatch/metadata.json
 Cash Deposits,createBatch,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-createBatch/metadata.json
 Cash Deposits,excludeDonationFromReconciliation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-excludeDonationFromReconciliation/metadata.json
 Cash Deposits,facilitatorId,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-facilitatorId/metadata.json
+Cash Deposits,hasAccess,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Cash Deposits/queries/cashDepositFlows-hasAccess/metadata.json
 Cash Deposits,isDonationsReviewer,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-isDonationsReviewer/metadata.json
+Cash Deposits,openDisposition,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Cash Deposits/queries/cashDepositFlows-openDisposition/metadata.json
 Cash Deposits,prepareBatch,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-prepareBatch/metadata.json
 Cash Deposits,printBatch,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-printBatch/metadata.json
-Cash Deposits,refresh,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-refresh/metadata.json
+Cash Deposits,refresh,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Cash Deposits/queries/cashDepositFlows-refresh/metadata.json
 Cash Deposits,rejectDonation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-rejectDonation/metadata.json
 Cash Deposits,requireDonationsReviewer,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-requireDonationsReviewer/metadata.json
 Cash Deposits,requireFacilitator,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-requireFacilitator/metadata.json
@@ -52,79 +75,121 @@ Cash Deposits,reviveDonationFromReconciliation,JS,UNUSED_DATASOURCE,MANUAL,False
 Cash Deposits,selectedBatch,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-selectedBatch/metadata.json
 Cash Deposits,selectedDonation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-selectedDonation/metadata.json
 Cash Deposits,setHideIneligible,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-setHideIneligible/metadata.json
+Cash Deposits,submitDisposition,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Cash Deposits/queries/cashDepositFlows-submitDisposition/metadata.json
 Cash Deposits,verifyDonation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Cash Deposits/queries/cashDepositFlows-verifyDonation/metadata.json
-Cash Deposits,qAddCashDepositItem,DB,signaturegate-postgres-test,MANUAL,False,actor_id;deposit_batch_id;donation_id,add_cash_deposit_item,,pages/Cash Deposits/queries/qAddCashDepositItem/metadata.json
-Cash Deposits,qCashDepositBatchPrint,DB,signaturegate-postgres-test,MANUAL,False,deposit_batch_id,can_view_donation_financials,,pages/Cash Deposits/queries/qCashDepositBatchPrint/metadata.json
-Cash Deposits,qCashDepositBatches,DB,signaturegate-postgres-test,AUTOMATIC,True,,can_view_donation_financials,,pages/Cash Deposits/queries/qCashDepositBatches/metadata.json
-Cash Deposits,qCashDepositCashOnHand,DB,signaturegate-postgres-test,AUTOMATIC,True,,can_view_donation_financials,,pages/Cash Deposits/queries/qCashDepositCashOnHand/metadata.json
-Cash Deposits,qCashDepositCurrentFacilitator,DB,signaturegate-postgres-test,AUTOMATIC,True,,,,pages/Cash Deposits/queries/qCashDepositCurrentFacilitator/metadata.json
-Cash Deposits,qConfirmCashDepositBatch,DB,signaturegate-postgres-test,MANUAL,False,actual_amount_cents;deposit_batch_id;deposit_date;deposit_slip_number;notes;verifier_id,confirm_cash_deposit_batch,,pages/Cash Deposits/queries/qConfirmCashDepositBatch/metadata.json
-Cash Deposits,qCreateCashDepositBatch,DB,signaturegate-postgres-test,MANUAL,False,deposit_date;deposit_slip_number;notes;preparer_id,create_cash_deposit_batch,,pages/Cash Deposits/queries/qCreateCashDepositBatch/metadata.json
-Cash Deposits,qExcludeCashDonation,DB,signaturegate-postgres-test,MANUAL,False,actor_id;donation_id;notes;reason,exclude_cash_donation_from_deposit,,pages/Cash Deposits/queries/qExcludeCashDonation/metadata.json
-Cash Deposits,qPrepareCashDepositBatch,DB,signaturegate-postgres-test,MANUAL,False,actor_id;deposit_batch_id;deposit_date;deposit_slip_number;destination_bank_account;notes,prepare_cash_deposit_batch,,pages/Cash Deposits/queries/qPrepareCashDepositBatch/metadata.json
-Cash Deposits,qReviewCashDonation,DB,signaturegate-postgres-test,MANUAL,False,donation_id;new_status;review_notes;reviewer_id,review_pending_donation,,pages/Cash Deposits/queries/qReviewCashDonation/metadata.json
-Cash Deposits,qReviveCashDonation,DB,signaturegate-postgres-test,MANUAL,False,actor_id;donation_id,revive_cash_donation_from_deposit,,pages/Cash Deposits/queries/qReviveCashDonation/metadata.json
+Cash Deposits,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Cash Deposits/queries/navigationLabels-label/metadata.json
+Cash Deposits,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Cash Deposits/queries/navigationLabels-text/metadata.json
+Cash Deposits,qAddCashDepositItem,DB,signaturegate-postgres-test,MANUAL,True,deposit_batch_id;donation_id,add_cash_deposit_item;application_cash_actor_id,,pages/Cash Deposits/queries/qAddCashDepositItem/metadata.json
+Cash Deposits,qCashDepositAccessDiagnostic,DB,signaturegate-postgres-test,MANUAL,True,,application_access;issue19_has_role,,pages/Cash Deposits/queries/qCashDepositAccessDiagnostic/metadata.json
+Cash Deposits,qCashDepositBatchPrint,DB,signaturegate-postgres-test,MANUAL,True,deposit_batch_id,issue19_has_role,,pages/Cash Deposits/queries/qCashDepositBatchPrint/metadata.json
+Cash Deposits,qCashDepositBatches,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Cash Deposits/queries/qCashDepositBatches/metadata.json
+Cash Deposits,qCashDepositCashOnHand,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Cash Deposits/queries/qCashDepositCashOnHand/metadata.json
+Cash Deposits,qCashDepositCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,True,,application_access,,pages/Cash Deposits/queries/qCashDepositCurrentFacilitator/metadata.json
+Cash Deposits,qConfirmCashDepositBatch,DB,signaturegate-postgres-test,MANUAL,True,actual_amount_cents;deposit_batch_id;deposit_date;deposit_slip_number;notes,application_cash_actor_id;confirm_cash_deposit_batch,,pages/Cash Deposits/queries/qConfirmCashDepositBatch/metadata.json
+Cash Deposits,qCreateCashDepositBatch,DB,signaturegate-postgres-test,MANUAL,True,deposit_date;deposit_slip_number;notes,application_cash_actor_id;create_cash_deposit_batch,,pages/Cash Deposits/queries/qCreateCashDepositBatch/metadata.json
+Cash Deposits,qExcludeCashDonation,DB,signaturegate-postgres-test,MANUAL,True,donation_id;notes;reason,application_cash_actor_id;exclude_cash_donation_from_deposit,,pages/Cash Deposits/queries/qExcludeCashDonation/metadata.json
+Cash Deposits,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Cash Deposits/queries/qNavigationAccess/metadata.json
+Cash Deposits,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Cash Deposits/queries/qNavigationTerminology/metadata.json
+Cash Deposits,qPageAccess,DB,signaturegate-postgres-test,MANUAL,True,,application_access,,pages/Cash Deposits/queries/qPageAccess/metadata.json
+Cash Deposits,qPrepareCashDepositBatch,DB,signaturegate-postgres-test,MANUAL,True,deposit_batch_id;deposit_date;deposit_slip_number;destination_bank_account;notes,application_cash_actor_id;prepare_cash_deposit_batch,,pages/Cash Deposits/queries/qPrepareCashDepositBatch/metadata.json
+Cash Deposits,qReviewCashDonation,DB,signaturegate-postgres-test,MANUAL,True,donation_id;new_status;review_notes,application_review_donation,,pages/Cash Deposits/queries/qReviewCashDonation/metadata.json
+Cash Deposits,qReviveCashDonation,DB,signaturegate-postgres-test,MANUAL,True,donation_id;notes;reason,application_cash_actor_id;revive_cash_donation_from_deposit,,pages/Cash Deposits/queries/qReviveCashDonation/metadata.json
+Company Profile,archiveContactPerson,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Company Profile/queries/CompanyProfileFlows-archiveContactPerson/metadata.json
+Company Profile,changeContactPerson,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Company Profile/queries/CompanyProfileFlows-changeContactPerson/metadata.json
+Company Profile,isReady,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Company Profile/queries/CompanyProfileFlows-isReady/metadata.json
+Company Profile,linkContactPerson,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Company Profile/queries/CompanyProfileFlows-linkContactPerson/metadata.json
 Company Profile,load,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Company Profile/queries/CompanyProfileFlows-load/metadata.json
-Company Profile,qAddCompanyDonorAddress,DB,signaturegate-postgres-test,MANUAL,False,city;country;postal;reason;state;street;unit,issue19_add_contributor_address,,pages/Company Profile/queries/qAddCompanyDonorAddress/metadata.json
-Company Profile,qAddCompanyDonorContact,DB,signaturegate-postgres-test,MANUAL,False,kind;reason;value,issue19_add_contributor_contact,,pages/Company Profile/queries/qAddCompanyDonorContact/metadata.json
-Company Profile,qArchiveCompanyDonorAddress,DB,signaturegate-postgres-test,MANUAL,False,id;reason,issue19_archive_contributor_address,,pages/Company Profile/queries/qArchiveCompanyDonorAddress/metadata.json
-Company Profile,qArchiveCompanyDonorContact,DB,signaturegate-postgres-test,MANUAL,False,id;kind;reason,issue19_archive_contributor_contact,,pages/Company Profile/queries/qArchiveCompanyDonorContact/metadata.json
-Company Profile,qCompanyCanEditDonorContacts,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Company Profile/queries/qCompanyCanEditDonorContacts/metadata.json
-Company Profile,qCompanyContacts,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_directory_contacts;issue19_directory_entries,,pages/Company Profile/queries/qCompanyContacts/metadata.json
-Company Profile,qCompanyContributionHistory,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_contribution_history,,pages/Company Profile/queries/qCompanyContributionHistory/metadata.json
-Company Profile,qCompanyContributorStatusState,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_contributor_status_state,,pages/Company Profile/queries/qCompanyContributorStatusState/metadata.json
-Company Profile,qCompanyDonorAddresses,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_contributor_addresses,,pages/Company Profile/queries/qCompanyDonorAddresses/metadata.json
-Company Profile,qCompanyDonorContacts,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_contributor_contacts,,pages/Company Profile/queries/qCompanyDonorContacts/metadata.json
-Company Profile,qCompanyIdentityNotes,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_party_notes,,pages/Company Profile/queries/qCompanyIdentityNotes/metadata.json
-Company Profile,qCompanyPartyIdentity,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_party_identity_state,,pages/Company Profile/queries/qCompanyPartyIdentity/metadata.json
-Company Profile,qCompanyProfile,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_directory_entries,,pages/Company Profile/queries/qCompanyProfile/metadata.json
-Company Profile,qCompanyProviderIdentities,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_contributor_provider_identities,,pages/Company Profile/queries/qCompanyProviderIdentities/metadata.json
-Company Profile,qCompanyReassignTargets,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_directory_entries;issue19_has_role,,pages/Company Profile/queries/qCompanyReassignTargets/metadata.json
-Company Profile,qReassignCompanyContact,DB,signaturegate-postgres-test,MANUAL,False,,issue19_reassign_organization_contact,,pages/Company Profile/queries/qReassignCompanyContact/metadata.json
-Company Profile,qSaveCompanyIdentityNotes,DB,signaturegate-postgres-test,MANUAL,False,notes;reason,issue19_set_party_notes,,pages/Company Profile/queries/qSaveCompanyIdentityNotes/metadata.json
-Company Profile,qSetCompanyContributorStatus,DB,signaturegate-postgres-test,MANUAL,False,reason;target_status,issue19_set_contributor_status,,pages/Company Profile/queries/qSetCompanyContributorStatus/metadata.json
-Company Profile,qSetCompanyEmailPrimary,DB,signaturegate-postgres-test,MANUAL,False,,audit_log;issue19_has_role,,pages/Company Profile/queries/qSetCompanyEmailPrimary/metadata.json
-Company Profile,qToggleCompanyEmailSubscription,DB,signaturegate-postgres-test,MANUAL,False,,enqueue_listmonk_contributor_email_sync;issue19_has_role,,pages/Company Profile/queries/qToggleCompanyEmailSubscription/metadata.json
-Company Profile,qUpdateCompanyPartyIdentity,DB,signaturegate-postgres-test,MANUAL,False,expected_version;organization_name;reason,issue19_update_organization_identity,,pages/Company Profile/queries/qUpdateCompanyPartyIdentity/metadata.json
-Company Profile,qVerifyCompanyEmail,DB,signaturegate-postgres-test,MANUAL,False,,audit_log;issue19_has_role,,pages/Company Profile/queries/qVerifyCompanyEmail/metadata.json
+Company Profile,routeId,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Company Profile/queries/CompanyProfileFlows-routeId/metadata.json
+Company Profile,state,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Company Profile/queries/CompanyProfileFlows-state/metadata.json
+Company Profile,statusMessage,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Company Profile/queries/CompanyProfileFlows-statusMessage/metadata.json
+Company Profile,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Company Profile/queries/navigationLabels-label/metadata.json
+Company Profile,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Company Profile/queries/navigationLabels-text/metadata.json
+Company Profile,qAddCompanyDonorAddress,DB,signaturegate-postgres-test,MANUAL,True,city;country;postal;reason;state;street;unit,issue19_add_contributor_address,,pages/Company Profile/queries/qAddCompanyDonorAddress/metadata.json
+Company Profile,qAddCompanyDonorContact,DB,signaturegate-postgres-test,MANUAL,True,kind;reason;value,issue19_add_contributor_contact,,pages/Company Profile/queries/qAddCompanyDonorContact/metadata.json
+Company Profile,qArchiveCompanyDonorAddress,DB,signaturegate-postgres-test,MANUAL,True,id;reason,issue19_archive_contributor_address,,pages/Company Profile/queries/qArchiveCompanyDonorAddress/metadata.json
+Company Profile,qArchiveCompanyDonorContact,DB,signaturegate-postgres-test,MANUAL,True,id;kind;reason,issue19_archive_contributor_contact,,pages/Company Profile/queries/qArchiveCompanyDonorContact/metadata.json
+Company Profile,qCompanyCanEditDonorContacts,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Company Profile/queries/qCompanyCanEditDonorContacts/metadata.json
+Company Profile,qCompanyContactCandidates,DB,signaturegate-postgres-test,MANUAL,True,,application_company_contact_candidates,,pages/Company Profile/queries/qCompanyContactCandidates/metadata.json
+Company Profile,qCompanyContactPeople,DB,signaturegate-postgres-test,MANUAL,True,,application_company_contact_people,,pages/Company Profile/queries/qCompanyContactPeople/metadata.json
+Company Profile,qCompanyContactPeopleAccess,DB,signaturegate-postgres-test,MANUAL,True,,application_company_contact_access,,pages/Company Profile/queries/qCompanyContactPeopleAccess/metadata.json
+Company Profile,qCompanyContacts,DB,signaturegate-postgres-test,MANUAL,True,,issue19_directory_contacts;issue19_directory_entries,,pages/Company Profile/queries/qCompanyContacts/metadata.json
+Company Profile,qCompanyContributionHistory,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contribution_history,,pages/Company Profile/queries/qCompanyContributionHistory/metadata.json
+Company Profile,qCompanyContributorStatusState,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contributor_status_state,,pages/Company Profile/queries/qCompanyContributorStatusState/metadata.json
+Company Profile,qCompanyDonorAddresses,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contributor_addresses,,pages/Company Profile/queries/qCompanyDonorAddresses/metadata.json
+Company Profile,qCompanyDonorContacts,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contributor_contacts,,pages/Company Profile/queries/qCompanyDonorContacts/metadata.json
+Company Profile,qCompanyIdentityNotes,DB,signaturegate-postgres-test,MANUAL,True,,issue19_party_notes,,pages/Company Profile/queries/qCompanyIdentityNotes/metadata.json
+Company Profile,qCompanyPartyIdentity,DB,signaturegate-postgres-test,MANUAL,True,,issue19_party_identity_state,,pages/Company Profile/queries/qCompanyPartyIdentity/metadata.json
+Company Profile,qCompanyProfile,DB,signaturegate-postgres-test,MANUAL,True,,issue19_directory_entries,,pages/Company Profile/queries/qCompanyProfile/metadata.json
+Company Profile,qCompanyProviderIdentities,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contributor_provider_identities,,pages/Company Profile/queries/qCompanyProviderIdentities/metadata.json
+Company Profile,qCompanyReassignTargets,DB,signaturegate-postgres-test,MANUAL,True,,issue19_directory_entries;issue19_has_role,,pages/Company Profile/queries/qCompanyReassignTargets/metadata.json
+Company Profile,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Company Profile/queries/qNavigationAccess/metadata.json
+Company Profile,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Company Profile/queries/qNavigationTerminology/metadata.json
+Company Profile,qReassignCompanyContact,DB,signaturegate-postgres-test,MANUAL,True,,issue19_reassign_organization_contact,,pages/Company Profile/queries/qReassignCompanyContact/metadata.json
+Company Profile,qSaveCompanyIdentityNotes,DB,signaturegate-postgres-test,MANUAL,True,notes;reason,issue19_set_party_notes,,pages/Company Profile/queries/qSaveCompanyIdentityNotes/metadata.json
+Company Profile,qSetCompanyContactPerson,DB,signaturegate-postgres-test,MANUAL,True,,application_set_company_contact_person,,pages/Company Profile/queries/qSetCompanyContactPerson/metadata.json
+Company Profile,qSetCompanyContributorStatus,DB,signaturegate-postgres-test,MANUAL,True,reason;target_status,issue19_set_contributor_status,,pages/Company Profile/queries/qSetCompanyContributorStatus/metadata.json
+Company Profile,qSetCompanyEmailPrimary,DB,signaturegate-postgres-test,MANUAL,True,,audit_log;issue19_has_role,,pages/Company Profile/queries/qSetCompanyEmailPrimary/metadata.json
+Company Profile,qToggleCompanyEmailSubscription,DB,signaturegate-postgres-test,MANUAL,True,,enqueue_listmonk_contributor_email_sync;issue19_has_role,,pages/Company Profile/queries/qToggleCompanyEmailSubscription/metadata.json
+Company Profile,qUpdateCompanyPartyIdentity,DB,signaturegate-postgres-test,MANUAL,True,expected_version;organization_name;reason,issue19_update_organization_identity,,pages/Company Profile/queries/qUpdateCompanyPartyIdentity/metadata.json
+Company Profile,qVerifyCompanyEmail,DB,signaturegate-postgres-test,MANUAL,True,,audit_log;issue19_has_role,,pages/Company Profile/queries/qVerifyCompanyEmail/metadata.json
 Contributor Functions,_normalizeUploadResponse,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-_normalizeUploadResponse/metadata.json
 Contributor Functions,auditLog,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-auditLog/metadata.json
-Contributor Functions,createMemberFromPendingDonation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-createMemberFromPendingDonation/metadata.json
-Contributor Functions,ignorePendingDonation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-ignorePendingDonation/metadata.json
-Contributor Functions,linkPendingGivebutterDonation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-linkPendingGivebutterDonation/metadata.json
-Contributor Functions,openReassignModal,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-openReassignModal/metadata.json
-Contributor Functions,reassignDonation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-reassignDonation/metadata.json
+Contributor Functions,clearReassign,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/cashDonationFlows-clearReassign/metadata.json
+Contributor Functions,createMemberFromPendingDonation,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/cashDonationFlows-createMemberFromPendingDonation/metadata.json
+Contributor Functions,ignorePendingDonation,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/cashDonationFlows-ignorePendingDonation/metadata.json
+Contributor Functions,linkPendingGivebutterDonation,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/cashDonationFlows-linkPendingGivebutterDonation/metadata.json
+Contributor Functions,openReassignModal,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/cashDonationFlows-openReassignModal/metadata.json
+Contributor Functions,reassignDonation,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/cashDonationFlows-reassignDonation/metadata.json
 Contributor Functions,refresh,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-refresh/metadata.json
 Contributor Functions,refreshDonations,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-refreshDonations/metadata.json
+Contributor Functions,reviewActor,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/cashDonationFlows-reviewActor/metadata.json
+Contributor Functions,runReviewWrite,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/cashDonationFlows-runReviewWrite/metadata.json
 Contributor Functions,submitDonation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-submitDonation/metadata.json
-Contributor Functions,verifyDonation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Contributor Functions/queries/cashDonationFlows-verifyDonation/metadata.json
+Contributor Functions,verifyDonation,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/cashDonationFlows-verifyDonation/metadata.json
 Contributor Functions,verifyaccess,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Contributor Functions/queries/cashDonationFlows-verifyaccess/metadata.json
+Contributor Functions,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/navigationLabels-label/metadata.json
+Contributor Functions,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Contributor Functions/queries/navigationLabels-text/metadata.json
 Contributor Functions,qAddGivebutterAddressToMember,DB,signaturegate-postgres-test,MANUAL,False,address_1;address_2;city;country;member_id;postal_code;state,upsert_member_address,,pages/Contributor Functions/queries/qAddGivebutterAddressToMember/metadata.json
-Contributor Functions,qAddGivebutterEmailToMember,DB,signaturegate-postgres-test,MANUAL,False,email;member_id;subscribe_to_mailing_list,member_emails,,pages/Contributor Functions/queries/qAddGivebutterEmailToMember/metadata.json
-Contributor Functions,qAddGivebutterPhoneToMember,DB,signaturegate-postgres-test,MANUAL,False,is_primary;member_id;notes;phone,member_phones;normalize_us_phone,,pages/Contributor Functions/queries/qAddGivebutterPhoneToMember/metadata.json
-Contributor Functions,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;actor_email;details_json;entity_id;entity_type,audit_log,,pages/Contributor Functions/queries/qAuditLogInsert/metadata.json
-Contributor Functions,qCreateMemberFromDonation,DB,signaturegate-postgres-test,MANUAL,False,donation_id;review_notes;subscribe_to_mailing_list,create_member_from_pending_donation,,pages/Contributor Functions/queries/qCreateMemberFromDonation/metadata.json
-Contributor Functions,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,True,email,issue19_has_role,,pages/Contributor Functions/queries/qCurrentFacilitator/metadata.json
-Contributor Functions,qIgnorePendingDonation,DB,signaturegate-postgres-test,MANUAL,False,donation_id;new_status;review_notes,review_pending_donation,,pages/Contributor Functions/queries/qIgnorePendingDonation/metadata.json
-Contributor Functions,qInsertCashDonation,DB,signaturegate-postgres-test,MANUAL,False,amount_cents;contributor_choice;donated_at;is_anonymous;notes,record_cash_donation_identity,,pages/Contributor Functions/queries/qInsertCashDonation/metadata.json
-Contributor Functions,qLinkDonationToMember,DB,signaturegate-postgres-test,MANUAL,False,contributor_choice;donation_id;review_notes,resolve_pending_donation_choice,,pages/Contributor Functions/queries/qLinkDonationToMember/metadata.json
-Contributor Functions,qMemberDonations,DB,signaturegate-postgres-test,MANUAL,True,selection_value;show_rejected,issue19_has_role,,pages/Contributor Functions/queries/qMemberDonations/metadata.json
-Contributor Functions,qMembersDirectory,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Contributor Functions/queries/qMembersDirectory/metadata.json
-Contributor Functions,qPendingGivebutterDonations,DB,signaturegate-postgres-test,AUTOMATIC,False,,can_view_donation_financials,,pages/Contributor Functions/queries/qPendingGivebutterDonations/metadata.json
-Contributor Functions,qReassignDonationMember,DB,signaturegate-postgres-test,MANUAL,False,contributor_choice;donation_id,ensure_member_contributor,,pages/Contributor Functions/queries/qReassignDonationMember/metadata.json
-Contributor Functions,qVerifyDonation,DB,signaturegate-postgres-test,MANUAL,False,donation_id;new_status;review_notes,review_pending_donation,,pages/Contributor Functions/queries/qVerifyDonation/metadata.json
-Directory,load,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Directory/queries/issue19DirectoryFlows-load/metadata.json
-Directory,openContributorFunctions,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Directory/queries/issue19DirectoryFlows-openContributorFunctions/metadata.json
-Directory,openMemberFunctions,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Directory/queries/issue19DirectoryFlows-openMemberFunctions/metadata.json
-Directory,openProfile,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Directory/queries/issue19DirectoryFlows-openProfile/metadata.json
-Directory,openSacramentRelease,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Directory/queries/issue19DirectoryFlows-openSacramentRelease/metadata.json
+Contributor Functions,qAddGivebutterEmailToMember,DB,signaturegate-postgres-test,MANUAL,False,email;member_id;subscribe_to_mailing_list,application_require_permission;member_emails,,pages/Contributor Functions/queries/qAddGivebutterEmailToMember/metadata.json
+Contributor Functions,qAddGivebutterPhoneToMember,DB,signaturegate-postgres-test,MANUAL,False,is_primary;member_id;notes;phone,application_require_permission;member_phones;normalize_us_phone,,pages/Contributor Functions/queries/qAddGivebutterPhoneToMember/metadata.json
+Contributor Functions,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,True,action;details_json;entity_id;entity_type,application_require_permission;audit_log,,pages/Contributor Functions/queries/qAuditLogInsert/metadata.json
+Contributor Functions,qCreateMemberFromDonation,DB,signaturegate-postgres-test,MANUAL,True,donation_id;review_notes;subscribe_to_mailing_list,application_create_participant_from_donation,,pages/Contributor Functions/queries/qCreateMemberFromDonation/metadata.json
+Contributor Functions,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,,application_access,,pages/Contributor Functions/queries/qCurrentFacilitator/metadata.json
+Contributor Functions,qIgnorePendingDonation,DB,signaturegate-postgres-test,MANUAL,False,donation_id;new_status;review_notes,application_review_donation,,pages/Contributor Functions/queries/qIgnorePendingDonation/metadata.json
+Contributor Functions,qInsertCashDonation,DB,signaturegate-postgres-test,MANUAL,False,amount_cents;contributor_choice;donated_at;is_anonymous;notes,application_record_cash,,pages/Contributor Functions/queries/qInsertCashDonation/metadata.json
+Contributor Functions,qLinkDonationToMember,DB,signaturegate-postgres-test,MANUAL,True,contributor_choice;donation_id;review_notes,application_resolve_provider_choice,,pages/Contributor Functions/queries/qLinkDonationToMember/metadata.json
+Contributor Functions,qMemberDonations,DB,signaturegate-postgres-test,MANUAL,True,selection_value;show_rejected,application_access;application_member_access;issue19_has_role,,pages/Contributor Functions/queries/qMemberDonations/metadata.json
+Contributor Functions,qMembersDirectory,DB,signaturegate-postgres-test,MANUAL,True,,application_access;application_member_access,,pages/Contributor Functions/queries/qMembersDirectory/metadata.json
+Contributor Functions,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Contributor Functions/queries/qNavigationAccess/metadata.json
+Contributor Functions,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Contributor Functions/queries/qNavigationTerminology/metadata.json
+Contributor Functions,qPageAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Contributor Functions/queries/qPageAccess/metadata.json
+Contributor Functions,qPendingGivebutterDonations,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Contributor Functions/queries/qPendingGivebutterDonations/metadata.json
+Contributor Functions,qReassignDonationMember,DB,signaturegate-postgres-test,MANUAL,True,contributor_choice;donation_id;reason,application_reassign_donation,,pages/Contributor Functions/queries/qReassignDonationMember/metadata.json
+Contributor Functions,qVerifyDonation,DB,signaturegate-postgres-test,MANUAL,False,donation_id;new_status;review_notes,application_review_donation,,pages/Contributor Functions/queries/qVerifyDonation/metadata.json
+Directory,load,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Directory/queries/directoryFlows-load/metadata.json
+Directory,openContributorFunctions,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Directory/queries/directoryFlows-openContributorFunctions/metadata.json
+Directory,openMemberFunctions,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Directory/queries/directoryFlows-openMemberFunctions/metadata.json
+Directory,openProfile,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Directory/queries/directoryFlows-openProfile/metadata.json
+Directory,openSacramentRelease,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Directory/queries/directoryFlows-openSacramentRelease/metadata.json
+Directory,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Directory/queries/navigationLabels-label/metadata.json
+Directory,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Directory/queries/navigationLabels-text/metadata.json
+Directory,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Directory/queries/qNavigationAccess/metadata.json
+Directory,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Directory/queries/qNavigationTerminology/metadata.json
 Directory,qPartyDirectory,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_directory_entries,,pages/Directory/queries/qPartyDirectory/metadata.json
+Events - Check In,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Events - Check In/queries/navigationLabels-label/metadata.json
+Events - Check In,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Events - Check In/queries/navigationLabels-text/metadata.json
 Events - Check In,qEventCheckinAudit,DB,signaturegate-postgres-test,MANUAL,False,,audit_log,,pages/Events - Check In/queries/qEventCheckinAudit/metadata.json
 Events - Check In,qEventsList,DB,signaturegate-postgres-test,AUTOMATIC,False,,,,pages/Events - Check In/queries/qEventsList/metadata.json
 Events - Check In,qMembersForEventCheckin,DB,signaturegate-postgres-test,AUTOMATIC,False,,,,pages/Events - Check In/queries/qMembersForEventCheckin/metadata.json
+Events - Check In,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Events - Check In/queries/qNavigationAccess/metadata.json
+Events - Check In,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Events - Check In/queries/qNavigationTerminology/metadata.json
+Events - Create,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Events - Create/queries/navigationLabels-label/metadata.json
+Events - Create,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Events - Create/queries/navigationLabels-text/metadata.json
 Events - Create,qCreateEvent,DB,signaturegate-postgres-test,MANUAL,False,,events,,pages/Events - Create/queries/qCreateEvent/metadata.json
 Events - Create,qEventsList,DB,signaturegate-postgres-test,AUTOMATIC,False,,,,pages/Events - Create/queries/qEventsList/metadata.json
-Facilitator Functions,apiAvailableStorageProducts,API,N8N,AUTOMATIC,False,,,/webhook/signaturegate/pgsql/products/available,pages/Facilitator Functions/queries/apiAvailableStorageProducts/metadata.json
+Events - Create,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Events - Create/queries/qNavigationAccess/metadata.json
+Events - Create,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Events - Create/queries/qNavigationTerminology/metadata.json
+Facilitator Functions,apiAvailableStorageProducts,API,N8N,MANUAL,True,,,/webhook/signaturegate/pgsql/products/available,pages/Facilitator Functions/queries/apiAvailableStorageProducts/metadata.json
 Facilitator Functions,assignParticipant,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Facilitator Functions/queries/facilitatorFlows-assignParticipant/metadata.json
 Facilitator Functions,assignStorageLocation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Facilitator Functions/queries/facilitatorFlows-assignStorageLocation/metadata.json
 Facilitator Functions,auditLog,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Facilitator Functions/queries/facilitatorFlows-auditLog/metadata.json
@@ -133,105 +198,125 @@ Facilitator Functions,removeParticipant,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pag
 Facilitator Functions,removeStorageLocation,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Facilitator Functions/queries/facilitatorFlows-removeStorageLocation/metadata.json
 Facilitator Functions,setSelectedFacilitatorId,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Facilitator Functions/queries/facilitatorFlows-setSelectedFacilitatorId/metadata.json
 Facilitator Functions,verifyaccess,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Facilitator Functions/queries/facilitatorFlows-verifyaccess/metadata.json
-Facilitator Functions,qAssignMemberStorageLocation,DB,signaturegate-postgres-test,MANUAL,False,notes;storage_location_name,facilitator_storage_location_access,,pages/Facilitator Functions/queries/qAssignMemberStorageLocation/metadata.json
+Facilitator Functions,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Facilitator Functions/queries/navigationLabels-label/metadata.json
+Facilitator Functions,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Facilitator Functions/queries/navigationLabels-text/metadata.json
+Facilitator Functions,qAssignMemberStorageLocation,DB,signaturegate-postgres-test,MANUAL,False,notes;storage_location_name,issue19_set_practitioner_storage_location,,pages/Facilitator Functions/queries/qAssignMemberStorageLocation/metadata.json
 Facilitator Functions,qAssignParticipant,DB,signaturegate-postgres-test,MANUAL,False,notes;person_id;reason,issue19_assign_member_practitioner,,pages/Facilitator Functions/queries/qAssignParticipant/metadata.json
-Facilitator Functions,qAssignedParticipants,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Facilitator Functions/queries/qAssignedParticipants/metadata.json
-Facilitator Functions,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;actor_email;details_json;entity_id;entity_type,audit_log,,pages/Facilitator Functions/queries/qAuditLogInsert/metadata.json
-Facilitator Functions,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,email,issue19_has_role,,pages/Facilitator Functions/queries/qCurrentFacilitator/metadata.json
-Facilitator Functions,qDeactivateMemberStorageLocati,DB,signaturegate-postgres-test,MANUAL,False,facilitator_storage_location_access_id;notes,issue19_has_role,,pages/Facilitator Functions/queries/qDeactivateMemberStorageLocati/metadata.json
-Facilitator Functions,qDistinctStorageLocationNames,DB,signaturegate-postgres-test,MANUAL,False,,,,pages/Facilitator Functions/queries/qDistinctStorageLocationNames/metadata.json
+Facilitator Functions,qAssignedParticipants,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Facilitator Functions/queries/qAssignedParticipants/metadata.json
+Facilitator Functions,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,True,action;details_json;entity_id;entity_type,application_require_permission;audit_log,,pages/Facilitator Functions/queries/qAuditLogInsert/metadata.json
+Facilitator Functions,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,,application_access,,pages/Facilitator Functions/queries/qCurrentFacilitator/metadata.json
+Facilitator Functions,qDeactivateMemberStorageLocati,DB,signaturegate-postgres-test,MANUAL,False,facilitator_storage_location_access_id;notes,issue19_set_practitioner_storage_location,,pages/Facilitator Functions/queries/qDeactivateMemberStorageLocati/metadata.json
+Facilitator Functions,qDistinctStorageLocationNames,DB,signaturegate-postgres-test,MANUAL,False,,issue19_has_role,,pages/Facilitator Functions/queries/qDistinctStorageLocationNames/metadata.json
 Facilitator Functions,qEndParticipantAssignment,DB,signaturegate-postgres-test,MANUAL,False,assignment_id;person_id;reason,issue19_end_member_practitioner,,pages/Facilitator Functions/queries/qEndParticipantAssignment/metadata.json
-Facilitator Functions,qListFacilitators,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Facilitator Functions/queries/qListFacilitators/metadata.json
-Facilitator Functions,qLocationNameSuggestions,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Facilitator Functions/queries/qLocationNameSuggestions/metadata.json
-Facilitator Functions,qMemberById,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Facilitator Functions/queries/qMemberById/metadata.json
-Facilitator Functions,qMemberStorageLocations,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Facilitator Functions/queries/qMemberStorageLocations/metadata.json
-Facilitator Functions,qParticipantCandidates,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Facilitator Functions/queries/qParticipantCandidates/metadata.json
-Individual Profile,load,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Individual Profile/queries/IndividualProfileFlows-load/metadata.json
+Facilitator Functions,qListFacilitators,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Facilitator Functions/queries/qListFacilitators/metadata.json
+Facilitator Functions,qLocationNameSuggestions,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Facilitator Functions/queries/qLocationNameSuggestions/metadata.json
+Facilitator Functions,qMemberById,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Facilitator Functions/queries/qMemberById/metadata.json
+Facilitator Functions,qMemberStorageLocations,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Facilitator Functions/queries/qMemberStorageLocations/metadata.json
+Facilitator Functions,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Facilitator Functions/queries/qNavigationAccess/metadata.json
+Facilitator Functions,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Facilitator Functions/queries/qNavigationTerminology/metadata.json
+Facilitator Functions,qPageAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Facilitator Functions/queries/qPageAccess/metadata.json
+Facilitator Functions,qParticipantCandidates,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Facilitator Functions/queries/qParticipantCandidates/metadata.json
+Individual Profile,isReady,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Individual Profile/queries/IndividualProfileFlows-isReady/metadata.json
+Individual Profile,load,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Individual Profile/queries/IndividualProfileFlows-load/metadata.json
+Individual Profile,routeId,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Individual Profile/queries/IndividualProfileFlows-routeId/metadata.json
+Individual Profile,state,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Individual Profile/queries/IndividualProfileFlows-state/metadata.json
+Individual Profile,statusMessage,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Individual Profile/queries/IndividualProfileFlows-statusMessage/metadata.json
 Individual Profile,apiTriggerIndividualDocumenso,API,N8N,MANUAL,False,externalId;member_agreement_id,,/webhook/signaturegate/documenso/send,pages/Individual Profile/queries/apiTriggerIndividualDocumenso/metadata.json
-Individual Profile,apiUploadIndividualEvidence,API,N8N,MANUAL,False,files,,/webhook/signaturegate/upload,pages/Individual Profile/queries/apiUploadIndividualEvidence/metadata.json
-Individual Profile,qAddIndividualDonorAddress,DB,signaturegate-postgres-test,MANUAL,False,city;country;postal;reason;state;street;unit,issue19_add_contributor_address,,pages/Individual Profile/queries/qAddIndividualDonorAddress/metadata.json
-Individual Profile,qAddIndividualDonorContact,DB,signaturegate-postgres-test,MANUAL,False,kind;reason;value,issue19_add_contributor_contact,,pages/Individual Profile/queries/qAddIndividualDonorContact/metadata.json
-Individual Profile,qAddIndividualMembershipAddress,DB,signaturegate-postgres-test,MANUAL,False,city;country;postal;reason;state;street;unit,issue19_add_membership_address,,pages/Individual Profile/queries/qAddIndividualMembershipAddress/metadata.json
-Individual Profile,qAddIndividualMembershipContact,DB,signaturegate-postgres-test,MANUAL,False,kind;reason;value,issue19_add_membership_contact,,pages/Individual Profile/queries/qAddIndividualMembershipContact/metadata.json
-Individual Profile,qArchiveIndividualDonorAddress,DB,signaturegate-postgres-test,MANUAL,False,id;reason,issue19_archive_contributor_address,,pages/Individual Profile/queries/qArchiveIndividualDonorAddress/metadata.json
-Individual Profile,qArchiveIndividualDonorContact,DB,signaturegate-postgres-test,MANUAL,False,id;kind;reason,issue19_archive_contributor_contact,,pages/Individual Profile/queries/qArchiveIndividualDonorContact/metadata.json
-Individual Profile,qArchiveIndividualMembershipAddress,DB,signaturegate-postgres-test,MANUAL,False,id;reason,issue19_archive_membership_address,,pages/Individual Profile/queries/qArchiveIndividualMembershipAddress/metadata.json
-Individual Profile,qArchiveIndividualMembershipContact,DB,signaturegate-postgres-test,MANUAL,False,id;kind;reason,issue19_archive_membership_contact,,pages/Individual Profile/queries/qArchiveIndividualMembershipContact/metadata.json
-Individual Profile,qAssignIndividualPractitioner,DB,signaturegate-postgres-test,MANUAL,False,notes;practitioner_person_id;reason,issue19_assign_member_practitioner,,pages/Individual Profile/queries/qAssignIndividualPractitioner/metadata.json
-Individual Profile,qAssignPersonContactRole,DB,signaturegate-postgres-test,MANUAL,False,reason;source_id;source_table,issue19_assign_person_contact_role,,pages/Individual Profile/queries/qAssignPersonContactRole/metadata.json
-Individual Profile,qCanAssignPersonContact,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Individual Profile/queries/qCanAssignPersonContact/metadata.json
-Individual Profile,qCreateIndividualAgreement,DB,signaturegate-postgres-test,MANUAL,False,email_id;practitioner_id;template_id,issue19_create_member_agreement,,pages/Individual Profile/queries/qCreateIndividualAgreement/metadata.json
-Individual Profile,qCreateIndividualPaperAgreement,DB,signaturegate-postgres-test,MANUAL,False,evidence_json;practitioner_id;template_id,issue19_create_member_agreement,,pages/Individual Profile/queries/qCreateIndividualPaperAgreement/metadata.json
-Individual Profile,qDirectoryCanManage,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Individual Profile/queries/qDirectoryCanManage/metadata.json
-Individual Profile,qEnableProfileContributor,DB,signaturegate-postgres-test,MANUAL,False,reason,issue19_enable_person_contributor,,pages/Individual Profile/queries/qEnableProfileContributor/metadata.json
-Individual Profile,qEnableProfileMembership,DB,signaturegate-postgres-test,MANUAL,False,first;last;reason,issue19_enable_person_membership,,pages/Individual Profile/queries/qEnableProfileMembership/metadata.json
-Individual Profile,qEndIndividualPractitioner,DB,signaturegate-postgres-test,MANUAL,False,assignment_id;reason,issue19_end_member_practitioner,,pages/Individual Profile/queries/qEndIndividualPractitioner/metadata.json
-Individual Profile,qEndPersonMembership,DB,signaturegate-postgres-test,MANUAL,False,reason,issue19_end_person_membership,,pages/Individual Profile/queries/qEndPersonMembership/metadata.json
+Individual Profile,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Individual Profile/queries/navigationLabels-label/metadata.json
+Individual Profile,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Individual Profile/queries/navigationLabels-text/metadata.json
+Individual Profile,qAddIndividualDonorAddress,DB,signaturegate-postgres-test,MANUAL,True,city;country;postal;reason;state;street;unit,issue19_add_contributor_address,,pages/Individual Profile/queries/qAddIndividualDonorAddress/metadata.json
+Individual Profile,qAddIndividualDonorContact,DB,signaturegate-postgres-test,MANUAL,True,kind;reason;value,issue19_add_contributor_contact,,pages/Individual Profile/queries/qAddIndividualDonorContact/metadata.json
+Individual Profile,qAddIndividualMembershipAddress,DB,signaturegate-postgres-test,MANUAL,True,city;country;postal;reason;state;street;unit,issue19_add_membership_address,,pages/Individual Profile/queries/qAddIndividualMembershipAddress/metadata.json
+Individual Profile,qAddIndividualMembershipContact,DB,signaturegate-postgres-test,MANUAL,True,kind;reason;value,issue19_add_membership_contact,,pages/Individual Profile/queries/qAddIndividualMembershipContact/metadata.json
+Individual Profile,qArchiveIndividualDonorAddress,DB,signaturegate-postgres-test,MANUAL,True,id;reason,issue19_archive_contributor_address,,pages/Individual Profile/queries/qArchiveIndividualDonorAddress/metadata.json
+Individual Profile,qArchiveIndividualDonorContact,DB,signaturegate-postgres-test,MANUAL,True,id;kind;reason,issue19_archive_contributor_contact,,pages/Individual Profile/queries/qArchiveIndividualDonorContact/metadata.json
+Individual Profile,qArchiveIndividualMembershipAddress,DB,signaturegate-postgres-test,MANUAL,True,id;reason,issue19_archive_membership_address,,pages/Individual Profile/queries/qArchiveIndividualMembershipAddress/metadata.json
+Individual Profile,qArchiveIndividualMembershipContact,DB,signaturegate-postgres-test,MANUAL,True,id;kind;reason,issue19_archive_membership_contact,,pages/Individual Profile/queries/qArchiveIndividualMembershipContact/metadata.json
+Individual Profile,qAssignIndividualPractitioner,DB,signaturegate-postgres-test,MANUAL,True,notes;practitioner_person_id;reason,issue19_assign_member_practitioner,,pages/Individual Profile/queries/qAssignIndividualPractitioner/metadata.json
+Individual Profile,qAssignPersonContactRole,DB,signaturegate-postgres-test,MANUAL,True,reason;source_id;source_table,issue19_assign_person_contact_role,,pages/Individual Profile/queries/qAssignPersonContactRole/metadata.json
+Individual Profile,qCanAssignPersonContact,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Individual Profile/queries/qCanAssignPersonContact/metadata.json
+Individual Profile,qCreateIndividualAgreement,DB,signaturegate-postgres-test,MANUAL,True,email_id;practitioner_id;template_id,issue19_create_member_agreement,,pages/Individual Profile/queries/qCreateIndividualAgreement/metadata.json
+Individual Profile,qCreateIndividualPaperAgreement,DB,signaturegate-postgres-test,MANUAL,True,evidence_json;practitioner_id;template_id,issue19_create_member_agreement,,pages/Individual Profile/queries/qCreateIndividualPaperAgreement/metadata.json
+Individual Profile,qDirectoryCanManage,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Individual Profile/queries/qDirectoryCanManage/metadata.json
+Individual Profile,qEnableProfileContributor,DB,signaturegate-postgres-test,MANUAL,True,reason,issue19_enable_person_contributor,,pages/Individual Profile/queries/qEnableProfileContributor/metadata.json
+Individual Profile,qEnableProfileMembership,DB,signaturegate-postgres-test,MANUAL,True,first;last;reason,issue19_enable_person_membership,,pages/Individual Profile/queries/qEnableProfileMembership/metadata.json
+Individual Profile,qEndIndividualPractitioner,DB,signaturegate-postgres-test,MANUAL,True,assignment_id;reason,issue19_end_member_practitioner,,pages/Individual Profile/queries/qEndIndividualPractitioner/metadata.json
+Individual Profile,qEndPersonMembership,DB,signaturegate-postgres-test,MANUAL,True,reason,issue19_end_person_membership,,pages/Individual Profile/queries/qEndPersonMembership/metadata.json
 Individual Profile,qIndividualAccount,DB,signaturegate-postgres-test,MANUAL,True,,issue19_profile_account,,pages/Individual Profile/queries/qIndividualAccount/metadata.json
-Individual Profile,qIndividualAgreementEmails,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue19_person_member_operations_state,,pages/Individual Profile/queries/qIndividualAgreementEmails/metadata.json
-Individual Profile,qIndividualAgreementTemplates,DB,signaturegate-postgres-test,MANUAL,False,type_key,,,pages/Individual Profile/queries/qIndividualAgreementTemplates/metadata.json
-Individual Profile,qIndividualAgreementTypes,DB,signaturegate-postgres-test,AUTOMATIC,True,,,,pages/Individual Profile/queries/qIndividualAgreementTypes/metadata.json
-Individual Profile,qIndividualAvailablePractitioners,DB,signaturegate-postgres-test,MANUAL,False,,issue19_available_member_practitioners,,pages/Individual Profile/queries/qIndividualAvailablePractitioners/metadata.json
-Individual Profile,qIndividualCanEditDonorContacts,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Individual Profile/queries/qIndividualCanEditDonorContacts/metadata.json
-Individual Profile,qIndividualContacts,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_directory_contacts;issue19_directory_entries;issue19_former_member_contacts,,pages/Individual Profile/queries/qIndividualContacts/metadata.json
-Individual Profile,qIndividualContributionHistory,DB,signaturegate-postgres-test,MANUAL,False,,issue19_contribution_history,,pages/Individual Profile/queries/qIndividualContributionHistory/metadata.json
-Individual Profile,qIndividualContributorStatusState,DB,signaturegate-postgres-test,MANUAL,False,,issue19_contributor_status_state,,pages/Individual Profile/queries/qIndividualContributorStatusState/metadata.json
-Individual Profile,qIndividualDonorAddresses,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_contributor_addresses,,pages/Individual Profile/queries/qIndividualDonorAddresses/metadata.json
-Individual Profile,qIndividualDonorContacts,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_contributor_contacts,,pages/Individual Profile/queries/qIndividualDonorContacts/metadata.json
-Individual Profile,qIndividualIdentityNotes,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_party_notes,,pages/Individual Profile/queries/qIndividualIdentityNotes/metadata.json
-Individual Profile,qIndividualMemberAgreements,DB,signaturegate-postgres-test,MANUAL,False,,issue19_person_member_agreements,,pages/Individual Profile/queries/qIndividualMemberAgreements/metadata.json
-Individual Profile,qIndividualMemberOperationsState,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_person_member_operations_state,,pages/Individual Profile/queries/qIndividualMemberOperationsState/metadata.json
-Individual Profile,qIndividualMembershipAddresses,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_person_membership_addresses,,pages/Individual Profile/queries/qIndividualMembershipAddresses/metadata.json
-Individual Profile,qIndividualMembershipContacts,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_person_membership_contacts,,pages/Individual Profile/queries/qIndividualMembershipContacts/metadata.json
-Individual Profile,qIndividualPartyIdentity,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_party_identity_state,,pages/Individual Profile/queries/qIndividualPartyIdentity/metadata.json
-Individual Profile,qIndividualPractitionerAssignments,DB,signaturegate-postgres-test,MANUAL,False,,issue19_person_practitioner_assignments,,pages/Individual Profile/queries/qIndividualPractitionerAssignments/metadata.json
-Individual Profile,qIndividualProfile,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_directory_entries;issue20_organization_terminology,,pages/Individual Profile/queries/qIndividualProfile/metadata.json
-Individual Profile,qIndividualProfileDiagnostic,DB,signaturegate-postgres-test,MANUAL,False,,issue19_directory_entries;issue19_has_role,,pages/Individual Profile/queries/qIndividualProfileDiagnostic/metadata.json
-Individual Profile,qIndividualProviderIdentities,DB,signaturegate-postgres-test,MANUAL,False,,issue19_contributor_provider_identities,,pages/Individual Profile/queries/qIndividualProviderIdentities/metadata.json
-Individual Profile,qIndividualReassignTargets,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue19_directory_entries,,pages/Individual Profile/queries/qIndividualReassignTargets/metadata.json
-Individual Profile,qIndividualRoles,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_profile_roles,,pages/Individual Profile/queries/qIndividualRoles/metadata.json
-Individual Profile,qMembershipIdentity,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Individual Profile/queries/qMembershipIdentity/metadata.json
-Individual Profile,qProfileCanCreateContributor,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Individual Profile/queries/qProfileCanCreateContributor/metadata.json
-Individual Profile,qProfileCanCreateMember,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_has_role,,pages/Individual Profile/queries/qProfileCanCreateMember/metadata.json
-Individual Profile,qProfileMembershipState,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_person_membership_state,,pages/Individual Profile/queries/qProfileMembershipState/metadata.json
-Individual Profile,qReassignIndividualContact,DB,signaturegate-postgres-test,MANUAL,False,,issue19_reassign_person_contact,,pages/Individual Profile/queries/qReassignIndividualContact/metadata.json
-Individual Profile,qReusablePersonContacts,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_reusable_person_contacts,,pages/Individual Profile/queries/qReusablePersonContacts/metadata.json
-Individual Profile,qSaveIndividualIdentityNotes,DB,signaturegate-postgres-test,MANUAL,False,notes;reason,issue19_set_party_notes,,pages/Individual Profile/queries/qSaveIndividualIdentityNotes/metadata.json
-Individual Profile,qSetIndividualAccount,DB,signaturegate-postgres-test,MANUAL,False,email;reason,issue19_set_person_app_account,,pages/Individual Profile/queries/qSetIndividualAccount/metadata.json
-Individual Profile,qSetIndividualContributorStatus,DB,signaturegate-postgres-test,MANUAL,False,reason;target_status,issue19_set_contributor_status,,pages/Individual Profile/queries/qSetIndividualContributorStatus/metadata.json
-Individual Profile,qSetIndividualEmailPrimary,DB,signaturegate-postgres-test,MANUAL,False,,issue19_has_role,,pages/Individual Profile/queries/qSetIndividualEmailPrimary/metadata.json
-Individual Profile,qSetIndividualRole,DB,signaturegate-postgres-test,MANUAL,False,enabled;reason;role,issue19_set_person_role,,pages/Individual Profile/queries/qSetIndividualRole/metadata.json
-Individual Profile,qSubscribeIndividualEmail,DB,signaturegate-postgres-test,MANUAL,False,,member_email_request_mailing_subscribe,,pages/Individual Profile/queries/qSubscribeIndividualEmail/metadata.json
-Individual Profile,qToggleIndividualContributorEmailSubscription,DB,signaturegate-postgres-test,MANUAL,False,,enqueue_listmonk_contributor_email_sync;issue19_has_role,,pages/Individual Profile/queries/qToggleIndividualContributorEmailSubscription/metadata.json
-Individual Profile,qUnsubscribeIndividualEmail,DB,signaturegate-postgres-test,MANUAL,False,,member_email_request_mailing_unsubscribe,,pages/Individual Profile/queries/qUnsubscribeIndividualEmail/metadata.json
-Individual Profile,qUpdateIndividualPartyIdentity,DB,signaturegate-postgres-test,MANUAL,False,date_of_birth;display_name;expected_version;first_name;last_name;reason,issue19_update_person_identity,,pages/Individual Profile/queries/qUpdateIndividualPartyIdentity/metadata.json
-Individual Profile,qVerifyIndividualEmail,DB,signaturegate-postgres-test,MANUAL,False,,issue19_has_role,,pages/Individual Profile/queries/qVerifyIndividualEmail/metadata.json
+Individual Profile,qIndividualAgreementEmails,DB,signaturegate-postgres-test,MANUAL,True,,issue19_person_member_operations_state,,pages/Individual Profile/queries/qIndividualAgreementEmails/metadata.json
+Individual Profile,qIndividualAgreementTemplates,DB,signaturegate-postgres-test,MANUAL,True,type_key,,,pages/Individual Profile/queries/qIndividualAgreementTemplates/metadata.json
+Individual Profile,qIndividualAgreementTypes,DB,signaturegate-postgres-test,MANUAL,True,,,,pages/Individual Profile/queries/qIndividualAgreementTypes/metadata.json
+Individual Profile,qIndividualAvailablePractitioners,DB,signaturegate-postgres-test,MANUAL,True,,issue19_available_member_practitioners,,pages/Individual Profile/queries/qIndividualAvailablePractitioners/metadata.json
+Individual Profile,qIndividualCanEditDonorContacts,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Individual Profile/queries/qIndividualCanEditDonorContacts/metadata.json
+Individual Profile,qIndividualContacts,DB,signaturegate-postgres-test,MANUAL,True,,issue19_directory_contacts;issue19_directory_entries;issue19_former_member_contacts,,pages/Individual Profile/queries/qIndividualContacts/metadata.json
+Individual Profile,qIndividualContributionHistory,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contribution_history,,pages/Individual Profile/queries/qIndividualContributionHistory/metadata.json
+Individual Profile,qIndividualContributorStatusState,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contributor_status_state,,pages/Individual Profile/queries/qIndividualContributorStatusState/metadata.json
+Individual Profile,qIndividualDonorAddresses,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contributor_addresses,,pages/Individual Profile/queries/qIndividualDonorAddresses/metadata.json
+Individual Profile,qIndividualDonorContacts,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contributor_contacts,,pages/Individual Profile/queries/qIndividualDonorContacts/metadata.json
+Individual Profile,qIndividualIdentityNotes,DB,signaturegate-postgres-test,MANUAL,True,,issue19_party_notes,,pages/Individual Profile/queries/qIndividualIdentityNotes/metadata.json
+Individual Profile,qIndividualMemberAgreements,DB,signaturegate-postgres-test,MANUAL,True,,issue19_person_member_agreements,,pages/Individual Profile/queries/qIndividualMemberAgreements/metadata.json
+Individual Profile,qIndividualMemberOperationsState,DB,signaturegate-postgres-test,MANUAL,True,,issue19_person_member_operations_state,,pages/Individual Profile/queries/qIndividualMemberOperationsState/metadata.json
+Individual Profile,qIndividualMembershipAddresses,DB,signaturegate-postgres-test,MANUAL,True,,issue19_person_membership_addresses,,pages/Individual Profile/queries/qIndividualMembershipAddresses/metadata.json
+Individual Profile,qIndividualMembershipContacts,DB,signaturegate-postgres-test,MANUAL,True,,issue19_person_membership_contacts,,pages/Individual Profile/queries/qIndividualMembershipContacts/metadata.json
+Individual Profile,qIndividualPartyIdentity,DB,signaturegate-postgres-test,MANUAL,True,,issue19_party_identity_state,,pages/Individual Profile/queries/qIndividualPartyIdentity/metadata.json
+Individual Profile,qIndividualPractitionerAssignments,DB,signaturegate-postgres-test,MANUAL,True,,issue19_person_practitioner_assignments,,pages/Individual Profile/queries/qIndividualPractitionerAssignments/metadata.json
+Individual Profile,qIndividualProfile,DB,signaturegate-postgres-test,MANUAL,True,,issue19_directory_entries;issue20_organization_terminology,,pages/Individual Profile/queries/qIndividualProfile/metadata.json
+Individual Profile,qIndividualProfileDiagnostic,DB,signaturegate-postgres-test,MANUAL,True,,issue19_directory_entries;issue19_has_role,,pages/Individual Profile/queries/qIndividualProfileDiagnostic/metadata.json
+Individual Profile,qIndividualProviderIdentities,DB,signaturegate-postgres-test,MANUAL,True,,issue19_contributor_provider_identities,,pages/Individual Profile/queries/qIndividualProviderIdentities/metadata.json
+Individual Profile,qIndividualReassignTargets,DB,signaturegate-postgres-test,MANUAL,True,,issue19_directory_entries,,pages/Individual Profile/queries/qIndividualReassignTargets/metadata.json
+Individual Profile,qIndividualRoles,DB,signaturegate-postgres-test,MANUAL,True,,issue19_profile_roles,,pages/Individual Profile/queries/qIndividualRoles/metadata.json
+Individual Profile,qMembershipIdentity,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Individual Profile/queries/qMembershipIdentity/metadata.json
+Individual Profile,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Individual Profile/queries/qNavigationAccess/metadata.json
+Individual Profile,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Individual Profile/queries/qNavigationTerminology/metadata.json
+Individual Profile,qProfileCanCreateContributor,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Individual Profile/queries/qProfileCanCreateContributor/metadata.json
+Individual Profile,qProfileCanCreateMember,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Individual Profile/queries/qProfileCanCreateMember/metadata.json
+Individual Profile,qProfileMembershipState,DB,signaturegate-postgres-test,MANUAL,True,,issue19_person_membership_state,,pages/Individual Profile/queries/qProfileMembershipState/metadata.json
+Individual Profile,qReassignIndividualContact,DB,signaturegate-postgres-test,MANUAL,True,,issue19_reassign_person_contact,,pages/Individual Profile/queries/qReassignIndividualContact/metadata.json
+Individual Profile,qReusablePersonContacts,DB,signaturegate-postgres-test,MANUAL,True,,issue19_reusable_person_contacts,,pages/Individual Profile/queries/qReusablePersonContacts/metadata.json
+Individual Profile,qSaveIndividualIdentityNotes,DB,signaturegate-postgres-test,MANUAL,True,notes;reason,issue19_set_party_notes,,pages/Individual Profile/queries/qSaveIndividualIdentityNotes/metadata.json
+Individual Profile,qSetIndividualAccount,DB,signaturegate-postgres-test,MANUAL,True,email;reason,issue19_set_person_app_account,,pages/Individual Profile/queries/qSetIndividualAccount/metadata.json
+Individual Profile,qSetIndividualContributorStatus,DB,signaturegate-postgres-test,MANUAL,True,reason;target_status,issue19_set_contributor_status,,pages/Individual Profile/queries/qSetIndividualContributorStatus/metadata.json
+Individual Profile,qSetIndividualEmailPrimary,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Individual Profile/queries/qSetIndividualEmailPrimary/metadata.json
+Individual Profile,qSetIndividualRole,DB,signaturegate-postgres-test,MANUAL,True,enabled;reason;role,issue19_set_person_role,,pages/Individual Profile/queries/qSetIndividualRole/metadata.json
+Individual Profile,qSubscribeIndividualEmail,DB,signaturegate-postgres-test,MANUAL,True,,application_member_access;member_email_request_mailing_subscribe,,pages/Individual Profile/queries/qSubscribeIndividualEmail/metadata.json
+Individual Profile,qToggleIndividualContributorEmailSubscription,DB,signaturegate-postgres-test,MANUAL,True,,enqueue_listmonk_contributor_email_sync;issue19_has_role,,pages/Individual Profile/queries/qToggleIndividualContributorEmailSubscription/metadata.json
+Individual Profile,qUnsubscribeIndividualEmail,DB,signaturegate-postgres-test,MANUAL,True,,application_member_access;member_email_request_mailing_unsubscribe,,pages/Individual Profile/queries/qUnsubscribeIndividualEmail/metadata.json
+Individual Profile,qUpdateIndividualPartyIdentity,DB,signaturegate-postgres-test,MANUAL,True,date_of_birth;display_name;expected_version;first_name;last_name;reason,issue19_update_person_identity,,pages/Individual Profile/queries/qUpdateIndividualPartyIdentity/metadata.json
+Individual Profile,qVerifyIndividualEmail,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Individual Profile/queries/qVerifyIndividualEmail/metadata.json
 Intake,apiTriggerDocumenso,API,N8N,MANUAL,False,externalId;member_agreement_id,,/webhook/signaturegate/documenso/send,pages/Intake/queries/apiTriggerDocumenso/metadata.json
 Intake,apiUploadEvidenceViaN8n,API,N8N,MANUAL,False,files,,/webhook/signaturegate/upload,pages/Intake/queries/apiUploadEvidenceViaN8n/metadata.json
 Intake,auditLog,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Intake/queries/intakeFlows-auditLog/metadata.json
+Intake,loadAccess,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Intake/queries/intakeFlows-loadAccess/metadata.json
+Intake,performSubmit,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-performSubmit/metadata.json
 Intake,reset,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Intake/queries/intakeFlows-reset/metadata.json
-Intake,submit,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Intake/queries/intakeFlows-submit/metadata.json
+Intake,submit,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-submit/metadata.json
+Intake,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/navigationLabels-label/metadata.json
+Intake,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/navigationLabels-text/metadata.json
 Intake,qAddContributorAddress,DB,signaturegate-postgres-test,MANUAL,False,address_1;address_2;city;party_id;party_kind;postal_code;reason;state,issue19_add_contributor_address,,pages/Intake/queries/qAddContributorAddress/metadata.json
 Intake,qAddContributorEmailForDualCapacity,DB,signaturegate-postgres-test,MANUAL,False,email;person_id;reason;subscribe_to_mailing_list,issue19_add_contributor_email_with_mailing,,pages/Intake/queries/qAddContributorEmailForDualCapacity/metadata.json
-Intake,qAddMemberEmail,DB,signaturegate-postgres-test,MANUAL,False,email;member_id;notes,member_emails,,pages/Intake/queries/qAddMemberEmail/metadata.json
-Intake,qAddMemberPhone,DB,signaturegate-postgres-test,MANUAL,False,member_id;notes;phone,member_phones;normalize_us_phone,,pages/Intake/queries/qAddMemberPhone/metadata.json
+Intake,qAddMemberEmail,DB,signaturegate-postgres-test,MANUAL,True,email;member_id;notes;subscribe_to_mailing_list,application_require_permission;member_emails,,pages/Intake/queries/qAddMemberEmail/metadata.json
+Intake,qAddMemberPhone,DB,signaturegate-postgres-test,MANUAL,False,member_id;notes;phone,application_require_permission;member_phones;normalize_us_phone,,pages/Intake/queries/qAddMemberPhone/metadata.json
 Intake,qAddMembershipAddress,DB,signaturegate-postgres-test,MANUAL,False,address_1;address_2;city;person_id;postal_code;reason;state,issue19_add_membership_address,,pages/Intake/queries/qAddMembershipAddress/metadata.json
-Intake,qAgreementTemplatesByType,DB,signaturegate-postgres-test,AUTOMATIC,False,type_key,,,pages/Intake/queries/qAgreementTemplatesByType/metadata.json
-Intake,qAgreementTypesList,DB,signaturegate-postgres-test,AUTOMATIC,True,,,,pages/Intake/queries/qAgreementTypesList/metadata.json
+Intake,qAgreementTemplatesByType,DB,signaturegate-postgres-test,AUTOMATIC,False,type_key,issue19_has_role,,pages/Intake/queries/qAgreementTemplatesByType/metadata.json
+Intake,qAgreementTypesList,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue19_has_role,,pages/Intake/queries/qAgreementTypesList/metadata.json
+Intake,qAssignIntakeContactRole,DB,signaturegate-postgres-test,MANUAL,True,person_id;reason;source_id;source_table,issue19_assign_person_contact_role,,pages/Intake/queries/qAssignIntakeContactRole/metadata.json
 Intake,qAssignMemberPractitioner,DB,signaturegate-postgres-test,MANUAL,False,member_id;notes;practitioner_person_id;reason,issue19_assign_member_practitioner,,pages/Intake/queries/qAssignMemberPractitioner/metadata.json
 Intake,qAssignPersonContactRole,DB,signaturegate-postgres-test,MANUAL,False,person_id;reason;source_id;source_table,issue19_assign_person_contact_role,,pages/Intake/queries/qAssignPersonContactRole/metadata.json
-Intake,qAuditLog,DB,signaturegate-postgres-test,MANUAL,False,action;actor_email;details_json;entity_id;entity_type,audit_log,,pages/Intake/queries/qAuditLog/metadata.json
-Intake,qCheckContributorListmonkQueue,DB,signaturegate-postgres-test,MANUAL,False,contributor_email_id,,,pages/Intake/queries/qCheckContributorListmonkQueue/metadata.json
-Intake,qCheckMemberDuplicate,DB,signaturegate-postgres-test,MANUAL,False,date_of_birth;email;first_name;last_name;phone,normalize_us_phone,,pages/Intake/queries/qCheckMemberDuplicate/metadata.json
-Intake,qCreateContributor,DB,signaturegate-postgres-test,MANUAL,False,email;first_name;last_name;organization_name;party_kind;phone;reason,issue19_create_contributor,,pages/Intake/queries/qCreateContributor/metadata.json
+Intake,qAuditLog,DB,signaturegate-postgres-test,MANUAL,True,action;details_json;entity_id;entity_type,application_require_permission;audit_log,,pages/Intake/queries/qAuditLog/metadata.json
+Intake,qCheckContributorListmonkQueue,DB,signaturegate-postgres-test,MANUAL,False,contributor_email_id,issue19_has_role,,pages/Intake/queries/qCheckContributorListmonkQueue/metadata.json
+Intake,qCheckMemberDuplicate,DB,signaturegate-postgres-test,MANUAL,False,date_of_birth;email;first_name;last_name;phone,issue19_has_role;normalize_us_phone,,pages/Intake/queries/qCheckMemberDuplicate/metadata.json
+Intake,qCreateContributor,DB,signaturegate-postgres-test,MANUAL,True,email;first_name;last_name;organization_name;party_kind;phone;reason;subscribe_to_mailing_list,issue19_create_contributor_with_mailing,,pages/Intake/queries/qCreateContributor/metadata.json
 Intake,qCreateIntakeAgreement,DB,signaturegate-postgres-test,MANUAL,False,agreement_template_id;evidence_json;member_email_id;member_id;practitioner_person_id;signature_method;status,issue19_create_member_agreement,,pages/Intake/queries/qCreateIntakeAgreement/metadata.json
-Intake,qCreateMember,DB,signaturegate-postgres-test,MANUAL,False,created_by_facilitator_id;date_of_birth;email;first_name;last_name;notes;phone,create_member_from_intake,,pages/Intake/queries/qCreateMember/metadata.json
-Intake,qCurrentFacilitator,DB,signaturegate-postgres-test,AUTOMATIC,True,email,,,pages/Intake/queries/qCurrentFacilitator/metadata.json
+Intake,qCreateMember,DB,signaturegate-postgres-test,MANUAL,False,date_of_birth;email;first_name;last_name;phone,application_create_participant,,pages/Intake/queries/qCreateMember/metadata.json
+Intake,qCurrentFacilitator,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Intake/queries/qCurrentFacilitator/metadata.json
 Intake,qEnablePersonContributor,DB,signaturegate-postgres-test,MANUAL,False,person_id;reason,issue19_enable_person_contributor,,pages/Intake/queries/qEnablePersonContributor/metadata.json
-Intake,qGetMemberPerson,DB,signaturegate-postgres-test,MANUAL,False,member_id,,,pages/Intake/queries/qGetMemberPerson/metadata.json
-Intake,qIntakeActorRoles,DB,signaturegate-postgres-test,AUTOMATIC,True,email,issue19_has_role,,pages/Intake/queries/qIntakeActorRoles/metadata.json
-Intake,qLinkContributorMember,DB,signaturegate-postgres-test,MANUAL,False,actor_member_id;contributor_id;member_id;reason,link_contributor_to_member,,pages/Intake/queries/qLinkContributorMember/metadata.json
-Intake,qListFacilitators,DB,signaturegate-postgres-test,AUTOMATIC,True,,,,pages/Intake/queries/qListFacilitators/metadata.json
+Intake,qGetMemberPerson,DB,signaturegate-postgres-test,MANUAL,True,member_id,application_member_access,,pages/Intake/queries/qGetMemberPerson/metadata.json
+Intake,qIntakeActorRoles,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Intake/queries/qIntakeActorRoles/metadata.json
+Intake,qLinkContributorMember,DB,signaturegate-postgres-test,MANUAL,False,contributor_id;member_id;reason,application_link_capacities,,pages/Intake/queries/qLinkContributorMember/metadata.json
+Intake,qListFacilitators,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue19_has_role,,pages/Intake/queries/qListFacilitators/metadata.json
+Intake,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Intake/queries/qNavigationAccess/metadata.json
+Intake,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Intake/queries/qNavigationTerminology/metadata.json
+Intake,qPageAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Intake/queries/qPageAccess/metadata.json
 Intake,qSetIntakeIdentityNotes,DB,signaturegate-postgres-test,MANUAL,False,notes;party_id;party_kind;reason,issue19_set_party_notes,,pages/Intake/queries/qSetIntakeIdentityNotes/metadata.json
 Member Functions,apiCancelDocumensoAgreement,API,N8N,MANUAL,False,member_agreement_id;reason,,/webhook/signaturegate/documenso/cancel,pages/Member Functions/queries/apiCancelDocumensoAgreement/metadata.json
 Member Functions,apiMarkProductUnShipped,API,N8N,MANUAL,False,airtable_record_id;mushroomprocess_product_id;storage_location_name,,/webhook/signaturegate/pgsql/products/mark_unshipped,pages/Member Functions/queries/apiMarkProductUnShipped/metadata.json
@@ -254,30 +339,37 @@ Member Functions,openPaperUpload,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Memb
 Member Functions,refresh,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-refresh/metadata.json
 Member Functions,refreshAgreements,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-refreshAgreements/metadata.json
 Member Functions,removeFacilitator,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-removeFacilitator/metadata.json
-Member Functions,sendDigitalAgreement,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-sendDigitalAgreement/metadata.json
+Member Functions,sendDigitalAgreement,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Member Functions/queries/memberProfile-sendDigitalAgreement/metadata.json
+Member Functions,sendDigitalAgreementSteps,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Member Functions/queries/memberProfile-sendDigitalAgreementSteps/metadata.json
 Member Functions,setMemberId,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-setMemberId/metadata.json
 Member Functions,verifyAgreement,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-verifyAgreement/metadata.json
 Member Functions,voidRelease,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-voidRelease/metadata.json
-Member Functions,qAgreementTemplatesByType,DB,signaturegate-postgres-test,AUTOMATIC,False,type_key,,,pages/Member Functions/queries/qAgreementTemplatesByType/metadata.json
-Member Functions,qAgreementTypesList,DB,signaturegate-postgres-test,MANUAL,True,,,,pages/Member Functions/queries/qAgreementTypesList/metadata.json
-Member Functions,qApproveAgreement,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id;review_notes,,,pages/Member Functions/queries/qApproveAgreement/metadata.json
-Member Functions,qAssignMemberFacilitator,DB,signaturegate-postgres-test,MANUAL,False,facilitator_id;notes,member_facilitators,,pages/Member Functions/queries/qAssignMemberFacilitator/metadata.json
-Member Functions,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;actor_email;details_json;entity_id;entity_type,audit_log,,pages/Member Functions/queries/qAuditLogInsert/metadata.json
+Member Functions,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Member Functions/queries/navigationLabels-label/metadata.json
+Member Functions,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Member Functions/queries/navigationLabels-text/metadata.json
+Member Functions,qAgreementTemplatesByType,DB,signaturegate-postgres-test,MANUAL,True,type_key,issue19_has_role,,pages/Member Functions/queries/qAgreementTemplatesByType/metadata.json
+Member Functions,qAgreementTypesList,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Member Functions/queries/qAgreementTypesList/metadata.json
+Member Functions,qApproveAgreement,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id;review_notes,application_review_agreement,,pages/Member Functions/queries/qApproveAgreement/metadata.json
+Member Functions,qAssignMemberFacilitator,DB,signaturegate-postgres-test,MANUAL,False,facilitator_id;notes,issue19_assign_member_practitioner,,pages/Member Functions/queries/qAssignMemberFacilitator/metadata.json
+Member Functions,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;details_json;entity_id;entity_type;member_id,application_require_permission;audit_log,,pages/Member Functions/queries/qAuditLogInsert/metadata.json
 Member Functions,qCreatePendingAgreement,DB,signaturegate-postgres-test,MANUAL,False,agreement_template_id;evidence_json;facilitator_id;member_email_id;member_id;signature_method;status,issue19_create_member_agreement,,pages/Member Functions/queries/qCreatePendingAgreement/metadata.json
-Member Functions,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,True,email,issue19_has_role,,pages/Member Functions/queries/qCurrentFacilitator/metadata.json
-Member Functions,qDeactivateMemberFacilitator,DB,signaturegate-postgres-test,MANUAL,False,member_facilitator_id;notes,,,pages/Member Functions/queries/qDeactivateMemberFacilitator/metadata.json
-Member Functions,qListFacilitators,DB,signaturegate-postgres-test,MANUAL,True,,,,pages/Member Functions/queries/qListFacilitators/metadata.json
-Member Functions,qMemberAccessCheck,DB,signaturegate-postgres-test,MANUAL,False,,issue19_has_role,,pages/Member Functions/queries/qMemberAccessCheck/metadata.json
-Member Functions,qMemberAgreements,DB,signaturegate-postgres-test,MANUAL,True,,,,pages/Member Functions/queries/qMemberAgreements/metadata.json
-Member Functions,qMemberById,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Member Functions/queries/qMemberById/metadata.json
-Member Functions,qMemberEmails,DB,signaturegate-postgres-test,MANUAL,True,,,,pages/Member Functions/queries/qMemberEmails/metadata.json
-Member Functions,qMemberFacilitators,DB,signaturegate-postgres-test,MANUAL,True,,,,pages/Member Functions/queries/qMemberFacilitators/metadata.json
-Member Functions,qMemberReleases,DB,signaturegate-postgres-test,ON_PAGE_LOAD,True,,,,pages/Member Functions/queries/qMemberReleases/metadata.json
-Member Functions,qMembersDirectory,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Member Functions/queries/qMembersDirectory/metadata.json
-Member Functions,qPrimaryMemberEmail,DB,signaturegate-postgres-test,MANUAL,False,,,,pages/Member Functions/queries/qPrimaryMemberEmail/metadata.json
-Member Functions,qVerifyAgreement,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id;new_status;review_notes,,,pages/Member Functions/queries/qVerifyAgreement/metadata.json
-Member Functions,qVerifyAgreementEmail,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id,,,pages/Member Functions/queries/qVerifyAgreementEmail/metadata.json
-Member Functions,qVoidRelease,DB,signaturegate-postgres-test,MANUAL,False,release_id;void_reason,,,pages/Member Functions/queries/qVoidRelease/metadata.json
+Member Functions,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,,application_access,,pages/Member Functions/queries/qCurrentFacilitator/metadata.json
+Member Functions,qDeactivateMemberFacilitator,DB,signaturegate-postgres-test,MANUAL,False,member_facilitator_id;notes,issue19_end_member_practitioner,,pages/Member Functions/queries/qDeactivateMemberFacilitator/metadata.json
+Member Functions,qListFacilitators,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role;issue19_release_practitioners,,pages/Member Functions/queries/qListFacilitators/metadata.json
+Member Functions,qMemberAccessCheck,DB,signaturegate-postgres-test,MANUAL,False,,application_member_access,,pages/Member Functions/queries/qMemberAccessCheck/metadata.json
+Member Functions,qMemberAgreements,DB,signaturegate-postgres-test,MANUAL,True,,application_member_access,,pages/Member Functions/queries/qMemberAgreements/metadata.json
+Member Functions,qMemberById,DB,signaturegate-postgres-test,MANUAL,False,,application_member_access,,pages/Member Functions/queries/qMemberById/metadata.json
+Member Functions,qMemberEmails,DB,signaturegate-postgres-test,MANUAL,True,,application_member_access,,pages/Member Functions/queries/qMemberEmails/metadata.json
+Member Functions,qMemberFacilitators,DB,signaturegate-postgres-test,MANUAL,True,,application_member_access,,pages/Member Functions/queries/qMemberFacilitators/metadata.json
+Member Functions,qMemberReleases,DB,signaturegate-postgres-test,MANUAL,True,,application_member_access,,pages/Member Functions/queries/qMemberReleases/metadata.json
+Member Functions,qMemberWriteAccess,DB,signaturegate-postgres-test,MANUAL,False,,application_member_access,,pages/Member Functions/queries/qMemberWriteAccess/metadata.json
+Member Functions,qMembersDirectory,DB,signaturegate-postgres-test,MANUAL,True,,application_member_access,,pages/Member Functions/queries/qMembersDirectory/metadata.json
+Member Functions,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Member Functions/queries/qNavigationAccess/metadata.json
+Member Functions,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Member Functions/queries/qNavigationTerminology/metadata.json
+Member Functions,qPageAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Member Functions/queries/qPageAccess/metadata.json
+Member Functions,qPrimaryMemberEmail,DB,signaturegate-postgres-test,MANUAL,False,,application_member_access,,pages/Member Functions/queries/qPrimaryMemberEmail/metadata.json
+Member Functions,qVerifyAgreement,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id;new_status;review_notes,application_review_agreement,,pages/Member Functions/queries/qVerifyAgreement/metadata.json
+Member Functions,qVerifyAgreementEmail,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id,application_access;application_require_permission,,pages/Member Functions/queries/qVerifyAgreementEmail/metadata.json
+Member Functions,qVoidRelease,DB,signaturegate-postgres-test,MANUAL,False,release_id;void_reason,application_access;application_require_permission,,pages/Member Functions/queries/qVoidRelease/metadata.json
 Members – Intake,apiTriggerDocumenso,API,N8N,MANUAL,False,externalId;member_agreement_id,,/webhook/signaturegate/documenso/send,pages/Members – Intake/queries/apiTriggerDocumenso/metadata.json
 Members – Intake,apiUploadEvidence,API,NocoDB danks.store,MANUAL,False,,,/api/v2/storage/upload,pages/Members – Intake/queries/apiUploadEvidence/metadata.json
 Members – Intake,apiUploadEvidenceViaN8n,API,N8N,MANUAL,False,files,,/webhook/signaturegate/upload,pages/Members – Intake/queries/apiUploadEvidenceViaN8n/metadata.json
@@ -287,19 +379,29 @@ Members – Intake,refresh,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Members �
 Members – Intake,refreshAgreements,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Members – Intake/queries/memberFlows-refreshAgreements/metadata.json
 Members – Intake,submitMember,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Members – Intake/queries/memberFlows-submitMember/metadata.json
 Members – Intake,verifyaccess,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Members – Intake/queries/memberFlows-verifyaccess/metadata.json
-Members – Intake,qAddMemberEmailForNewMember,DB,signaturegate-postgres-test,MANUAL,False,email;is_primary;member_id;notes;subscribe_to_mailing_list,member_emails,,pages/Members – Intake/queries/qAddMemberEmailForNewMember/metadata.json
-Members – Intake,qAddMemberPhoneForNewMember,DB,signaturegate-postgres-test,MANUAL,False,is_primary;member_id;notes;phone,member_phones;normalize_us_phone,,pages/Members – Intake/queries/qAddMemberPhoneForNewMember/metadata.json
-Members – Intake,qAgreementTemplatesByType,DB,signaturegate-postgres-test,AUTOMATIC,False,type_key,,,pages/Members – Intake/queries/qAgreementTemplatesByType/metadata.json
-Members – Intake,qAgreementTypesList,DB,signaturegate-postgres-test,AUTOMATIC,True,,,,pages/Members – Intake/queries/qAgreementTypesList/metadata.json
-Members – Intake,qAssignMemberFacilitator,DB,signaturegate-postgres-test,MANUAL,False,facilitator_id;member_id;notes,member_facilitators,,pages/Members – Intake/queries/qAssignMemberFacilitator/metadata.json
+Members – Intake,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Members – Intake/queries/navigationLabels-label/metadata.json
+Members – Intake,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Members – Intake/queries/navigationLabels-text/metadata.json
+Members – Intake,qAddMemberEmailForNewMember,DB,signaturegate-postgres-test,MANUAL,False,email;is_primary;member_id;notes;subscribe_to_mailing_list,application_require_permission;member_emails,,pages/Members – Intake/queries/qAddMemberEmailForNewMember/metadata.json
+Members – Intake,qAddMemberPhoneForNewMember,DB,signaturegate-postgres-test,MANUAL,False,is_primary;member_id;notes;phone,application_require_permission;member_phones;normalize_us_phone,,pages/Members – Intake/queries/qAddMemberPhoneForNewMember/metadata.json
+Members – Intake,qAgreementTemplatesByType,DB,signaturegate-postgres-test,AUTOMATIC,False,type_key,issue19_has_role,,pages/Members – Intake/queries/qAgreementTemplatesByType/metadata.json
+Members – Intake,qAgreementTypesList,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue19_has_role,,pages/Members – Intake/queries/qAgreementTypesList/metadata.json
+Members – Intake,qAssignMemberFacilitator,DB,signaturegate-postgres-test,MANUAL,False,facilitator_id;member_id;notes,application_require_permission;member_facilitators,,pages/Members – Intake/queries/qAssignMemberFacilitator/metadata.json
 Members – Intake,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;actor_email;details_json;entity_id;entity_type,audit_log,,pages/Members – Intake/queries/qAuditLogInsert/metadata.json
-Members – Intake,qCheckMemberDuplicate,DB,signaturegate-postgres-test,MANUAL,False,date_of_birth;email;first_name;last_name;phone,normalize_us_phone,,pages/Members – Intake/queries/qCheckMemberDuplicate/metadata.json
-Members – Intake,qCreateMember,DB,signaturegate-postgres-test,MANUAL,False,created_by_facilitator_id;date_of_birth;email;first_name;is_facilitator;last_name;notes;phone,create_member_from_intake,,pages/Members – Intake/queries/qCreateMember/metadata.json
+Members – Intake,qCheckMemberDuplicate,DB,signaturegate-postgres-test,MANUAL,False,date_of_birth;email;first_name;last_name;phone,application_access;application_require_permission;normalize_us_phone,,pages/Members – Intake/queries/qCheckMemberDuplicate/metadata.json
+Members – Intake,qCreateMember,DB,signaturegate-postgres-test,MANUAL,False,date_of_birth;email;first_name;last_name;phone,application_create_participant;application_require_permission,,pages/Members – Intake/queries/qCreateMember/metadata.json
 Members – Intake,qCreatePendingAgreement,DB,signaturegate-postgres-test,MANUAL,True,agreement_template_id;evidence_json;facilitator_id;member_email_id;member_id;signature_method;status,issue19_create_member_agreement,,pages/Members – Intake/queries/qCreatePendingAgreement/metadata.json
-Members – Intake,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,True,email,,,pages/Members – Intake/queries/qCurrentFacilitator/metadata.json
-Members – Intake,qListFacilitators,DB,signaturegate-postgres-test,AUTOMATIC,True,,,,pages/Members – Intake/queries/qListFacilitators/metadata.json
-Reports,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,email,,,pages/Reports/queries/qCurrentFacilitator/metadata.json
-Reports,qReportTimeSeries,DB,signaturegate-postgres-test,MANUAL,True,,,,pages/Reports/queries/qReportTimeSeries/metadata.json
+Members – Intake,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,True,,application_access,,pages/Members – Intake/queries/qCurrentFacilitator/metadata.json
+Members – Intake,qListFacilitators,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue19_has_role,,pages/Members – Intake/queries/qListFacilitators/metadata.json
+Members – Intake,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Members – Intake/queries/qNavigationAccess/metadata.json
+Members – Intake,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Members – Intake/queries/qNavigationTerminology/metadata.json
+Members – Intake,qPageAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Members – Intake/queries/qPageAccess/metadata.json
+Reports,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Reports/queries/navigationLabels-label/metadata.json
+Reports,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Reports/queries/navigationLabels-text/metadata.json
+Reports,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,,application_access,,pages/Reports/queries/qCurrentFacilitator/metadata.json
+Reports,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Reports/queries/qNavigationAccess/metadata.json
+Reports,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Reports/queries/qNavigationTerminology/metadata.json
+Reports,qPageAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Reports/queries/qPageAccess/metadata.json
+Reports,qReportTimeSeries,DB,signaturegate-postgres-test,MANUAL,True,,issue19_current_release_actor,,pages/Reports/queries/qReportTimeSeries/metadata.json
 Reports,bucketOptions,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Reports/queries/reports-bucketOptions/metadata.json
 Reports,chartOptions,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Reports/queries/reports-chartOptions/metadata.json
 Reports,hasCustomRange,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Reports/queries/reports-hasCustomRange/metadata.json
@@ -313,16 +415,21 @@ Reports,selectedMetricKeysJson,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Report
 Reports,totalFor,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Reports/queries/reports-totalFor/metadata.json
 Reports,validateInputs,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Reports/queries/reports-validateInputs/metadata.json
 Reports,verifyaccess,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Reports/queries/reports-verifyaccess/metadata.json
-Sacrament Release,apiListAvailableProducts,API,N8N,AUTOMATIC,True,,,/webhook/signaturegate/pgsql/products/available,pages/Sacrament Release/queries/apiListAvailableProducts/metadata.json
+Sacrament Release,apiListAvailableProducts,API,N8N,MANUAL,True,,,/webhook/signaturegate/pgsql/products/available,pages/Sacrament Release/queries/apiListAvailableProducts/metadata.json
 Sacrament Release,apiMarkProductShipped,API,N8N,MANUAL,False,,,/webhook/signaturegate/pgsql/products/mark_shipped,pages/Sacrament Release/queries/apiMarkProductShipped/metadata.json
-Sacrament Release,qAccessibleStorageLocations,DB,signaturegate-postgres-test,AUTOMATIC,False,member_id;practitioner_person_id,issue19_release_storage_locations,,pages/Sacrament Release/queries/qAccessibleStorageLocations/metadata.json
+Sacrament Release,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Sacrament Release/queries/navigationLabels-label/metadata.json
+Sacrament Release,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Sacrament Release/queries/navigationLabels-text/metadata.json
+Sacrament Release,qAccessibleStorageLocations,DB,signaturegate-postgres-test,MANUAL,True,member_id;practitioner_person_id,issue19_release_storage_locations,,pages/Sacrament Release/queries/qAccessibleStorageLocations/metadata.json
 Sacrament Release,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;actor_email;details_json;entity_id;entity_type,audit_log,,pages/Sacrament Release/queries/qAuditLogInsert/metadata.json
 Sacrament Release,qCreateRelease,DB,signaturegate-postgres-test,MANUAL,False,item_name;member_agreement_id;member_id;mushroomprocess_product_id;net_weight_g;notes;override_reason;practitioner_person_id;quantity;storage_location_name;strain;unit,issue19_record_sacrament_release,,pages/Sacrament Release/queries/qCreateRelease/metadata.json
-Sacrament Release,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,True,email,issue19_current_release_actor,,pages/Sacrament Release/queries/qCurrentFacilitator/metadata.json
+Sacrament Release,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,False,,application_access,,pages/Sacrament Release/queries/qCurrentFacilitator/metadata.json
 Sacrament Release,qGateCheckAgreement,DB,signaturegate-postgres-test,MANUAL,True,member_id,issue19_sacrament_release_agreement,,pages/Sacrament Release/queries/qGateCheckAgreement/metadata.json
-Sacrament Release,qListFacilitators,DB,signaturegate-postgres-test,AUTOMATIC,False,member_id,issue19_release_practitioners,,pages/Sacrament Release/queries/qListFacilitators/metadata.json
-Sacrament Release,qMembersDirectory,DB,signaturegate-postgres-test,AUTOMATIC,False,,issue19_sacrament_release_members,,pages/Sacrament Release/queries/qMembersDirectory/metadata.json
-Sacrament Release,qReleaseMemberActive,DB,signaturegate-postgres-test,MANUAL,True,member_id,,,pages/Sacrament Release/queries/qReleaseMemberActive/metadata.json
+Sacrament Release,qListFacilitators,DB,signaturegate-postgres-test,MANUAL,True,member_id,issue19_release_practitioners,,pages/Sacrament Release/queries/qListFacilitators/metadata.json
+Sacrament Release,qMembersDirectory,DB,signaturegate-postgres-test,MANUAL,True,,issue19_sacrament_release_members,,pages/Sacrament Release/queries/qMembersDirectory/metadata.json
+Sacrament Release,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Sacrament Release/queries/qNavigationAccess/metadata.json
+Sacrament Release,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Sacrament Release/queries/qNavigationTerminology/metadata.json
+Sacrament Release,qPageAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Sacrament Release/queries/qPageAccess/metadata.json
+Sacrament Release,qReleaseMemberActive,DB,signaturegate-postgres-test,MANUAL,False,member_id,,,pages/Sacrament Release/queries/qReleaseMemberActive/metadata.json
 Sacrament Release,qTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Sacrament Release/queries/qTerminology/metadata.json
 Sacrament Release,auditLog,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Sacrament Release/queries/releaseFlows-auditLog/metadata.json
 Sacrament Release,issueRelease,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Sacrament Release/queries/releaseFlows-issueRelease/metadata.json
@@ -330,7 +437,19 @@ Sacrament Release,refresh,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Sacrament R
 Sacrament Release,refreshGate,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Sacrament Release/queries/releaseFlows-refreshGate/metadata.json
 Sacrament Release,setMemberId,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Sacrament Release/queries/releaseFlows-setMemberId/metadata.json
 Sacrament Release,verifyaccess,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Sacrament Release/queries/releaseFlows-verifyaccess/metadata.json
-Terminology Administration,qSetTerminology,DB,signaturegate-postgres-test,MANUAL,False,,issue20_set_organization_terminology,,pages/Terminology Administration/queries/qSetTerminology/metadata.json
-Terminology Administration,qTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Terminology Administration/queries/qTerminology/metadata.json
-Terminology Administration,qTerminologyAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue19_has_role,,pages/Terminology Administration/queries/qTerminologyAccess/metadata.json
-Terminology Administration,initialize,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Terminology Administration/queries/terminologyAdminFlows-initialize/metadata.json
+Terminology Administration,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Terminology Administration/queries/navigationLabels-label/metadata.json
+Terminology Administration,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Terminology Administration/queries/navigationLabels-text/metadata.json
+Terminology Administration,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Terminology Administration/queries/qNavigationAccess/metadata.json
+Terminology Administration,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Terminology Administration/queries/qNavigationTerminology/metadata.json
+Terminology Administration,qSetTerminology,DB,signaturegate-postgres-test,MANUAL,True,active;concept;plural;reason;short;singular,issue20_set_organization_terminology,,pages/Terminology Administration/queries/qSetTerminology/metadata.json
+Terminology Administration,qTerminology,DB,signaturegate-postgres-test,MANUAL,True,,issue20_organization_terminology,,pages/Terminology Administration/queries/qTerminology/metadata.json
+Terminology Administration,qTerminologyAccess,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Terminology Administration/queries/qTerminologyAccess/metadata.json
+Terminology Administration,accessMessage,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Terminology Administration/queries/terminologyAdminFlows-accessMessage/metadata.json
+Terminology Administration,accessState,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Terminology Administration/queries/terminologyAdminFlows-accessState/metadata.json
+Terminology Administration,hasAccess,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Terminology Administration/queries/terminologyAdminFlows-hasAccess/metadata.json
+Terminology Administration,initialize,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Terminology Administration/queries/terminologyAdminFlows-initialize/metadata.json
+Terminology Administration,save,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Terminology Administration/queries/terminologyAdminFlows-save/metadata.json
+Unauthorized,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Unauthorized/queries/navigationLabels-label/metadata.json
+Unauthorized,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Unauthorized/queries/navigationLabels-text/metadata.json
+Unauthorized,qNavigationAccess,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Unauthorized/queries/qNavigationAccess/metadata.json
+Unauthorized,qNavigationTerminology,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue20_organization_terminology,,pages/Unauthorized/queries/qNavigationTerminology/metadata.json

@@ -36,7 +36,7 @@ def strings(value, prefix=''):
 
 def write_csv(output, name, rows, fields):
     with (output / name).open('w', newline='', encoding='utf-8') as stream:
-        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer = csv.DictWriter(stream, fieldnames=fields, lineterminator='\n')
         writer.writeheader()
         writer.writerows(rows)
 
@@ -125,7 +125,7 @@ def main():
                           url_params=';'.join(sorted(url_params)), store_keys=';'.join(sorted(store_keys)),
                           role_terms=';'.join(sorted(roles))))
         for p in sorted((directory / 'jsobjects').glob('*/*.js')):
-            code = re.sub(r'^\s*export\s+default\s+', 'const object = ', p.read_text(), count=1)
+            code = re.sub(r'^\s*export\s+default\s+', 'const object = ', p.read_text(), count=1, flags=re.M)
             result = subprocess.run(['node', '--check', '-'], input=code, text=True, capture_output=True)
             js_results.append(dict(path=str(p.relative_to(app)), syntax_ok=result.returncode == 0))
     migrations = []
@@ -139,9 +139,14 @@ def main():
                                explicit_transaction=bool(re.search(r'^BEGIN;', text, re.M) and re.search(r'^COMMIT;', text, re.M)),
                                defines=';'.join(defined), production_applied='unknown', test_applied='unknown'))
     summary = dict(appsmith_revision=git(app, 'rev-parse', 'HEAD'),
-                   signaturegate_source_revision=git(root, 'rev-parse', '9fb5aa5'),
+                   appsmith_tree_sha=git(app, 'rev-parse', 'HEAD^{tree}'),
+                   signaturegate_source_revision=git(root, 'rev-parse', 'HEAD'),
+                   canonical_schema_sha256=sha(root / 'db/schema.sql'),
+                   terminology_seed_sha256=sha(root / 'db/seeds/organization_terminology.sql'),
+                   appsmith_worktree_dirty=bool(git(app, 'status', '--porcelain')),
+                   signaturegate_worktree_dirty=bool(git(root, 'status', '--porcelain', '--', '.', ':!releases/v1.2.0/evidence')),
                    baseline_v1_1_0=git(root, 'rev-parse', 'v1.1.0'),
-                   commits_since_v1_1_0=int(git(root, 'rev-list', '--count', 'v1.1.0..9fb5aa5')),
+                   commits_since_v1_1_0=int(git(root, 'rev-list', '--count', 'v1.1.0..HEAD')),
                    json_files=len(parsed), pages=len(pages), actions=len(actions), js_objects=len(js_results),
                    js_syntax_all_pass=all(r['syntax_ok'] for r in js_results),
                    datasource_descriptors=len(list((app / 'datasources').glob('*.json'))),

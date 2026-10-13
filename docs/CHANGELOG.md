@@ -19,6 +19,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 - Add generated capability-aware navigation with a persistent Directory escape, configurable Participant/practitioner captions and corrected retained audit links.
 - Default fresh terminology to Participant and provide an explicit audited adoption step that preserves unrelated installed overrides.
 
+- Repair empty-table vectors and unloaded-menu visibility types; retire the unused individual-upload action with a missing widget reference.
+
 ### Added
 
 - Independent individual and company identities, with Participant and Contributor capacities kept separate from system access permissions.

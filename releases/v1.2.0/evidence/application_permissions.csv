@@ -114,7 +114,6 @@ Facilitator Functions,qNavigationTerminology,DB,AUTOMATIC,False,False,False,Fals
 Facilitator Functions,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
 Facilitator Functions,qParticipantCandidates,DB,MANUAL,True,True,True,False,False
 Individual Profile,apiTriggerIndividualDocumenso,API,MANUAL,True,False,False,False,False
-Individual Profile,apiUploadIndividualEvidence,API,MANUAL,True,False,False,False,False
 Individual Profile,qAddIndividualDonorAddress,DB,MANUAL,True,True,True,False,False
 Individual Profile,qAddIndividualDonorContact,DB,MANUAL,True,True,True,False,False
 Individual Profile,qAddIndividualMembershipAddress,DB,MANUAL,True,True,True,False,False
