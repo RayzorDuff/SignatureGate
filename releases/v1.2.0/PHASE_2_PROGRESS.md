@@ -165,3 +165,10 @@ Read-only cash observation exit 0 on `signaturegate_test`: both Intake APIs exis
 Cash Deposits opens without Retry. Terminology Administration opens with the authorized form after Retry Access; permission is correct, but first-load reliability is not yet accepted. The controller now retries one failed terminology-data read separately from the access read, keeps the form closed until labels load, and distinguishes data failure from denied access. Source tests cover cold/persistent label failure and account change during loading; the live root cause remains unproven.
 
 The operator will navigate interfaces independently. This walkthrough does not block independent development. Reuse passing backend and dialog evidence; no migration or new service request is introduced by this checkpoint.
+
+
+## Phase 3: selected-profile entry
+
+Individual/Company profiles are hidden from direct native navigation. Directory opens them with an explicit person/company UUID. A link with no ID never reuses an old stored selection; malformed/inaccessible links show a safe message and Back to Directory. Loaders are explicitly on page load, use current-account/route tokens, retry one failed primary read and leave content hidden until dependent reads finish. Late A-to-B or account results cannot expose another profile. Profile DB actions are pinned Manual/true and run after the selected primary record is resolved; existing signed SQL/resource guards remain.
+
+Controller fixtures cover valid/missing/invalid/access-denied links, saved-selection refusal, cold/secondary read failures, route/account changes and late A-to-B primary responses. Company relationship regressions and exact-source export preservation pass. Real Appsmith dependency/SDK rendering remains a consolidated acceptance check; use the operator's forthcoming walkthrough, not another full role/identity matrix. No DB migration or permission grant is introduced.

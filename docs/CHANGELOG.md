@@ -14,6 +14,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 - Honor Intake mailing consent, reuse shared Participant/Contributor phone/address roles, bind Intake audit actor to sign-in and guard profile mailing changes by selected identity and signed authority.
 - Block paper Intake and retained legacy paper Intake before record creation pending integration validation; warn clearly when a later Intake/signing step fails after saving records.
 
+- Hide context-dependent profiles from direct navigation, require explicit Directory/deep-link selection and isolate stale account/route loads.
+
 ### Added
 
 - Independent individual and company identities, with Participant and Contributor capacities kept separate from system access permissions.
