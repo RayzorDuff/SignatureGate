@@ -22,3 +22,8 @@ Updated October 13, 2026. **Development continues; the release is not ready for 
 Operator's latest test command exit 0 and final cash-dialog scenario are accepted; do not repeat the previous migration runner or role/cash matrix. The earlier observation of pending review after exclusion is unresolved. SQL excludes without changing verification; clearing implicit table selection addresses a possible display confusion, not a proven root cause.
 
 Provider increment provenance: SignatureGate `03a6be4`, SignatureGate-Appsmith `8b1208e`. Accepted operator cash backend provenance: SignatureGate `50f4650`, exit 0. The current increment's committed source defines the next candidate; source Git SHAs do not prove an editor pull or published deployment. See [DIRECTORY_REVIEW_VALIDATION.md](DIRECTORY_REVIEW_VALIDATION.md) and [TEST_CONFIDENCE_AND_MANUAL_VALIDATION.md](TEST_CONFIDENCE_AND_MANUAL_VALIDATION.md).
+
+
+## Latest source checkpoint
+
+Configured workflow/report copy and safe audit rendering pass controller/synthetic tests; 24 Intake cases also use real alternate labels. Explicit profile links normalize UUID case, including valid uppercase links, while retaining current-account/route isolation. The source auditor records current fingerprints; its checked patterns are clear, all 32 collections pass syntax, and final live SDK/integration gates remain open. The upgrade draft has 20 undecided entries and nine unverified environment proofs; its validator executes no SQL. RootedOps Frappe testing is unavailable in this workspace. No production operation, master promotion, packaged export, VERSION bump or tag has occurred.
