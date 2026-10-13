@@ -28,3 +28,5 @@ Source/issue inventory is complete. Actual test/production database differences,
 
 - [Current phase status](STATUS.md)
 - [Company contacts and Cash Deposits access validation](DIRECTORY_REVIEW_VALIDATION.md)
+
+- [Current access and workflow-feedback validation](INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md): accepted operator results, read-only observation and two page openings.

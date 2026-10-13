@@ -147,9 +147,9 @@ Individual Profile,qSetIndividualAccount,DB,MANUAL,True,True,True,False,False
 Individual Profile,qSetIndividualContributorStatus,DB,MANUAL,True,True,True,False,False
 Individual Profile,qSetIndividualEmailPrimary,DB,MANUAL,True,True,True,True,False
 Individual Profile,qSetIndividualRole,DB,MANUAL,True,True,True,False,False
-Individual Profile,qSubscribeIndividualEmail,DB,MANUAL,True,True,False,False,False
+Individual Profile,qSubscribeIndividualEmail,DB,MANUAL,True,True,True,False,False
 Individual Profile,qToggleIndividualContributorEmailSubscription,DB,MANUAL,True,True,True,True,False
-Individual Profile,qUnsubscribeIndividualEmail,DB,MANUAL,True,True,False,False,False
+Individual Profile,qUnsubscribeIndividualEmail,DB,MANUAL,True,True,True,False,False
 Individual Profile,qUpdateIndividualPartyIdentity,DB,MANUAL,True,True,True,False,False
 Individual Profile,qVerifyIndividualEmail,DB,MANUAL,True,True,True,True,False
 Intake,apiTriggerDocumenso,API,MANUAL,True,False,False,False,False
@@ -161,9 +161,10 @@ Intake,qAddMemberPhone,DB,MANUAL,True,True,True,True,False
 Intake,qAddMembershipAddress,DB,MANUAL,True,True,True,False,False
 Intake,qAgreementTemplatesByType,DB,AUTOMATIC,True,True,True,False,False
 Intake,qAgreementTypesList,DB,AUTOMATIC,True,True,True,False,False
+Intake,qAssignIntakeContactRole,DB,MANUAL,True,True,True,False,False
 Intake,qAssignMemberPractitioner,DB,MANUAL,True,True,True,False,False
 Intake,qAssignPersonContactRole,DB,MANUAL,True,True,True,False,False
-Intake,qAuditLog,DB,MANUAL,True,False,False,True,False
+Intake,qAuditLog,DB,MANUAL,True,True,True,True,False
 Intake,qCheckContributorListmonkQueue,DB,MANUAL,True,True,True,False,False
 Intake,qCheckMemberDuplicate,DB,MANUAL,True,True,True,False,False
 Intake,qCreateContributor,DB,MANUAL,True,True,True,False,False
@@ -236,5 +237,5 @@ Sacrament Release,qPageAccess,DB,AUTOMATIC,True,False,True,False,False
 Sacrament Release,qReleaseMemberActive,DB,MANUAL,True,False,False,False,False
 Sacrament Release,qTerminology,DB,AUTOMATIC,False,False,False,False,False
 Terminology Administration,qSetTerminology,DB,MANUAL,True,False,False,False,False
-Terminology Administration,qTerminology,DB,AUTOMATIC,False,False,False,False,False
-Terminology Administration,qTerminologyAccess,DB,AUTOMATIC,True,True,True,False,False
+Terminology Administration,qTerminology,DB,MANUAL,False,False,False,False,False
+Terminology Administration,qTerminologyAccess,DB,MANUAL,True,False,True,False,False

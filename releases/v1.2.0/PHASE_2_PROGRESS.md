@@ -143,3 +143,16 @@ Provider review is published at backend `03a6be4` / Appsmith `8b1208e`. The oper
 Explicit audited company-to-contact-person relationships and Company Profile link/archive/reactivate controls are implemented. Fresh/repeat SQL, permissions/directory scope, multiple/shared/standalone identities, optimistic versions, audit rollback and prepared bindings/controller checks pass in isolation. No identity merge, enrollment, permission, donation or mailing inheritance is introduced. This closes the source representation gap; deployment/rendering and protected-upgrade acceptance remain open. See DIRECTORY_REVIEW_VALIDATION.md for one backend-first command and the immediate cash-page check.
 
 Phase 2 remains open for Intake/contact/agreement parity, paper upload and external principal/endpoint trust, consolidated candidate runtime acceptance and live increment evidence. Terminology/navigation/SCREENS remain Phase 3 work; restored upgrade and release packaging have not commenced.
+
+
+## Accepted directory/cash results and staged workflow feedback
+
+Operator reports `validate_directory_review_test.sh` exit 0 after pulling `8a08e74`. Provider/company API application twice and the runner's rollback checks are accepted. Cash access succeeded after Retry; the final Exclude/hidden-row/reveal/required-reason/Revive sequence restored `cash_on_hand`. Earlier pending-review observation remains open and receives read-only sanitized correlation, not another mutation request.
+
+Terminology's initializer was Manual. It is now explicitly on page load, waits for sign-in, retries one failed read and uses account-bound loading/ready/unlinked/denied/error states. Cash similarly retries one failed startup read; writes and returned denial are never retried automatically. Post-disposition table selection is cleared.
+
+Intake, Member Functions digital signing, ERP confirmation/retry and profile mailing requests now show stages. Signing only claims email delivery when explicitly confirmed; mailing stages report queued requests. Intake mailing checkboxes are applied to actual SQL; dual-capacity phone/address contacts reuse the audited role-assignment API. Staff profile mailing actions verify signed authority and the contact's selected identity in SQL before mutation. Intake audit actor is bound to the signed account. Twenty-four synthetic controller/prepared-SQL enrollment cases pass, alongside permission/action-mode/cash/provider/company/controller regressions. External API calls are stubbed and do not certify actual delivery.
+
+Paper Intake now stops before records/files, matching the Member Functions integration boundary. Atomic recovery across independently committed Intake actions, paper route acceptance, live stage/SDK checks, external trust and consolidated runtime validation remain release gates. See INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md for the reduced operator sequence.
+
+The retained legacy Members–Intake page also blocks paper selection before any identity write. Its upload execution code is removed and paper controls are disabled. Its digital stage messages remain available; no external upload request is made. The pre-write boundary and disabled controls are exercised automatically.

@@ -9,6 +9,11 @@ Public release notes describe software behavior and technical contracts. Rooted 
 - Make missing bootstrap inputs fail with a PostgreSQL script error and suppress supplied identity values in normal bootstrap output; clarify that first-manager bootstrap grants no Donations Reviewer role.
 
 
+- Restore staged Intake and digital-signing feedback, and add ERP/mailing progress that distinguishes saved records, queued requests and confirmed external completion.
+- Repair Terminology page-load initialization with account-bound access state; retry one transient read-only Cash/Terminology startup failure without retrying writes.
+- Honor Intake mailing consent, reuse shared Participant/Contributor phone/address roles, bind Intake audit actor to sign-in and guard profile mailing changes by selected identity and signed authority.
+- Block paper Intake and retained legacy paper Intake before record creation pending integration validation; warn clearly when a later Intake/signing step fails after saving records.
+
 ### Added
 
 - Independent individual and company identities, with Participant and Contributor capacities kept separate from system access permissions.

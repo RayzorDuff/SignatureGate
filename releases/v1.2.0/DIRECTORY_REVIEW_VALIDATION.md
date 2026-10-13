@@ -39,3 +39,8 @@ Open **Cash Deposits** using the intended Donations Reviewer sign-in. If it open
 If it remains restricted, click **Retry access** and return the displayed **Access check (safe to return)** object. It contains only technical database identity and booleans. Do not rerun the Directory Manager bootstrap, infer ownership from an email contact or reassign a sign-in account merely to satisfy this check. An authorized manager should first verify the intended individual's account ownership and canonical role through the existing Individual Profile controls.
 
 Company contact rendering and provider reassignment dialogs remain recorded candidate UI gaps. They are deferred to one consolidated later smoke check; no additional manual company/role/contact matrix is requested now. Production upgrade, external authorization and release promotion remain separately gated.
+
+
+## Operator acceptance and successor sequence
+
+At `8a08e74`, the operator reports this runner exit 0. Its backend checks are accepted; the completion-import warning is avoided by launching with `env -u 'BASH_FUNC__sudo%%' bash`. The final cash dialog scenario passes after access Retry. Do not repeat this runner or that scenario. Follow [INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md](INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md) for the remaining access/stage checks. Company-link/provider-dialog rendering remains a consolidated candidate gap.

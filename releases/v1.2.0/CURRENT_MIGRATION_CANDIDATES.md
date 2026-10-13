@@ -31,3 +31,6 @@ Targeted definitions have been captured privately. Next: preserve reviewed owner
 `company_contact_people.sql` SHA-256: `c92a846c4b73d9001786c9bd5e6a0779f98d6f75250400915d41c8030f74d05f`. Requires canonical people/organizations/contributors, account/role access, Directory visibility and audit. Adds a relationship table and guarded APIs without identity/capacity/consent backfill. Atomic migration/reapplication and relationship/source/controller checks pass in isolation. Test deployment uses `validate_directory_review_test.sh`; final production owner/grant/lock review and protected restore rehearsal remain pending.
 
 Cash revival has operator-reported PostgreSQL 16.13 test evidence at `50f4650` (exit 0); its UI check is blocked by the cash-page access report. See DIRECTORY_REVIEW_VALIDATION.md.
+
+
+Operator directory-review validation at `8a08e74` reports exit 0, accepting test provider/company application twice and the runner's rollback checks. Final Exclude/Revive UI is accepted; earlier pending-review display/state observation remains open. The workflow-feedback/access increment adds no migration. New Intake requires existing contact-role assignment and contributor-with-mailing APIs; the read-only inspection checks their availability. Production manifest/recovery gates remain unchanged.

@@ -54,3 +54,12 @@ The official [v2.4.2 on-load implementation](https://github.com/appsmithorg/apps
 ## Current operator sequence supersedes earlier increment commands
 
 Cash reconciliation backend validation is now accepted (operator exit 0 at 50f4650). Do not repeat its broad manual negative-case matrix. Use DIRECTORY_REVIEW_VALIDATION.md and `validate_directory_review_test.sh` for the new provider/company backend prerequisites, then check Cash Deposits access and the previously blocked dialog. If access remains restricted, return its privacy-safe boolean diagnostic. Company-link and provider-reassignment rendering are deferred to consolidated candidate acceptance. Automated startup, source-query, relationship, version, authorization and audit/controller evidence is reused.
+
+
+## Current sequence: access and workflow feedback
+
+This section supersedes earlier increment commands. Operator reports directory-review runner exit 0 at `8a08e74` and final cash Exclude/reveal/reason/Revive success. These live results are accepted; no migration rerun or broad manual matrix is requested. Initial Cash access required Retry, and Terminology falsely denied a Directory Manager, so startup remains a targeted SDK gap.
+
+See [INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md](INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md): one private read-only observation, two page openings, then stage feedback during the next ordinary test operation. New controller/prepared-SQL Intake tests cover 24 enrollment/contact/consent cases. Signing and ERP HTTP remain stubs in automatic checks; queue creation is not external Listmonk completion. Paper intake is blocked before records/files until integration acceptance. Earlier cash pending-review observation, multi-action recovery, live delivery and restored-production rehearsal remain open.
+
+The retained legacy Members–Intake page also blocks paper selection before any identity write. Its upload execution code is removed and paper controls are disabled. Its digital stage messages remain available; no external upload request is made. The pre-write boundary and disabled controls are exercised automatically.
