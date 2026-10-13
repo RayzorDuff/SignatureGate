@@ -46,3 +46,8 @@ Import/publish the workflow pair from the released RootedOps revision, review ac
 5. Complete approved production acceptance against the selected dependency, then record sanitized versions/SHAs/workflow revision proof and final release dependency in the v1.2.0 manifest.
 
 Do not run production synchronization or an ERP preview with operational amounts merely to produce a public transcript. Specific rehearsal/production commands follow only after the dependency and environment review; the current commands supplied privately remain limited to private catalog capture and test-database notes validation.
+
+
+## Source compatibility follow-up
+
+RootedOps main at `750ebc8a8506c20c3df53f6f1b314189ab8cb879` still declares version 1.5.25. The two linked workflow files, SignatureGate deposit service and integration API are byte-identical to reviewed baseline `c40bce97f60164e93d7b6d4cdf16c7658e62dae6` (Git blob comparison). The earlier source review therefore still applies to those four components; this does not certify other RootedOps changes, a release tag, active workflow configuration, authentication or deployment. Pin a released/deployed compatible revision before SignatureGate packaging.

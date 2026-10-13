@@ -30,3 +30,6 @@ October 11 follow-up: the combined public Unreleased summary now covers identity
 
 
 October 13 reconciliation: Unreleased includes generated workflow navigation, explicit/stale-safe profile entry, Participant initialization/audited adoption, configured controller/report copy, staged signing/ERP/Listmonk feedback, empty-table vector repair, dormant upload retirement and safe audit rendering. These source changes remain development candidates; first Appsmith release notes, final dependency/source pins and old/new packaged comparison are pending release gates. The initial 176-commit inventory remains historical provenance, not the current head count.
+
+
+The first Appsmith release notes are now drafted in SignatureGate-Appsmith/releases/first-release/RELEASE_NOTES.md. Its version/tag and production provenance remain placeholders until acceptance; the combined changelog remains Unreleased. RootedOps main still declares 1.5.25 at source checkpoint 750ebc8a8506c20c3df53f6f1b314189ab8cb879; this is not proof of a released/deployed dependency. Exact dependency/tag acceptance remains open.
