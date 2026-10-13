@@ -8,9 +8,9 @@ High confidence applies to the behavior and environment actually exercised. It i
 | Denied-page navigation and Contributor choice labels | Source/controller checks plus operator confirmation | High for the reported development UI behavior | No repeat |
 | Intake email validation | Synthetic valid/invalid/blank controller fixtures plus operator confirmation | High for the practical email formats exercised | No repeat |
 | Cash lifecycle, totals, print/tally, immutable confirmation and correction | Isolated canonical SQL suite; operator's successful PostgreSQL test correction verification | High for covered SQL invariants; deployed ERP delivery remains separate | Do not repeat backend cases manually |
-| Reason-aware revival and audit atomicity | New rollback-only SQL checks: blank/legacy calls, unauthorized reviewer, unchanged donation, exact cash restoration, original/new rationale, repeat/missing/ineligible/active-batch denial and audit-failure rollback | High in the isolated canonical database; operator PostgreSQL 16.13 test migration/reapplication/rollback checks pass at 50f4650; dialog check blocked by access report | Run the test-only script once; no hand-crafted negative SQL cases |
+| Reason-aware revival and audit atomicity | New rollback-only SQL checks: blank/legacy calls, unauthorized reviewer, unchanged donation, exact cash restoration, original/new rationale, repeat/missing/ineligible/active-batch denial and audit-failure rollback | High in the isolated canonical database; operator PostgreSQL 16.13 test migration/reapplication/rollback checks pass at 50f4650; final dialog Exclude/Revive is accepted | No repeat |
 | Explicit action execution modes | Observed Appsmith sync `f412b81` changed 24 guarded actions from Manual to Automatic; source-mode regression checks and official v2.4.2 server contract | Explicit Manual choices are now pinned with `userSetOnLoad: true`. Source-level confidence is high; persistence through the next live pull must be inspected | Agent checks the next synchronized repository commit; no per-action manual inspection requested |
-| New reconciliation dialog controller | VM checks for exact row/mode, no write on open/cancel/blank reason, fresh authority/account, double click, write failure and committed-refresh warning; actual prepared source SQL; registration/export checks | High for covered controller contracts; moderate for Appsmith 2.4.2 modal rendering and SDK integration | One focused dialog scenario below |
+| New reconciliation dialog controller | VM checks for exact row/mode, no write on open/cancel/blank reason, fresh authority/account, double click, write failure and committed-refresh warning; actual prepared source SQL; registration/export checks | High for covered controller contracts; operator accepted final dialog rendering and revival | No repeat |
 | Reports categories and financial guards | Actual source-query fixtures for all six groups and boundary cases; source/controller tests | High for covered query math and authorization. Deployed rendering has less evidence | A final candidate smoke check only if a reporting dependency changes or UI/runtime errors appear |
 | Paper upload, Documenso, Listmonk, inventory HTTP and ERP/bank routes | Source review and isolated logic do not establish deployed destination, credentials, caller authorization or side effects | Integration acceptance remains open; development paper upload stays disabled | Defer targeted synthetic route checks until a reviewed test destination is available |
 | Production upgrade and recovery | Fresh bootstrap cannot establish behavior on existing production data, owners or grants | Protected restored-copy rehearsal and ordered manifest remain required | One controlled deployment/recovery sequence in its release phase |
@@ -21,25 +21,27 @@ The operator reports `Permission validation exit code: 0` after pulling backend 
 
 The operator confirms retained navigation on denied pages, clear Contributor choices, generally reasonable practitioner/reviewer permissions, expected Participant-only restrictions and fixed Intake email validation. These observations do not certify every external endpoint or every combined-role scenario. They remove the need to repeat the same broad manual smoke checklist.
 
-## Current increment: one automated command and one UI scenario
+## Current operator sequence
 
-On Linode, before pulling the matching Appsmith development update:
+This section supersedes earlier increment instructions. Cash reconciliation, directory-review SQL, the final Exclude/Revive dialog, and the read-only observation are accepted as described below. Do not repeat those runners or the broad role/email/contact/cash matrix.
+
+Use [NAVIGATION_AND_PARTICIPANT_VALIDATION.md](NAVIGATION_AND_PARTICIPANT_VALIDATION.md) for the remaining test-only preparation:
 
 ```bash
 cd ~/signaturegate
 git pull --ff-only
-bash releases/v1.2.0/validate_cash_reconciliation_test.sh
+env -u 'BASH_FUNC__sudo%%' bash releases/v1.2.0/validate_navigation_terminology_test.sh
 ```
 
-Expected exit code **0**. The script targets only `signaturegate_test`, applies the migration twice and runs rollback-only revival/lifecycle/correction checks with private logs. Stop on failure. The existing canonical authorization migration must already be installed; the operator's prior successful run satisfies that prerequisite. Do not run `db/schema.sql` on an existing database.
+This writes only test terminology configuration through the audited Directory Manager API, preserves installed overrides when seeding, and runs rollback-only checks. It targets `signaturegate_test`; enter the intended manager sign-in address at the hidden prompt without SQL quotes. Return only the exit code and failed stage, if any. Stop on failure and keep logs and identifying values private.
 
-After success, preserve unsynchronized editor work, pull Appsmith `chatgpt_development` and reload with its test datasource. As a Donations Reviewer, use one disposable, synthetic verified Cash on Hand donation:
+After preserving editor work and pulling `chatgpt_development`, incorporate just these consequential gaps into the existing walkthrough:
 
-1. Click **Exclude**, provide a synthetic reason and confirm. The dialog must render correctly and the intended row must become excluded.
-2. Display excluded rows and click **Revive**. Confirm stays disabled for a blank reason. **Cancel** must leave the row excluded.
-3. Open **Revive** again, provide a new synthetic reason and confirm. The dialog closes and that row returns to Cash on Hand with one success notification. This also exercises real widget bindings and SDK refresh behavior that VM tests cannot establish.
+1. Open a permitted and a denied page, navigate back to Directory, and check one menu with Tab/Enter and a narrow viewport.
+2. Open an Individual/Company from Directory and then another record. A profile link without an ID must show a selection message and Back rather than an old saved selection. This is read-only; live SDK handling of overlapping secondary reads remains unverified.
+3. Open Terminology Administration from a fresh load as an authorized manager. Report whether Retry is still needed. Cash first-load access already passed.
 
-Return only script exit code and this scenario's pass/fail or error class. Do not send operational contacts, amounts, screenshots, account values or detailed audit contents. Role denial, malformed reasons, direct calls, audit rollback, active-batch conflicts, double clicks and refresh failures have automatic coverage and need no manual repetition in this increment.
+Observe staged feedback during the next ordinary authorized test operation; do not create extra records or external deliveries just for this check. The walkthrough does not block independent development. Paper upload, signing/Listmonk/ERP endpoints and the protected production-copy upgrade require separate reviewed test destinations and release-phase acceptance.
 
 ## Appsmith synchronization finding
 
@@ -51,16 +53,11 @@ The official [v2.4.2 on-load implementation](https://github.com/appsmithorg/apps
 
 [PROVIDER_REVIEW_VALIDATION.md](PROVIDER_REVIEW_VALIDATION.md) records high-confidence source/SQL/controller coverage and one remaining live reassignment-dialog scenario. Its test-only runner includes the unreported preceding cash increment, so operator work remains one automated command. Previous confirmations are reused; no full role/email/negative-case matrix is requested. New provider creation/resolution, role and ambiguity/conflict cases are exercised automatically. Fresh SQL evidence does not replace protected restore or deployed execution-principal/external-service authentication review.
 
-## Current operator sequence supersedes earlier increment commands
+## Accepted directory and workflow checkpoint
 
-Cash reconciliation backend validation is now accepted (operator exit 0 at 50f4650). Do not repeat its broad manual negative-case matrix. Use DIRECTORY_REVIEW_VALIDATION.md and `validate_directory_review_test.sh` for the new provider/company backend prerequisites, then check Cash Deposits access and the previously blocked dialog. If access remains restricted, return its privacy-safe boolean diagnostic. Company-link and provider-reassignment rendering are deferred to consolidated candidate acceptance. Automated startup, source-query, relationship, version, authorization and audit/controller evidence is reused.
+Operator reports directory-review runner exit 0 at `8a08e74` and final cash Exclude/reveal/reason/Revive success. Initial Cash access required Retry, but the later opening passed without Retry. Terminology opens after Retry; first-load reliability remains open. The read-only observation and SDK gaps below qualify these results.
 
-
-## Current sequence: access and workflow feedback
-
-This section supersedes earlier increment commands. Operator reports directory-review runner exit 0 at `8a08e74` and final cash Exclude/reveal/reason/Revive success. These live results are accepted; no migration rerun or broad manual matrix is requested. Initial Cash access required Retry, and Terminology falsely denied a Directory Manager, so startup remains a targeted SDK gap.
-
-See [INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md](INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md): one private read-only observation, two page openings, then stage feedback during the next ordinary test operation. New controller/prepared-SQL Intake tests cover 24 enrollment/contact/consent cases. Signing and ERP HTTP remain stubs in automatic checks; queue creation is not external Listmonk completion. Paper intake is blocked before records/files until integration acceptance. Earlier cash pending-review observation, multi-action recovery, live delivery and restored-production rehearsal remain open.
+Controller/prepared-SQL Intake tests cover 24 enrollment/contact/consent cases. Signing and ERP HTTP remain stubs in automatic checks; queue creation does not prove external Listmonk completion. Earlier cash pending-review observation, multi-action recovery, live delivery and restored-production rehearsal remain open.
 
 The retained legacy Members–Intake page also blocks paper selection before any identity write. Its upload execution code is removed and paper controls are disabled. Its digital stage messages remain available; no external upload request is made. The pre-write boundary and disabled controls are exercised automatically.
 
@@ -76,7 +73,7 @@ The operator will navigate interfaces independently. This walkthrough does not b
 
 ## Phase 3: selected-profile entry
 
-Individual/Company profiles are hidden from direct native navigation. Directory opens them with an explicit person/company UUID. A link with no ID never reuses an old stored selection; malformed/inaccessible links show a safe message and Back to Directory. Loaders are explicitly on page load, use current-account/route tokens, retry one failed primary read and leave content hidden until dependent reads finish. Late A-to-B or account results cannot expose another profile. Profile DB actions are pinned Manual/true and run after the selected primary record is resolved; existing signed SQL/resource guards remain.
+Individual/Company profiles are hidden from direct native navigation. Directory opens them with an explicit person/company UUID. A link with no ID never reuses an old stored selection; malformed/inaccessible links show a safe message and Back to Directory. Loaders are explicitly on page load, use current-account/route tokens, retry one failed primary read and leave content hidden until dependent reads finish. Stale primary responses and account/route changes fail closed in the covered controller cases. Overlapping secondary-query data and real SDK lifecycle behavior still require runtime acceptance. Profile DB actions are pinned Manual/true and run after the selected primary record is resolved; existing signed SQL/resource guards remain.
 
 Controller fixtures cover valid/missing/invalid/access-denied links, saved-selection refusal, cold/secondary read failures, route/account changes and late A-to-B primary responses. Company relationship regressions and exact-source export preservation pass. Real Appsmith dependency/SDK rendering remains a consolidated acceptance check; use the operator's forthcoming walkthrough, not another full role/identity matrix. No DB migration or permission grant is introduced.
 

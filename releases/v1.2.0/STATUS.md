@@ -14,10 +14,10 @@ Updated October 13, 2026. **Development continues; the release is not ready for 
 
 ## Next implementation and validation
 
-1. Use [INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md](INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md): one read-only test command, then two page openings after Appsmith development pull. No new migration is introduced by this increment.
+1. Use [NAVIGATION_AND_PARTICIPANT_VALIDATION.md](NAVIGATION_AND_PARTICIPANT_VALIDATION.md): one test-only configuration/rollback command, then the focused navigation/profile observations during the existing walkthrough. It adopts Participant labels through the audited API; it does not change permissions.
 2. Observe stage feedback during the next ordinary authorized test Intake/signing operation. No extra records, mail or accounting posts are requested just for validation.
 3. Continue protected agreement/upload and partial-Intake recovery work. Keep legacy Intake until essential capabilities and authorization are accounted for.
-4. Complete Participant presentation/defaults and navigation together; update SCREENS before packaging. Prepare the final upgrade manifest from effective production definitions and obtain the outstanding deployed dependency facts.
+4. Participant defaults, grouped navigation and the candidate SCREENS inventory are implemented. Complete runtime acceptance and remaining captions before packaging. Prepare the final upgrade manifest from effective production definitions and obtain the outstanding deployed dependency facts.
 
 Operator's latest test command exit 0 and final cash-dialog scenario are accepted; do not repeat the previous migration runner or role/cash matrix. The earlier observation of pending review after exclusion is unresolved. SQL excludes without changing verification; clearing implicit table selection addresses a possible display confusion, not a proven root cause.
 
@@ -25,5 +25,9 @@ Provider increment provenance: SignatureGate `03a6be4`, SignatureGate-Appsmith `
 
 
 ## Latest source checkpoint
+
+Cleanup checkpoint, October 13: SignatureGate `1d968a0efe085f03211629aef59f66a5b40a9a7d` on `main` and SignatureGate-Appsmith `e869494e8e41ff925bab08222cc13fef6828c828` on `chatgpt_development` are published and independently checked against GitHub. Both local working trees were clean before this documentation update; no unfinished source edits needed recovery. These are source revisions, not evidence of an Appsmith pull or published deployment. RootedOps remains untouched by this development batch.
+
+The final repeated local verification attempt in the preceding batch stalled without usable results. Earlier completed checks remain evidence for their recorded scope; that attempt adds no passing evidence. Current remaining validation is centralized in [TEST_CONFIDENCE_AND_MANUAL_VALIDATION.md](TEST_CONFIDENCE_AND_MANUAL_VALIDATION.md), so accepted migration and cash-dialog scenarios are not requested again. Resume with bounded, independently verifiable release work and preserve each completed increment in Git.
 
 Configured workflow/report copy and safe audit rendering pass controller/synthetic tests; 24 Intake cases also use real alternate labels. Explicit profile links normalize UUID case, including valid uppercase links, while retaining current-account/route isolation. The source auditor records current fingerprints; its checked patterns are clear, all 32 collections pass syntax, and final live SDK/integration gates remain open. The upgrade draft has 20 undecided entries and nine unverified environment proofs; its validator executes no SQL. RootedOps Frappe testing is unavailable in this workspace. No production operation, master promotion, packaged export, VERSION bump or tag has occurred.
