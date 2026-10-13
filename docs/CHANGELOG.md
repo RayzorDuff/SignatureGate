@@ -21,6 +21,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 - Repair empty-table vectors and unloaded-menu visibility types; retire the unused individual-upload action with a missing widget reference.
 
+- Apply configured terminology to workflow notifications and report labels; escape audit detail values and validate rendered links while preserving stored record wording.
+
 ### Added
 
 - Independent individual and company identities, with Participant and Contributor capacities kept separate from system access permissions.
