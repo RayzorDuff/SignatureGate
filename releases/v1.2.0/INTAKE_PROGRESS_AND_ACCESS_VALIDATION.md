@@ -37,3 +37,12 @@ After Appsmith development pull and reload:
 During the next ordinary authorized test Intake or digital agreement request, observe stage messages and one final outcome. There is no need to create extra records, send extra messages or post accounting documents just for this check. Listmonk stages say queued; signing only says email sent when the service explicitly confirms it; ERP completion requires a successful response. Return the sanitized summary, page pass/fail and any stage/error class. Keep screenshots, raw logs and record details private.
 
 The retained legacy Members–Intake page also blocks paper selection before any identity write. Its upload execution code is removed and paper controls are disabled. Its digital stage messages remain available; no external upload request is made. The pre-write boundary and disabled controls are exercised automatically.
+
+
+## Operator checkpoint at 93b2082
+
+Read-only cash observation exit 0 on `signaturegate_test`: both Intake APIs exist, the latest exclusion concerns a verified donation and is still active, and the two most recent exclusions are for different donations. No intervening verification was found for the earlier of those two records. This does not establish which row was selected in the earlier UI report and does not prove a same-donation status regression. Preserve the unresolved display/history observation for consolidated acceptance; no repeat exclusion is requested.
+
+Cash Deposits opens without Retry. Terminology Administration opens with the authorized form after Retry Access; permission is correct, but first-load reliability is not yet accepted. The controller now retries one failed terminology-data read separately from the access read, keeps the form closed until labels load, and distinguishes data failure from denied access. Source tests cover cold/persistent label failure and account change during loading; the live root cause remains unproven.
+
+The operator will navigate interfaces independently. This walkthrough does not block independent development. Reuse passing backend and dialog evidence; no migration or new service request is introduced by this checkpoint.

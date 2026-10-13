@@ -63,3 +63,12 @@ This section supersedes earlier increment commands. Operator reports directory-r
 See [INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md](INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md): one private read-only observation, two page openings, then stage feedback during the next ordinary test operation. New controller/prepared-SQL Intake tests cover 24 enrollment/contact/consent cases. Signing and ERP HTTP remain stubs in automatic checks; queue creation is not external Listmonk completion. Paper intake is blocked before records/files until integration acceptance. Earlier cash pending-review observation, multi-action recovery, live delivery and restored-production rehearsal remain open.
 
 The retained legacy Members–Intake page also blocks paper selection before any identity write. Its upload execution code is removed and paper controls are disabled. Its digital stage messages remain available; no external upload request is made. The pre-write boundary and disabled controls are exercised automatically.
+
+
+## Operator checkpoint at 93b2082
+
+Read-only cash observation exit 0 on `signaturegate_test`: both Intake APIs exist, the latest exclusion concerns a verified donation and is still active, and the two most recent exclusions are for different donations. No intervening verification was found for the earlier of those two records. This does not establish which row was selected in the earlier UI report and does not prove a same-donation status regression. Preserve the unresolved display/history observation for consolidated acceptance; no repeat exclusion is requested.
+
+Cash Deposits opens without Retry. Terminology Administration opens with the authorized form after Retry Access; permission is correct, but first-load reliability is not yet accepted. The controller now retries one failed terminology-data read separately from the access read, keeps the form closed until labels load, and distinguishes data failure from denied access. Source tests cover cold/persistent label failure and account change during loading; the live root cause remains unproven.
+
+The operator will navigate interfaces independently. This walkthrough does not block independent development. Reuse passing backend and dialog evidence; no migration or new service request is introduced by this checkpoint.

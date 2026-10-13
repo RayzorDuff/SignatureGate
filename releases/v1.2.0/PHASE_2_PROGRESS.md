@@ -156,3 +156,12 @@ Intake, Member Functions digital signing, ERP confirmation/retry and profile mai
 Paper Intake now stops before records/files, matching the Member Functions integration boundary. Atomic recovery across independently committed Intake actions, paper route acceptance, live stage/SDK checks, external trust and consolidated runtime validation remain release gates. See INTAKE_PROGRESS_AND_ACCESS_VALIDATION.md for the reduced operator sequence.
 
 The retained legacy Members–Intake page also blocks paper selection before any identity write. Its upload execution code is removed and paper controls are disabled. Its digital stage messages remain available; no external upload request is made. The pre-write boundary and disabled controls are exercised automatically.
+
+
+## Operator checkpoint at 93b2082
+
+Read-only cash observation exit 0 on `signaturegate_test`: both Intake APIs exist, the latest exclusion concerns a verified donation and is still active, and the two most recent exclusions are for different donations. No intervening verification was found for the earlier of those two records. This does not establish which row was selected in the earlier UI report and does not prove a same-donation status regression. Preserve the unresolved display/history observation for consolidated acceptance; no repeat exclusion is requested.
+
+Cash Deposits opens without Retry. Terminology Administration opens with the authorized form after Retry Access; permission is correct, but first-load reliability is not yet accepted. The controller now retries one failed terminology-data read separately from the access read, keeps the form closed until labels load, and distinguishes data failure from denied access. Source tests cover cold/persistent label failure and account change during loading; the live root cause remains unproven.
+
+The operator will navigate interfaces independently. This walkthrough does not block independent development. Reuse passing backend and dialog evidence; no migration or new service request is introduced by this checkpoint.
