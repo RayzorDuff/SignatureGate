@@ -1,5 +1,7 @@
 # Page startup and authority lookup repair
 
+**October 14 result: the operator reports substantially unchanged symptoms after this repair. Startup acceptance failed.** Use [APP_STARTUP_DIAGNOSTIC.md](APP_STARTUP_DIAGNOSTIC.md) next; it requests one served-schedule inspection instead of another interface matrix.
+
 Operator observation on October 13: menu text now renders, but navigation capabilities disappear on page transitions, Directory/Cash require manual Refresh, profiles remain Loading, and role-gated pages display permission messages for a multi-role account. Manual Refresh access resolves menu capabilities. This supports a startup/lifecycle failure; it does not establish missing grants. No supplied operational records, contacts, amounts or screenshots are committed.
 
 Repair source: SignatureGate-Appsmith `ec6fdc43074b2a06e583dffdac57cfd595a52b7c` on `chatgpt_development`. This is not a deployed/published revision.
@@ -7,7 +9,7 @@ Repair source: SignatureGate-Appsmith `ec6fdc43074b2a06e583dffdac57cfd595a52b7c`
 ## Source changes
 
 - One sign-in-aware navigation initializer is explicitly registered on every page. Navigation authority and labels are Manual/true reads invoked after sign-in hydration, not independent Automatic reads against an empty email. There is one retry for a failed authority read, account/route/pass isolation, an explicit lookup-error state and default captions if only terminology lookup fails. Refresh access uses the same initializer.
-- All 32 page-load JS registrations now carry their actual async function body, `isAsync: true`, `clientSideExecution: true` and the deliberate on-load choice. A source synchronizer rejects missing/stale registration metadata. Reports access initialization is explicitly on load rather than Manual.
+- Reports access initialization is explicitly on load rather than Manual. There are 32 declared page-load JS functions. The earlier per-function body/`isAsync` requirement was incorrect: native Git omits the body and the platform deprecates `isAsync`. Redundant fields and that acceptance requirement are removed; `check-page-load-registration.mjs` checks collection/method identity, deliberate mode and actual async source methods without writing metadata.
 - Existing `qPageAccess`/`qCurrentFacilitator` reads are Manual/true and invoked by initializers after sign-in, preventing an independent early empty-email response from overwriting the current lookup. Agreement Templates, Audit Log and Reports now explicitly read `qPageAccess` as well as their existing actor lookup. The original automatic metadata was insufficient to ensure that a successful page initializer left the display authority loaded.
 - Empty or stale authority responses no longer show the generic missing-permission banners. A current-account response with denied capabilities still shows denial. Audit and legacy Intake await their initial refresh. The repeated practitioner wording in Sacrament Release's denied caption is corrected.
 
@@ -19,9 +21,11 @@ Appsmith v2.4.2's [on-load scheduling utility](https://github.com/appsmithorg/ap
 
 `tests/page-startup.mjs` selects actual registered on-load actions, resolves their collection/method identities and awaits them using synthetic query/widget fixtures. All 32 dispatches across 18 pages pass with delayed sign-in, including directory/cash population, fresh page authority, Reports and selected profiles. It also covers empty-response versus denied banners, bounded transient/persistent menu failures, unlinked accounts, default labels and stale route/account completion. Existing permission, workflow, profile, cash, report, agreement-type, terminology and audit regressions pass. Source registration consistency, binding/entry syntax, generated navigation, literal routes and export preservation also pass.
 
-This harness does not execute Appsmith's server scheduler, database permissions or browser SDK. It detects source registration/dispatch gaps that direct controller tests missed. The live issue remains open until the repaired source is pulled and startup observed; missing metadata is a repaired source gap, not a proven sole deployed root cause. Prior migration/role/cash/email evidence is reused.
+This harness does not execute Appsmith's server scheduler, database permissions or browser SDK. Its passing dispatch cases did not predict the operator's failed runtime result. Missing per-function bodies are normal Git serialization, not a startup failure finding. Actual served scheduling/dispatch evidence is now required. Prior migration/role/cash/email evidence is reused.
 
 ## Focused operator validation
+
+The following was the preceding repair's acceptance sequence and failed in deployment. Do not repeat it now; use the single metadata inspection above.
 
 No Linode SQL or migration command is needed. Preserve editor changes, pull the matching `chatgpt_development` source in Appsmith and reload the test app.
 

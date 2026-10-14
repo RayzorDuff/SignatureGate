@@ -14,6 +14,8 @@ Updated October 13, 2026 (operator local date). **Development continues; the rel
 
 ## Next implementation and validation
 
+**October 14: the operator reports substantially unchanged cold-startup symptoms after `ec6fdc4`. Startup remains failed.** Next step is [APP_STARTUP_DIAGNOSTIC.md](APP_STARTUP_DIAGNOSTIC.md): compare the actual served editor/view schedules with one read-only Console inspection. No repeat UI matrix is requested. The previous body/`isAsync` metadata diagnosis is withdrawn; those are not native Git acceptance requirements.
+
 The latest post-parser-fix walkthrough still fails cold startup: menus/data need Refresh, profiles stay Loading and operational pages show false permission messages. Prioritize [PAGE_STARTUP_VALIDATION.md](PAGE_STARTUP_VALIDATION.md). Registered async startup, deliberate authority reads, missing page-authority calls and loading/denial presentation are repaired with synthetic dispatch coverage; deployed scheduling is still unverified. This supersedes the earlier parser-only UI sequence and introduces no SQL/grant change.
 
 The latest navigation walkthrough failed with blank labels/page content and **Start object with export default**. The confirmed shared-helper prefix defect is repaired in development `f3c2055`; prioritize [NAVIGATION_RUNTIME_REPAIR.md](NAVIGATION_RUNTIME_REPAIR.md) for one pull/reload/navigation check. No new SQL command is needed for this repair; runtime acceptance remains open.

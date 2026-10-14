@@ -86,12 +86,11 @@ def main():
             actions.append(row)
             page_actions.append(row)
             if x.get('pluginType') == 'JS' and a.get('runBehaviour') == 'ON_PAGE_LOAD':
-                if (a.get('clientSideExecution') is not True or config.get('isAsync') is not True
-                        or not isinstance(config.get('body'), str) or not config['body'].startswith('async ')
+                if (not a.get('collectionId') or not a.get('fullyQualifiedName')
                         or a.get('userSetOnLoad') is not True):
-                    findings.append(dict(kind='incomplete_js_page_load_registration', page=name,
+                    findings.append(dict(kind='invalid_js_page_load_declaration', page=name,
                                          path=str(meta.relative_to(app)), property='unpublishedAction',
-                                         detail='Explicit async page-load functions need body, isAsync and clientSideExecution'))
+                                         detail='Explicit page-load declarations need collection/method identity and deliberate mode'))
         text_sources = []
         for p in sorted(directory.rglob('*')):
             if not p.is_file() or p.suffix not in {'.json', '.js', '.txt'}:

@@ -4,7 +4,7 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
-- Complete async page-load registrations, initialize navigation after sign-in, explicitly load display authority on Reports/Templates/Audit and distinguish unloaded authority from denied permissions.
+- Initialize navigation after sign-in, explicitly load display authority on Reports/Templates/Audit and distinguish unloaded authority from denied permissions; add a private served-schedule diagnostic for the unresolved startup failure.
 
 - Repair generated navigation label objects rejected by Appsmith 2.4.2; keep comments inside the export and check the platform entry format alongside JavaScript syntax.
 
