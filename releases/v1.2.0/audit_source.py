@@ -85,6 +85,13 @@ def main():
                        path=str(meta.relative_to(app)))
             actions.append(row)
             page_actions.append(row)
+            if x.get('pluginType') == 'JS' and a.get('runBehaviour') == 'ON_PAGE_LOAD':
+                if (a.get('clientSideExecution') is not True or config.get('isAsync') is not True
+                        or not isinstance(config.get('body'), str) or not config['body'].startswith('async ')
+                        or a.get('userSetOnLoad') is not True):
+                    findings.append(dict(kind='incomplete_js_page_load_registration', page=name,
+                                         path=str(meta.relative_to(app)), property='unpublishedAction',
+                                         detail='Explicit async page-load functions need body, isAsync and clientSideExecution'))
         text_sources = []
         for p in sorted(directory.rglob('*')):
             if not p.is_file() or p.suffix not in {'.json', '.js', '.txt'}:
@@ -158,6 +165,7 @@ def main():
                    json_files=len(parsed), pages=len(pages), actions=len(actions), js_objects=len(js_results),
                    js_syntax_all_pass=all(r['syntax_ok'] for r in js_results),
                    js_appsmith_format_all_pass=all(r['appsmith_format_ok'] for r in js_results),
+                   js_page_load_functions=sum(a['plugin_type'] == 'JS' and a['execution'] == 'ON_PAGE_LOAD' for a in actions),
                    datasource_descriptors=len(list((app / 'datasources').glob('*.json'))),
                    jslib_descriptors=len(list((app / 'jslibs').glob('*.json'))),
                    findings_by_kind=dict(collections.Counter(f['kind'] for f in findings)),
