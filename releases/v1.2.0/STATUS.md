@@ -1,6 +1,6 @@
 # v1.2.0 phase status
 
-Updated October 13, 2026. **Development continues; the release is not ready for production promotion.** No production migration, datasource switch, Appsmith master promotion, final packaged export or release tag has been performed.
+Updated October 13, 2026 (operator local date). **Development continues; the release is not ready for production promotion.** No production migration, datasource switch, Appsmith master promotion, final packaged export or release tag has been performed.
 
 | Phase | Current state | Completed evidence / remaining gate |
 | --- | --- | --- |
@@ -13,6 +13,8 @@ Updated October 13, 2026. **Development continues; the release is not ready for 
 | 7 — Production acceptance and packaging | Not started | First Appsmith release notes are drafted; verify published production behavior, reconcile changelog since v1.1.0, finalize source/dependency notes, run the existing export action pinned to accepted production-bound source and commit resulting JSON in SignatureGate; align VERSION, release notes and tags |
 
 ## Next implementation and validation
+
+The latest navigation walkthrough failed with blank labels/page content and **Start object with export default**. The confirmed shared-helper prefix defect is repaired in development `f3c2055`; prioritize [NAVIGATION_RUNTIME_REPAIR.md](NAVIGATION_RUNTIME_REPAIR.md) for one pull/reload/navigation check. No new SQL command is needed for this repair; runtime acceptance remains open.
 
 1. Use [NAVIGATION_AND_PARTICIPANT_VALIDATION.md](NAVIGATION_AND_PARTICIPANT_VALIDATION.md): one test-only configuration/rollback command, then the focused navigation/profile observations during the existing walkthrough. It adopts Participant labels through the audited API; it does not change permissions.
 2. Observe stage feedback during the next ordinary authorized test Intake/signing operation. No extra records, mail or accounting posts are requested just for validation.
@@ -33,5 +35,7 @@ The final repeated local verification attempt in the preceding batch stalled wit
 Resumed release-tooling increment: draft checks now remain active under optimized Python; canonical-schema fingerprints and the full nine-proof inventory are also checked. Normal/optimized CLI regressions reject malformed drafts, missing review evidence, source drift and unsafe dependency order. The actual draft still has 20 undecided entries and nine unverified proofs and remains non-executable. This increment introduces no database/UI change and needs no new operator test.
 
 The previously interrupted source checks have now completed against Appsmith `e869494`: 32 collection/793 expression syntax checks, 231 literal navigation targets, generated navigation consistency and both profile controller suites pass. A private generated candidate preserves all 18 pages, 454 actions, 32 collections, four datasources and one JS library. This proves source/export preservation, not live import, SDK behavior or external delivery; the shipped Appsmith JSON is unchanged.
+
+Subsequent operator navigation failure exposed a gap in those JavaScript-only checks: Appsmith 2.4.2 rejects comments before the exported JS object. The repaired 18 helper copies and new platform-entry preflight pass automatic checks at `f3c2055`. The failed runtime observation supersedes any implied acceptance of the menu rendering; repaired live rendering and query-backed content remain the next targeted gate.
 
 Configured workflow/report copy and safe audit rendering pass controller/synthetic tests; 24 Intake cases also use real alternate labels. Explicit profile links normalize UUID case, including valid uppercase links, while retaining current-account/route isolation. The source auditor records current fingerprints; its checked patterns are clear, all 32 collections pass syntax, and final live SDK/integration gates remain open. The upgrade draft has 20 undecided entries and nine unverified environment proofs; its validator executes no SQL. RootedOps Frappe testing is unavailable in this workspace. No production operation, master promotion, packaged export, VERSION bump or tag has occurred.

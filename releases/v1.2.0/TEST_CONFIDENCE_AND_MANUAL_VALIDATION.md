@@ -23,6 +23,8 @@ The operator confirms retained navigation on denied pages, clear Contributor cho
 
 ## Current operator sequence
 
+Latest reported UI regression: blank menu text/page content and **Start object with export default**. Follow [NAVIGATION_RUNTIME_REPAIR.md](NAVIGATION_RUNTIME_REPAIR.md) first: pull the repaired Appsmith development source and perform one reload/navigation check. This repair needs no database command. Source syntax alone previously missed the v2.4.2 collection-entry rule; that contract now has direct automatic coverage. Live rendering/data loading still needs the focused observation.
+
 This section supersedes earlier increment instructions. Cash reconciliation, directory-review SQL, the final Exclude/Revive dialog, and the read-only observation are accepted as described below. Do not repeat those runners or the broad role/email/contact/cash matrix.
 
 Use [NAVIGATION_AND_PARTICIPANT_VALIDATION.md](NAVIGATION_AND_PARTICIPANT_VALIDATION.md) for the remaining test-only preparation:

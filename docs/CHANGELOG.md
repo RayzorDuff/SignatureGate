@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Repair generated navigation label objects rejected by Appsmith 2.4.2; keep comments inside the export and check the platform entry format alongside JavaScript syntax.
+
 - Keep read-only upgrade-draft validation active under optimized Python; verify canonical-schema fingerprints and require the complete environment-proof inventory.
 
 - Add audited company contact-person links, archive/reactivation and Company Profile controls without enrollment, permission, consent or donation inheritance.

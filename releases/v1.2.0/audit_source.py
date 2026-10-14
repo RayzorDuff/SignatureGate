@@ -125,9 +125,17 @@ def main():
                           url_params=';'.join(sorted(url_params)), store_keys=';'.join(sorted(store_keys)),
                           role_terms=';'.join(sorted(roles))))
         for p in sorted((directory / 'jsobjects').glob('*/*.js')):
-            code = re.sub(r'^\s*export\s+default\s+', 'const object = ', p.read_text(), count=1, flags=re.M)
+            source = p.read_text()
+            # Appsmith v2.4.2 worker validJSBodyRegex is anchored before all comments.
+            format_ok = bool(re.search(r'^export default[\s]*?({[\s\S]*?})', source))
+            if not format_ok:
+                findings.append(dict(kind='invalid_appsmith_js_object_entry', page=name,
+                                     path=str(p.relative_to(app)), property='body',
+                                     detail='JS object must start with export default; comments belong inside'))
+            code = re.sub(r'^export default\s+', 'const object = ', source, count=1)
             result = subprocess.run(['node', '--check', '-'], input=code, text=True, capture_output=True)
-            js_results.append(dict(path=str(p.relative_to(app)), syntax_ok=result.returncode == 0))
+            js_results.append(dict(path=str(p.relative_to(app)), syntax_ok=result.returncode == 0,
+                                   appsmith_format_ok=format_ok))
     migrations = []
     objects = collections.defaultdict(list)
     for p in sorted((root / 'db/migrations').glob('*.sql')):
@@ -149,6 +157,7 @@ def main():
                    commits_since_v1_1_0=int(git(root, 'rev-list', '--count', 'v1.1.0..HEAD')),
                    json_files=len(parsed), pages=len(pages), actions=len(actions), js_objects=len(js_results),
                    js_syntax_all_pass=all(r['syntax_ok'] for r in js_results),
+                   js_appsmith_format_all_pass=all(r['appsmith_format_ok'] for r in js_results),
                    datasource_descriptors=len(list((app / 'datasources').glob('*.json'))),
                    jslib_descriptors=len(list((app / 'jslibs').glob('*.json'))),
                    findings_by_kind=dict(collections.Counter(f['kind'] for f in findings)),
@@ -161,7 +170,7 @@ def main():
         ('routes.csv', links, ['page', 'target', 'exists', 'note']),
         ('source_findings.csv', findings, ['kind', 'page', 'path', 'property', 'detail']),
         ('migrations.csv', migrations, list(migrations[0])),
-        ('js_syntax.csv', js_results, ['path', 'syntax_ok'])]:
+        ('js_syntax.csv', js_results, ['path', 'syntax_ok', 'appsmith_format_ok'])]:
         write_csv(output, name, rows, fields)
     print(json.dumps(summary, indent=2))
 
