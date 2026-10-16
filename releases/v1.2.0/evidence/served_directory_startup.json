@@ -1,0 +1,32 @@
+{
+  "inspection": "signaturegate_startup_schedule",
+  "diagnostic_version": 2,
+  "branch": "chatgpt_development",
+  "metadata_source": "static_route_bootstrap",
+  "observed_mode": "published_view",
+  "startup_request_observed": true,
+  "action_execution_requests_since_page_fetch": 0,
+  "editor": {
+    "kind": "editor",
+    "http_status": 200,
+    "available": true,
+    "page": "Directory",
+    "on_load_action_count": 0,
+    "on_load_controller_names": [],
+    "has_navigation_initializer": false,
+    "on_load_error_count": 0,
+    "cyclic_dependency_reported": false
+  },
+  "published_view": {
+    "kind": "published_view",
+    "http_status": 200,
+    "available": true,
+    "page": "Directory",
+    "on_load_action_count": 0,
+    "on_load_controller_names": [],
+    "has_navigation_initializer": false,
+    "on_load_error_count": 0,
+    "cyclic_dependency_reported": false
+  },
+  "schedules_match": true
+}

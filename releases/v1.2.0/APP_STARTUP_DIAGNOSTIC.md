@@ -1,5 +1,7 @@
 # Actual Appsmith startup schedule inspection
 
+**Result received October 15:** version 2 confirms empty Directory schedules in editor and published mode, with no reported cycle. See [DIRECTORY_STARTUP_REBUILD.md](DIRECTORY_STARTUP_REBUILD.md) for the next bounded repair; no repeat inspection is requested at this point.
+
 On October 14, the operator reports essentially unchanged startup symptoms after the `ec6fdc4` repair. **Cold startup remains failed.** No further broad interface walkthrough or role grant is requested. Synthetic controller/registration passes do not certify the deployed scheduler.
 
 The October 15 operator attachment contains repeated **No page metadata request was found** errors from the original inspector, not a served-schedule report. This is a diagnostic failure; it does not establish absent hooks, denied roles or a cyclic schedule. The console's draft/performance warning does not establish the cause of the application failure either. Raw console output remains private.
@@ -34,7 +36,7 @@ Alternatively, open the committed script and copy its contents. The script refus
 | Published initializer exists, no cycle flag, observed startup request and zero action-execution requests | The schedule is present but plugin reads were not observed; investigate client dispatch/JS execution. The transport count is a clue, not proof that a particular controller ran |
 | Reads are observed but access/data remain absent | Investigate the first startup read/SDK error. No private query results are needed to begin that review |
 
-The diagnostic is tested with synthetic static combined responses, ID/UUID/custom/legacy routes, absent timing history, unrelated/foreign requests, editor/view drift, matching schedules, cycle reports, 403/network failures, invalid identities, wrong branches and private fields embedded in bootstrap/API fixtures. These checks verify the reader and its projection, not the live startup scheduler. Version 2 has not yet run against the operator's installation.
+The diagnostic is tested with synthetic static combined responses, ID/UUID/custom/legacy routes, absent timing history, unrelated/foreign requests, editor/view drift, matching schedules, cycle reports, 403/network failures, invalid identities, wrong branches and private fields embedded in bootstrap/API fixtures. These checks verify the reader and its projection, not the live startup scheduler. Version 2 subsequently ran on the operator's installation and returned the Directory result recorded above.
 
 The relevant platform contracts are [static route patterns](https://github.com/appsmithorg/appsmith/blob/v2.4.2/app/client/src/ce/constants/routes/appRoutes.ts), [combined startup parameters and response](https://github.com/appsmithorg/appsmith/blob/v2.4.2/app/client/src/sagas/InitSagas.ts), [combined GET URLs](https://github.com/appsmithorg/appsmith/blob/v2.4.2/app/client/src/api/services/ConsolidatedPageLoadApi/url.ts) and [direct metadata GETs](https://github.com/appsmithorg/appsmith/blob/v2.4.2/app/server/appsmith-server/src/main/java/com/appsmith/server/controllers/ce/PageControllerCE.java).
 
