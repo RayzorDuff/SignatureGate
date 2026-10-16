@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Support Appsmith static URLs and combined bootstrap in the private startup diagnostic; tolerate missing browser timing history and distinguish unavailable evidence from zero executed requests.
+
 - Initialize navigation after sign-in, explicitly load display authority on Reports/Templates/Audit and distinguish unloaded authority from denied permissions; add a private served-schedule diagnostic for the unresolved startup failure.
 
 - Repair generated navigation label objects rejected by Appsmith 2.4.2; keep comments inside the export and check the platform entry format alongside JavaScript syntax.

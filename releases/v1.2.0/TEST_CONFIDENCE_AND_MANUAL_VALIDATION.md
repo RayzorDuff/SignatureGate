@@ -23,6 +23,8 @@ The operator confirms retained navigation on denied pages, clear Contributor cho
 
 ## Current operator sequence
 
+October 15: the original inspector failed to discover a separate page request and returned no schedule. Use **version 2** in [APP_STARTUP_DIAGNOSTIC.md](APP_STARTUP_DIAGNOSTIC.md), which supports the actual static URL/combined startup format and missing Resource Timing history. Only one replacement Console run is needed. Route/privacy/failure fixtures pass; deployed application startup is still failed.
+
 The October 14 post-repair observation remains failed. Use [APP_STARTUP_DIAGNOSTIC.md](APP_STARTUP_DIAGNOSTIC.md) for one actual served-schedule inspection; do not repeat the preceding UI sequences. The 32 synthetic dispatch passes are evidence only for source/controller contracts. Native Git intentionally strips JS function bodies and `isAsync` is deprecated; their absence is not a failed registration finding.
 
 The latest walkthrough confirms readable menu text but reports failed cold startup across operational pages. Follow [PAGE_STARTUP_VALIDATION.md](PAGE_STARTUP_VALIDATION.md) first. New tests dispatch all 32 registered page-load functions on 18 pages with delayed sign-in and synthetic reads; they do not run the deployed Appsmith scheduler. Two focused read-only UI sequences are requested, with no migration, role grant or repeated cash/email matrix.

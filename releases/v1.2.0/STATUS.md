@@ -1,6 +1,6 @@
 # v1.2.0 phase status
 
-Updated October 13, 2026 (operator local date). **Development continues; the release is not ready for production promotion.** No production migration, datasource switch, Appsmith master promotion, final packaged export or release tag has been performed.
+Updated October 15, 2026 (operator local date). **Development continues; the release is not ready for production promotion.** No production migration, datasource switch, Appsmith master promotion, final packaged export or release tag has been performed.
 
 | Phase | Current state | Completed evidence / remaining gate |
 | --- | --- | --- |
@@ -13,6 +13,8 @@ Updated October 13, 2026 (operator local date). **Development continues; the rel
 | 7 — Production acceptance and packaging | Not started | First Appsmith release notes are drafted; verify published production behavior, reconcile changelog since v1.1.0, finalize source/dependency notes, run the existing export action pinned to accepted production-bound source and commit resulting JSON in SignatureGate; align VERSION, release notes and tags |
 
 ## Next implementation and validation
+
+**October 15: the supplied Console log shows the original inspector could not discover a page request.** It collected no startup schedule. Inspector version 2 supports static URLs/combined bootstrap and missing timing history; its synthetic privacy/route/failure checks pass. One replacement diagnostic run is requested, not another UI walkthrough. Application startup remains failed; no application, SQL or role repair is claimed by this tooling increment.
 
 **October 14: the operator reports substantially unchanged cold-startup symptoms after `ec6fdc4`. Startup remains failed.** Next step is [APP_STARTUP_DIAGNOSTIC.md](APP_STARTUP_DIAGNOSTIC.md): compare the actual served editor/view schedules with one read-only Console inspection. No repeat UI matrix is requested. The previous body/`isAsync` metadata diagnosis is withdrawn; those are not native Git acceptance requirements.
 
