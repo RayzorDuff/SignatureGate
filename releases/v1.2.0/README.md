@@ -41,3 +41,5 @@ First Appsmith release notes: [draft in the application source](https://github.c
 - [Conditional upgrade-manifest review](UPGRADE_MANIFEST_REVIEW.md): checksum/order draft, undecided selections and required restore/dependency evidence.
 
 - [Directory startup schedule rebuild](DIRECTORY_STARTUP_REBUILD.md): observed empty served schedules, failed Console repair, retired download and one native editor settings sequence.
+
+- [Native object identities and current startup validation](NATIVE_OBJECT_IDENTITY_AND_STARTUP.md): accepted Directory table recovery, saved initializer correction and preservation of recreated objects.

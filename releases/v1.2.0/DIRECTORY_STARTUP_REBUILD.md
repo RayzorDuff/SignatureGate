@@ -14,18 +14,9 @@ The [projected operator result](evidence/directory_startup_rebuild_attempt.json)
 
 The attachment contains many identical executions within seconds. Repeated evaluation, including Chrome Live Expressions, can repeat an immediately invoked script; the cause of these repeated evaluations is not established. Remove any Live Expression containing either startup script. Do not run the old repair again. Its download path now returns a retirement notice with **zero requests**, even if repeatedly evaluated.
 
-## Next bounded native editor sequence
+## Superseding operator result and next step
 
-No replacement Console write script, migration, role grant or broad UI matrix is requested.
-
-1. Open development **Directory** using the pencil icon. Confirm Appsmith's selected branch is `chatgpt_development`.
-2. Open JS object **navigationLabels → Settings**. For **initialize**, select **Manual**, wait for the setting save, then select **On page load** and wait for that save. If either save reports an error, stop immediately and return only its software error code/message, omitting record/contact data. Do not attempt the second function or reload after a failed save.
-3. If those saves succeed, open **directoryFlows → Settings** and do the same for **load**. Do not click Run.
-4. If all saves succeed, reload **Directory in the editor** once. Report whether its authorized menus and table load without Refresh/Refresh access. Do not deploy/publish or repeat other pages yet.
-
-If On page load is unavailable, report the visible software choices rather than substituting another mode. The native editor uses the installed client request contract. Its setting handler saves explicit run behaviour and rebuilds the containing page layout. This tests that native path without claiming an identified cause for the prior 400. Successful saves alone do not establish a working cold page: the final editor observation is required.
-
-The sequence changes the two development run settings and derived editor configuration. No database commands, role changes, function-body edits or datasource changes are needed. Do not pull over the resulting editor changes; preserve any settings diff through Appsmith Git after the focused check and before later source synchronization. Published/deployed acceptance is separate.
+The operator subsequently recreated the Directory objects and reports automatic table loading works, while navigation and other pages still fail. Appsmith synchronized that work at 3763b0a. [NATIVE_OBJECT_IDENTITY_AND_STARTUP.md](NATIVE_OBJECT_IDENTITY_AND_STARTUP.md) records the actual saved-mode mismatch and the identity-preserving source correction. Its focused development pull/reload sequence supersedes the previous native-setting toggles. Do not repeat the retired Console repair or delete the objects again.
 
 ## Verification scope
 

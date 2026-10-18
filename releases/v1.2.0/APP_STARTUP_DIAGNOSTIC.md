@@ -1,6 +1,6 @@
 # Actual Appsmith startup schedule inspection
 
-**Result received October 15:** version 2 confirms empty Directory schedules in editor and published mode, with no reported cycle. See [DIRECTORY_STARTUP_REBUILD.md](DIRECTORY_STARTUP_REBUILD.md) for the current native editor sequence. The subsequent Console repair returned HTTP 400 and is retired; no repeat inspection or Console write is requested at this point.
+**Result received October 15:** version 2 confirms empty Directory schedules in editor and published mode, with no reported cycle. See [DIRECTORY_STARTUP_REBUILD.md](DIRECTORY_STARTUP_REBUILD.md) for the failed API attempt and subsequent recreation. The current next step is [NATIVE_OBJECT_IDENTITY_AND_STARTUP.md](NATIVE_OBJECT_IDENTITY_AND_STARTUP.md); no repeat inspection or Console write is requested.
 
 On October 14, the operator reports essentially unchanged startup symptoms after the `ec6fdc4` repair. **Cold startup remains failed.** No further broad interface walkthrough or role grant is requested. Synthetic controller/registration passes do not certify the deployed scheduler.
 

@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Preserve Appsmith-assigned navigation resource identities and native metadata during generation, reject duplicate identities, and correct Directory’s saved startup hook from its label formatter to its access initializer.
+
 - Retire the rejected Console startup repair, correct interpretation of omitted Appsmith internal flags and use a bounded native editor settings sequence for remaining Directory startup validation.
 
 - Record empty served Directory startup schedules and provide a guarded development repair using Appsmith’s native function settings, with projected before/after verification.
