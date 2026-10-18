@@ -1,6 +1,6 @@
 # Conditional upgrade planning checkpoint
 
-`UPGRADE_MANIFEST_DRAFT.json` pins the 19 retained migration sources and the explicit Participant configuration step in a conditional dependency order. **It is not an execution list. All 20 selections remain undecided and all final environment proofs remain open.** Do not run every listed file or load bootstrap over an existing database.
+`UPGRADE_MANIFEST_DRAFT.json` pins the 20 retained migration sources and the explicit Participant configuration step in a conditional dependency order. **It is not an execution list. All 21 selections remain undecided and all final environment proofs remain open.** Do not run every listed file or load bootstrap over an existing database.
 
 The read-only validator checks canonical-schema and step-source checksums, unique step IDs, prerequisite order, review fields, the complete nine-proof inventory and the rule that older cash/financial helpers cannot follow canonical authorization. Checks remain enabled under optimized Python (`-O`). It has no SQL execution or deployment function:
 

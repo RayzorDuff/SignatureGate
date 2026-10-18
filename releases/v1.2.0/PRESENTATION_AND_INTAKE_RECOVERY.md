@@ -1,6 +1,6 @@
 # Presentation and interrupted Intake checkpoint
 
-October 18, 2026. The operator accepts navigation across all pages. No navigation matrix, object recreation, Console repair, prior SQL migration runner or production operation is requested by this increment.
+October 18, 2026. The operator accepts navigation across all pages. The operator subsequently reports all presentation and Intake completion/reload/reset observations below passing in the deployed development view. Form fields clear on reload while the persistent notice/submission guard remains; Reset clears that guard as intended. Do not repeat these accepted checks for unchanged code. No navigation matrix, object recreation, Console repair, prior SQL migration runner or production operation is requested by this increment.
 
 ## Published development changes
 
@@ -24,7 +24,7 @@ Column titles are intentionally readable literals in the supported Appsmith 2.4.
 
 The locked runtime is PGlite 0.5.8 (embedded PostgreSQL 18.3), exercised here with Node.js 24.19.0. It is not the installed PostgreSQL 16.13 cluster or its grants, data and upgrade history. HTTP is stubbed in controller checks. Native renderer/storage behavior, erased storage, different tabs/browsers, in-flight account changes, server atomicity/idempotency and external delivery retain independent gates.
 
-## Small development validation sequence
+## Accepted development validation sequence (historical)
 
 1. Preserve/commit newer editor changes. Pull `SignatureGate-Appsmith/chatgpt_development` through `688de0b` or its later test-tooling descendant in the development editor, retaining the existing test datasource. No database migration is required.
 2. Open Agreement Templates, Contributor Functions and Spiritual Practitioner Functions. Confirm headers are readable, Created/Updated show dates where values exist and the shared `Current page:` title has no duplicate standalone page-name heading. This is one cosmetic renderer observation; no permission or navigation matrix is requested.

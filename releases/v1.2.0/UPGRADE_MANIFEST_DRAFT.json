@@ -2,7 +2,7 @@
   "state": "draft_non_executable",
   "release": "SignatureGate v1.2.0",
   "purpose": "Conditional source ordering and checksum pinning only. Do not execute all entries. Each needs a reviewed selected/skipped disposition.",
-  "canonical_schema_sha256": "42c88d572446199259c6874f77212b9f25c942208bb7a52348e6080592a5f4f0",
+  "canonical_schema_sha256": "a636f8bf87c8427d38f8377379140a9b1b756da12286ac4e9d6d0a2417d899b5",
   "required_environment_proofs": {
     "canonical_base_and_missing_forward_changes_reviewed": false,
     "current_production_effective_definitions_reviewed": false,
@@ -387,6 +387,30 @@
         "db/tests/verify_participant_presentation.sql"
       ],
       "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+    },
+    {
+      "id": "atomic_intake",
+      "path": "db/migrations/atomic_intake.sql",
+      "sha256": "ff9f470b1562e67e58ae007e79e9e843b8ebcf3ad92ab8fe8d7f2de8b030b879",
+      "after": [
+        "application_authorization",
+        "contributor_mailing",
+        "dual_mailing",
+        "identity_notes",
+        "agreement_types",
+        "reviewer_agreements"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Canonical people/accounts/roles, contact-purpose/mailing/notes/practitioner/agreement helpers verified.",
+        "Application DB principal must have invoker access to the private receipt table; review owners/grants. New-party transaction only, no HTTP."
+      ],
+      "transaction": "One transaction; no worker or HTTP call occurs inside it. Preserve committed request receipts during reapplication.",
+      "verification": [
+        "db/tests/verify_atomic_intake.sql"
+      ],
+      "recovery": "Verified protected restore for production schema recovery; do not drop committed receipts to force a replay. Complete external signing separately against the existing agreement ID."
     }
   ]
 }

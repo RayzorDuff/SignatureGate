@@ -34,3 +34,7 @@ Cash revival has operator-reported PostgreSQL 16.13 test evidence at `50f4650` (
 
 
 Operator directory-review validation at `8a08e74` reports exit 0, accepting test provider/company application twice and the runner's rollback checks. Final Exclude/Revive UI is accepted; earlier pending-review display/state observation remains open. The workflow-feedback/access increment adds no migration. New Intake requires existing contact-role assignment and contributor-with-mailing APIs; the read-only inspection checks their availability. Production manifest/recovery gates remain unchanged.
+
+## Atomic new-party Intake candidate
+
+`atomic_intake.sql` SHA-256: `ff9f470b1562e67e58ae007e79e9e843b8ebcf3ad92ab8fe8d7f2de8b030b879`. Requires canonical authorization, notes, mailing, contact-purpose, practitioner and agreement helpers. Adds a private technical receipt and one transaction for new identities/capacities/contacts/assignment/pending digital agreement/audit/queue entries. Owner/key/payload replay returns the same receipt with no new writes; current role/account authority is rechecked. No HTTP or automatic signing retry. Fresh bootstrap, repeat application, 24 enrollment/replay cases, 14 fault/rollback/retry boundaries and validation/denial cases pass in isolated PostgreSQL. Runtime/grants/locking on PostgreSQL 16.13 and protected restored-production rehearsal remain open. Preserve existing receipts on reapplication; never load bootstrap over an existing database.
