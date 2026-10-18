@@ -1,0 +1,19 @@
+page,copied_checkpoint_mode,corrected_mode,sync_identity_preserved,explicit_on_load
+Agreement Templates,MANUAL,ON_PAGE_LOAD,true,true
+Agreements - Queue,MANUAL,ON_PAGE_LOAD,true,true
+Audit Log,MANUAL,ON_PAGE_LOAD,true,true
+Cash Deposits,MANUAL,ON_PAGE_LOAD,true,true
+Company Profile,MANUAL,ON_PAGE_LOAD,true,true
+Contributor Functions,MANUAL,ON_PAGE_LOAD,true,true
+Directory,ON_PAGE_LOAD,ON_PAGE_LOAD,true,true
+Events - Check In,MANUAL,ON_PAGE_LOAD,true,true
+Events - Create,MANUAL,ON_PAGE_LOAD,true,true
+Facilitator Functions,MANUAL,ON_PAGE_LOAD,true,true
+Individual Profile,MANUAL,ON_PAGE_LOAD,true,true
+Intake,MANUAL,ON_PAGE_LOAD,true,true
+Member Functions,MANUAL,ON_PAGE_LOAD,true,true
+Members – Intake,MANUAL,ON_PAGE_LOAD,true,true
+Reports,MANUAL,ON_PAGE_LOAD,true,true
+Sacrament Release,MANUAL,ON_PAGE_LOAD,true,true
+Terminology Administration,MANUAL,ON_PAGE_LOAD,true,true
+Unauthorized,MANUAL,ON_PAGE_LOAD,true,true

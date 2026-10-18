@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Restore explicit navigation startup registration on all destination pages after native Copy to Page resets copied functions to Manual; preserve the copied resource identities and distinguish editor from deployed development acceptance. Repair two empty-column fallbacks reintroduced during native synchronization.
+
 - Preserve Appsmith-assigned navigation resource identities and native metadata during generation, reject duplicate identities, and correct Directory’s saved startup hook from its label formatter to its access initializer.
 
 - Retire the rejected Console startup repair, correct interpretation of omitted Appsmith internal flags and use a bounded native editor settings sequence for remaining Directory startup validation.

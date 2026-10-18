@@ -23,31 +23,11 @@ The operator confirms retained navigation on denied pages, clear Contributor cho
 
 ## Current operator sequence
 
-The October 18 operator reports automatic Directory table loading after object recreation; navigation and other page access still fail. Source checkpoint 3763b0a saves the menu initializer Manual and the label formatter On page load. Correction 4b1f56f fixes that mismatch and preserves all 540 existing sync identities through generation. Identity/default/reapplication regressions, source dispatch and exact-source export checks pass; live SDK scheduling remains unverified. Follow [NATIVE_OBJECT_IDENTITY_AND_STARTUP.md](NATIVE_OBJECT_IDENTITY_AND_STARTUP.md): development pull, one Directory editor reload, then one Terminology opening only if Directory passes. No duplicate-ID root cause is established, no further object recreation or API write is requested, and the retired helper stays inert.
+Directory and its navigation are accepted. The other pages still fail after native Copy to Page; checkpoint d62bc8d records all 17 copied initializers as Manual. Startup correction 7c7032f restores them with all 540 native identities retained. Follow-up 3743789 repairs two reintroduced empty-column fallbacks (227 mapped-column and 217 typed-vector cases pass). These changes require no broad UI or database retest.
 
-The latest walkthrough confirms readable menu text but reports failed cold startup across operational pages. Follow [PAGE_STARTUP_VALIDATION.md](PAGE_STARTUP_VALIDATION.md) first. New tests dispatch all 32 registered page-load functions on 18 pages with delayed sign-in and synthetic reads; they do not run the deployed Appsmith scheduler. Two focused read-only UI sequences are requested, with no migration, role grant or repeated cash/email matrix.
+Follow [NATIVE_OBJECT_IDENTITY_AND_STARTUP.md](NATIVE_OBJECT_IDENTITY_AND_STARTUP.md): pull development through **3743789**, check Terminology once in the editor without Refresh/Retry, then publish development and check the same page's deployed view only if the editor passes. Report editor and deployed outcomes separately. No Directory, role/email/contact/cash matrix or old migration runner is requested. A source pull does not certify the published schedule.
 
-Latest reported UI regression: blank menu text/page content and **Start object with export default**. Follow [NAVIGATION_RUNTIME_REPAIR.md](NAVIGATION_RUNTIME_REPAIR.md) first: pull the repaired Appsmith development source and perform one reload/navigation check. This repair needs no database command. Source syntax alone previously missed the v2.4.2 collection-entry rule; that contract now has direct automatic coverage. Live rendering/data loading still needs the focused observation.
-
-This section supersedes earlier increment instructions. Cash reconciliation, directory-review SQL, the final Exclude/Revive dialog, and the read-only observation are accepted as described below. Do not repeat those runners or the broad role/email/contact/cash matrix.
-
-Use [NAVIGATION_AND_PARTICIPANT_VALIDATION.md](NAVIGATION_AND_PARTICIPANT_VALIDATION.md) for the remaining test-only preparation:
-
-```bash
-cd ~/signaturegate
-git pull --ff-only
-env -u 'BASH_FUNC__sudo%%' bash releases/v1.2.0/validate_navigation_terminology_test.sh
-```
-
-This writes only test terminology configuration through the audited Directory Manager API, preserves installed overrides when seeding, and runs rollback-only checks. It targets `signaturegate_test`; enter the intended manager sign-in address at the hidden prompt without SQL quotes. Return only the exit code and failed stage, if any. Stop on failure and keep logs and identifying values private.
-
-After preserving editor work and pulling `chatgpt_development`, incorporate just these consequential gaps into the existing walkthrough:
-
-1. Open a permitted and a denied page, navigate back to Directory, and check one menu with Tab/Enter and a narrow viewport.
-2. Open an Individual/Company from Directory and then another record. A profile link without an ID must show a selection message and Back rather than an old saved selection. This is read-only; live SDK handling of overlapping secondary reads remains unverified.
-3. Open Terminology Administration from a fresh load as an authorized manager. Report whether Retry is still needed. Cash first-load access already passed.
-
-Observe staged feedback during the next ordinary authorized test operation; do not create extra records or external deliveries just for this check. The walkthrough does not block independent development. Paper upload, signing/Listmonk/ERP endpoints and the protected production-copy upgrade require separate reviewed test destinations and release-phase acceptance.
+Generation simulates copied Manual initializers on all destination pages and verifies restoration, identity/default preservation, reapplication and duplicate rejection. Controller dispatch, capability, syntax, route and export preservation checks pass for source invariants; actual SDK startup remains open. Future paper/integration/restore scenarios need separate test destinations and release-phase acceptance, not another current operator checklist. Historical evidence below adds no new manual request.
 
 ## Appsmith synchronization finding
 
