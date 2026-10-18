@@ -9,9 +9,16 @@ def main():
     for file in sorted((a.source/'pages').glob('*/queries/*/metadata.json')):
         m=json.loads(file.read_text());action=m.get('unpublishedAction',{});config=action.get('actionConfiguration',{});body=config.get('body','')
         if m.get('pluginType') not in ['DB','API']:continue
+        # Native Git stores executable bodies separately; metadata can omit or
+        # retain an older body. Match the exporter's source precedence.
+        name=action.get('name',file.parent.name)
+        for candidate in [name+'.txt','body.txt',name+'.js']:
+            body_file=file.parent/candidate
+            if body_file.is_file():body=body_file.read_text();break
+        if not isinstance(body,str):body=json.dumps(body)
         rows.append(dict(page=file.parts[-4],action=file.parts[-2],plugin=m.get('pluginType'),mode=action.get('runBehaviour',''),
             body_binding_registered=any(v.get('key')=='body' for v in action.get('dynamicBindingPathList',[])),
-            signed_actor_reference='appsmith.user.email' in body,
+            signed_actor_reference=bool(re.search(r'appsmith\.user\??\.email',body)),
             canonical_contract_marker=bool(re.search(r'application_|issue19_',body)),
             direct_write=bool(re.search(r'\b(?:INSERT|UPDATE|DELETE)\b',body,re.I)),
             quoted_sql_binding=bool(re.search(r"'{{.*?}}'",body,re.S))))

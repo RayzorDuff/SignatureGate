@@ -23,11 +23,13 @@ The operator confirms retained navigation on denied pages, clear Contributor cho
 
 ## Current operator request
 
-All-page navigation is accepted by the operator. Retire the earlier Terminology editor/deployed startup checklist; no broad page, role, email, contact or cash retest is requested. [PRESENTATION_AND_INTAKE_RECOVERY.md](PRESENTATION_AND_INTAKE_RECOVERY.md) supplies the only current sequence: preserve editor changes, pull development, inspect the three affected table presentations, then one synthetic Contributor-only Intake/reset/reload smoke check if time permits. These are development renderer/storage gaps, not production promotion or another database migration.
+All-page navigation and the three-table presentation plus completion/reload/reset sequence are accepted in deployed development. Reload clearing form fields while retaining the completion notice/disabled button is correct; Reset clears the persistent guard. Do not repeat these unchanged tests.
 
-High confidence applies to all 22 literal table-header contracts, independent timestamp values and null/invalid/empty outcomes; ten duplicate heading removals; 24 supported Intake controller/prepared-SQL cases; 32 request/lost-response fault cases; generation/identity/startup/role/controller regressions and exact-source export preservation. Native storage/rendering, server atomicity, different browser/tab replay, cleared storage and external delivery are not certified by these checks. Do not intentionally fail a real signing route for manual validation.
+The active Intake API now provides database atomicity and durable owner/key/payload replay, with read-only receipt recovery. Source/controller/four disposable-SQL suites pass: 24 supported intakes, 14 complete server rollback/retry boundaries, eight atomic request/lost-response cases, account/owner/payload isolation and signing no-replay. Native Select captions, Directory Participant/Contributor buttons and profile text have default/alternate/legacy configuration checks; the read-only terminology table covers active and reserved concepts. Candidate preservation retains 18 pages, 514 actions, 32 collections, four datasource descriptors and one library.
 
-Historical evidence below adds no current manual requests. Future paper/integration/restore scenarios require protected test destinations and their release-phase acceptance.
+Use [ATOMIC_INTAKE_AND_TERMINOLOGY_VALIDATION.md](ATOMIC_INTAKE_AND_TERMINOLOGY_VALIDATION.md): apply the new API to test before frontend pull, explicitly adopt Participant presentation if the installed member key still says Member, then one synthetic Contributor-only Intake/receipt observation and the reported captions/table during ordinary navigation. No broad role/contact/cash matrix, deliberately failed live signing route or production operation is requested. The agent checks the next native Git synchronization rather than asking for per-action inspection.
+
+Real multi-session locking, PostgreSQL 16 owners/grants/restored upgrade, native SDK and external delivery remain separate gates. The historical evidence below supplies no extra current manual request.
 
 ## Appsmith synchronization finding
 

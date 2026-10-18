@@ -4,6 +4,9 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Commit active Intake enrollment stages, pending agreement, audit and mailing queue entries in one transaction; add durable owner/key/payload receipts and read-only recovery without replaying signing.
+- Apply configured terminology to native Select captions/placeholders, Directory Participant/Contributor action buttons and profile contact copy; display the installed active/reserved terminology structure read-only and refresh labels after saves.
+
 - Remove the obsolete standalone Terminology Administration import; split Appsmith source and final coordinated export packaging remain authoritative.
 
 - Remove ten page-name headings now supplied by navigation; repair literal table-title expressions and Agreement Templates date cells. Keep readable table titles in a deployment registry for Appsmith 2.4.2's literal title editor.

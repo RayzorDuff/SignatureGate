@@ -320,6 +320,7 @@ Intake,apiTriggerDocumenso,API,N8N,MANUAL,False,externalId;member_agreement_id,,
 Intake,apiUploadEvidenceViaN8n,API,N8N,MANUAL,False,files,,/webhook/signaturegate/upload,pages/Intake/queries/apiUploadEvidenceViaN8n/metadata.json
 Intake,auditLog,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Intake/queries/intakeFlows-auditLog/metadata.json
 Intake,checkpoint,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-checkpoint/metadata.json
+Intake,inspectRecovery,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-inspectRecovery/metadata.json
 Intake,loadAccess,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Intake/queries/intakeFlows-loadAccess/metadata.json
 Intake,performSubmit,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-performSubmit/metadata.json
 Intake,recovery,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-recovery/metadata.json
@@ -350,12 +351,15 @@ Intake,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,True,,applicati
 Intake,qEnablePersonContributor,DB,signaturegate-postgres-test,MANUAL,False,person_id;reason,issue19_enable_person_contributor,,pages/Intake/queries/qEnablePersonContributor/metadata.json
 Intake,qGetMemberPerson,DB,signaturegate-postgres-test,MANUAL,True,member_id,application_member_access,,pages/Intake/queries/qGetMemberPerson/metadata.json
 Intake,qIntakeActorRoles,DB,signaturegate-postgres-test,AUTOMATIC,True,,application_access,,pages/Intake/queries/qIntakeActorRoles/metadata.json
+Intake,qIntakeRequestStatus,DB,signaturegate-postgres-test,MANUAL,True,owner;request_id,application_intake_status,,pages/Intake/queries/qIntakeRequestStatus/metadata.json
 Intake,qLinkContributorMember,DB,signaturegate-postgres-test,MANUAL,False,contributor_id;member_id;reason,application_link_capacities,,pages/Intake/queries/qLinkContributorMember/metadata.json
 Intake,qListFacilitators,DB,signaturegate-postgres-test,AUTOMATIC,True,,issue19_has_role,,pages/Intake/queries/qListFacilitators/metadata.json
 Intake,qNavigationAccess,DB,signaturegate-postgres-test,MANUAL,True,,application_access,,pages/Intake/queries/qNavigationAccess/metadata.json
 Intake,qNavigationTerminology,DB,signaturegate-postgres-test,MANUAL,True,,issue20_organization_terminology,,pages/Intake/queries/qNavigationTerminology/metadata.json
+Intake,qNewIntakeRequest,DB,signaturegate-postgres-test,MANUAL,True,,application_require_permission;uuid_generate_v4,,pages/Intake/queries/qNewIntakeRequest/metadata.json
 Intake,qPageAccess,DB,signaturegate-postgres-test,MANUAL,True,,application_access,,pages/Intake/queries/qPageAccess/metadata.json
 Intake,qSetIntakeIdentityNotes,DB,signaturegate-postgres-test,MANUAL,False,notes;party_id;party_kind;reason,issue19_set_party_notes,,pages/Intake/queries/qSetIntakeIdentityNotes/metadata.json
+Intake,qSubmitAtomicIntake,DB,signaturegate-postgres-test,MANUAL,True,owner;payload_json;request_id,application_submit_intake,,pages/Intake/queries/qSubmitAtomicIntake/metadata.json
 Member Functions,apiCancelDocumensoAgreement,API,N8N,MANUAL,False,member_agreement_id;reason,,/webhook/signaturegate/documenso/cancel,pages/Member Functions/queries/apiCancelDocumensoAgreement/metadata.json
 Member Functions,apiMarkProductUnShipped,API,N8N,MANUAL,False,airtable_record_id;mushroomprocess_product_id;storage_location_name,,/webhook/signaturegate/pgsql/products/mark_unshipped,pages/Member Functions/queries/apiMarkProductUnShipped/metadata.json
 Member Functions,apiTriggerDocumenso,API,N8N,MANUAL,False,externalId;member_agreement_id,,/webhook/signaturegate/documenso/send,pages/Member Functions/queries/apiTriggerDocumenso/metadata.json

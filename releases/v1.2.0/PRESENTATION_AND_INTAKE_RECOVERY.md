@@ -1,5 +1,7 @@
 # Presentation and interrupted Intake checkpoint
 
+This accepted earlier increment is historical. The current sequence is [ATOMIC_INTAKE_AND_TERMINOLOGY_VALIDATION.md](ATOMIC_INTAKE_AND_TERMINOLOGY_VALIDATION.md); its new atomic API requires a test migration before frontend pull.
+
 October 18, 2026. The operator accepts navigation across all pages. The operator subsequently reports all presentation and Intake completion/reload/reset observations below passing in the deployed development view. Form fields clear on reload while the persistent notice/submission guard remains; Reset clears that guard as intended. Do not repeat these accepted checks for unchanged code. No navigation matrix, object recreation, Console repair, prior SQL migration runner or production operation is requested by this increment.
 
 ## Published development changes

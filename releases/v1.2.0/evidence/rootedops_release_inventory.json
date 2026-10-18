@@ -28,5 +28,8 @@
   ],
   "release_dependency_satisfied": false,
   "deployment_verified": false,
-  "note": "Current reviewed source and repository VERSION do not establish a released/deployed integration dependency."
+  "note": "Current reviewed source and repository VERSION do not establish a released/deployed integration dependency.",
+  "repository_version_tag_checked": "v1.5.25",
+  "repository_version_tag_available": false,
+  "repository_version_tag_lookup_result": "NOT_FOUND"
 }

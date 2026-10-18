@@ -58,3 +58,5 @@ The standalone deposit unit test attempt in this workspace is blocked by missing
 ## Published dependency check — October 18
 
 The GitHub release inventory lists [v1.1.0](https://github.com/RayzorDuff/RootedOps/releases/tag/v1.1.0), published August 14, as the latest published release. Exact-tag reads of all four required source locations above return not found at that tag. It cannot supply this integration dependency. A new compatible RootedOps release and its deployed application/workflow proof remain required; the repository's VERSION 1.5.25 is insufficient. [Sanitized release inventory](../releases/v1.2.0/evidence/rootedops_release_inventory.json) records only software paths, tag/date and availability results.
+
+An exact `v1.5.25` Git tag lookup also returns not found at this checkpoint. A VERSION file alone is not a released source pin.
