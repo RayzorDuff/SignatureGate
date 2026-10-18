@@ -22,3 +22,6 @@ Automatic CLI checks exercise normal and optimized Python, rejecting changed che
 Source compatibility follow-up: the current RootedOps 1.5.25 source checkpoint has the same four SignatureGate workflow/API/service blobs as the reviewed baseline. This is source reuse, not a release/deployment pin. Its standalone deposit unit test attempt is blocked in this workspace by missing `frappe`; it supplies no new ERP/runtime acceptance. Run the appropriate tests in the prepared ERP/Frappe test environment during dependency acceptance.
 
 Final production operations, datasource promotion, generated export packaging, VERSION changes and tags remain gated by the coordinated release plan. No production command or change is made by this planning checkpoint.
+
+
+October 18 dependency check: GitHub's latest published RootedOps release is v1.1.0; all four required SignatureGate workflow/API/service paths are absent at that exact tag. See `evidence/rootedops_release_inventory.json`. Select and accept a new compatible released/deployed dependency before completing its environment proof. No draft selection or repository VERSION is substituted for this gate.

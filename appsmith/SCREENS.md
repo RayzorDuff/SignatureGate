@@ -1,8 +1,8 @@
 # SignatureGate Appsmith screen inventory
 
-This is the v1.2.0 development candidate inventory. Source/generated-menu tests pass; live grouped-menu, keyboard/mobile and profile rendering acceptance remains open. Production retains its separately published revision until release gates pass. The application/export's technical name remains Rooted Psyche Membership Ops.
+This is the v1.2.0 development candidate inventory. The operator accepted navigation across all pages on October 18, 2026. Source/generated-menu checks pass. Keyboard/mobile, profile overlap rendering and separate workflow/integration outcomes remain scoped acceptance gaps. Production retains its separately published revision until release gates pass. The application/export's technical name remains Rooted Psyche Membership Ops.
 
-The native title, sign-in and Directory navigation remain available. Four generated Menu Button groups provide the active workflow links. Pages without required canonical authority are omitted from groups; denied pages retain an escape to Directory. Menu visibility is presentation only: every data/action still needs its existing signed database/API permission.
+The native application title, sign-in and Directory navigation remain available. The shared `Current page:` caption supplies the page name; ten redundant standalone page-name text widgets are removed. Record identity names, workflow section headings, instructions and denied-access messages remain. Four generated Menu Button groups provide the active workflow links. Pages without required canonical authority are omitted from groups; denied pages retain an escape to Directory. Menu visibility is presentation only: every data/action still needs its existing signed database/API permission.
 
 | Group | Default display | Stable page ID | Authority and purpose |
 | --- | --- | --- | --- |
@@ -26,3 +26,14 @@ Unauthorized, Agreements - Queue, Events - Create and Events - Check In remain u
 Participant and Spiritual Practitioner captions use deployment labels while `member`, `member_id`, `practitioner`, compatibility field names and page IDs remain stable. Historical records and executed agreement text are not passed through the UI-copy formatter. Rooted Psyche defaults refer to Facilitator/Spiritual Practitioner in explanatory documentation; a separately reserved regulated facilitator concept remains distinct and inactive.
 
 The source of truth is `SignatureGate-Appsmith/navigation/registry.json` plus `navigation/labels.js`. Run `python3 scripts/generate-navigation.py`, then `--check`, controller/menu tests and exact-source export validation after changes. Review pull/reload behavior before packaging. See [the validation sequence](../releases/v1.2.0/NAVIGATION_AND_PARTICIPANT_VALIDATION.md).
+
+
+## Table presentation and Intake recovery
+
+Agreement Templates' Created and Updated columns format their own timestamp fields as text, with blank output for missing or invalid timestamps. Created is no longer a document URL column. Document URLs and editable template data retain their separate fields.
+
+Table V2's editable column-title field in Appsmith 2.4.2 does not support the same dynamic bindings as normal widget captions. Current readable table titles are centralized in `SignatureGate-Appsmith/navigation/table-headings.json`. They use Participant/Spiritual Practitioner/Contributor defaults and require regeneration when deployment titles change; live terminology edits do not rename these headers. Other supported captions/selectors/menu labels remain configurable. Executed agreement wording and record values are untouched.
+
+Intake persists an account-scoped checkpoint before its first identity write. Saved or uncertain outcomes block another ordinary submission, including a reload that retains Appsmith storage. The notice supplies the failed stage; known technical identity/agreement IDs stay private in the checkpoint. Review the existing record's contacts, capacities, practitioner assignment and agreement/signing status. Reset after an interrupted outcome requires acknowledgment and starts a separate intake; it neither repairs saved records nor replays signing. Completed intake also requires Reset before another submission. No form values are stored in the checkpoint.
+
+The checkpoint is a client recovery aid, not a database transaction or server idempotency key. Cross-tab/browser behavior, cleared storage and external delivery remain separate boundaries. Paper remains blocked before writes. See [current confidence and focused validation](../releases/v1.2.0/PRESENTATION_AND_INTAKE_RECOVERY.md).

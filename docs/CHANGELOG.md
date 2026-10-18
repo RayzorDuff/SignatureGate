@@ -4,6 +4,10 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Remove ten page-name headings now supplied by navigation; repair literal table-title expressions and Agreement Templates date cells. Keep readable table titles in a deployment registry for Appsmith 2.4.2's literal title editor.
+- Add a locked, reproducible application source/controller/disposable SQL test runner.
+- Preserve private account-scoped Intake checkpoints before identity writes; block ordinary replay after saved/uncertain outcomes, retain known identity/agreement IDs and require explicit review before resetting an interrupted intake. Client recovery does not replace server transactionality or delivery reconciliation.
+
 - Restore explicit navigation startup registration on all destination pages after native Copy to Page resets copied functions to Manual; preserve the copied resource identities and distinguish editor from deployed development acceptance. Repair two empty-column fallbacks reintroduced during native synchronization.
 
 - Preserve Appsmith-assigned navigation resource identities and native metadata during generation, reject duplicate identities, and correct Directory’s saved startup hook from its label formatter to its access initializer.

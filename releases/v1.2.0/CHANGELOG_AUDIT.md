@@ -33,3 +33,5 @@ October 13 reconciliation: Unreleased includes generated workflow navigation, ex
 
 
 The first Appsmith release notes are now drafted in SignatureGate-Appsmith/releases/first-release/RELEASE_NOTES.md. Its version/tag and production provenance remain placeholders until acceptance; the combined changelog remains Unreleased. RootedOps main still declares 1.5.25 at source checkpoint 750ebc8a8506c20c3df53f6f1b314189ab8cb879; this is not proof of a released/deployed dependency. Exact dependency/tag acceptance remains open.
+
+October 18 reconciliation: navigation is operator-accepted across all pages. Unreleased now includes ten redundant heading removals, literal table-title compatibility and independent template date rendering, persistent interrupted-Intake review checkpoints and blocked ordinary replay. First Appsmith notes and SCREENS describe the limitations without claiming database atomicity or external delivery. The application harness locks and reproduces source/controller/disposable SQL checks. Final production/dependency/source/export pins and the old/new shipped JSON comparison remain gated.

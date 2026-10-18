@@ -53,3 +53,8 @@ Do not run production synchronization or an ERP preview with operational amounts
 RootedOps main at `750ebc8a8506c20c3df53f6f1b314189ab8cb879` still declares version 1.5.25. The two linked workflow files, SignatureGate deposit service and integration API are byte-identical to reviewed baseline `c40bce97f60164e93d7b6d4cdf16c7658e62dae6` (Git blob comparison). The earlier source review therefore still applies to those four components; this does not certify other RootedOps changes, a release tag, active workflow configuration, authentication or deployment. Pin a released/deployed compatible revision before SignatureGate packaging.
 
 The standalone deposit unit test attempt in this workspace is blocked by missing Frappe (`ModuleNotFoundError: frappe`). No ERP behavior is newly accepted from that attempt; validate in the prepared ERP/Frappe test environment as part of dependency acceptance.
+
+
+## Published dependency check — October 18
+
+The GitHub release inventory lists [v1.1.0](https://github.com/RayzorDuff/RootedOps/releases/tag/v1.1.0), published August 14, as the latest published release. Exact-tag reads of all four required source locations above return not found at that tag. It cannot supply this integration dependency. A new compatible RootedOps release and its deployed application/workflow proof remain required; the repository's VERSION 1.5.25 is insufficient. [Sanitized release inventory](../releases/v1.2.0/evidence/rootedops_release_inventory.json) records only software paths, tag/date and availability results.

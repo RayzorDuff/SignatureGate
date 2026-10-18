@@ -319,8 +319,10 @@ Individual Profile,qVerifyIndividualEmail,DB,signaturegate-postgres-test,MANUAL,
 Intake,apiTriggerDocumenso,API,N8N,MANUAL,False,externalId;member_agreement_id,,/webhook/signaturegate/documenso/send,pages/Intake/queries/apiTriggerDocumenso/metadata.json
 Intake,apiUploadEvidenceViaN8n,API,N8N,MANUAL,False,files,,/webhook/signaturegate/upload,pages/Intake/queries/apiUploadEvidenceViaN8n/metadata.json
 Intake,auditLog,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Intake/queries/intakeFlows-auditLog/metadata.json
+Intake,checkpoint,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-checkpoint/metadata.json
 Intake,loadAccess,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Intake/queries/intakeFlows-loadAccess/metadata.json
 Intake,performSubmit,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-performSubmit/metadata.json
+Intake,recovery,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-recovery/metadata.json
 Intake,reset,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Intake/queries/intakeFlows-reset/metadata.json
 Intake,submit,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/intakeFlows-submit/metadata.json
 Intake,accessMessage,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Intake/queries/navigationLabels-accessMessage/metadata.json

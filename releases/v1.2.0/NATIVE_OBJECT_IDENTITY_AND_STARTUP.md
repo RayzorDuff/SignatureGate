@@ -1,6 +1,10 @@
 # Native object recreation and Directory startup
 
-## Current Copy to Page checkpoint
+## Accepted navigation checkpoint
+
+October 18: the operator reports navigation working correctly across all pages. This supersedes the failures and startup instructions below. No further object recreation, Console repair or navigation matrix is requested. New table presentation/Intake work is covered in [PRESENTATION_AND_INTAKE_RECOVERY.md](PRESENTATION_AND_INTAKE_RECOVERY.md).
+
+## Historical Copy to Page checkpoint
 
 The operator now accepts Directory, including its navigation. Other pages remain at Checking page access after their navigation objects were replaced using Appsmith Copy to Page. Native checkpoint `d62bc8da2c1c1d4611f937bdcc66fa64f00fff3e` preserves Directory's On-page-load initializer but records **all 17 destination initializers as Manual/false**. [Mode comparison](evidence/navigation_startup_modes.csv) records each page without operational data. These are Git metadata flags, not an inference from the public DTO's omitted explicit-user field.
 
@@ -41,7 +45,7 @@ The native checkpoint restores `isAsync` metadata on other pages; it is retained
 - Controller fixtures dispatch the 32 declared startup functions across 18 pages; navigation capability/account cases, 32 collection/793 expression syntax checks and 231 literal routes pass. These do not run Appsmith's server scheduler.
 - A private generated candidate preserves 18 pages, 508 actions, 32 collections, four datasource descriptors and one JS library. The shipped Appsmith JSON is unchanged. Source fingerprints are refreshed; live import/startup/access remain open.
 
-## Minimal operator sequence
+## Superseded operator sequence (historical only)
 
 1. Pull Appsmith `chatgpt_development` through `3743789` (includes `7c7032f`). Existing copied IDs and synchronized UI changes are preserved. Commit any newer editor-only changes before pulling rather than discarding them.
 2. Open **Terminology Administration in the editor**, reload once and do not click Refresh/Retry. Report whether its authorized form and navigation groups appear. No Directory or broad role-matrix retest is requested.

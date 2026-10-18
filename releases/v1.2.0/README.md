@@ -2,6 +2,7 @@
 
 Status: **unreleased**. This is the first coordinated SignatureGate-Appsmith release. `VERSION` remains 1.1.0 until final release preparation.
 
+- [Current presentation and Intake recovery increment](PRESENTATION_AND_INTAKE_RECOVERY.md)
 - [Release plan](RELEASE_PLAN.md)
 - [Actual served Appsmith startup diagnostic](APP_STARTUP_DIAGNOSTIC.md)
 - [Cold page startup and authority validation](PAGE_STARTUP_VALIDATION.md)

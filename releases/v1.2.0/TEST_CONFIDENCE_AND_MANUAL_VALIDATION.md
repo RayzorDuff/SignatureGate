@@ -21,13 +21,13 @@ The operator reports `Permission validation exit code: 0` after pulling backend 
 
 The operator confirms retained navigation on denied pages, clear Contributor choices, generally reasonable practitioner/reviewer permissions, expected Participant-only restrictions and fixed Intake email validation. These observations do not certify every external endpoint or every combined-role scenario. They remove the need to repeat the same broad manual smoke checklist.
 
-## Current operator sequence
+## Current operator request
 
-Directory and its navigation are accepted. The other pages still fail after native Copy to Page; checkpoint d62bc8d records all 17 copied initializers as Manual. Startup correction 7c7032f restores them with all 540 native identities retained. Follow-up 3743789 repairs two reintroduced empty-column fallbacks (227 mapped-column and 217 typed-vector cases pass). These changes require no broad UI or database retest.
+All-page navigation is accepted by the operator. Retire the earlier Terminology editor/deployed startup checklist; no broad page, role, email, contact or cash retest is requested. [PRESENTATION_AND_INTAKE_RECOVERY.md](PRESENTATION_AND_INTAKE_RECOVERY.md) supplies the only current sequence: preserve editor changes, pull development, inspect the three affected table presentations, then one synthetic Contributor-only Intake/reset/reload smoke check if time permits. These are development renderer/storage gaps, not production promotion or another database migration.
 
-Follow [NATIVE_OBJECT_IDENTITY_AND_STARTUP.md](NATIVE_OBJECT_IDENTITY_AND_STARTUP.md): pull development through **3743789**, check Terminology once in the editor without Refresh/Retry, then publish development and check the same page's deployed view only if the editor passes. Report editor and deployed outcomes separately. No Directory, role/email/contact/cash matrix or old migration runner is requested. A source pull does not certify the published schedule.
+High confidence applies to all 22 literal table-header contracts, independent timestamp values and null/invalid/empty outcomes; ten duplicate heading removals; 24 supported Intake controller/prepared-SQL cases; 32 request/lost-response fault cases; generation/identity/startup/role/controller regressions and exact-source export preservation. Native storage/rendering, server atomicity, different browser/tab replay, cleared storage and external delivery are not certified by these checks. Do not intentionally fail a real signing route for manual validation.
 
-Generation simulates copied Manual initializers on all destination pages and verifies restoration, identity/default preservation, reapplication and duplicate rejection. Controller dispatch, capability, syntax, route and export preservation checks pass for source invariants; actual SDK startup remains open. Future paper/integration/restore scenarios need separate test destinations and release-phase acceptance, not another current operator checklist. Historical evidence below adds no new manual request.
+Historical evidence below adds no current manual requests. Future paper/integration/restore scenarios require protected test destinations and their release-phase acceptance.
 
 ## Appsmith synchronization finding
 

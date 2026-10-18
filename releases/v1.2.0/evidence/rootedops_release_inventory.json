@@ -1,0 +1,32 @@
+{
+  "checked_date": "2026-10-18",
+  "repository": "RayzorDuff/RootedOps",
+  "release_inventory_source": "https://api.github.com/repos/RayzorDuff/RootedOps/releases?per_page=5",
+  "latest_published_release": "v1.1.0",
+  "published_at": "2026-08-14T01:21:44Z",
+  "required_integration_paths_at_latest_release": [
+    {
+      "path": "n8n/SignatureGate - Cash Deposit to ERPNext.json",
+      "available": false,
+      "lookup_result": "NOT_FOUND"
+    },
+    {
+      "path": "n8n/SignatureGate - ERP Bank Accounts.json",
+      "available": false,
+      "lookup_result": "NOT_FOUND"
+    },
+    {
+      "path": "erpnext/apps/rootedops_payroll/rootedops_payroll/services/signaturegate_deposits.py",
+      "available": false,
+      "lookup_result": "NOT_FOUND"
+    },
+    {
+      "path": "erpnext/apps/rootedops_payroll/rootedops_payroll/api/integration.py",
+      "available": false,
+      "lookup_result": "NOT_FOUND"
+    }
+  ],
+  "release_dependency_satisfied": false,
+  "deployment_verified": false,
+  "note": "Current reviewed source and repository VERSION do not establish a released/deployed integration dependency."
+}

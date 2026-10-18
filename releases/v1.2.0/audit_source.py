@@ -50,7 +50,8 @@ def main():
     app = args.appsmith.resolve()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    parsed = {p: json.loads(p.read_text()) for p in app.rglob('*.json') if '.git' not in p.parts}
+    parsed = {p: json.loads(p.read_text()) for p in app.rglob('*.json')
+              if not {'.git', 'node_modules'}.intersection(p.parts)}
     pages, actions, links, findings = [], [], [], []
     js_results = []
     for directory in sorted((app / 'pages').iterdir()):

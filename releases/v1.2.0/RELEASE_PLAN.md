@@ -278,3 +278,10 @@ Directory-review runner exit 0 at `8a08e74` and the final cash Exclude/Revive sc
 
 
 Phase 3 source checkpoint: generated capability-aware groups, hidden explicit-link profiles, Participant default/adoption helper and candidate SCREENS inventory are implemented. Live keyboard/mobile/SDK/source-sync, cold Terminology startup and remaining controller/service/document wording stay tracked in NAVIGATION_AND_PARTICIPANT_VALIDATION.md. This does not close earlier integration or upgrade gates.
+
+
+### October 18 implementation checkpoint
+
+The operator accepts navigation across all pages. Reuse that evidence; no repeated navigation matrix or startup repair is required. Ten redundant page-name headings and literal table-title/date defects are repaired in development. The current screen inventory is reconciled in `appsmith/SCREENS.md`. Appsmith 2.4.2 table titles use a literal deployment registry; live terminology changes still apply to supported captions, not these titles.
+
+Persistent Intake checkpoints and acknowledgment before a separate intake reduce accidental replay after uncertain writes. The 24 supported source-SQL enrollment cases plus 32 fault cases pass, but the client checkpoint does not replace the Phase 2 server atomicity/idempotency and external-delivery gate. Reproducible application checks are documented in its `tests/README.md`. Follow `PRESENTATION_AND_INTAKE_RECOVERY.md` for the narrow renderer/storage observation; no migration is introduced. RootedOps release/deployment acceptance, the protected restored-copy upgrade and production/export/version/tag phases remain open.
