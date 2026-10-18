@@ -1,0 +1,29 @@
+{
+  "operation": "signaturegate_directory_startup_rebuild",
+  "branch": "chatgpt_development",
+  "status": "stopped",
+  "stage": "registration",
+  "attempted_functions": [
+    "navigationLabels.initialize"
+  ],
+  "updated_functions": [],
+  "before": {
+    "action_count": 0,
+    "navigation_registered": false,
+    "directory_registered": false,
+    "error_count": 0
+  },
+  "declarations": [
+    {
+      "name": "navigationLabels.initialize",
+      "before_mode": "ON_PAGE_LOAD",
+      "before_user_set_on_load": false
+    },
+    {
+      "name": "directoryFlows.load",
+      "before_mode": "ON_PAGE_LOAD",
+      "before_user_set_on_load": false
+    }
+  ],
+  "reason": "appsmith_http_400"
+}

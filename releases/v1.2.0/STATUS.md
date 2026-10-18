@@ -1,6 +1,6 @@
 # v1.2.0 phase status
 
-Updated October 15, 2026 (operator local date). **Development continues; the release is not ready for production promotion.** No production migration, datasource switch, Appsmith master promotion, final packaged export or release tag has been performed.
+Updated October 18, 2026 (operator local date). **Development continues; the release is not ready for production promotion.** No production migration, datasource switch, Appsmith master promotion, final packaged export or release tag has been performed.
 
 | Phase | Current state | Completed evidence / remaining gate |
 | --- | --- | --- |
@@ -16,7 +16,7 @@ Updated October 15, 2026 (operator local date). **Development continues; the rel
 
 **October 15: actual served Directory startup is empty in both editor and published view.** The successful version 2 report has zero scheduled actions/errors and no navigation initializer in either mode; no execution request followed the observed initial fetch. [Projected evidence](evidence/served_directory_startup.json) is recorded without raw Console data. This narrows the failure to registration/layout scheduling on Directory; it does not prove the underlying import failure or every page's installed state.
 
-Next: [DIRECTORY_STARTUP_REBUILD.md](DIRECTORY_STARTUP_REBUILD.md), a bounded native configuration repair of the two existing Directory startup functions, followed by one editor reload only if the server confirms a valid schedule. Synthetic API safety/privacy/partial-failure checks pass; live repair remains pending. No SQL, role change, Appsmith source rewrite or production/published deployment is performed by this increment. Do not repeat the diagnostic-only sequence or the UI matrix.
+**October 18: the Directory rebuild helper received HTTP 400 at its first setting request; no update is confirmed.** Installed function modes are ON_PAGE_LOAD, but the reported false explicit-user flags were a reader defect: the public response omits that Internal/Git field. The cause of the 400 is unknown. The mutating helper is retired; its download now makes zero requests. [DIRECTORY_STARTUP_REBUILD.md](DIRECTORY_STARTUP_REBUILD.md) replaces it with one native editor sequence on two Directory settings, stopping at the first save error, then one editor reload only after all saves succeed. No new Console write, SQL, role grant, source rewrite or production/published deployment is requested.
 
 The latest post-parser-fix walkthrough still fails cold startup: menus/data need Refresh, profiles stay Loading and operational pages show false permission messages. Prioritize [PAGE_STARTUP_VALIDATION.md](PAGE_STARTUP_VALIDATION.md). Registered async startup, deliberate authority reads, missing page-authority calls and loading/denial presentation are repaired with synthetic dispatch coverage; deployed scheduling is still unverified. This supersedes the earlier parser-only UI sequence and introduces no SQL/grant change.
 

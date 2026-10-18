@@ -2,32 +2,40 @@
 
 ## Observed failure
 
-On October 15 the operator returned the version 2 diagnostic from `chatgpt_development` Directory. Both editor and published configurations returned HTTP 200 with **zero scheduled actions, zero on-load errors and no navigation initializer**. The original startup request was observed and no action-execution request followed it. The two repeated summaries agree. [The projected evidence](evidence/served_directory_startup.json) contains technical names, counts and flags only; the full Console attachment remains private.
+On October 15 the operator returned the version 2 diagnostic from `chatgpt_development` Directory: editor and published configurations both returned HTTP 200 with zero scheduled actions/errors, no navigation initializer and no execution request following the observed startup fetch. [Projected evidence](evidence/served_directory_startup.json) contains only technical metadata; raw Console attachments stay private. This establishes an empty served Directory schedule, not every other page's installed state or why registration was lost.
 
-This establishes an empty served **Directory** schedule, not the installed state of every other page or the precise reason registration was lost. Source declarations alone are not acceptance evidence. Do not repeat the role or database migration tests.
+Appsmith 2.4.2 excludes computed schedules from native Git (`Layout.layoutOnLoadActions` has Public/Export views, not Git). Its application import post-hook rebuilds layouts, but logs and continues after a layout update failure. Neither adding computed schedules to native Git nor treating a successful pull as a scheduler pass is appropriate.
 
-Appsmith 2.4.2 intentionally excludes the computed schedule from native Git serialization (`Layout.layoutOnLoadActions` has Public/Export views, not Git). It rebuilds layouts in its application import post-hook. That post-hook logs and continues after a layout update failure. Consequently, neither adding computed schedules to native Git nor treating a successful pull as a scheduler pass is appropriate.
+## Repair attempt received October 18
 
-Its native `setRunBehaviour` operation saves the function's explicit mode and **updates the containing page layout even if the supplied mode was already selected**. The bounded repair below uses that path for the two existing Directory functions. It also reads their actual installed modes, helping distinguish missing/stale declarations from a stale computed schedule. It does not assume which of those caused this failure.
+The [projected operator result](evidence/directory_startup_rebuild_attempt.json) stops at the first setting request with HTTP 400. Both installed function modes were reported as ON_PAGE_LOAD; no successful update is confirmed. The helper did not collect the error response body, so the cause of the 400 and whether anything was saved before that response remain unknown. No rebuild or live page acceptance is claimed.
 
-## One development repair and observation
+**Correction:** the helper's `before_user_set_on_load: false` values are not evidence of false stored flags. `ActionCE_DTO.userSetOnLoad` has Internal/Git serialization views, not Public. The helper collapsed an omitted value into false and incorrectly required that internal flag in the public save response. Its synthetic success fixtures included a field the real public response omits. Installed run modes are valid observations; the explicit-user flag is unknown. The earlier assertion and inference are withdrawn.
 
-1. Open Directory on `chatgpt_development`. Paste [rebuild_directory_startup.js](rebuild_directory_startup.js) into Chrome Console and run **once**. This is a configuration repair, not the preceding read-only inspection: it sets `navigationLabels.initialize` and `directoryFlows.load` to run on page load through Appsmith's native API. The entire two-function identity allowlist is checked before the first write. Missing/ambiguous functions stop the repair; it does not create functions or guess IDs.
-2. Return the small JSON result. Expected success is `status: "editor_schedule_rebuilt"`, with `after.navigation_registered: true`, `after.directory_registered: true` and `after.error_count: 0`. Before/after mode/count metadata is safe to return. Do not return raw API responses or the JS collections.
-3. **Only if that succeeds:** open Directory in Appsmith's editor (pencil icon), reload once and check whether its table and authorized menus load without Refresh or Refresh access. Report pass/fail only. This observes the repaired editor schedule; the published app is unchanged until an explicit development deployment. Do not deploy, promote or repeat the other page tests yet.
+The attachment contains many identical executions within seconds. Repeated evaluation, including Chrome Live Expressions, can repeat an immediately invoked script; the cause of these repeated evaluations is not established. Remove any Live Expression containing either startup script. Do not run the old repair again. Its download path now returns a retirement notice with **zero requests**, even if repeatedly evaluated.
 
-If the result is stopped/blocked, return it and stop this sequence. `attempted_functions` distinguishes an attempted setting from a confirmed `updated_functions` response; a failed response does not prove that the setting was not saved. The script never automatically retries a write. A 403 concerns Appsmith editor permissions; it is not grounds to grant a SignatureGate database role. Existing Escape/Directory navigation remains available.
+## Next bounded native editor sequence
 
-The static-URL path reads the normal view-bootstrap response privately to obtain the current page ID; that platform endpoint may apply normal Appsmith DSL migrations, as a regular reload does. All direct page reads request `migrateDsl=false`. The repair changes only the two development function run settings and the server's computed editor layout. It invokes no application SQL/actions, integration, deployment or release operation and changes no function bodies, datasource, role or operational record. Any settings diff should later be preserved through the normal Appsmith Git workflow before broader development sync; no Appsmith source commit is asserted here.
+No replacement Console write script, migration, role grant or broad UI matrix is requested.
+
+1. Open development **Directory** using the pencil icon. Confirm Appsmith's selected branch is `chatgpt_development`.
+2. Open JS object **navigationLabels → Settings**. For **initialize**, select **Manual**, wait for the setting save, then select **On page load** and wait for that save. If either save reports an error, stop immediately and return only its software error code/message, omitting record/contact data. Do not attempt the second function or reload after a failed save.
+3. If those saves succeed, open **directoryFlows → Settings** and do the same for **load**. Do not click Run.
+4. If all saves succeed, reload **Directory in the editor** once. Report whether its authorized menus and table load without Refresh/Refresh access. Do not deploy/publish or repeat other pages yet.
+
+If On page load is unavailable, report the visible software choices rather than substituting another mode. The native editor uses the installed client request contract. Its setting handler saves explicit run behaviour and rebuilds the containing page layout. This tests that native path without claiming an identified cause for the prior 400. Successful saves alone do not establish a working cold page: the final editor observation is required.
+
+The sequence changes the two development run settings and derived editor configuration. No database commands, role changes, function-body edits or datasource changes are needed. Do not pull over the resulting editor changes; preserve any settings diff through Appsmith Git after the focused check and before later source synchronization. Published/deployed acceptance is separate.
 
 ## Verification scope
 
-`node scripts/test_directory_startup_rebuild.mjs` exercises synthetic API responses: the exact two-setting allowlist, unchanged-mode rebuild, all pre-write identity/plugin/function guards, wrong branch, denied reads, partial save failure without retry, response identity mismatch, remaining scheduler errors, ID/static/legacy routes and private-field omission. `node scripts/test_appsmith_startup_inspection.mjs` verifies the existing reader. These checks do not execute the deployed Appsmith server. Runtime repair and cold Directory acceptance remain pending the operator result; remaining pages are still open.
+`node scripts/test_directory_startup_rebuild.mjs` checks the retired download under 100 evaluations: zero requests and no browser/application-state access. Previous synthetic API passes are historical and superseded by the failed installed request and corrected public-response contract. `node scripts/test_appsmith_startup_inspection.mjs` retains the existing read-only inspector coverage. Live startup repair remains unaccepted.
 
-Official v2.4.2 contracts:
+Official v2.4.2 contracts (tag independently resolves to `834c591b7ba97c38b44539cefdbbc5bd7ad39328`):
 
-- [Native run-behaviour API](https://github.com/appsmithorg/appsmith/blob/v2.4.2/app/server/appsmith-server/src/main/java/com/appsmith/server/controllers/ce/ActionControllerCE.java)
-- [Setting save and layout rebuild](https://github.com/appsmithorg/appsmith/blob/v2.4.2/app/server/appsmith-server/src/main/java/com/appsmith/server/services/ce/LayoutActionServiceCEImpl.java)
-- [JS collection metadata read](https://github.com/appsmithorg/appsmith/blob/v2.4.2/app/client/src/ce/api/JSActionAPI.tsx)
-- [Computed layout serialization views](https://github.com/appsmithorg/appsmith/blob/v2.4.2/app/server/appsmith-server/src/main/java/com/appsmith/server/domains/Layout.java)
-- [Import post-hook and tolerated layout failures](https://github.com/appsmithorg/appsmith/blob/v2.4.2/app/server/appsmith-server/src/main/java/com/appsmith/server/applications/imports/ApplicationImportServiceCEImpl.java)
+- [Internal/Git-only explicit-user flag](https://github.com/appsmithorg/appsmith/blob/834c591b7ba97c38b44539cefdbbc5bd7ad39328/app/server/appsmith-interfaces/src/main/java/com/appsmith/external/models/ce/ActionCE_DTO.java)
+- [Native client run-behaviour request](https://github.com/appsmithorg/appsmith/blob/834c591b7ba97c38b44539cefdbbc5bd7ad39328/app/client/src/api/ActionAPI.tsx)
+- [Native function settings](https://github.com/appsmithorg/appsmith/blob/834c591b7ba97c38b44539cefdbbc5bd7ad39328/app/client/src/pages/Editor/JSEditor/JSEditorToolbar/components/JSFunctionSettings.tsx)
+- [Setting save and layout rebuild](https://github.com/appsmithorg/appsmith/blob/834c591b7ba97c38b44539cefdbbc5bd7ad39328/app/server/appsmith-server/src/main/java/com/appsmith/server/services/ce/LayoutActionServiceCEImpl.java)
+- [Layout serialization views](https://github.com/appsmithorg/appsmith/blob/834c591b7ba97c38b44539cefdbbc5bd7ad39328/app/server/appsmith-server/src/main/java/com/appsmith/server/domains/Layout.java)
+- [Import post-hook and tolerated layout failures](https://github.com/appsmithorg/appsmith/blob/834c591b7ba97c38b44539cefdbbc5bd7ad39328/app/server/appsmith-server/src/main/java/com/appsmith/server/applications/imports/ApplicationImportServiceCEImpl.java)
