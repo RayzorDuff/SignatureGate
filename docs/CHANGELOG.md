@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Remove the obsolete standalone Terminology Administration import; split Appsmith source and final coordinated export packaging remain authoritative.
+
 - Remove ten page-name headings now supplied by navigation; repair literal table-title expressions and Agreement Templates date cells. Keep readable table titles in a deployment registry for Appsmith 2.4.2's literal title editor.
 - Add a locked, reproducible application source/controller/disposable SQL test runner.
 - Preserve private account-scoped Intake checkpoints before identity writes; block ordinary replay after saved/uncertain outcomes, retain known identity/agreement IDs and require explicit review before resetting an interrupted intake. Client recovery does not replace server transactionality or delivery reconciliation.
