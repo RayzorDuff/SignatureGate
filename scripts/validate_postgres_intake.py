@@ -73,7 +73,11 @@ class Validation:
                 process.stdin.write(source + '\n')
             process.stdin.close()
             process.stdin = None
-        return process.communicate(timeout=30)
+        output = process.communicate(timeout=30)
+        # An intentionally rejected owner/payload session is finished, not an
+        # unexpected active failure during the next case's barrier.
+        self.processes.remove(process)
+        return output
 
     def wait_state(self, name, state):
         deadline = time.monotonic() + 12
@@ -209,5 +213,6 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except (ValueError, RuntimeError, OSError, subprocess.SubprocessError):
-        raise SystemExit('PostgreSQL Intake validation failed. Keep detailed evidence private; production was not targeted.')
+    except (ValueError, RuntimeError, OSError, subprocess.SubprocessError) as error:
+        stage = str(error) if isinstance(error, (ValueError, RuntimeError)) else 'transport/lifecycle failure'
+        raise SystemExit('PostgreSQL Intake validation failed: ' + stage + '. Keep detailed evidence private; production was not targeted.')

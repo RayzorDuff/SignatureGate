@@ -69,6 +69,19 @@ class DisposableDatabaseChecks(unittest.TestCase):
             self.assertEqual(run.sql.call_count, 1)
             self.assertFalse(run.created)
 
+    def test_expected_rejection_does_not_poison_next_transaction_barrier(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = Validation('synthetic-container', 'signaturegate', 'postgres', directory)
+            process = Mock(stdin=None, returncode=3)
+            process.communicate.return_value = ('', 'synthetic expected conflict')
+            process.poll.return_value = 3
+            run.processes.append(process)
+            self.assertEqual(run.finish(process), ('', 'synthetic expected conflict'))
+            self.assertEqual(run.processes, [])
+            run.sql = Mock(side_effect=['[]', '[{"state":"idle in transaction","wait":null,"submitted":true}]'])
+            with patch('validate_postgres_intake.time.sleep'):
+                run.wait_state('synthetic-next', 'ready')
+
 
 if __name__ == '__main__':
     unittest.main()
