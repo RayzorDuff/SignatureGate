@@ -134,6 +134,10 @@ class Validation:
         for attempt in range(2):
             self.sql(migration, label='migration-' + str(attempt))
         self.sql((ROOT / 'db/tests/verify_atomic_intake.sql').read_text(), label='atomic-contract')
+        paper = (ROOT / 'db/migrations/paper_agreement_upload.sql').read_text()
+        for attempt in range(2):
+            self.sql(paper, label='paper-migration-' + str(attempt))
+        self.sql((ROOT / 'db/tests/verify_paper_agreement_upload.sql').read_text(), label='paper-contract')
         # Artificial principals only, inside the generated disposable database.
         self.sql("""INSERT INTO people(person_id,display_name) VALUES
  ('10000000-0000-4000-8000-000000000001','Synthetic Concurrency Reviewer'),
@@ -188,7 +192,7 @@ INSERT INTO person_roles(person_id,role_key,assigned_by) VALUES
             if self.counts() != [n + 1 for n in baseline]:
                 raise RuntimeError('Concurrent request duplicated or lost enrollment/audit/receipt')
         return dict(postgres_version_num=version, concurrency_cases=cases,
-                    atomic_contract='passed', migration_reapplication='passed',
+                    atomic_contract='passed', paper_upload_contract='passed', migration_reapplication='passed',
                     operational_tables_accessed=False, external_services_called=False)
 
 
