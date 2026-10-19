@@ -48,3 +48,5 @@ First Appsmith release notes: [draft in the application source](https://github.c
 - [Directory startup schedule rebuild](DIRECTORY_STARTUP_REBUILD.md): observed empty served schedules, failed Console repair, retired download and one native editor settings sequence.
 
 - [Native object identities and current startup validation](NATIVE_OBJECT_IDENTITY_AND_STARTUP.md): accepted Directory table recovery, saved initializer correction and preservation of recreated objects.
+
+Current focused follow-up: [native startup and Participant agreement selection](NATIVE_STARTUP_AND_AGREEMENT_SELECTION.md). Deferred Intake and installed API validation have passed; no repeat enrollment or Linode migration is requested.

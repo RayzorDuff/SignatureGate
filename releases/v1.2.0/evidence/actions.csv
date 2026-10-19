@@ -374,8 +374,8 @@ Member Functions,accessState,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Member Fu
 Member Functions,initialize,JS,UNUSED_DATASOURCE,ON_PAGE_LOAD,True,,,,pages/Member Functions/queries/navigationLabels-initialize/metadata.json
 Member Functions,label,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Member Functions/queries/navigationLabels-label/metadata.json
 Member Functions,text,JS,UNUSED_DATASOURCE,MANUAL,True,,,,pages/Member Functions/queries/navigationLabels-text/metadata.json
-Member Functions,qAgreementTemplatesByType,DB,signaturegate-postgres-test,MANUAL,True,type_key,issue19_has_role,,pages/Member Functions/queries/qAgreementTemplatesByType/metadata.json
-Member Functions,qAgreementTypesList,DB,signaturegate-postgres-test,MANUAL,True,,issue19_has_role,,pages/Member Functions/queries/qAgreementTypesList/metadata.json
+Member Functions,qAgreementTemplatesByType,DB,signaturegate-postgres-test,MANUAL,True,member_id;type_key,application_member_access,,pages/Member Functions/queries/qAgreementTemplatesByType/metadata.json
+Member Functions,qAgreementTypesList,DB,signaturegate-postgres-test,MANUAL,True,member_id,application_member_access,,pages/Member Functions/queries/qAgreementTypesList/metadata.json
 Member Functions,qApproveAgreement,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id;review_notes,application_review_agreement,,pages/Member Functions/queries/qApproveAgreement/metadata.json
 Member Functions,qAssignMemberFacilitator,DB,signaturegate-postgres-test,MANUAL,False,facilitator_id;notes,issue19_assign_member_practitioner,,pages/Member Functions/queries/qAssignMemberFacilitator/metadata.json
 Member Functions,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;details_json;entity_id;entity_type;member_id,application_require_permission;audit_log,,pages/Member Functions/queries/qAuditLogInsert/metadata.json

@@ -23,7 +23,7 @@ The operator confirms retained navigation on denied pages, clear Contributor cho
 
 ## Current operator request
 
-October 19 successor: follow [UNIFIED_INTAKE_VALIDATION.md](UNIFIED_INTAKE_VALIDATION.md). Participant adoption on test exits 0. Full CI at aca3d48/d85fecb passes 42 enrollment/controller cases and four actual lock-observed PostgreSQL 16.13 contention cases, plus prior rollback/replay/permission/report tests. Legacy Intake is retired from development. Only installed API activation and one deferred Intake/native entry observation are requested; older broad checklists below are historical.
+October 19 follow-up: installed atomic API validation exits 0; deferred Intake/progress and read-only saved-receipt recovery are accepted. Do not repeat them. Follow [NATIVE_STARTUP_AND_AGREEMENT_SELECTION.md](NATIVE_STARTUP_AND_AGREEMENT_SELECTION.md) for two narrow native observations: cold startup without Refresh Access and visible/matching Agreement Type/templates. The source/controller/five disposable-SQL suites cover copied startup mode/identity preservation, actual catalog query scopes, delayed widget hydration, stale type/template selection, inactive/empty catalogs and read failures. Runtime scheduling/rendering remains distinct. No new Linode migration or broad role/Intake matrix is requested; older requests below are historical.
 
 All-page navigation and the three-table presentation plus completion/reload/reset sequence are accepted in deployed development. Reload clearing form fields while retaining the completion notice/disabled button is correct; Reset clears the persistent guard. Do not repeat these unchanged tests.
 

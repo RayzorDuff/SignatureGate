@@ -17,7 +17,7 @@ A second CI job executes the atomic contract/reapplication and four genuinely co
 
 ## 1. Apply the current API to test before frontend pull
 
-The operator has not yet returned this runner's result. On the Linode:
+**Accepted October 19:** operator returned exit 0 at backend 96c5b8b. The command below is historical; do not repeat it for the frontend follow-up.
 
 ```bash
 cd ~/signaturegate &&
@@ -29,7 +29,9 @@ Expected: **Atomic Intake validation exit code: 0**. The runner verifies signatu
 
 This repeats only the changed API contract. No new migration filename is added; the unreleased atomic source and draft manifest checksums are updated together. Test application/reapplication is not an instruction to replay it in production.
 
-## 2. One high-risk native observation
+## 2. Accepted deferred Intake observation
+
+**Accepted October 19:** legacy retirement, deferred enrollment/progress and Check saved Intake receipt recovery are observed. Do not repeat enrollment. Current native startup/selector validation supersedes this request; see [NATIVE_STARTUP_AND_AGREEMENT_SELECTION.md](NATIVE_STARTUP_AND_AGREEMENT_SELECTION.md). The sequence below records the earlier request.
 
 After step 1 passes, preserve newer editor work and pull **chatgpt_development through aca3d48**, retaining the confirmed signaturegate_test datasource.
 
