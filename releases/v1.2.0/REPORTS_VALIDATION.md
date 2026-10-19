@@ -1,12 +1,39 @@
-# Reports development acceptance
+# Reports and configured page-name validation
 
-This increment changes only the split Appsmith development source. It needs the existing canonical current-actor API and person-based assignments, already present in the reviewed test baseline. Do not apply the fresh schema to an existing database. Do not change the production datasource or publish development as part of these checks.
+October 19, 2026. Supersedes the earlier broad manual role/category checklist. The operator's accepted navigation and permissions are reused. This increment changes the saved report query/controller/presentation; it introduces no migration and grants no access.
 
-1. Preserve any unsaved editor work, then pull `chatgpt_development`. Reload the editor/application and open **Reports**. Confirm its actual datasource still returns `signaturegate_test`/PostgreSQL 16.13.
-2. A canonical Donations Reviewer with no Participant capacity can open Reports. They can select count and dollar metrics for overall, individual, company, anonymous, unresolved and Participant-linked contributions. Document Reviewer alone sees no financial metrics; a practitioner without Participant capacity sees only participation metrics for currently assigned Participants. Directory Manager alone and disabled/unknown accounts are denied.
-3. With synthetic contributions only, verify overall count/dollars equal individual + company + anonymous + unresolved. Participant-linked is an overlapping individual subset, not an additional category in that sum. Rejected contributions are excluded. Zero buckets remain visible; day/week/month/year and existing agreement/release metrics still work.
-4. Verify current Participant linkage rather than the historical donation projection: ending a synthetic Participant capacity changes the Participant-linked subset without changing the original donation identity or overall/individual totals. Preserve operational records; do not close a real relationship for this check.
-5. Switch from a Donations Reviewer to a Document Reviewer/practitioner. Retained financial selections and cached table/chart financial values must disappear. Run Report again and verify no unauthorized financial rows return. Include direct action execution with financial metric keys for the denied role.
-6. Check desktop/narrow layouts, source action registration, initialization, empty data and actual prepared-query execution. Commit editor-generated metadata if required, then pull/reload again and repeat the role/scope checks. Include the matching disposable generated-export import in the later packaging acceptance.
+## Definitions
 
-Return pass/fail by step, frontend source revision, roles tested, datasource result and any error class. Keep identity values, amounts, screenshots and full query outputs private. Source regression tests pass; this checklist remains pending operator acceptance.
+| Metric | Definition |
+| --- | --- |
+| Participants created | Participant capacity created-at within the bucket, independent of person creation. Ending enrollment does not erase this creation event. Document Reviewers see all; practitioners retain current assigned-Participant scope. |
+| Contributors created | Individual/company Contributor capacity created-at, independent of person/company creation or donations. Archived/merged capacities retain creation history. Donations Reviewer required. |
+| Contributor-linked donations | Explicit Contributor attribution, combining individual and company Contributors without requiring Participant capacity. These count/value metrics are in the default authorized selection. |
+| Participant-linked donations (subset) | An optional overlapping subset: an individual Contributor's person currently has active Participant capacity. It is a present relationship filter, not a historical status snapshot. Do not add it to Contributor/overall totals. |
+| Anonymous / unresolved donations | Separate unattributed categories retained alongside Contributor attribution. |
+
+Existing verified/imported/pending-review donation status inclusion and rejected exclusion remain. Dates use donated-at with created-at fallback; capacity counts use their own created-at. Contributor-linked plus anonymous plus unresolved reconciles to overall donations in valid canonical attribution; individual plus company reconciles to Contributor-linked. A dual-capacity person contributes once to each applicable capacity metric. Dollars and counts are different measures.
+
+Metric choices, chart names and table row labels use configured terminology. Technical compatibility keys are hidden in the visible table; old retained selections normalize to Participant keys. Menu entries/current-page titles for stable Member Functions and Contributor Functions routes likewise use configured singular labels. These route identifiers are not display labels.
+
+## Automatic confidence
+
+The application regression suite exercises actual saved SQL and source controller/widget expressions using synthetic data. New assertions cover Contributor reconciliation, both creation metrics/date buckets, dual capacities, ended/archived history, rejected exclusions, old selections, direct unauthorized requests, assignment scope, removed/disabled access, alternate terminology and account-switch table isolation. Saved navigation labels are evaluated on every page and destination titles are tested with alternate Participant/Contributor configuration.
+
+The development-checks workflow runs the full source/controller/four disposable-SQL suites with a pinned SignatureGate schema SHA. The current run and result are recorded in STATUS.md. Fresh embedded PostgreSQL tests do not certify the real PostgreSQL 16 owners/grants, restored upgrade or native Appsmith renderer. No operational evidence is committed.
+
+## Only the remaining manual observation
+
+1. After automated checks pass, preserve newer editor work and pull the accepted Appsmith `chatgpt_development` candidate, retaining `signaturegate_test`. The preceding atomic Intake prerequisite still applies if it has not been activated; see [the backend-first sequence](ATOMIC_INTAKE_AND_TERMINOLOGY_VALIDATION.md).
+2. If Terminology Administration's operational **member** row still says Member, adopt Participant explicitly through its reasoned save or the existing Linode command:
+
+   ```bash
+   cd ~/signaturegate
+   git pull --ff-only
+   env -u 'BASH_FUNC__sudo%%' bash releases/v1.2.0/validate_navigation_terminology_test.sh
+   ```
+
+   Enter the intended Directory Manager sign-in at the hidden prompt without SQL quotes. Expected: `Navigation terminology validation exit code: 0`. The runner targets only test, preserves practitioner/Contributor overrides and changes no roles or executed agreements. Do not rename the reserved event `participant` row.
+3. During one normal development navigation, confirm **Participant Functions** in the menu/current-page title and the configured Contributor equivalent. With the existing multi-role reviewer, open Reports and run a range containing known test enrollments. Confirm readable **Participants Created**, **Contributors Created** and **Contributor-linked donations** choices/results. Participant-linked should be available as a separate, unselected subset. Keep counts/record data private; return pass/fail and editor/deployed-development mode.
+
+No real enrollment needs to be ended/archived, no new donation or endpoint failure is requested, and no repeated broad role/navigation matrix is needed. If editor rendering passes, the normal development Deploy check uses the same narrow observation; this is not production/master promotion.

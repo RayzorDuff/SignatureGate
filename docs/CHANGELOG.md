@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Prioritize explicit Contributor-linked donation reporting; add independent Participant/Contributor capacity creation counts with preserved historical creation events. Keep active-Participant linkage as an optional overlapping subset; apply configured labels to report rows/charts and verify configured navigation/current-page titles. Add a pinned-schema development CI suite.
+
 - Commit active Intake enrollment stages, pending agreement, audit and mailing queue entries in one transaction; add durable owner/key/payload receipts and read-only recovery without replaying signing.
 - Apply configured terminology to native Select captions/placeholders, Directory Participant/Contributor action buttons and profile contact copy; display the installed active/reserved terminology structure read-only and refresh labels after saves.
 
