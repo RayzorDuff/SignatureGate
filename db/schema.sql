@@ -14357,6 +14357,7 @@ BEGIN
   ON r.person_id=a.practitioner_person_id AND r.role_key='practitioner'
   WHERE a.member_id=participant AND a.practitioner_person_id=practitioner AND a.status='active') THEN
   RAISE EXCEPTION 'Assigned practitioner required'; END IF;
+ IF NOT actor.is_document_reviewer AND practitioner<>actor.person_id THEN RAISE EXCEPTION 'Document Reviewer permission required to upload on behalf of another practitioner'; END IF;
  IF template IS NOT NULL AND NOT EXISTS(SELECT 1 FROM public.agreement_templates WHERE agreement_template_id=template AND active) THEN RAISE EXCEPTION 'Active template required'; END IF;
  IF jsonb_typeof(p_payload->'files') IS DISTINCT FROM 'array' OR jsonb_array_length(p_payload->'files')<>1 THEN RAISE EXCEPTION 'Exactly one paper document required'; END IF;
  f:=p_payload->'files'->0;

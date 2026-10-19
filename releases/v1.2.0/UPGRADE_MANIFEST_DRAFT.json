@@ -2,7 +2,7 @@
   "state": "draft_non_executable",
   "release": "SignatureGate v1.2.0",
   "purpose": "Conditional source ordering and checksum pinning only. Do not execute all entries. Each needs a reviewed selected/skipped disposition.",
-  "canonical_schema_sha256": "745e843c63ca7fb833da9039fcf98c089cb503ee1451f7a73ac69796851e06bb",
+  "canonical_schema_sha256": "fc2d36c8e3746e890e602c53c71b39d7ada8e81536e935fd6f7a42bf832b6544",
   "required_environment_proofs": {
     "canonical_base_and_missing_forward_changes_reviewed": false,
     "current_production_effective_definitions_reviewed": false,
@@ -415,7 +415,7 @@
     {
       "id": "paper_agreement_upload",
       "path": "db/migrations/paper_agreement_upload.sql",
-      "sha256": "6c1c0512234aac49d6b3295f482485a93605855d08c6346b21b63cf4ddf352ac",
+      "sha256": "97bc47d54aa356dc63f9534602094a327b9da4f626db98b7315a614a3eca433e",
       "after": [
         "application_authorization",
         "reviewer_agreements"

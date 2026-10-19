@@ -36,6 +36,8 @@ BEGIN
   PERFORM pg_temp.paper_denied(format('SELECT public.application_begin_paper_upload(%L,%L,%L::jsonb)','paper-reviewer@example.invalid',request,receipt));
  END LOOP;
  IF EXISTS(SELECT 1 FROM public.paper_agreement_upload_requests WHERE request_id=request) THEN RAISE EXCEPTION 'Invalid upload reserved a request'; END IF;
+ INSERT INTO public.member_practitioner_assignments(member_id,practitioner_person_id) VALUES(member,outsider);
+ PERFORM pg_temp.paper_denied(format('SELECT public.application_begin_paper_upload(%L,%L,%L::jsonb)','paper-practitioner@example.invalid',public.uuid_generate_v4(),jsonb_set(payload,'{practitioner_person_id}',to_jsonb(outsider::text))));
  receipt:=public.application_begin_paper_upload('paper-practitioner@example.invalid',request,payload);
  IF receipt->>'state'<>'pending_upload' OR receipt->>'proceed'<>'true' THEN RAISE EXCEPTION 'Assigned practitioner could not reserve upload'; END IF;
  receipt:=public.application_begin_paper_upload('paper-practitioner@example.invalid',request,payload);
