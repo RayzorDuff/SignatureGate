@@ -192,12 +192,13 @@ Member Functions,apiMarkProductUnShipped,API,MANUAL,True,False,False,False,False
 Member Functions,apiTriggerDocumenso,API,MANUAL,True,False,False,False,False
 Member Functions,apiUploadEvidence,API,MANUAL,False,False,False,False,False
 Member Functions,apiUploadEvidencePublic,API,MANUAL,False,False,False,False,False
-Member Functions,apiUploadEvidenceViaN8n,API,MANUAL,True,False,False,False,False
+Member Functions,apiUploadEvidenceViaN8n,API,MANUAL,True,True,False,False,False
 Member Functions,qAgreementTemplatesByType,DB,MANUAL,True,True,True,False,False
 Member Functions,qAgreementTypesList,DB,MANUAL,True,True,True,False,False
 Member Functions,qApproveAgreement,DB,MANUAL,True,True,True,False,False
 Member Functions,qAssignMemberFacilitator,DB,MANUAL,True,True,True,False,False
 Member Functions,qAuditLogInsert,DB,MANUAL,True,True,True,True,False
+Member Functions,qCancelPaperUploadRequest,DB,MANUAL,True,True,True,False,False
 Member Functions,qCreatePendingAgreement,DB,MANUAL,True,True,True,False,False
 Member Functions,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
 Member Functions,qDeactivateMemberFacilitator,DB,MANUAL,True,True,True,False,False
@@ -212,7 +213,9 @@ Member Functions,qMemberWriteAccess,DB,MANUAL,True,True,True,False,False
 Member Functions,qMembersDirectory,DB,MANUAL,True,True,True,False,False
 Member Functions,qNavigationAccess,DB,MANUAL,True,True,True,False,False
 Member Functions,qNavigationTerminology,DB,MANUAL,False,False,False,False,False
+Member Functions,qNewPaperUploadRequest,DB,MANUAL,True,True,True,False,False
 Member Functions,qPageAccess,DB,MANUAL,True,True,True,False,False
+Member Functions,qPaperUploadReceipt,DB,MANUAL,True,True,True,False,False
 Member Functions,qPrimaryMemberEmail,DB,MANUAL,True,True,True,False,False
 Member Functions,qVerifyAgreement,DB,MANUAL,True,True,True,False,False
 Member Functions,qVerifyAgreementEmail,DB,MANUAL,True,True,True,True,False

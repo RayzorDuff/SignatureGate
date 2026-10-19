@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-19",
+  "appsmith_source": "2b969e7c55434c209fda73ed8d49f41d7912e9fe",
+  "backend_schema_runner": "aa21d675bc82eabbc52531c46dc7488da00a9115",
+  "ci": {
+    "run_id": 39235628457,
+    "url": "https://github.com/RayzorDuff/SignatureGate-Appsmith/actions/runs/39235628457",
+    "application_checks": "success",
+    "postgres_intake_concurrency": "success",
+    "postgres_version_num": 160013,
+    "paper_contract_and_reapplication": "passed",
+    "intake_concurrency_cases": [
+      "commit_replay",
+      "rollback_retry",
+      "payload_conflict",
+      "owner_conflict"
+    ],
+    "paper_specific_concurrency_exercised": false
+  },
+  "local": {
+    "application_full_suite": "passed",
+    "disposable_sql_suites": 6,
+    "workflow_actual_code_bodies": "passed_with_synthetic_input",
+    "candidate_export_preservation": "passed",
+    "backend_release_check": "passed",
+    "upgrade_draft_guard_tests": "passed",
+    "existing_native_identities_preserved": 499,
+    "accepted_navigation_source_and_startup_metadata_unchanged": true
+  },
+  "operator_accepted": {
+    "restored_navigation": true,
+    "agreement_type_and_template_selection": true,
+    "deferred_intake_and_receipt_recovery": true
+  },
+  "remaining": [
+    "test_migration_runtime",
+    "authenticated_test_workflow_and_storage_configuration",
+    "unauthenticated_live_route_denial",
+    "native_synthetic_no_email_upload_evidence_inspection_and_review",
+    "installed_owners_grants_and_protected_production_restore",
+    "remaining_external_integrations_and_release_dependency_promotion_packaging"
+  ],
+  "production_changed": false,
+  "privacy": "Technical source and pass/fail only. No operational screenshots, documents, contacts, names or storage/credential values recorded."
+}

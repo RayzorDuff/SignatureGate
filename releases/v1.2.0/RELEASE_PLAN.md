@@ -6,7 +6,7 @@ Prepared October 11, 2026, for SignatureGate #17, #18, #19, #20, and #23, and Si
 
 ## Execution progress
 
-Current checkpoint: unified Intake parity and duplicate-page retirement are implemented; the source/controller/four disposable-SQL suites and four real PostgreSQL 16.13 contention cases pass in pinned CI. Participant adoption on test is operator-confirmed. See [STATUS.md](STATUS.md) and [UNIFIED_INTAKE_VALIDATION.md](UNIFIED_INTAKE_VALIDATION.md) for current progress; the initial baseline findings below remain historical.
+Current checkpoint: deferred Intake/progress/receipt recovery, restored navigation and Participant agreement selectors are operator-accepted. Protected no-email paper upload, independent review and recovery/cancellation are implemented in development. Source/controller/six disposable-SQL checks and exact-source export preservation pass; the real PostgreSQL 16 runner includes the paper contract. Follow [PAPER_AGREEMENT_VALIDATION.md](PAPER_AGREEMENT_VALIDATION.md) for the focused service/native gap and [STATUS.md](STATUS.md) for remaining phases. The current production draft has 22 undecided entries and nine unverified environment proofs; initial findings below are historical.
 
 The release plan is committed on SignatureGate `main` at `f6372147cb247f6fc62410643e4bdc456d278ac6`.
 

@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Add protected paper agreement upload for Participants without email: authenticated/scoped n8n storage, bounded PDF/PNG/JPEG validation, pending independent reviewer approval, atomic saved receipts and audited cancellation/recovery without replaying uploads.
+
 - Restore copied navigation startup settings while preserving native JS identities. Show Participant agreement types, load matching active templates in canonical reviewer/assigned-practitioner scope, and prevent stale type/template selections after deferred Intake.
 
 - Retire duplicate legacy Intake and seventeen unused enrollment/helper/upload actions after unified parity checks. Correct canonical duplicate feedback for reviewers without Participant capacity, pin signing Manual mode, and reserve completion audit for the atomic transaction.

@@ -348,7 +348,7 @@ Member Functions,apiMarkProductUnShipped,API,N8N,MANUAL,False,airtable_record_id
 Member Functions,apiTriggerDocumenso,API,N8N,MANUAL,False,externalId;member_agreement_id,,/webhook/signaturegate/documenso/send,pages/Member Functions/queries/apiTriggerDocumenso/metadata.json
 Member Functions,apiUploadEvidence,API,NocoDB danks.store,MANUAL,False,,,/api/v2/storage/upload,pages/Member Functions/queries/apiUploadEvidence/metadata.json
 Member Functions,apiUploadEvidencePublic,API,NocoDB danks.store public,MANUAL,False,,,/api/v2/storage/upload,pages/Member Functions/queries/apiUploadEvidencePublic/metadata.json
-Member Functions,apiUploadEvidenceViaN8n,API,N8N,MANUAL,False,files,,/webhook/signaturegate/upload,pages/Member Functions/queries/apiUploadEvidenceViaN8n/metadata.json
+Member Functions,apiUploadEvidenceViaN8n,API,N8N,MANUAL,True,agreement_template_id;files;member_id;practitioner_person_id;request_id,,/webhook/signaturegate/paper-agreements,pages/Member Functions/queries/apiUploadEvidenceViaN8n/metadata.json
 Member Functions,_normalizeUploadResponse,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-_normalizeUploadResponse/metadata.json
 Member Functions,_requireAgreementTemplate,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-_requireAgreementTemplate/metadata.json
 Member Functions,_requireAgreementType,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-_requireAgreementType/metadata.json
@@ -379,6 +379,7 @@ Member Functions,qAgreementTypesList,DB,signaturegate-postgres-test,MANUAL,True,
 Member Functions,qApproveAgreement,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id;review_notes,application_review_agreement,,pages/Member Functions/queries/qApproveAgreement/metadata.json
 Member Functions,qAssignMemberFacilitator,DB,signaturegate-postgres-test,MANUAL,False,facilitator_id;notes,issue19_assign_member_practitioner,,pages/Member Functions/queries/qAssignMemberFacilitator/metadata.json
 Member Functions,qAuditLogInsert,DB,signaturegate-postgres-test,MANUAL,False,action;details_json;entity_id;entity_type;member_id,application_require_permission;audit_log,,pages/Member Functions/queries/qAuditLogInsert/metadata.json
+Member Functions,qCancelPaperUploadRequest,DB,signaturegate-postgres-test,MANUAL,True,member_id;practitioner_person_id;reason;request_id,application_cancel_paper_upload,,pages/Member Functions/queries/qCancelPaperUploadRequest/metadata.json
 Member Functions,qCreatePendingAgreement,DB,signaturegate-postgres-test,MANUAL,False,agreement_template_id;evidence_json;facilitator_id;member_email_id;member_id;signature_method;status,issue19_create_member_agreement,,pages/Member Functions/queries/qCreatePendingAgreement/metadata.json
 Member Functions,qCurrentFacilitator,DB,signaturegate-postgres-test,MANUAL,True,,application_access,,pages/Member Functions/queries/qCurrentFacilitator/metadata.json
 Member Functions,qDeactivateMemberFacilitator,DB,signaturegate-postgres-test,MANUAL,False,member_facilitator_id;notes,issue19_end_member_practitioner,,pages/Member Functions/queries/qDeactivateMemberFacilitator/metadata.json
@@ -393,7 +394,9 @@ Member Functions,qMemberWriteAccess,DB,signaturegate-postgres-test,MANUAL,False,
 Member Functions,qMembersDirectory,DB,signaturegate-postgres-test,MANUAL,True,,application_member_access,,pages/Member Functions/queries/qMembersDirectory/metadata.json
 Member Functions,qNavigationAccess,DB,signaturegate-postgres-test,MANUAL,True,,application_access,,pages/Member Functions/queries/qNavigationAccess/metadata.json
 Member Functions,qNavigationTerminology,DB,signaturegate-postgres-test,MANUAL,True,,issue20_organization_terminology,,pages/Member Functions/queries/qNavigationTerminology/metadata.json
+Member Functions,qNewPaperUploadRequest,DB,signaturegate-postgres-test,MANUAL,True,member_id,application_require_permission;uuid_generate_v4,,pages/Member Functions/queries/qNewPaperUploadRequest/metadata.json
 Member Functions,qPageAccess,DB,signaturegate-postgres-test,MANUAL,True,,application_access,,pages/Member Functions/queries/qPageAccess/metadata.json
+Member Functions,qPaperUploadReceipt,DB,signaturegate-postgres-test,MANUAL,True,request_id,application_paper_upload_receipt,,pages/Member Functions/queries/qPaperUploadReceipt/metadata.json
 Member Functions,qPrimaryMemberEmail,DB,signaturegate-postgres-test,MANUAL,False,,application_member_access,,pages/Member Functions/queries/qPrimaryMemberEmail/metadata.json
 Member Functions,qVerifyAgreement,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id;new_status;review_notes,application_review_agreement,,pages/Member Functions/queries/qVerifyAgreement/metadata.json
 Member Functions,qVerifyAgreementEmail,DB,signaturegate-postgres-test,MANUAL,False,member_agreement_id,application_access;application_require_permission,,pages/Member Functions/queries/qVerifyAgreementEmail/metadata.json
