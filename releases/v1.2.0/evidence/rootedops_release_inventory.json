@@ -31,5 +31,7 @@
   "note": "Current reviewed source and repository VERSION do not establish a released/deployed integration dependency.",
   "repository_version_tag_checked": "v1.5.25",
   "repository_version_tag_available": false,
-  "repository_version_tag_lookup_result": "NOT_FOUND"
+  "repository_version_tag_lookup_result": "NOT_FOUND",
+  "latest_release_rechecked_date": "2026-10-19",
+  "latest_release_rechecked_source": "https://api.github.com/repos/RayzorDuff/RootedOps/releases/latest"
 }

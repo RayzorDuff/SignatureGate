@@ -1,5 +1,7 @@
 # Reports and configured page-name validation
 
+Current successor: [UNIFIED_INTAKE_VALIDATION.md](UNIFIED_INTAKE_VALIDATION.md). The operator reports Participant adoption exit 0; do not repeat that configuration command. Apply the updated atomic API before pulling the unified development candidate. Earlier checkpoint instructions below are retained as provenance.
+
 October 19, 2026. Supersedes the earlier broad manual role/category checklist. The operator's accepted navigation and permissions are reused. This increment changes the saved report query/controller/presentation; it introduces no migration and grants no access.
 
 ## Definitions

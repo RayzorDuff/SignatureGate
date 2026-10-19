@@ -23,6 +23,8 @@ The operator confirms retained navigation on denied pages, clear Contributor cho
 
 ## Current operator request
 
+October 19 successor: follow [UNIFIED_INTAKE_VALIDATION.md](UNIFIED_INTAKE_VALIDATION.md). Participant adoption on test exits 0. Full CI at aca3d48/d85fecb passes 42 enrollment/controller cases and four actual lock-observed PostgreSQL 16.13 contention cases, plus prior rollback/replay/permission/report tests. Legacy Intake is retired from development. Only installed API activation and one deferred Intake/native entry observation are requested; older broad checklists below are historical.
+
 All-page navigation and the three-table presentation plus completion/reload/reset sequence are accepted in deployed development. Reload clearing form fields while retaining the completion notice/disabled button is correct; Reset clears the persistent guard. Do not repeat these unchanged tests.
 
 The active Intake API now provides database atomicity and durable owner/key/payload replay, with read-only receipt recovery. Source/controller/four disposable-SQL suites pass: 24 supported intakes, 14 complete server rollback/retry boundaries, eight atomic request/lost-response cases, account/owner/payload isolation and signing no-replay. Native Select captions, Directory Participant/Contributor buttons and profile text have default/alternate/legacy configuration checks; the read-only terminology table covers active and reserved concepts. Candidate preservation retains 18 pages, 514 actions, 32 collections, four datasource descriptors and one library.

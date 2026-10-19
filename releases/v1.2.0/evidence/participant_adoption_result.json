@@ -1,0 +1,16 @@
+{
+  "reported_date": "2026-10-19",
+  "reported_signaturegate_source": "4b697c9",
+  "database": "signaturegate_test",
+  "command": "validate_navigation_terminology_test.sh",
+  "exit_code": 0,
+  "evidence_kind": "operator_report",
+  "scope": [
+    "audited Participant presentation adoption",
+    "seed reapplication",
+    "rollback presentation checks"
+  ],
+  "actor_identity_recorded": false,
+  "atomic_intake_activation_reported": false,
+  "native_caption_acceptance_reported": false
+}

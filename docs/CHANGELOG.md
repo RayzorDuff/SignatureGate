@@ -4,6 +4,9 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Retire duplicate legacy Intake and seventeen unused enrollment/helper/upload actions after unified parity checks. Correct canonical duplicate feedback for reviewers without Participant capacity, pin signing Manual mode, and reserve completion audit for the atomic transaction.
+- Add disposable PostgreSQL 16.13 contract/reapplication and real concurrent-session CI, with bounded waiting, rollback/replay/conflict assertions and ownership-checked cleanup.
+
 - Add explicit deferred-agreement Intake with two contacts and practitioner assignment; no-email enrollment uses phone plus address, creates no agreement or signing request, and does not grant sacrament-release eligibility. Preserve atomic receipts and replay guards.
 
 - Prioritize explicit Contributor-linked donation reporting; add independent Participant/Contributor capacity creation counts with preserved historical creation events. Keep active-Participant linkage as an optional overlapping subset; apply configured labels to report rows/charts and verify configured navigation/current-page titles. Add a pinned-schema development CI suite.
@@ -41,7 +44,7 @@ Public release notes describe software behavior and technical contracts. Rooted 
 - Restore staged Intake and digital-signing feedback, and add ERP/mailing progress that distinguishes saved records, queued requests and confirmed external completion.
 - Repair Terminology page-load initialization with account-bound access state; retry one transient read-only Cash/Terminology startup failure without retrying writes.
 - Honor Intake mailing consent, reuse shared Participant/Contributor phone/address roles, bind Intake audit actor to sign-in and guard profile mailing changes by selected identity and signed authority.
-- Block paper Intake and retained legacy paper Intake before record creation pending integration validation; warn clearly when a later Intake/signing step fails after saving records.
+- Block paper Intake before record creation pending integration validation; warn clearly when a later Intake/signing step fails after saving records.
 
 - Hide context-dependent profiles from direct navigation, require explicit Directory/deep-link selection and isolate stale account/route loads.
 
@@ -74,7 +77,7 @@ Public release notes describe software behavior and technical contracts. Rooted 
 ### Changed
 
 - Consolidated database bootstrap definitions and retained only reviewed forward deployment changes; added explicit deployment seeds.
-- Separated identity/profile administration from capacity-specific operational pages; legacy entry points remain until parity is accepted.
+- Separated identity/profile administration from capacity-specific operational pages; the duplicate legacy Intake entry is retired after unified parity checks.
 - Made contact-method validation and capacity enrollment independent from identity notes and operational appointments.
 - Preserved compatibility identifiers and historical signed-document references while preparing Participant/practitioner presentation changes.
 - Documented the external accounting/reconciliation dependency and separate operational versus accounting authority.

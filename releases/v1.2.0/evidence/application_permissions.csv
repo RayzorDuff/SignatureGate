@@ -174,35 +174,18 @@ Individual Profile,qUnsubscribeIndividualEmail,DB,MANUAL,True,True,True,False,Fa
 Individual Profile,qUpdateIndividualPartyIdentity,DB,MANUAL,True,True,True,False,False
 Individual Profile,qVerifyIndividualEmail,DB,MANUAL,True,True,True,True,False
 Intake,apiTriggerDocumenso,API,MANUAL,True,False,False,False,False
-Intake,apiUploadEvidenceViaN8n,API,MANUAL,True,False,False,False,False
-Intake,qAddContributorAddress,DB,MANUAL,True,True,True,False,False
-Intake,qAddContributorEmailForDualCapacity,DB,MANUAL,True,True,True,False,False
-Intake,qAddMemberEmail,DB,MANUAL,True,True,True,True,False
-Intake,qAddMemberPhone,DB,MANUAL,True,True,True,True,False
-Intake,qAddMembershipAddress,DB,MANUAL,True,True,True,False,False
 Intake,qAgreementTemplatesByType,DB,AUTOMATIC,True,True,True,False,False
 Intake,qAgreementTypesList,DB,AUTOMATIC,True,True,True,False,False
-Intake,qAssignIntakeContactRole,DB,MANUAL,True,True,True,False,False
-Intake,qAssignMemberPractitioner,DB,MANUAL,True,True,True,False,False
-Intake,qAssignPersonContactRole,DB,MANUAL,True,True,True,False,False
 Intake,qAuditLog,DB,MANUAL,True,True,True,True,False
-Intake,qCheckContributorListmonkQueue,DB,MANUAL,True,True,True,False,False
 Intake,qCheckMemberDuplicate,DB,MANUAL,True,True,True,False,False
-Intake,qCreateContributor,DB,MANUAL,True,True,True,False,False
-Intake,qCreateIntakeAgreement,DB,MANUAL,True,True,True,False,False
-Intake,qCreateMember,DB,MANUAL,True,True,True,False,False
 Intake,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
-Intake,qEnablePersonContributor,DB,MANUAL,True,True,True,False,False
-Intake,qGetMemberPerson,DB,MANUAL,True,True,True,False,False
 Intake,qIntakeActorRoles,DB,AUTOMATIC,True,True,True,False,False
 Intake,qIntakeRequestStatus,DB,MANUAL,True,True,True,False,False
-Intake,qLinkContributorMember,DB,MANUAL,True,True,True,False,False
 Intake,qListFacilitators,DB,AUTOMATIC,True,True,True,False,False
 Intake,qNavigationAccess,DB,MANUAL,True,True,True,False,False
 Intake,qNavigationTerminology,DB,MANUAL,False,False,False,False,False
 Intake,qNewIntakeRequest,DB,MANUAL,True,True,True,False,False
 Intake,qPageAccess,DB,MANUAL,True,True,True,False,False
-Intake,qSetIntakeIdentityNotes,DB,MANUAL,True,True,True,False,False
 Intake,qSubmitAtomicIntake,DB,MANUAL,True,True,True,False,False
 Member Functions,apiCancelDocumensoAgreement,API,MANUAL,True,True,False,False,False
 Member Functions,apiMarkProductUnShipped,API,MANUAL,True,False,False,False,False
@@ -234,23 +217,6 @@ Member Functions,qPrimaryMemberEmail,DB,MANUAL,True,True,True,False,False
 Member Functions,qVerifyAgreement,DB,MANUAL,True,True,True,False,False
 Member Functions,qVerifyAgreementEmail,DB,MANUAL,True,True,True,True,False
 Member Functions,qVoidRelease,DB,MANUAL,True,True,True,True,False
-Members – Intake,apiTriggerDocumenso,API,MANUAL,True,False,False,False,False
-Members – Intake,apiUploadEvidence,API,MANUAL,False,False,False,False,False
-Members – Intake,apiUploadEvidenceViaN8n,API,MANUAL,True,False,False,False,False
-Members – Intake,qAddMemberEmailForNewMember,DB,MANUAL,True,True,True,True,False
-Members – Intake,qAddMemberPhoneForNewMember,DB,MANUAL,True,True,True,True,False
-Members – Intake,qAgreementTemplatesByType,DB,AUTOMATIC,True,True,True,False,False
-Members – Intake,qAgreementTypesList,DB,AUTOMATIC,True,True,True,False,False
-Members – Intake,qAssignMemberFacilitator,DB,MANUAL,True,True,True,True,False
-Members – Intake,qAuditLogInsert,DB,MANUAL,True,False,False,True,False
-Members – Intake,qCheckMemberDuplicate,DB,MANUAL,True,True,True,False,False
-Members – Intake,qCreateMember,DB,MANUAL,True,True,True,False,False
-Members – Intake,qCreatePendingAgreement,DB,MANUAL,True,True,True,False,False
-Members – Intake,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
-Members – Intake,qListFacilitators,DB,AUTOMATIC,True,True,True,False,False
-Members – Intake,qNavigationAccess,DB,MANUAL,True,True,True,False,False
-Members – Intake,qNavigationTerminology,DB,MANUAL,False,False,False,False,False
-Members – Intake,qPageAccess,DB,MANUAL,True,True,True,False,False
 Reports,qCurrentFacilitator,DB,MANUAL,True,True,True,False,False
 Reports,qNavigationAccess,DB,MANUAL,True,True,True,False,False
 Reports,qNavigationTerminology,DB,MANUAL,False,False,False,False,False

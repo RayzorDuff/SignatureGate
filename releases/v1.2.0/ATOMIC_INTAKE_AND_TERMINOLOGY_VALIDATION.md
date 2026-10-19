@@ -1,5 +1,7 @@
 # Atomic Intake and terminology validation
 
+Current successor: [UNIFIED_INTAKE_VALIDATION.md](UNIFIED_INTAKE_VALIDATION.md). The operator reports Participant adoption exit 0; do not repeat that configuration command. Apply the updated atomic API before pulling the unified development candidate. Earlier checkpoint instructions below are retained as provenance.
+
 October 18, 2026. Prior deployed presentation, staged feedback, completion/reload/reset and all-page navigation results are accepted. Do not repeat those matrices. This increment changes the database write boundary and adds terminology controls; it introduces one test migration and a narrow runtime observation.
 
 ## Published checkpoints and behavior

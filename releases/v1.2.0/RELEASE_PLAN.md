@@ -6,6 +6,8 @@ Prepared October 11, 2026, for SignatureGate #17, #18, #19, #20, and #23, and Si
 
 ## Execution progress
 
+Current checkpoint: unified Intake parity and duplicate-page retirement are implemented; the source/controller/four disposable-SQL suites and four real PostgreSQL 16.13 contention cases pass in pinned CI. Participant adoption on test is operator-confirmed. See [STATUS.md](STATUS.md) and [UNIFIED_INTAKE_VALIDATION.md](UNIFIED_INTAKE_VALIDATION.md) for current progress; the initial baseline findings below remain historical.
+
 The release plan is committed on SignatureGate `main` at `f6372147cb247f6fc62410643e4bdc456d278ac6`.
 
 Phase 1 source/issue inventory is recorded in [PHASE_1_AUDIT.md](PHASE_1_AUDIT.md), with a 97-row [acceptance ledger](ACCEPTANCE_LEDGER.csv), [environment/migration inventory](ENVIRONMENT_AND_MIGRATIONS.md), and [changelog audit](CHANGELOG_AUDIT.md). Its live deployment exit gate remains open until test/production catalogs and deployed revisions are compared.
@@ -105,11 +107,11 @@ Production database state, deployed n8n/RootedOps versions, Appsmith runtime lin
 - Test legacy participant-note migration to people, preservation of existing identity notes and original participant notes, safe reapplication, blank/changed/cleared notes, required reasons, and access/audit behavior. Behavioral/backfill/permission/failure checks are now implemented and pass in isolation; run the live test sequence in NOTES_VALIDATION_COMMANDS.md and rehearse against restored production.
 - Verify membership can be added or ended without changing contributor IDs or historical donations, agreements, and audit records. Contributor status changes must not silently change membership.
 - Verify all Givebutter resolution options: existing individual/company contributor, linked participant, new individual/company contributor, new participant with linked contributor, and ignore/reject as appropriate. Ambiguous provider matches must remain unresolved.
-- Complete reporting categories required by #19: individual, organization, anonymous, unresolved, and currently linked/unlinked identities. Six implemented count/dollar groups cover overall, individual, company, anonymous, unresolved and Participant-linked contributions; actual query math and financial-scope checks pass. Preserve this automated evidence and validate any changed reporting dependency.
+- Complete reporting categories required by #19: individual, organization, anonymous, unresolved, and currently linked/unlinked identities. Seven count/dollar groups cover overall, Contributor-linked, individual, company, anonymous, unresolved and optional Participant-linked contributions, plus independent Participants Created/Contributors Created. Actual query math and financial-scope checks pass. Preserve this automated evidence and validate any changed reporting dependency.
 - Review canonical actor authorization across `Reports`, `Agreement Templates`, cash entry, review, and deposits. Some queries still require a legacy active participant/Facilitator/Spiritual Practitioner identity; test reviewers and practitioners whose canonical person account has no active membership.
 - Restore/verify a scoped manual-cash entry path for practitioner-only users and read-only donation history for assigned participants. Canonical assigned-practitioner entry, scoped cash/history and denial of anonymous/global financial access are implemented and exercised automatically; remaining deployed integration boundaries stay open.
 - Implement Appsmith #2 with an authoritative authorization check and atomic audit on creation. Verify duplicate type keys and empty Agreement Type setup.
-- Remove `Members – Intake` only after all parity cases pass. Audit page links, selectors, SQL actions, JS registrations, and application page entries afterward. Retain email reads needed for agreement delivery; remove obsolete actions only after checking their consumers.
+- Unified parity and legacy `Members – Intake` retirement are implemented in development: 42 SQL/controller enrollment cases, clean menu/native page entries, seventeen unused active-Intake actions removed and exact-source export verified. Confirm the bounded installed API/pull/Deploy outcome before production promotion. Paper delivery remains a separate unresolved integration gate.
 
 **Exit gate:** required participant/contributor/company workflows work on the test database; legacy `Intake` adds no essential capability; Appsmith #2 passes all six acceptance criteria.
 
@@ -169,7 +171,7 @@ Appsmith checks must include all active pages, empty table results, and denied-a
 
 Build an explicit dependency-ordered manifest; do not blindly run every migration alphabetically. Earlier files use CREATE OR REPLACE FUNCTION and can overwrite later behavior when replayed out of order.
 
-The initial Phase 1 migration snapshot contained **15 files**. The current source has **19 candidates**, including Agreement Type administration, canonical application authorization, provider administration and company contact people. Current checksums/prerequisites are maintained in CURRENT_MIGRATION_CANDIDATES.md; the initial snapshot is historical evidence. The original candidates are below; inclusion here does not establish whether they are pending in production:
+The initial Phase 1 migration snapshot contained **15 files**. The current source has **20 candidates**, including Agreement Type administration, canonical application authorization, provider administration and company contact people. Current checksums/prerequisites are maintained in CURRENT_MIGRATION_CANDIDATES.md; the initial snapshot is historical evidence. The original candidates are below; inclusion here does not establish whether they are pending in production:
 
 | Area | Candidate migration files |
 | --- | --- |

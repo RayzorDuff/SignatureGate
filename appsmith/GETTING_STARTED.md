@@ -52,17 +52,17 @@ Canonical `person_roles` are stable contracts. Their configured labels do not gr
 - `donations_reviewer`: contribution review and organization-wide financial operations;
 - `practitioner`: assigned participant operations within permitted scope.
 
-Canonical pages can authorize people without membership. Reports and Agreement Templates now use canonical actors without requiring Participant capacity. Some remaining legacy page/helper paths still depend on a participant-ID projection; resolving those paths is v1.2.0 release work. Do not grant a broad reviewer role just to bypass a legacy access check.
+Canonical pages can authorize people without membership. Reports and Agreement Templates now use canonical actors without requiring Participant capacity. Retained compatibility IDs do not establish actor authority. Unified Intake duplicate lookup also uses canonical roles without requiring reviewer Participant capacity. Do not grant a broad reviewer role just to bypass a legacy access check.
 
 Wait for `appsmith.user.email` before querying an actor. Pass the authenticated email directly or as `this.params.email`, rather than a form-controlled value. Distinguish a denied actor from a query failure. Verify positive and negative roles on each active page after Git pull/reload.
 
 ## `Directory`, profiles and operations
 
-`Directory` selects a canonical individual or company and passes its identity ID to `Individual Profile` or `Company Profile`. Profiles operate on that selected identity. Navigation grouping and visibility are release work; [SCREENS.md](SCREENS.md) will be finalized after navigation acceptance.
+`Directory` selects a canonical individual or company and passes its identity ID to `Individual Profile` or `Company Profile`. Profiles operate on that selected identity. Grouped navigation is operator-accepted; [SCREENS.md](SCREENS.md) describes the current development page set.
 
 Profiles administer identity, contacts, capacity, roles and reasoned notes according to permissions. Contributor capacity is independent of membership; a company does not gain Participant capacity. Contact values alone do not merge identities. Shared contacts, archival, primary promotion and cross-capacity reassignment use reviewed APIs.
 
-`Member Functions` and `Contributor Functions` remain operational entry points for their corresponding capacities. Practitioner Functions owns practitioner-specific administration. Legacy `Members – Intake` remains until the new `Intake` passes parity checks; do not delete it ahead of acceptance.
+`Member Functions` and `Contributor Functions` remain operational entry points for their corresponding capacities. Practitioner Functions owns practitioner-specific administration. The duplicate legacy Intake page is retired from development after unified controller/SQL parity checks. Apply the updated atomic API before pulling the frontend; follow [UNIFIED_INTAKE_VALIDATION.md](../releases/v1.2.0/UNIFIED_INTAKE_VALIDATION.md).
 
 `Intake` requires the accepted contact-method validation and records notes at the individual/company identity level. Follow [the notes validation sequence](../releases/v1.2.0/NOTES_VALIDATION_COMMANDS.md) to verify historical migration, edits, clears and reruns on test.
 

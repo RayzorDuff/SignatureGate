@@ -89,3 +89,5 @@ Effective function/view dispositions and the confirmed development datasource ob
 ## Conditional manifest preparation
 
 UPGRADE_MANIFEST_DRAFT.json and UPGRADE_MANIFEST_REVIEW.md pin current retained sources and prevent legacy helper replay after canonical authorization. All selected/skipped dispositions and final environment proofs remain undecided. The read-only validator checks graph/checksum/review structure only; no production SQL is executed and no missing canonical forward change is assumed away. Current RootedOps source comparison preserves prior four-component review, while Frappe execution/deployment acceptance remains open.
+
+October 19: the atomic Intake source/schema checksum now includes explicit Later agreement timing; its test runner covers 24 existing plus 18 deferred enrollments. Fresh PostgreSQL 16.13 CI verifies reapplication, the contract and four lock-observed concurrency cases. This does not establish current production applied state, owner/grants, or restored-copy upgrade. Participant presentation adoption on test is operator-reported exit 0; no other installed API activation is inferred.
