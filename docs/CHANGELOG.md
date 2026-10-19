@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Add explicit deferred-agreement Intake with two contacts and practitioner assignment; no-email enrollment uses phone plus address, creates no agreement or signing request, and does not grant sacrament-release eligibility. Preserve atomic receipts and replay guards.
+
 - Prioritize explicit Contributor-linked donation reporting; add independent Participant/Contributor capacity creation counts with preserved historical creation events. Keep active-Participant linkage as an optional overlapping subset; apply configured labels to report rows/charts and verify configured navigation/current-page titles. Add a pinned-schema development CI suite.
 
 - Commit active Intake enrollment stages, pending agreement, audit and mailing queue entries in one transaction; add durable owner/key/payload receipts and read-only recovery without replaying signing.

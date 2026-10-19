@@ -2,7 +2,7 @@
   "state": "draft_non_executable",
   "release": "SignatureGate v1.2.0",
   "purpose": "Conditional source ordering and checksum pinning only. Do not execute all entries. Each needs a reviewed selected/skipped disposition.",
-  "canonical_schema_sha256": "a636f8bf87c8427d38f8377379140a9b1b756da12286ac4e9d6d0a2417d899b5",
+  "canonical_schema_sha256": "6d8a2a4320e39b0cb6e0bdad82f1a68edf3c54cf6c0aef8f77f78b6afbde55fc",
   "required_environment_proofs": {
     "canonical_base_and_missing_forward_changes_reviewed": false,
     "current_production_effective_definitions_reviewed": false,
@@ -391,7 +391,7 @@
     {
       "id": "atomic_intake",
       "path": "db/migrations/atomic_intake.sql",
-      "sha256": "ff9f470b1562e67e58ae007e79e9e843b8ebcf3ad92ab8fe8d7f2de8b030b879",
+      "sha256": "4017f60ea2fbb766c9e095cb3c87a9ae4c2be5aefb7e734f6fe20caa8a4b01bd",
       "after": [
         "application_authorization",
         "contributor_mailing",

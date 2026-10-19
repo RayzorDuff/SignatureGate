@@ -55,7 +55,7 @@ DECLARE
  member_enabled boolean; contributor_enabled boolean; member_subscribe boolean; contributor_subscribe boolean;
  kind text; first_name text; last_name text; company_name text; email text; phone text; dob date;
  address text; city text; state text; postal text; notes text; reason text; field text;
- practitioner uuid; template uuid; agreement_type text; participant uuid; person uuid; organization uuid;
+ practitioner uuid; template uuid; agreement_type text; delivery text; participant uuid; person uuid; organization uuid;
  contributor uuid; email_id uuid; phone_id uuid; address_id uuid; agreement uuid; created record;
 BEGIN
  IF p_request_id IS NULL OR jsonb_typeof(p_payload) IS DISTINCT FROM 'object' THEN
@@ -112,13 +112,17 @@ BEGIN
  IF kind='individual' THEN dob:=NULLIF(p_payload->>'date_of_birth','')::date;
  ELSIF NULLIF(p_payload->>'date_of_birth','') IS NOT NULL THEN RAISE EXCEPTION 'Date of birth is an individual field'; END IF;
  IF member_enabled THEN
-  IF p_payload->>'agreement_delivery' IS DISTINCT FROM 'Digital' THEN RAISE EXCEPTION 'Only validated digital Intake is enabled; paper remains blocked'; END IF;
+  delivery:=p_payload->>'agreement_delivery';
+  IF delivery IS NULL OR delivery NOT IN ('Digital','Later') THEN RAISE EXCEPTION 'Choose Digital or create agreement Later; paper remains blocked'; END IF;
   practitioner:=NULLIF(p_payload->>'practitioner_person_id','')::uuid;
-  template:=NULLIF(p_payload->>'agreement_template_id','')::uuid;agreement_type:=NULLIF(btrim(p_payload->>'agreement_type'),'');
-  IF email IS NULL OR practitioner IS NULL OR template IS NULL OR agreement_type IS NULL THEN RAISE EXCEPTION 'Digital agreement email, practitioner, type and template required'; END IF;
-  IF NOT EXISTS(SELECT 1 FROM public.agreement_templates t JOIN public.agreement_types a
-   ON a.type_key=agreement_type AND a.active WHERE t.agreement_template_id=template AND t.active AND agreement_type=ANY(t.required_for)) THEN
-   RAISE EXCEPTION 'Active matching agreement type and template required';
+  IF practitioner IS NULL THEN RAISE EXCEPTION 'Participant practitioner assignment required'; END IF;
+  IF delivery='Digital' THEN
+   template:=NULLIF(p_payload->>'agreement_template_id','')::uuid;agreement_type:=NULLIF(btrim(p_payload->>'agreement_type'),'');
+   IF email IS NULL OR template IS NULL OR agreement_type IS NULL THEN RAISE EXCEPTION 'Digital agreement email, practitioner, type and template required'; END IF;
+   IF NOT EXISTS(SELECT 1 FROM public.agreement_templates t JOIN public.agreement_types a
+    ON a.type_key=agreement_type AND a.active WHERE t.agreement_template_id=template AND t.active AND agreement_type=ANY(t.required_for)) THEN
+    RAISE EXCEPTION 'Active matching agreement type and template required';
+   END IF;
   END IF;
  END IF;
  IF member_enabled THEN
@@ -153,8 +157,10 @@ BEGIN
    IF address_id IS NOT NULL THEN PERFORM public.issue19_assign_person_contact_role(p_actor_email,person,'member_addresses',address_id,reason); END IF;
    PERFORM public.application_link_capacities(p_actor_email,contributor,participant,reason);
   END IF;
-  SELECT member_agreement_id INTO STRICT agreement FROM public.issue19_create_member_agreement(
-   p_actor_email,participant,practitioner,template,'documenso','pending_email_send','[]'::jsonb,email_id);
+  IF delivery='Digital' THEN
+   SELECT member_agreement_id INTO STRICT agreement FROM public.issue19_create_member_agreement(
+    p_actor_email,participant,practitioner,template,'documenso','pending_email_send','[]'::jsonb,email_id);
+  END IF;
  ELSE
   SELECT * INTO STRICT created FROM public.issue19_create_contributor_with_mailing(p_actor_email,kind,first_name,last_name,company_name,email,phone,reason,contributor_subscribe);
   contributor:=created.contributor_id;
@@ -167,7 +173,8 @@ BEGIN
  END IF;
  v_result:=jsonb_build_object('request_id',p_request_id,'state','committed','member_id',participant,'person_id',person,
   'organization_id',organization,'contributor_id',contributor,'agreement_id',agreement,
-  'participant_enrolled',member_enabled,'contributor_enrolled',contributor_enabled);
+  'participant_enrolled',member_enabled,'contributor_enrolled',contributor_enabled,
+  'agreement_deferred',COALESCE(member_enabled AND delivery='Later',false));
  INSERT INTO public.audit_log(actor,action,entity_type,entity_id,details)
  VALUES(lower(btrim(p_actor_email)),'intake.completed',kind,COALESCE(participant,contributor)::text,
   v_result||jsonb_build_object('actor_person_id',actor,'page','Intake'));
@@ -176,5 +183,5 @@ BEGIN
 END;
 $intake$;
 COMMENT ON FUNCTION public.application_submit_intake(text,uuid,jsonb) IS
- 'One atomic new-party Intake transaction, including mailing queue/audit and pending digital agreement. Same owner/key/payload replays the committed technical receipt. No external delivery is performed.';
+ 'One atomic new-party Intake transaction, including mailing queue/audit and a pending digital agreement only when requested. Same owner/key/payload replays the committed technical receipt. No external delivery is performed.';
 COMMIT;
