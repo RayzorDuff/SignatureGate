@@ -348,7 +348,7 @@ Member Functions,apiMarkProductUnShipped,API,N8N,MANUAL,False,airtable_record_id
 Member Functions,apiTriggerDocumenso,API,N8N,MANUAL,False,externalId;member_agreement_id,,/webhook/signaturegate/documenso/send,pages/Member Functions/queries/apiTriggerDocumenso/metadata.json
 Member Functions,apiUploadEvidence,API,NocoDB danks.store,MANUAL,False,,,/api/v2/storage/upload,pages/Member Functions/queries/apiUploadEvidence/metadata.json
 Member Functions,apiUploadEvidencePublic,API,NocoDB danks.store public,MANUAL,False,,,/api/v2/storage/upload,pages/Member Functions/queries/apiUploadEvidencePublic/metadata.json
-Member Functions,apiUploadEvidenceViaN8n,API,N8N,MANUAL,True,agreement_template_id;files;member_id;practitioner_person_id;request_id,,/webhook/signaturegate/paper-agreements,pages/Member Functions/queries/apiUploadEvidenceViaN8n/metadata.json
+Member Functions,apiUploadEvidenceViaN8n,API,N8N,MANUAL,True,files,,/webhook/signaturegate/paper-agreements,pages/Member Functions/queries/apiUploadEvidenceViaN8n/metadata.json
 Member Functions,_normalizeUploadResponse,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-_normalizeUploadResponse/metadata.json
 Member Functions,_requireAgreementTemplate,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-_requireAgreementTemplate/metadata.json
 Member Functions,_requireAgreementType,JS,UNUSED_DATASOURCE,MANUAL,False,,,,pages/Member Functions/queries/memberProfile-_requireAgreementType/metadata.json

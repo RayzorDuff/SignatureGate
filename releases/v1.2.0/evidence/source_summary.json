@@ -1,14 +1,14 @@
 {
-  "appsmith_revision": "2b969e7c55434c209fda73ed8d49f41d7912e9fe",
-  "appsmith_tree_sha": "6f7ff478ba0924a493b23231bf5556a66d6e5e90",
-  "signaturegate_source_revision": "aa21d675bc82eabbc52531c46dc7488da00a9115",
-  "canonical_schema_sha256": "fc2d36c8e3746e890e602c53c71b39d7ada8e81536e935fd6f7a42bf832b6544",
+  "appsmith_revision": "6bee614f1a4480cb35ba8986abf1642ed1b54e5f",
+  "appsmith_tree_sha": "58c6985139aa89e6b986307a444aba9fefee712e",
+  "signaturegate_source_revision": "575d4c4b470065f574c5672dfb1ec39ba29d7e29",
+  "canonical_schema_sha256": "d79eab3f235c343076bc4dd307de6d1ab92892ee85c1826ac024978d3a265de1",
   "terminology_seed_sha256": "4f6b48262c6c7eac229671fa036d8539c7d38c8cc5b99730998ef6fedaa7d18d",
   "appsmith_worktree_dirty": false,
   "signaturegate_worktree_dirty": true,
   "baseline_v1_1_0": "654b02c00dd39165a65a6ab3aebd28455264b70a",
-  "commits_since_v1_1_0": 218,
-  "json_files": 975,
+  "commits_since_v1_1_0": 221,
+  "json_files": 976,
   "pages": 17,
   "actions": 472,
   "js_objects": 30,
@@ -85,6 +85,14 @@
     "revive_cash_donation_from_deposit": [
       "cash_donation_reconciliation_revive.sql",
       "cash_donation_reconciliation_revive.sql"
+    ],
+    "application_begin_paper_upload": [
+      "paper_agreement_upload.sql",
+      "paper_evidence_storage.sql"
+    ],
+    "application_complete_paper_upload": [
+      "paper_agreement_upload.sql",
+      "paper_evidence_storage.sql"
     ]
   },
   "live_environment_verified": false

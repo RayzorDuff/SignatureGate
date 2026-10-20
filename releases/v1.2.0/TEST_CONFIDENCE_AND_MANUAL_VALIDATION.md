@@ -23,7 +23,7 @@ The operator confirms retained navigation on denied pages, clear Contributor cho
 
 ## Current operator request
 
-October 19 paper follow-up: restored navigation and Agreement Type/template selection are now operator-accepted. Do not repeat those or Intake. Follow [PAPER_AGREEMENT_VALIDATION.md](PAPER_AGREEMENT_VALIDATION.md): test-only migration/reapplication/rollback runner, protected test workflow configuration, one unauthenticated HTTP denial and one synthetic no-email upload/inspection/approval. The six disposable-SQL suites, actual workflow Code-body checks and actual paper controller cases cover the negative scope/content/replay/recovery matrix automatically. Installed storage/retrieval and native controls remain distinct.
+October 19–20 Drive follow-up: navigation/selectors/Intake remain accepted. Preserve the operator's Header Auth changes. Follow [GOOGLE_DRIVE_PAPER_VALIDATION.md](GOOGLE_DRIVE_PAPER_VALIDATION.md): updated test-only SQL runner, private Google OAuth/folder and RootedOps environment wiring, then one synthetic Drive upload/retrieval/review. Source/controller/actual API-body and workflow Code checks cover both providers, array transport, no-null/missing parameters, authority, old receipt migration/replay and controlled links. PostgreSQL 16.13 CI passes. Do not repeat the broad negative matrix or ask for document data/configuration in returned evidence.
 
 All-page navigation and the three-table presentation plus completion/reload/reset sequence are accepted in deployed development. Reload clearing form fields while retaining the completion notice/disabled button is correct; Reset clears the persistent guard. Do not repeat these unchanged tests.
 

@@ -1,4 +1,6 @@
-# No-email paper agreement: test rollout and focused validation
+# No-email paper agreement: earlier test rollout and validation
+
+**Current sequence:** [Google Drive storage and corrected file transport](GOOGLE_DRIVE_PAPER_VALIDATION.md) supersedes the provider-specific setup below. It uses the same updated test runner, preserves Header Auth, updates the existing paper workflow in place and requests one Drive upload/retrieval/review. The older generic uploader remains available for legacy callers.
 
 October 19, 2026. The operator accepts restored navigation and Agreement Type/template selection at Appsmith 0f8452c. Deferred Intake, its progress and saved-receipt lookup remain accepted. Do not repeat those tests.
 

@@ -94,3 +94,6 @@ October 19: the atomic Intake source/schema checksum now includes explicit Later
 
 
 October 19 paper increment: backend aa21d67/Appsmith 2b969e7 require the new protected development n8n workflow, test Postgres/storage credentials and matching private webhook header. No datasource descriptor is added and all existing native IDs are retained. Installed activation/denial/retrieval evidence is pending. The current manifest has 22 undecided entries, including paper_agreement_upload.sql; see PAPER_AGREEMENT_VALIDATION.md. No production replay or credential switch is authorized by fresh CI.
+
+
+Drive option: private Google OAuth and the configured My Drive folder are a separate evidence boundary, with no automated public sharing. RootedOps 1.5.26 forwards SIGNATUREGATE_PAPER_DRIVE_FOLDER_ID and SIGNATUREGATE_PAPER_STORAGE_PROVIDER into n8n; the UI sends its explicit choice. paper_evidence_storage.sql follows the base paper migration. The current 23-entry draft remains non-executable. Header Auth is operator-reported across all workflows and preserved in source; OAuth/storage access and installed environment still require acceptance.

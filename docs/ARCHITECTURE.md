@@ -17,6 +17,7 @@ flowchart TD
   P --> N
   N --> D[Documenso]
   N --> F[NocoDB evidence storage]
+  N --> G[Private Google Drive storage]
   N --> M[MushroomProcess inventory]
   N --> L[Listmonk]
   N --> E[RootedOps and ERPNext]
@@ -68,3 +69,5 @@ Guarded database changes must commit their audit records atomically; audit failu
 Fresh databases bootstrap from `db/schema.sql`, then use explicit deployment seeds such as `db/seeds/organization_terminology.sql`. Existing databases require a reviewed forward manifest and restored-copy rehearsal. Raw records, amounts, names, contacts, account identifiers, product information, screenshots and integration mappings remain outside Git. Public release evidence records sanitized findings, technical identifiers, software versions, source SHAs and validation status.
 
 Paper evidence uses the protected n8n/NocoDB route described in [PAPER_AGREEMENT_UPLOAD.md](../n8n/PAPER_AGREEMENT_UPLOAD.md). PostgreSQL authorizes and reserves the owner-scoped request before storage; completion atomically saves the paper agreement/evidence/receipt/audit in pending_review. Document bytes stay in evidence storage, and paper review remains independent of email/Documenso. A cancellation tombstone prevents delayed completion; an external orphan file requires private reconciliation.
+
+Paper evidence can use private Google Drive or retained NocoDB storage. PostgreSQL remains the authority and metadata/receipt registry; the reserved provider cannot change on replay. Google file-ID links respect separate Drive folder permissions. The OAuth account and folder mapping are private n8n configuration, with RootedOps 1.5.26 forwarding the folder/default-provider variables. See [Google Drive paper storage](../n8n/GOOGLE_DRIVE_PAPER_STORAGE.md). The legacy generic NocoDB uploader remains available to older callers.

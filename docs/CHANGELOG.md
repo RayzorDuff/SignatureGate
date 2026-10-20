@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Add optional private Google Drive paper storage with retained NocoDB references, provider-bound request replay and controlled file-ID links. Repair complete JSON serialization so paper files remain an array with Base64 content; preserve synchronized Header Auth and existing native identities.
+
 - Add protected paper agreement upload for Participants without email: authenticated/scoped n8n storage, bounded PDF/PNG/JPEG validation, pending independent reviewer approval, atomic saved receipts and audited cancellation/recovery without replaying uploads.
 
 - Restore copied navigation startup settings while preserving native JS identities. Show Participant agreement types, load matching active templates in canonical reviewer/assigned-practitioner scope, and prevent stale type/template selections after deferred Intake.

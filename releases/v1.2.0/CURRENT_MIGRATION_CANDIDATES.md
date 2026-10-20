@@ -45,3 +45,6 @@ The unreleased atomic Intake API also accepts explicit `Later` agreement timing.
 ## Protected paper agreement upload
 
 `paper_agreement_upload.sql` adds private request receipts, canonical permission/assignment/on-behalf checks before storage, atomic evidence/agreement/audit completion and reasoned cancellation/review guards. No email or Documenso operation is required. Apply twice and run rollback-only verify_paper_agreement_upload.sql on test using validate_paper_agreement_test.sh before configuring the new authenticated workflow and pulling the frontend. Draft checksums are pinned; the 22-entry draft remains non-executable. Production invoker grants, isolated storage and restore/rehearsal remain mandatory.
+
+
+`paper_evidence_storage.sql` follows paper_agreement_upload.sql and preserves the old receipt/hash/evidence contract while adding provider-specific references. The existing test-only runner applies both in order and both rollback suites. The latest manifest has 23 undecided entries; no production sequence is approved. See GOOGLE_DRIVE_PAPER_VALIDATION.md for the selected-provider rollout.
