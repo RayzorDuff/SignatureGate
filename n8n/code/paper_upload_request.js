@@ -1,7 +1,14 @@
 // Authenticated webhook only. Normalize a single bounded document before any database/storage write.
-const storage=String($env.NOCODB_BASE_URL || '').trim();
-if(!/^https?:\/\/[^/?#@\s]+(?:\/[^?#]*)?$/.test(storage))throw Error('A reviewed NOCODB_BASE_URL is required');
 const body=$json.body ?? $json;
+const provider=String(body.storage_provider || $env.SIGNATUREGATE_PAPER_STORAGE_PROVIDER || 'nocodb');
+if(!['nocodb','google_drive'].includes(provider))throw Error('Choose Google Drive or NocoDB paper storage');
+if(provider==='nocodb'){
+ const storage=String($env.NOCODB_BASE_URL || '').trim();
+ if(!/^https?:\/\/[^/?#@\s]+(?:\/[^?#]*)?$/.test(storage))throw Error('A reviewed NOCODB_BASE_URL is required for NocoDB storage');
+}else{
+ const folder=String($env.SIGNATUREGATE_PAPER_DRIVE_FOLDER_ID || '').trim();
+ if(!/^[A-Za-z0-9_-]{10,200}$/.test(folder))throw Error('A reviewed private Google Drive parent folder is required');
+}
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const actor=String(body.actor_email || '').trim().toLowerCase();
 if(!actor || actor.length>320 || !uuid.test(body.request_id || '') || !uuid.test(body.member_id || '') || !uuid.test(body.practitioner_person_id || ''))throw Error('Account, request and assigned Participant/practitioner identifiers required');
@@ -19,4 +26,4 @@ const bytes=Buffer.from(data,'base64');
 if(bytes.length>5242880 || bytes.toString('base64')!==data)throw Error('Invalid or oversized document content');
 const hex=bytes.subarray(0,8).toString('hex');
 if(!((mimeType==='application/pdf' && hex.startsWith('255044462d')) || (mimeType==='image/png' && hex==='89504e470d0a1a0a') || (mimeType==='image/jpeg' && hex.startsWith('ffd8ff'))))throw Error('PDF, PNG or JPEG content must match its type');
-return [{json:{actor_email:actor,request_id:body.request_id,payload:{member_id:body.member_id,practitioner_person_id:body.practitioner_person_id,agreement_template_id:body.agreement_template_id || '',files:[{name,mimeType,data}]}}}];
+return [{json:{actor_email:actor,request_id:body.request_id,storage_provider:provider,payload:{storage_provider:provider,member_id:body.member_id,practitioner_person_id:body.practitioner_person_id,agreement_template_id:body.agreement_template_id || '',files:[{name,mimeType,data}]}}}];

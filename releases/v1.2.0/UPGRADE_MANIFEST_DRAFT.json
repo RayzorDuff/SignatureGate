@@ -2,7 +2,7 @@
   "state": "draft_non_executable",
   "release": "SignatureGate v1.2.0",
   "purpose": "Conditional source ordering and checksum pinning only. Do not execute all entries. Each needs a reviewed selected/skipped disposition.",
-  "canonical_schema_sha256": "fc2d36c8e3746e890e602c53c71b39d7ada8e81536e935fd6f7a42bf832b6544",
+  "canonical_schema_sha256": "d79eab3f235c343076bc4dd307de6d1ab92892ee85c1826ac024978d3a265de1",
   "required_environment_proofs": {
     "canonical_base_and_missing_forward_changes_reviewed": false,
     "current_production_effective_definitions_reviewed": false,
@@ -431,6 +431,25 @@
         "db/tests/verify_paper_agreement_upload.sql"
       ],
       "recovery": "Preserve committed receipts. Cancel unresolved requests through the owner-scoped, reasoned API before a new attempt; inspect privately for an orphaned storage file. Use the reviewed production restore plan."
+    },
+    {
+      "id": "paper_evidence_storage",
+      "path": "db/migrations/paper_evidence_storage.sql",
+      "sha256": "67e889b38f688f4c414650ce919538103dad8e0eb14ac7b3d028994daa08a9af",
+      "after": [
+        "paper_agreement_upload"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Protected paper upload receipts and authority already installed; review actual invoker grants.",
+        "Private Google Drive OAuth/folder mapping or reviewed NocoDB target configured in the authenticated workflow; no caller-specified folder or sharing grant."
+      ],
+      "transaction": "One transaction for technical provider metadata and replacement guarded APIs. Preserves existing NocoDB evidence and request fingerprints.",
+      "verification": [
+        "db/tests/verify_paper_evidence_storage.sql"
+      ],
+      "recovery": "Preserve receipt ownership/hash and agreement evidence. Never retry an unresolved request against another provider. Use owner-scoped lookup/cancellation and the reviewed production recovery plan."
     }
   ]
 }

@@ -27,7 +27,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Authenticated webhook only. Normalize a single bounded document before any database/storage write.\nconst storage=String($env.NOCODB_BASE_URL || '').trim();\nif(!/^https?:\\/\\/[^/?#@\\s]+(?:\\/[^?#]*)?$/.test(storage))throw Error('A reviewed NOCODB_BASE_URL is required');\nconst body=$json.body ?? $json;\nconst uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\nconst actor=String(body.actor_email || '').trim().toLowerCase();\nif(!actor || actor.length>320 || !uuid.test(body.request_id || '') || !uuid.test(body.member_id || '') || !uuid.test(body.practitioner_person_id || ''))throw Error('Account, request and assigned Participant/practitioner identifiers required');\nif(body.agreement_template_id && !uuid.test(body.agreement_template_id))throw Error('Invalid template identifier');\nif(!Array.isArray(body.files)||body.files.length!==1)throw Error('Select exactly one PDF, PNG or JPEG document');\nconst file=body.files[0],name=String(file.name || ''),mimeType=String(file.type || file.mimeType || '');\nlet data=file.data || file.base64 || file.content;\nif(!name || name.length>160 || /[\\x00-\\x1f\\x7f/\\\\]/.test(name) || typeof data!=='string')throw Error('Document filename and base64 content required');\nif(data.startsWith('data:')){\n const match=/^data:([^;,]+);base64,([A-Za-z0-9+/]*={0,2})$/.exec(data);\n if(!match || match[1]!==mimeType)throw Error('Document data URL type mismatch');data=match[2];\n}\nif(data.length<12 || data.length>6990508 || data.length%4 || !/^[A-Za-z0-9+/]+={0,2}$/.test(data))throw Error('Invalid or oversized document content');\nconst bytes=Buffer.from(data,'base64');\nif(bytes.length>5242880 || bytes.toString('base64')!==data)throw Error('Invalid or oversized document content');\nconst hex=bytes.subarray(0,8).toString('hex');\nif(!((mimeType==='application/pdf' && hex.startsWith('255044462d')) || (mimeType==='image/png' && hex==='89504e470d0a1a0a') || (mimeType==='image/jpeg' && hex.startsWith('ffd8ff'))))throw Error('PDF, PNG or JPEG content must match its type');\nreturn [{json:{actor_email:actor,request_id:body.request_id,payload:{member_id:body.member_id,practitioner_person_id:body.practitioner_person_id,agreement_template_id:body.agreement_template_id || '',files:[{name,mimeType,data}]}}}];\n"
+        "jsCode": "// Authenticated webhook only. Normalize a single bounded document before any database/storage write.\nconst body=$json.body ?? $json;\nconst provider=String(body.storage_provider || $env.SIGNATUREGATE_PAPER_STORAGE_PROVIDER || 'nocodb');\nif(!['nocodb','google_drive'].includes(provider))throw Error('Choose Google Drive or NocoDB paper storage');\nif(provider==='nocodb'){\n const storage=String($env.NOCODB_BASE_URL || '').trim();\n if(!/^https?:\\/\\/[^/?#@\\s]+(?:\\/[^?#]*)?$/.test(storage))throw Error('A reviewed NOCODB_BASE_URL is required for NocoDB storage');\n}else{\n const folder=String($env.SIGNATUREGATE_PAPER_DRIVE_FOLDER_ID || '').trim();\n if(!/^[A-Za-z0-9_-]{10,200}$/.test(folder))throw Error('A reviewed private Google Drive parent folder is required');\n}\nconst uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\nconst actor=String(body.actor_email || '').trim().toLowerCase();\nif(!actor || actor.length>320 || !uuid.test(body.request_id || '') || !uuid.test(body.member_id || '') || !uuid.test(body.practitioner_person_id || ''))throw Error('Account, request and assigned Participant/practitioner identifiers required');\nif(body.agreement_template_id && !uuid.test(body.agreement_template_id))throw Error('Invalid template identifier');\nif(!Array.isArray(body.files)||body.files.length!==1)throw Error('Select exactly one PDF, PNG or JPEG document');\nconst file=body.files[0],name=String(file.name || ''),mimeType=String(file.type || file.mimeType || '');\nlet data=file.data || file.base64 || file.content;\nif(!name || name.length>160 || /[\\x00-\\x1f\\x7f/\\\\]/.test(name) || typeof data!=='string')throw Error('Document filename and base64 content required');\nif(data.startsWith('data:')){\n const match=/^data:([^;,]+);base64,([A-Za-z0-9+/]*={0,2})$/.exec(data);\n if(!match || match[1]!==mimeType)throw Error('Document data URL type mismatch');data=match[2];\n}\nif(data.length<12 || data.length>6990508 || data.length%4 || !/^[A-Za-z0-9+/]+={0,2}$/.test(data))throw Error('Invalid or oversized document content');\nconst bytes=Buffer.from(data,'base64');\nif(bytes.length>5242880 || bytes.toString('base64')!==data)throw Error('Invalid or oversized document content');\nconst hex=bytes.subarray(0,8).toString('hex');\nif(!((mimeType==='application/pdf' && hex.startsWith('255044462d')) || (mimeType==='image/png' && hex==='89504e470d0a1a0a') || (mimeType==='image/jpeg' && hex.startsWith('ffd8ff'))))throw Error('PDF, PNG or JPEG content must match its type');\nreturn [{json:{actor_email:actor,request_id:body.request_id,storage_provider:provider,payload:{storage_provider:provider,member_id:body.member_id,practitioner_person_id:body.practitioner_person_id,agreement_template_id:body.agreement_template_id || '',files:[{name,mimeType,data}]}}}];\n"
       },
       "id": "e03ff8e4-bbb5-4ab4-b2da-abddd7b9883d",
       "name": "Code - Validate Paper Request",
@@ -146,7 +146,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Accept only a real storage response. No caller-provided attachment URL is accepted.\nconst input=$input.all(),source=$('Code - Validate Paper Request').first().json;\nconst files=input.flatMap(item=>{const raw=item.json?.body ?? item.json;return Array.isArray(raw)?raw:Array.isArray(raw?.files)?raw.files:[raw];});\nif(files.length!==1)throw Error('Storage did not return exactly one attachment; inspect this request before retrying');\nconst path=files[0]?.path;\nif(typeof path!=='string'||!/^[A-Za-z0-9_-][A-Za-z0-9_./-]{1,1023}$/.test(path)||path.includes('..')||path.includes('//'))throw Error('Storage did not return a safe relative attachment path');\nconst file=source.payload.files[0];\nreturn [{json:{actor_email:source.actor_email,request_id:source.request_id,evidence:[{path,title:file.name,mimetype:file.mimeType,size:Buffer.from(file.data,'base64').length}]}}];\n"
+        "jsCode": "// Accept only a real storage response. No caller-provided attachment URL is accepted.\nconst input=$input.all(),source=$('Code - Validate Paper Request').first().json;\nconst files=input.flatMap(item=>{const raw=item.json?.body ?? item.json;return Array.isArray(raw)?raw:Array.isArray(raw?.files)?raw.files:[raw];});\nif(files.length!==1)throw Error('Storage did not return exactly one attachment; inspect this request before retrying');\nif(source.storage_provider!=='nocodb')throw Error('NocoDB response does not match the selected provider');\nconst path=files[0]?.path;\nif(typeof path!=='string'||!/^[A-Za-z0-9_-][A-Za-z0-9_./-]{1,1023}$/.test(path)||path.includes('..')||path.includes('//'))throw Error('Storage did not return a safe relative attachment path');\nconst file=source.payload.files[0];\nreturn [{json:{actor_email:source.actor_email,request_id:source.request_id,evidence:[{storage_provider:'nocodb',path,title:file.name,mimetype:file.mimeType,size:Buffer.from(file.data,'base64').length}]}}];\n"
       },
       "id": "f747afea-793c-4648-8a36-722fa599b48a",
       "name": "Code - Stored Paper Evidence",
@@ -204,6 +204,87 @@
         960,
         144
       ]
+    },
+    {
+      "id": "c9795f31-6c83-4f59-aea6-d2aba91da56c",
+      "name": "IF - Google Drive Storage",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1050,
+        -140
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "95d26adf-3825-4cce-bc18-07c2c7e9098e",
+              "leftValue": "={{ $('Code - Validate Paper Request').first().json.storage_provider === 'google_drive' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e176b21c-0114-4f07-a03b-a6108c120a2b",
+      "name": "Google Drive - Store Paper Evidence",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1320,
+        -340
+      ],
+      "parameters": {
+        "resource": "file",
+        "operation": "upload",
+        "inputDataFieldName": "data",
+        "name": "={{ $('Code - Validate Paper Request').first().json.payload.files[0].name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $env.SIGNATUREGATE_PAPER_DRIVE_FOLDER_ID }}"
+        },
+        "options": {
+          "simplifyOutput": false
+        }
+      },
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "name": "SIGNATUREGATE_GOOGLE_DRIVE"
+        }
+      }
+    },
+    {
+      "id": "a4078316-e6c1-45c0-8fa3-c67a68253aba",
+      "name": "Code - Stored Drive Evidence",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1580,
+        -340
+      ],
+      "parameters": {
+        "jsCode": "// Only the authenticated Drive upload node supplies this reference; no sharing operation is performed.\nconst input=$input.all(),source=$('Code - Validate Paper Request').first().json;\nif(source.storage_provider!=='google_drive' || input.length!==1)throw Error('Drive response does not match the reserved upload');\nconst stored=input[0].json,folder=String($env.SIGNATUREGATE_PAPER_DRIVE_FOLDER_ID || '').trim();\nif(typeof stored.id!=='string'||!/^[A-Za-z0-9_-]{10,200}$/.test(stored.id)||stored.trashed===true || !Array.isArray(stored.parents)||!stored.parents.includes(folder))throw Error('Drive did not confirm the configured parent folder');\nconst file=source.payload.files[0];\nif(stored.mimeType!==file.mimeType || Number(stored.size)!==Buffer.from(file.data,'base64').length)throw Error('Stored Drive file metadata differs from the uploaded document');\nreturn [{json:{actor_email:source.actor_email,request_id:source.request_id,evidence:[{storage_provider:'google_drive',drive_file_id:stored.id,web_url:'https://drive.google.com/file/d/'+stored.id+'/view',title:file.name,mimetype:file.mimeType,size:Number(stored.size)}]}}];\n"
+      }
     }
   ],
   "pinData": {},
@@ -263,7 +344,7 @@
       "main": [
         [
           {
-            "node": "HTTP - Store Paper Evidence",
+            "node": "IF - Google Drive Storage",
             "type": "main",
             "index": 0
           }
@@ -302,12 +383,56 @@
           }
         ]
       ]
+    },
+    "IF - Google Drive Storage": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Store Paper Evidence",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP - Store Paper Evidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive - Store Paper Evidence": {
+      "main": [
+        [
+          {
+            "node": "Code - Stored Drive Evidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Stored Drive Evidence": {
+      "main": [
+        [
+          {
+            "node": "PG - Complete Paper Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false
   },
   "versionId": "d3c38049-6222-48f6-8b98-122fc4c59903",
   "meta": {

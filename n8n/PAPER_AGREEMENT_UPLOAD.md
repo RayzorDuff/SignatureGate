@@ -4,6 +4,8 @@ Paper agreements do not require a Participant email and do not call Documenso. U
 
 ## Test deployment sequence
 
+Current provider-specific setup: [Google Drive paper storage](GOOGLE_DRIVE_PAPER_STORAGE.md). The workflow now supports google_drive or nocodb. Update the existing authenticated development workflow in place; do not create a duplicate active webhook. For Drive, configure its OAuth2 credential and private parent folder; the NocoDB-specific instructions below apply only when choosing NocoDB.
+
 1. Apply db/migrations/paper_agreement_upload.sql to signaturegate_test, twice, then execute db/tests/verify_paper_agreement_upload.sql. The test-only releases/v1.2.0/validate_paper_agreement_test.sh performs those steps with private logs and rollback-only synthetic fixtures. Do not apply this sequence to production or replay all migration files.
 2. Import n8n/workflows/SignatureGate - Paper Agreement Upload.json as a **new development workflow**. The older generic upload workflow/path is retained for existing applications. This new export is inactive and contains credential names without secrets or deployment IDs.
 3. On its Webhook node select/create Header Auth credential SIGNATUREGATE_PAPER_UPLOAD. Use a dedicated random secret header, for example X-SignatureGate-Paper-Upload-Key, with a securely generated value. Add the matching header to the server-side N8N datasource in the development Appsmith app; never place its value in action bodies, JS, Git, evidence or returned logs. Other N8N requests can retain their existing configuration.

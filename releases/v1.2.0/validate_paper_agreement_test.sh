@@ -22,8 +22,18 @@ for validation_pass in first repeat; do
   psql -X -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
   < db/migrations/paper_agreement_upload.sql > "$validation_evidence/migration-$validation_pass.log" 2>&1
 done
+for validation_pass in first repeat; do
+ validation_stage="storage-migration-$validation_pass"
+ sudo docker exec -i signaturegate-postgres \
+  psql -X -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
+  < db/migrations/paper_evidence_storage.sql > "$validation_evidence/storage-migration-$validation_pass.log" 2>&1
+done
 validation_stage=paper_behavior
 sudo docker exec -i signaturegate-postgres \
  psql -X -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
  < db/tests/verify_paper_agreement_upload.sql > "$validation_evidence/verify-paper-agreement.log" 2>&1
+validation_stage=storage_behavior
+sudo docker exec -i signaturegate-postgres \
+ psql -X -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
+ < db/tests/verify_paper_evidence_storage.sql > "$validation_evidence/verify-paper-storage.log" 2>&1
 validation_stage=complete
