@@ -5,6 +5,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "signaturegate/documenso/send",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -12,12 +13,18 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        0,
-        0
+        112,
+        304
       ],
-      "id": "4de348ff-0f19-413c-889c-0cda85f3d522",
+      "id": "a1d89d0d-83d3-4370-a08c-866c7acd6d54",
       "webhookId": "6931cbca-92b9-45c6-b8a3-30e494a2bd34",
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "VmTcpckgm6vvMihf",
+          "name": "Appsmith-SignatureGate"
+        }
+      }
     },
     {
       "parameters": {
@@ -31,15 +38,15 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        272,
-        0
+        384,
+        304
       ],
-      "id": "8c04489c-e2bd-4d5c-91ed-a38edd42e44c",
+      "id": "4e83cb96-4b39-4ca0-8b72-ad35a60f2e25",
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "r1oDpLoZSVIIOWRS",
-          "name": "Postgres account"
+          "name": "signaturegate"
         }
       }
     },
@@ -51,10 +58,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        512,
-        0
+        624,
+        304
       ],
-      "id": "3f10c71d-5fe0-416b-906c-ea9dd3459145",
+      "id": "a074f552-ed8b-4eb8-bfda-2f8509e20c43",
       "alwaysOutputData": true
     },
     {
@@ -78,10 +85,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        768,
-        0
+        880,
+        304
       ],
-      "id": "4a4a8e9b-15ab-4a1f-bba2-0e757fbd83eb",
+      "id": "68a30e20-64da-49b2-95bb-e664bd23b8ce",
       "alwaysOutputData": true,
       "credentials": {
         "httpHeaderAuth": {
@@ -98,10 +105,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        992,
-        0
+        1104,
+        304
       ],
-      "id": "e1b5946a-c292-4a95-b2dd-d47d65374ecb",
+      "id": "30fa8281-e455-4ff1-937a-d3726361bc01",
       "alwaysOutputData": true
     },
     {
@@ -116,15 +123,15 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        1232,
-        0
+        1344,
+        304
       ],
-      "id": "818063a3-59b8-45b3-8c31-1710679d506a",
+      "id": "0b054155-7c7a-4606-89cd-0c3cad96696c",
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "r1oDpLoZSVIIOWRS",
-          "name": "Postgres account"
+          "name": "signaturegate"
         }
       }
     },
@@ -136,10 +143,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        1440,
-        0
+        1552,
+        304
       ],
-      "id": "7f9ff476-1caf-490a-a8e4-72791bc0d006"
+      "id": "fb40a165-ed6d-4856-ae7c-3d015e5fbcb9"
     }
   ],
   "pinData": {},
@@ -216,10 +223,11 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "307dc1e1-2fc0-49e1-bb2a-be9efd7464d6",
+  "versionId": "3bad2ea3-784f-42ee-a33d-b371c98c502f",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
-  "id": "3Q0lgM2txWVN6gj8",
+  "id": "1xFmF6pEa5y9IJql",
   "tags": []
 }

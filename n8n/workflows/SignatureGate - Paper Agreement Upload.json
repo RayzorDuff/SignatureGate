@@ -2,14 +2,6 @@
   "name": "SignatureGate - Paper Agreement Upload",
   "nodes": [
     {
-      "id": "cf0eb589-8b21-4701-bbd7-795ab2a38601",
-      "name": "Webhook - Paper Agreement",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [
-        0,
-        0
-      ],
       "parameters": {
         "httpMethod": "POST",
         "path": "signaturegate/paper-agreements",
@@ -17,34 +9,36 @@
         "responseMode": "responseNode",
         "options": {}
       },
+      "id": "ce604834-7635-4054-b240-8e91449d0439",
+      "name": "Webhook - Paper Agreement",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -960,
+        144
+      ],
+      "webhookId": "5b37ffc8-8f7e-42c4-be06-1c73c30ce716",
       "credentials": {
         "httpHeaderAuth": {
-          "name": "SIGNATUREGATE_PAPER_UPLOAD"
+          "id": "VmTcpckgm6vvMihf",
+          "name": "Appsmith-SignatureGate"
         }
       }
     },
     {
-      "id": "f2567345-42f7-4529-9ffe-fc542c24d0d1",
+      "parameters": {
+        "jsCode": "// Authenticated webhook only. Normalize a single bounded document before any database/storage write.\nconst storage=String($env.NOCODB_BASE_URL || '').trim();\nif(!/^https?:\\/\\/[^/?#@\\s]+(?:\\/[^?#]*)?$/.test(storage))throw Error('A reviewed NOCODB_BASE_URL is required');\nconst body=$json.body ?? $json;\nconst uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\nconst actor=String(body.actor_email || '').trim().toLowerCase();\nif(!actor || actor.length>320 || !uuid.test(body.request_id || '') || !uuid.test(body.member_id || '') || !uuid.test(body.practitioner_person_id || ''))throw Error('Account, request and assigned Participant/practitioner identifiers required');\nif(body.agreement_template_id && !uuid.test(body.agreement_template_id))throw Error('Invalid template identifier');\nif(!Array.isArray(body.files)||body.files.length!==1)throw Error('Select exactly one PDF, PNG or JPEG document');\nconst file=body.files[0],name=String(file.name || ''),mimeType=String(file.type || file.mimeType || '');\nlet data=file.data || file.base64 || file.content;\nif(!name || name.length>160 || /[\\x00-\\x1f\\x7f/\\\\]/.test(name) || typeof data!=='string')throw Error('Document filename and base64 content required');\nif(data.startsWith('data:')){\n const match=/^data:([^;,]+);base64,([A-Za-z0-9+/]*={0,2})$/.exec(data);\n if(!match || match[1]!==mimeType)throw Error('Document data URL type mismatch');data=match[2];\n}\nif(data.length<12 || data.length>6990508 || data.length%4 || !/^[A-Za-z0-9+/]+={0,2}$/.test(data))throw Error('Invalid or oversized document content');\nconst bytes=Buffer.from(data,'base64');\nif(bytes.length>5242880 || bytes.toString('base64')!==data)throw Error('Invalid or oversized document content');\nconst hex=bytes.subarray(0,8).toString('hex');\nif(!((mimeType==='application/pdf' && hex.startsWith('255044462d')) || (mimeType==='image/png' && hex==='89504e470d0a1a0a') || (mimeType==='image/jpeg' && hex.startsWith('ffd8ff'))))throw Error('PDF, PNG or JPEG content must match its type');\nreturn [{json:{actor_email:actor,request_id:body.request_id,payload:{member_id:body.member_id,practitioner_person_id:body.practitioner_person_id,agreement_template_id:body.agreement_template_id || '',files:[{name,mimeType,data}]}}}];\n"
+      },
+      "id": "e03ff8e4-bbb5-4ab4-b2da-abddd7b9883d",
       "name": "Code - Validate Paper Request",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        240,
-        0
-      ],
-      "parameters": {
-        "jsCode": "// Authenticated webhook only. Normalize a single bounded document before any database/storage write.\nconst storage=String($env.NOCODB_BASE_URL || '').trim();\nif(!/^https?:\\/\\/[^/?#@\\s]+(?:\\/[^?#]*)?$/.test(storage))throw Error('A reviewed NOCODB_BASE_URL is required');\nconst body=$json.body ?? $json;\nconst uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\nconst actor=String(body.actor_email || '').trim().toLowerCase();\nif(!actor || actor.length>320 || !uuid.test(body.request_id || '') || !uuid.test(body.member_id || '') || !uuid.test(body.practitioner_person_id || ''))throw Error('Account, request and assigned Participant/practitioner identifiers required');\nif(body.agreement_template_id && !uuid.test(body.agreement_template_id))throw Error('Invalid template identifier');\nif(!Array.isArray(body.files)||body.files.length!==1)throw Error('Select exactly one PDF, PNG or JPEG document');\nconst file=body.files[0],name=String(file.name || ''),mimeType=String(file.type || file.mimeType || '');\nlet data=file.data || file.base64 || file.content;\nif(!name || name.length>160 || /[\\x00-\\x1f\\x7f/\\\\]/.test(name) || typeof data!=='string')throw Error('Document filename and base64 content required');\nif(data.startsWith('data:')){\n const match=/^data:([^;,]+);base64,([A-Za-z0-9+/]*={0,2})$/.exec(data);\n if(!match || match[1]!==mimeType)throw Error('Document data URL type mismatch');data=match[2];\n}\nif(data.length<12 || data.length>6990508 || data.length%4 || !/^[A-Za-z0-9+/]+={0,2}$/.test(data))throw Error('Invalid or oversized document content');\nconst bytes=Buffer.from(data,'base64');\nif(bytes.length>5242880 || bytes.toString('base64')!==data)throw Error('Invalid or oversized document content');\nconst hex=bytes.subarray(0,8).toString('hex');\nif(!((mimeType==='application/pdf' && hex.startsWith('255044462d')) || (mimeType==='image/png' && hex==='89504e470d0a1a0a') || (mimeType==='image/jpeg' && hex.startsWith('ffd8ff'))))throw Error('PDF, PNG or JPEG content must match its type');\nreturn [{json:{actor_email:actor,request_id:body.request_id,payload:{member_id:body.member_id,practitioner_person_id:body.practitioner_person_id,agreement_template_id:body.agreement_template_id || '',files:[{name,mimeType,data}]}}}];\n"
-      }
+        -720,
+        144
+      ]
     },
     {
-      "id": "ac19bee5-ee85-488f-91a4-c1d959e9b8d5",
-      "name": "PG - Begin Paper Upload",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        480,
-        0
-      ],
       "parameters": {
         "operation": "executeQuery",
         "query": "SELECT public.application_begin_paper_upload($1::text,$2::uuid,$3::jsonb) AS receipt;",
@@ -52,21 +46,22 @@
           "queryReplacement": "={{ [$json.actor_email,$json.request_id,JSON.stringify($json.payload)] }}"
         }
       },
+      "id": "ba4c8647-40aa-4b71-8b55-51f2a7a820cc",
+      "name": "PG - Begin Paper Upload",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -480,
+        144
+      ],
       "credentials": {
         "postgres": {
-          "name": "SIGNATUREGATE_POSTGRES"
+          "id": "bXut1vXxtMx7OMxT",
+          "name": "signaturegate_test"
         }
       }
     },
     {
-      "id": "1934da3c-b899-49ea-8bdc-b339ccb97ad9",
-      "name": "IF - New Paper Request",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        720,
-        0
-      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -90,30 +85,30 @@
           "combinator": "and"
         },
         "options": {}
-      }
+      },
+      "id": "2576a926-f8dd-4949-b667-cabd2d2216e2",
+      "name": "IF - New Paper Request",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        144
+      ]
     },
     {
-      "id": "dc6224a0-ba8a-4cec-b6c5-0b42940a103b",
+      "parameters": {
+        "jsCode": "const source=$('Code - Validate Paper Request').first().json;\nconst file=source.payload.files[0];\nconst data=await this.helpers.prepareBinaryData(Buffer.from(file.data,'base64'),file.name,file.mimeType);\nreturn [{json:{request_id:source.request_id},binary:{data}}];"
+      },
+      "id": "11b0c811-736c-475c-b3b4-c9440c3e685b",
       "name": "Code - Paper Binary",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        960,
-        -140
-      ],
-      "parameters": {
-        "jsCode": "const source=$('Code - Validate Paper Request').first().json;\nconst file=source.payload.files[0];\nconst data=await this.helpers.prepareBinaryData(Buffer.from(file.data,'base64'),file.name,file.mimeType);\nreturn [{json:{request_id:source.request_id},binary:{data}}];"
-      }
+        0,
+        0
+      ]
     },
     {
-      "id": "7d2ea448-51ae-4df4-b60e-b9b30f9435cc",
-      "name": "HTTP - Store Paper Evidence",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1200,
-        -140
-      ],
       "parameters": {
         "method": "POST",
         "url": "={{ ($env.NOCODB_BASE_URL || '').replace(/\\/+$/,'') + '/api/v2/storage/upload' }}",
@@ -134,34 +129,35 @@
           "timeout": 120000
         }
       },
+      "id": "ec1caff7-099b-44db-967d-1000d145cb25",
+      "name": "HTTP - Store Paper Evidence",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
       "credentials": {
         "httpHeaderAuth": {
-          "name": "SIGNATUREGATE_EVIDENCE_STORAGE"
+          "id": "aW3RxSoGWoKi5Dkl",
+          "name": "Header Auth account 4"
         }
       }
     },
     {
-      "id": "35df1564-5524-4392-bb7f-2915dbf06759",
+      "parameters": {
+        "jsCode": "// Accept only a real storage response. No caller-provided attachment URL is accepted.\nconst input=$input.all(),source=$('Code - Validate Paper Request').first().json;\nconst files=input.flatMap(item=>{const raw=item.json?.body ?? item.json;return Array.isArray(raw)?raw:Array.isArray(raw?.files)?raw.files:[raw];});\nif(files.length!==1)throw Error('Storage did not return exactly one attachment; inspect this request before retrying');\nconst path=files[0]?.path;\nif(typeof path!=='string'||!/^[A-Za-z0-9_-][A-Za-z0-9_./-]{1,1023}$/.test(path)||path.includes('..')||path.includes('//'))throw Error('Storage did not return a safe relative attachment path');\nconst file=source.payload.files[0];\nreturn [{json:{actor_email:source.actor_email,request_id:source.request_id,evidence:[{path,title:file.name,mimetype:file.mimeType,size:Buffer.from(file.data,'base64').length}]}}];\n"
+      },
+      "id": "f747afea-793c-4648-8a36-722fa599b48a",
       "name": "Code - Stored Paper Evidence",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1440,
-        -140
-      ],
-      "parameters": {
-        "jsCode": "// Accept only a real storage response. No caller-provided attachment URL is accepted.\nconst input=$input.all(),source=$('Code - Validate Paper Request').first().json;\nconst files=input.flatMap(item=>{const raw=item.json?.body ?? item.json;return Array.isArray(raw)?raw:Array.isArray(raw?.files)?raw.files:[raw];});\nif(files.length!==1)throw Error('Storage did not return exactly one attachment; inspect this request before retrying');\nconst path=files[0]?.path;\nif(typeof path!=='string'||!/^[A-Za-z0-9_-][A-Za-z0-9_./-]{1,1023}$/.test(path)||path.includes('..')||path.includes('//'))throw Error('Storage did not return a safe relative attachment path');\nconst file=source.payload.files[0];\nreturn [{json:{actor_email:source.actor_email,request_id:source.request_id,evidence:[{path,title:file.name,mimetype:file.mimeType,size:Buffer.from(file.data,'base64').length}]}}];\n"
-      }
+        480,
+        0
+      ]
     },
     {
-      "id": "c1f54772-d8f7-4778-bfa1-4aaca6f56a73",
-      "name": "PG - Complete Paper Upload",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1680,
-        -140
-      ],
       "parameters": {
         "operation": "executeQuery",
         "query": "SELECT public.application_complete_paper_upload($1::text,$2::uuid,$3::jsonb) AS receipt;",
@@ -169,21 +165,22 @@
           "queryReplacement": "={{ [$json.actor_email,$json.request_id,JSON.stringify($json.evidence)] }}"
         }
       },
+      "id": "8a7c0b4c-5bb8-4618-929f-98db9fb884af",
+      "name": "PG - Complete Paper Upload",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        720,
+        0
+      ],
       "credentials": {
         "postgres": {
-          "name": "SIGNATUREGATE_POSTGRES"
+          "id": "bXut1vXxtMx7OMxT",
+          "name": "signaturegate_test"
         }
       }
     },
     {
-      "id": "f9b8bca4-2df3-4d82-b1d4-9dcb79bd6857",
-      "name": "Respond - Paper Receipt",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.4,
-      "position": [
-        1920,
-        0
-      ],
       "parameters": {
         "respondWith": "json",
         "responseBody": "={{ {ok:$json.receipt.state==='committed',...$json.receipt} }}",
@@ -198,9 +195,18 @@
             ]
           }
         }
-      }
+      },
+      "id": "0120ff07-0e89-4da6-8499-ff02e6576bba",
+      "name": "Respond - Paper Receipt",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        960,
+        144
+      ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook - Paper Agreement": {
       "main": [
@@ -298,14 +304,16 @@
       ]
     }
   },
-  "active": false,
-  "pinData": {},
+  "active": true,
   "settings": {
     "executionOrder": "v1",
-    "saveDataErrorExecution": "none",
-    "saveDataSuccessExecution": "none",
-    "saveManualExecutions": false,
-    "saveExecutionProgress": false
+    "binaryMode": "separate"
   },
+  "versionId": "d3c38049-6222-48f6-8b98-122fc4c59903",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
+  },
+  "id": "w5HM9OQfX69RmM1l",
   "tags": []
 }

@@ -5,6 +5,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "signaturegate/pgsql/products/mark_unshipped",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -16,7 +17,13 @@
         0
       ],
       "id": "684bf900-3f0a-4512-814f-f91458485972",
-      "webhookId": "69d0c0b2-b493-45a1-a580-dff418706bf0"
+      "webhookId": "69d0c0b2-b493-45a1-a580-dff418706bf0",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "VmTcpckgm6vvMihf",
+          "name": "Appsmith-SignatureGate"
+        }
+      }
     },
     {
       "parameters": {
@@ -48,7 +55,7 @@
       "credentials": {
         "postgres": {
           "id": "r064ogulZ44Ose76",
-          "name": "Postgres account 2"
+          "name": "mushroomprocess_bridge"
         }
       }
     },
@@ -69,7 +76,7 @@
       "credentials": {
         "postgres": {
           "id": "r064ogulZ44Ose76",
-          "name": "Postgres account 2"
+          "name": "mushroomprocess_bridge"
         }
       }
     },
@@ -160,12 +167,12 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "246f6560-d156-4881-9be9-f203b962dbad",
+  "versionId": "cda70af4-26d1-4594-bf12-7a3ca014c37a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"

@@ -5,6 +5,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "signaturegate/documenso/cancel",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -15,9 +16,15 @@
         0,
         0
       ],
-      "id": "ad2d680a-2760-418b-9de4-6f19483ea516",
+      "id": "9f11e562-496d-4635-a0b3-f39c79ddc32d",
       "webhookId": "9a73514f-ecd9-48fb-884a-2ef38eb67ec9",
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "VmTcpckgm6vvMihf",
+          "name": "Appsmith-SignatureGate"
+        }
+      }
     },
     {
       "parameters": {
@@ -34,12 +41,12 @@
         272,
         0
       ],
-      "id": "632fe6d3-e055-44f0-b645-09fcb606f5c2",
+      "id": "a1ad241a-0607-449d-98f1-a1b9f8b1ecbc",
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "r1oDpLoZSVIIOWRS",
-          "name": "Postgres account"
+          "name": "signaturegate"
         }
       }
     },
@@ -54,7 +61,7 @@
         512,
         0
       ],
-      "id": "29bbfc34-cdfa-49fe-ac15-d2c832d34cc7",
+      "id": "52dbee3c-7053-46b7-a231-6800e720c16a",
       "alwaysOutputData": true
     },
     {
@@ -81,7 +88,7 @@
         768,
         0
       ],
-      "id": "b8d5691d-9a06-4a3f-920f-1cff2400028c",
+      "id": "71f08170-2ffa-4077-a6a0-3ada0e2cde4c",
       "alwaysOutputData": true,
       "credentials": {
         "httpHeaderAuth": {
@@ -101,7 +108,7 @@
         992,
         0
       ],
-      "id": "1486eef4-e316-4fc7-9d02-c4ba4f5835f4",
+      "id": "3f1d557f-1376-4b1e-a2be-a629f45c3594",
       "alwaysOutputData": true
     },
     {
@@ -119,12 +126,12 @@
         1232,
         0
       ],
-      "id": "4bcabcd7-5128-4e7c-9155-969e7b76146e",
+      "id": "297d403e-4c2c-41af-89df-fe87695e8346",
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "r1oDpLoZSVIIOWRS",
-          "name": "Postgres account"
+          "name": "signaturegate"
         }
       }
     },
@@ -143,12 +150,12 @@
         1456,
         0
       ],
-      "id": "9feb93e3-c6f1-462f-af3d-44f11c81c3db",
+      "id": "b35e9560-de06-40a8-93a1-3b18a5dad3b7",
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "r1oDpLoZSVIIOWRS",
-          "name": "Postgres account"
+          "name": "signaturegate"
         }
       }
     },
@@ -165,7 +172,7 @@
         1680,
         0
       ],
-      "id": "0608b2c4-0199-4de6-8b8e-aaca776e11c6"
+      "id": "8967cba7-2d6a-44c3-bd08-4fc60f16f905"
     }
   ],
   "pinData": {},
@@ -248,15 +255,16 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "fd85a7db-6f20-487c-a765-3410c760ad17",
+  "versionId": "bc98f9ed-6c43-4055-a592-106c748b1682",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
-  "id": "JRO1xFApAPKDp60u",
+  "id": "GvBLqe22I6SLQW8Y",
   "tags": []
 }

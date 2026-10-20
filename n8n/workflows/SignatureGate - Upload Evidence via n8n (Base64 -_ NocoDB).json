@@ -5,6 +5,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "signaturegate/upload",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -16,7 +17,13 @@
         0
       ],
       "id": "03a183aa-71e2-4661-9a1a-c1c891ecd7d6",
-      "webhookId": "b50c0cfb-200f-4ed6-be6f-2a55e37b3eae"
+      "webhookId": "b50c0cfb-200f-4ed6-be6f-2a55e37b3eae",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "VmTcpckgm6vvMihf",
+          "name": "Appsmith-SignatureGate"
+        }
+      }
     },
     {
       "parameters": {
@@ -155,10 +162,12 @@
   "active": true,
   "settings": {
     "executionOrder": "v1",
+    "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "c2a5bfb1-66f2-40d4-80d1-ab003f4b5d9c",
+  "versionId": "6ccef30b-84d9-44b4-b685-8881d1766de5",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
   "id": "8Z6Ll2LSVBIfLPtk",
