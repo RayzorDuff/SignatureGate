@@ -1,0 +1,30 @@
+name: Appsmith harness offline contracts (manual, not browser E2E)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: signaturegate_e2e
+          POSTGRES_USER: signaturegate_e2e
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports: ['5432:5432']
+        options: --health-cmd="pg_isready -U signaturegate_e2e" --health-interval=5s --health-retries=12
+    env:
+      E2E_DATABASE_URL: postgresql://signaturegate_e2e:synthetic-ci-only@127.0.0.1:5432/signaturegate_e2e
+      E2E_INSTANCE_TOKEN: synthetic-ci-instance-marker-not-a-live-credential
+      E2E_ALLOW_RESET: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix e2e --ignore-scripts --no-audit --no-fund
+      - run: npm run --prefix e2e test:guards
+      - run: node e2e/database.test.mjs
+      - run: npm run --prefix e2e test:list

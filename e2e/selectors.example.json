@@ -1,0 +1,14 @@
+{
+  "_status":"Provisional labels from export; review actual accessible names on test Appsmith before opting in.",
+  "loginEmail":{"label":"Email"},
+  "loginPassword":{"label":"Password"},
+  "loginSubmit":{"role":"button","name":"SIGN IN"},
+  "applicationReady":{"role":"button","name":"Record Cash Donation"},
+  "contributorSelect":{"role":"combobox","name":"Contributor, Member, or Anonymous"},
+  "anonymousOption":{"role":"option","name":"Anonymous"},
+  "amount":{"label":"Amount (USD)"},
+  "notes":{"label":"Notes"},
+  "submitCash":{"role":"button","name":"Record Cash Donation"},
+  "successFeedback":{"role":"alert","name":"Donation recorded"},
+  "errorFeedback":{"role":"alert","name":"Unable to record donation"}
+}

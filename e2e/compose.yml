@@ -1,0 +1,22 @@
+name: signaturegate-e2e
+services:
+  postgres-e2e:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: signaturegate_e2e
+      POSTGRES_USER: signaturegate_e2e
+      POSTGRES_PASSWORD: ${E2E_DB_PASSWORD:?private dedicated test password required}
+    ports: ['127.0.0.1:55432:5432']
+    networks: [isolated]
+    volumes: [test_db:/var/lib/postgresql/data]
+  appsmith-e2e:
+    image: appsmith/appsmith-ce:v2.4.2
+    ports: ['127.0.0.1:8081:80']
+    networks: [isolated]
+    volumes: [test_appsmith:/appsmith-stacks]
+networks:
+  isolated:
+    internal: true
+volumes:
+  test_db:
+  test_appsmith:
