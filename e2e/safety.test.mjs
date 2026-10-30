@@ -13,3 +13,9 @@ test('browser requires dedicated clone and test origin',()=>{
     assert.throws(()=>browserTarget({E2E_APPSMITH_URL:origin,E2E_APP_PATH:'/app/signaturegate-e2e/test'}));
   assert.throws(()=>browserTarget({E2E_APPSMITH_URL:'https://appsmith-test.danks.store/',E2E_APP_PATH:'/app/production/test'}));
 });
+
+import {schemaSQL} from './schema_sql.mjs';
+test('bootstrap strips only reviewed psql and transaction controls',()=>{
+ assert.equal(schemaSQL('\\set ON_ERROR_STOP on\nBEGIN;\nSELECT 1;\nCOMMIT;'), 'SELECT 1;');
+ assert.throws(()=>schemaSQL('\\connect signaturegate'));
+});

@@ -2,6 +2,7 @@ import {Client} from 'pg';
 import fs from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {databaseTarget} from './safety.mjs';
+import {schemaSQL} from './schema_sql.mjs';
 
 export async function connection(env=process.env) {
   const target=databaseTarget(env);const db=new Client({connectionString:target.connectionString});await db.connect();
@@ -37,8 +38,7 @@ export async function reset(env=process.env) {
     await db.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public');
     const schema=await fs.readFile(new URL('../db/schema.sql',import.meta.url),'utf8');
     // pg_dump restrict/unrestrict are psql controls, not executable SQL.
-    if (schema.split('\n').some(line=>line.startsWith('\\') && !/^\\(?:un)?restrict\b/.test(line))) throw new Error('Review unexpected schema meta-command');
-    await db.query(schema.split('\n').filter(line=>!line.startsWith('\\') && !['BEGIN;','COMMIT;'].includes(line.trim())).join('\n'));
+    await db.query(schemaSQL(schema));
     await db.query(await fs.readFile(new URL('./seed.sql',import.meta.url),'utf8'));
     await db.query('COMMIT');
   } catch(error) {await db.query('ROLLBACK');throw error;} finally {await db.end();}

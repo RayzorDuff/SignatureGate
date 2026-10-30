@@ -18,7 +18,7 @@ export async function isolate(context) {
   });
   await context.routeWebSocket('**/*',ws=>{
     const url=new URL(ws.url());
-    const same=url.hostname===new URL(origin).hostname && ['ws:','wss:'].includes(url.protocol);
+    const same=url.origin.replace(/^ws/,'http')===origin;
     if(same)ws.connectToServer();else ws.close({code:1008,reason:'External integration blocked'});
   });
 }
