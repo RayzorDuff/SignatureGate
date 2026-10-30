@@ -39,6 +39,7 @@ export async function reset(env=process.env) {
     const schema=await fs.readFile(new URL('../db/schema.sql',import.meta.url),'utf8');
     // pg_dump restrict/unrestrict are psql controls, not executable SQL.
     await db.query(schemaSQL(schema));
+    await db.query('SET LOCAL search_path=public,pg_temp');
     await db.query(await fs.readFile(new URL('./seed.sql',import.meta.url),'utf8'));
     await db.query('COMMIT');
   } catch(error) {await db.query('ROLLBACK');throw error;} finally {await db.end();}
