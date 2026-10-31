@@ -67,7 +67,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $env.DOCUMENSO_BASE_URL || 'http://documenso:3000' }}/api/v2/envelope/use",
+        "url": "={{ $env.DOCUMENSO_PRIVATE_URL || $env.DOCUMENSO_PUBLIC_URL || 'http://documenso:3000' }}/api/v2/envelope/use",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
