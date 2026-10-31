@@ -58,7 +58,7 @@
     },
     {
       "parameters": {
-        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "url": "={{ ($env.LISTMONK_PRIVATE_URL || ($env.LISTMONK_PUBLIC_URL ? $env.LISTMONK_PUBLIC_URL.replace(/\\/+$/, '') + '/api' : '') || 'http://listmonk:9000/api') + '/subscribers' }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendQuery": true,
@@ -155,7 +155,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "url": "={{ ($env.LISTMONK_PRIVATE_URL || ($env.LISTMONK_PUBLIC_URL ? $env.LISTMONK_PUBLIC_URL.replace(/\\/+$/, '') + '/api' : '') || 'http://listmonk:9000/api') + '/subscribers' }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
@@ -201,7 +201,7 @@
     {
       "parameters": {
         "method": "PUT",
-        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers/lists' }}",
+        "url": "={{ ($env.LISTMONK_PRIVATE_URL || ($env.LISTMONK_PUBLIC_URL ? $env.LISTMONK_PUBLIC_URL.replace(/\\/+$/, '') + '/api' : '') || 'http://listmonk:9000/api') + '/subscribers/lists' }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
@@ -414,7 +414,7 @@
     {
       "parameters": {
         "method": "PUT",
-        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers/' + $json.subscriber.id }}",
+        "url": "={{ ($env.LISTMONK_PRIVATE_URL || ($env.LISTMONK_PUBLIC_URL ? $env.LISTMONK_PUBLIC_URL.replace(/\\/+$/, '') + '/api' : '') || 'http://listmonk:9000/api') + '/subscribers/' + $json.subscriber.id }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
@@ -473,7 +473,7 @@
     {
       "parameters": {
         "method": "PUT",
-        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers/lists' }}",
+        "url": "={{ ($env.LISTMONK_PRIVATE_URL || ($env.LISTMONK_PUBLIC_URL ? $env.LISTMONK_PUBLIC_URL.replace(/\\/+$/, '') + '/api' : '') || 'http://listmonk:9000/api') + '/subscribers/lists' }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
