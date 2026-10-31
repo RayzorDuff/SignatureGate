@@ -114,7 +114,7 @@
     {
       "parameters": {
         "method": "=GET",
-        "url": "={{ $env.DOCUMENSO_BASE_URL || 'https://documenso.danks.store' }}/api/v2/envelope/{{ $json.documenso_document_id }}",
+        "url": "={{ $env.DOCUMENSO_BASE_URL || 'http://documenso:3000' }}/api/v2/envelope/{{ $json.documenso_document_id }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "options": {
@@ -151,7 +151,7 @@
     },
     {
       "parameters": {
-        "url": "={{ $env.DOCUMENSO_BASE_URL || 'https://documenso.danks.store' }}/api/v2/envelope/item/{{  $json.envelopeItemId }}/download",
+        "url": "={{ $env.DOCUMENSO_BASE_URL || 'http://documenso:3000' }}/api/v2/envelope/item/{{  $json.envelopeItemId }}/download",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "options": {
@@ -176,7 +176,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ ($env.NOCODB_BASE_URL || 'https://nocodb.danks.store').replace(/\\/+$/,'') + '/api/v2/storage/upload' }}",
+        "url": "={{ ($env.NOCODB_BASE_URL || 'http://nocodb:8080').replace(/\\/+$/,'') + '/api/v2/storage/upload' }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
