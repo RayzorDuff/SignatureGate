@@ -26,7 +26,7 @@
     },
     {
       "parameters": {
-        "url": "={{ $env.DOCUMENSO_BASE_URL || 'http://documenso:3000' }}/api/v2/template",
+        "url": "={{ $env.DOCUMENSO_PRIVATE_URL || $env.DOCUMENSO_PUBLIC_URL || 'http://documenso:3000' }}/api/v2/template",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendQuery": true,
