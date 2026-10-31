@@ -22,7 +22,7 @@
     },
     {
       "parameters": {
-        "url": "={{ ($env.LISTMONK_API_URL || 'http://listmonk:9000/api') + '/subscribers' }}",
+        "url": "={{ ($env.LISTMONK_PRIVATE_URL || ($env.LISTMONK_PUBLIC_URL ? $env.LISTMONK_PUBLIC_URL.replace(/\\/+$/, '') + '/api' : '') || 'http://listmonk:9000/api') + '/subscribers' }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendQuery": true,
