@@ -41,7 +41,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ ($env.NOCODB_BASE_URL || 'http://nocodb:8080').replace(/\\/+$/,'') + '/api/v2/storage/upload' }}",
+        "url": "={{ ($env.NOCODB_PRIVATE_URL || $env.NOCODB_PUBLIC_URL || 'http://nocodb:8080').replace(/\\/+$/,'') + '/api/v2/storage/upload' }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
