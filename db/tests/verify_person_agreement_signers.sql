@@ -1,6 +1,10 @@
 -- Rollback-only checks for canonical practitioner agreement attribution.
 \set ON_ERROR_STOP on
 BEGIN;
+-- Required catalog entries are transaction-local fixtures, not production seeds.
+INSERT INTO public.agreement_types(type_key,display_name) VALUES
+    ('sacrament_release','Synthetic Sacrament Release')
+ON CONFLICT (type_key) DO NOTHING;
 DO $$
 DECLARE
   v_reviewer uuid;
@@ -93,4 +97,5 @@ BEGIN
 
   RAISE NOTICE 'Canonical practitioner agreement checks passed; rolling back synthetic records.';
 END $$;
+SET CONSTRAINTS ALL IMMEDIATE;
 ROLLBACK;
