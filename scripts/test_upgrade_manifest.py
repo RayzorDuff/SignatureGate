@@ -26,7 +26,7 @@ class ManifestChecks(unittest.TestCase):
                     if accepted:
                         self.assertEqual(result.returncode, 0, result.stderr)
                         self.assertEqual(json.loads(result.stdout), {
-                            'steps': 23, 'undisposed_steps': 23,
+                            'steps': 24, 'undisposed_steps': 24,
                             'unverified_environment_gates': 9, 'executable': False,
                         })
                     else:

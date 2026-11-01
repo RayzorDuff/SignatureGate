@@ -56,3 +56,5 @@ Navigation/selectors are now operator-accepted. Current required sequence: [prot
 Current paper rollout superseding earlier provider setup: [private Drive storage and repaired file transport](GOOGLE_DRIVE_PAPER_VALIDATION.md).
 
 Shared Test2 follow-up: [canonical SQL fixture validation and console coordination](CANONICAL_REGRESSION_VALIDATION.md).
+
+[Former Participant contact correction](FORMER_PARTICIPANT_CONTACT_VALIDATION.md): reproduced ownership defect, guarded forward change and one focused native check after coordinated Test2 deployment.

@@ -42,6 +42,9 @@ jobs:
           ((version >= 160000 && version < 170000))
           psql_ci < db/schema.sql > "$RUNNER_TEMP/schema.log" 2>&1
           psql_ci < db/seeds/organization_terminology.sql > "$RUNNER_TEMP/terminology.log" 2>&1
+          for attempt in first repeat; do
+            psql_ci < db/migrations/person_contact_reassignment.sql > "$RUNNER_TEMP/contact-migration-$attempt.log" 2>&1
+          done
           printf 'Native PostgreSQL server_version_num=%s\n' "$version"
       - name: Run every versioned SQL check twice and verify rollback
         shell: bash
