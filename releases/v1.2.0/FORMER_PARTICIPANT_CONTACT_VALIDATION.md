@@ -6,6 +6,14 @@ The forward change `db/migrations/person_contact_reassignment.sql` permits an in
 
 The Appsmith change modifies existing widget bindings only. It enables contact selection/reassignment for an authorized reviewer viewing a former Participant, retains active-target filtering and leaves add/archive/primary/verification/subscription writes disabled for ended enrollment. Navigation JS objects, datasource IDs and action IDs are preserved. This completes the reassignment part of #14; broader collision messaging, shared household/contact policy and historical archive behavior are separate acceptance items.
 
+## Merged checkpoint — November 1, 2026
+
+Backend PR [#32](https://github.com/RayzorDuff/SignatureGate/pull/32) is merged on SignatureGate main at `4cc849d5f759b623aff14d6f52b7b2c1c742bd60`. Appsmith PR [#7](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/7) is merged on `chatgpt_development` at `ceb26ff02166d69ed0c64b0c77811f8b22164a67`.
+
+The [backend native PostgreSQL 16.15 run](https://github.com/RayzorDuff/SignatureGate/actions/runs/41323473168) passed both migration applications and all 47 checks twice. Both [Appsmith CI jobs](https://github.com/RayzorDuff/SignatureGate-Appsmith/actions/runs/41345829361) passed, including native PostgreSQL concurrency. Local application checks, manifest checks and exact-source temporary export preservation passed. All five changed widgets retain their native identities and other properties; only disabled-state bindings differ.
+
+No shared Test2 or production database migration, saved datasource change, application publication or shared service operation has been performed for this increment. The single native check below remains pending coordinated test deployment. Issue #14 remains open for broader collision messaging, historical archive behavior and policy acceptance.
+
 ## Automated confidence
 
 - `verify_person_contact_reassignment.sql` moves email, phone and address with stable domain contact IDs, canonical target ownership and cleared primary flags; preserves the source Contributor-purpose email/canonical owner and inactive enrollment; rejects wrong-role/disabled actors, blank reason, missing capacity, inactive targets and stale-source retries; checks exactly three audits and forces deferred constraints before rollback.
