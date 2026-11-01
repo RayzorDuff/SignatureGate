@@ -1,0 +1,46 @@
+{
+  "date_utc": "2026-10-20",
+  "appsmith_source": "6bee614f1a4480cb35ba8986abf1642ed1b54e5f",
+  "backend_schema_workflow": "575d4c4b470065f574c5672dfb1ec39ba29d7e29",
+  "rootedops_environment_source": "58d20212ae8965d73d49dde4b6216e45a205fe7d",
+  "rootedops_incremental_version": "1.5.26",
+  "ci": {
+    "run_id": 39366285224,
+    "url": "https://github.com/RayzorDuff/SignatureGate-Appsmith/actions/runs/39366285224",
+    "application_checks": "success",
+    "postgres_intake_concurrency": "success",
+    "postgres_version_num": 160013,
+    "paper_storage_contract": "passed",
+    "paper_upload_contract": "passed",
+    "disposable_database_removed": true,
+    "paper_specific_simultaneous_sessions_tested": false
+  },
+  "local": {
+    "full_application_suite": "passed",
+    "actual_action_body_JSON_round_trip": "passed",
+    "actual_workflow_Code_and_provider_routing": "passed",
+    "legacy_pending_receipt_and_hash_across_migration": "passed",
+    "candidate_export_preservation": "passed",
+    "backend_release_checks": "passed",
+    "rootedops_release_and_parsed_compose_environment": "passed"
+  },
+  "source_preservation": {
+    "appsmith_native_identities_retained": 502,
+    "navigation_and_startup_unchanged": true,
+    "existing_paper_nodes_and_credential_references_retained": 9,
+    "other_workflows_and_generic_uploader_unchanged": true
+  },
+  "operator_reported_all_workflows_header_auth": true,
+  "prior_discussion_located": "2026-03-20 Google Drive via n8n document storage",
+  "dedicated_prior_issue_located": false,
+  "remaining": [
+    "installed_test_migration",
+    "private_Google_OAuth_and_folder_mapping",
+    "native_Drive_upload_retrieval_and_review",
+    "production_restore_grants_and_remaining_integrations",
+    "coordinated_dependency_release_and_promotion_packaging"
+  ],
+  "live_accounts_credentials_folder_or_file_values_recorded": false,
+  "operational_upload_performed": false,
+  "production_changed": false
+}

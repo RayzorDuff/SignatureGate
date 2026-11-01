@@ -1,55 +1,18 @@
-# n8n event list (starter)
+# Automation events
 
-This is the minimum automation set for SignatureGate.
+This is an event responsibility guide, rather than proof that every workflow is deployed. Validate published workflow revisions, credentials and destinations privately before release.
 
-## Identity & agreements
+| Event | Responsibility |
+| --- | --- |
+| Identity created or updated | Normalize contact information under the canonical individual/company model; keep Participant and Contributor capacities separate from access roles. |
+| Agreement signature completed | Record signed status and evidence through the reviewed signature callback. Duplicate callbacks must not duplicate the transition. |
+| Paper agreement evidence submitted | Store its evidence reference and record verification through the authorized review path. |
+| Gated action requested | Verify required signed agreements and access before changing state; audit both accepted and denied requests. |
+| External contribution received | Deduplicate the source event, associate the correct identity through reviewed matching and record an audit event. |
+| Confirmed cash deposit submitted for accounting | Use the separately released RootedOps dependency and preserve the stable source event across retries. |
 
-1. **Member created/updated**
-   - Trigger: Appsmith form submit or NocoDB webhook
-   - Actions: 
-     - normalize contact info, de-dupe by email/phone.
+External callbacks remain responsible for their audit writes because those events originate outside the application UI. A callback's successful delivery does not by itself prove completion of the underlying business transition.
 
-2. **Documenso signature completed**
-   - Trigger: Documenso webhook (or polling)
-   - Actions:
-     - ✔️upsert `member_agreements` (status=signed, signed_at, evidence_url)
-     - notify facilitator/operator if member is checked in for an event.
+Use synthetic data for development. Keep contact values, operational records, credentials, request/response bodies and screenshots out of Git. Public acceptance records contain versions, source revisions and pass/fail outcomes only.
 
-3. **Paper agreement uploaded**
-   - ✔️Trigger: Appsmith upload (to NocoDB storage)
-   - Actions: store `evidence_url`, mark agreement verified.
-
-## Sacrament release gatekeeping
-
-4. **Attempted release**
-   - Trigger: Appsmith “Release” button
-   - Actions (hard gate):
-     - verify required agreement(s) are signed (member_agreements.status=signed) for `required_for @> {'sacrament_release'}`
-     - verify eligibility checklist captured if you adopt it (future enhancement)
-     - ✔️if OK: create `sacrament_releases` record + audit_log
-     - if not OK: return error + create audit_log denial entry.
-
-## Inventory interop (choose one)
-
-5A. **Bridge sync: MushroomProcess → bridge db**
-   - Trigger: cron (every 5–15 minutes)
-   - Actions: 
-	- ✔️read MushroomProcess products and cache minimal fields keyed by `product_id`.
-
-5B. **On-demand lookup**
-   - Trigger: Appsmith “Validate Product” action
-   - Actions: query MushroomProcess API; optionally cache to bridge db.
-
-## Donations
-
-6. **Givebutter donation received**
-   - Trigger: Givebutter webhook (or polling)
-   - ✔️Actions: create `donations` row; link to member by email if possible; audit_log.
-
-## Audit logging in n8n workflows
-
-Some n8n workflows write directly to `audit_log` when handling:
-	- ✔️Documenso signing callbacks
-	- ✔️Final product shipment updates
-
-These audit writes must remain in n8n because the triggering event occurs outside Appsmith.
+See [signature integration](DOCUMENSO_INTEGRATION.md), [contribution integration](GIVEBUTTER_INTEGRATION.md), [cash-deposit dependency](CASH_DEPOSIT_ERP_INTEGRATION.md) and [architecture](../docs/ARCHITECTURE.md) for the current integration boundaries. Facilitator/Spiritual Practitioner is a functional access role; it does not define a person's identity or Participant capacity.

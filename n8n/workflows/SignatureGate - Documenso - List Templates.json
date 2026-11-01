@@ -4,6 +4,7 @@
     {
       "parameters": {
         "path": "signaturegate/documenso/templates",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -15,11 +16,17 @@
         0
       ],
       "id": "b1db5b35-1b43-4c63-9828-0342f089949e",
-      "webhookId": "68e2e1d5-ae9a-4aec-bb7b-e2b9727b721b"
+      "webhookId": "68e2e1d5-ae9a-4aec-bb7b-e2b9727b721b",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "VmTcpckgm6vvMihf",
+          "name": "Appsmith-SignatureGate"
+        }
+      }
     },
     {
       "parameters": {
-        "url": "={{ $env.DOCUMENSO_BASE_URL || 'https://documenso.danks.store' }}/api/v2/template",
+        "url": "={{ $env.DOCUMENSO_PRIVATE_URL || $env.DOCUMENSO_PUBLIC_URL || 'http://documenso:3000' }}/api/v2/template",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendQuery": true,
@@ -137,8 +144,9 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "1810aaf5-bd18-4c99-9bc8-f864ed6a103d",
+  "versionId": "bd1ce7a9-0f96-467a-8b30-a94b28eb6b97",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
   },
   "id": "uC1Xix6PE2cGXqc1",

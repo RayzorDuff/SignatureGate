@@ -1,0 +1,177 @@
+sha,date,subject
+9fb5aa53b60baa670fe86fabe63e6b5752be0109,2026-10-10,Add canonical identity notes and backfill historical member notes
+243eab5699e0d79cad01d64c42696fde49e46239,2026-10-10,Verify canonical identity preservation through organization contact reassignment
+3c2a0df707f61b358665b24ebf11ad91ce724133,2026-10-10,Fix canonical contact ownership ordering during organization reassignment
+16661e29e560d016ed341c01cdde8106c2340888,2026-10-10,Test organization contributor contact reassignment with rollback fixtures
+83e721d9bf89dbb17ed0f1162aab4434abccc297,2026-10-10,Rename organization contact reassignment migration
+8ba5fc97f923c6109fb3c7a8fbb9b49b78aa2566,2026-10-10,Add audited organization contributor contact reassignment function
+b53d4fbe323b7c16522f980a6a7bac7e66b06bc8,2026-10-10,test(cash): protect confirmed-date correction path (#18)
+60a44dde43c6cf31cbed4549b4d13d5018c564f0,2026-10-10,fix(cash): align confirmed-date correction schema (#18)
+8e9cb14cd4357964905538c0a153d725a1bd2da1,2026-10-10,fix(cash): repair confirmed-date correction migration (#18)
+172dff4275cd22250fffbddf44f7b99e29d6b740,2026-10-10,fix(cash): keep confirmed-date correction in schema (#18)
+846bb2cabf333722918df772c0d8e0c9315bc74b,2026-10-10,fix(cash): permit audited confirmed-date correction (#18)
+8392acf051733fffe985d329723d55905a5185a4,2026-10-10,fix(cash): add audited confirmed-date correction (#18)
+5ba2d8eed3de8ee98524fb5f383c22e66906ec00,2026-10-10,fix(cash): keep ERP sync schema unambiguous (#18)
+ba6d1daab6a8e30a5cda819a97735c9068e0e2d8,2026-10-10,fix(cash): disambiguate ERP sync migration SQL (#18)
+129517ae9878186edd3edc19fcb1c5d0d467d294,2026-10-10,feat(cash): add ERP sync state for deposit batches (#18)
+01c70b66ab1e1c9add185495ba76922c439b137c,2026-10-05,security: add donation financial access functions
+fb995de4977dc29c8bbe7ab9f1eb46851edfaafd,2026-10-05,security: restrict donation financial information to reviewers
+172d6abcef6e9c38939072e938217553201b2051,2026-10-04,feat: add cash donation revive migration
+a04df63ca3e7a6926d7a7d065875c092aa70b2cc,2026-10-04,chore: replace duplicate revive migration
+47fa45d5d3dd0a3b0fde06da466ec02fdbc6a9ac,2026-10-04,feat: add cash donation revive migration
+5676dc501ca9360de00ba895f6bdd3fdf0a02415,2026-10-04,feat: add cash donation revive lifecycle
+b0daf7000769053d4bc96fc1538886a606656ef8,2026-10-04,test(agreements): use roleless actor for authorization denial
+2e625f5cafb055063ad1ad3578eb6046d0c26a6c,2026-10-04,test(agreements): verify document reviewer agreement authority
+8cb481f271194c3067226793079e71d606c756bd,2026-10-04,fix(agreements): allow document reviewers to create agreements on behalf
+f697e6b09e9bbb7175b67f2cc66d3a026a3e3c27,2026-10-04,fix(agreements): allow document reviewers to create practitioner-attributed agreements
+6768f8e50d7740e95e358df8c1fb2929b9e5b513,2026-10-04,fix(issue19): use valid dollar quoting in canonical mailing functions
+b62ff104fc4ed353de7a1318d32e73870850260b,2026-10-04,feat(issue19): support contributor mailing opt-in for dual capacity
+7728c86f9b802c74dfeae5a8a45b8f496e4f662b,2026-10-04,chore: place dual-capacity mailing migration after listmonk support
+9b5202af935ca4f3c7ec35354ba6966eac8411a9,2026-10-04,fix(issue19): repair mailing wrapper in canonical schema and add dual-capacity helper
+a2bbdf4a3538735330458de40b8b264559ab1f91,2026-10-04,feat(issue19): support contributor mailing opt-in for dual capacity
+7475fa86433ba3cda1f045ff5aab827f0e3e4205,2026-10-04,feat(listmonk): route contributors to dedicated list
+a029944e696d669884ca81a2a573dc642082d4ff,2026-10-03,fix(listmonk): correct migration wrapper quoting
+60a62afc7c9e9e262de7463336260d5230017610,2026-10-03,fix(listmonk): correct contributor mailing wrapper dollar quoting
+e304a32d179c20ccf80b922b10c8361753dbaf05,2026-10-03,fix(listmonk): correct contributor mailing wrapper dollar quoting
+57bed11912fa0bae7bb06994d1d8229ff2e16663,2026-10-03,docs(listmonk): document contributor mailing behavior
+a79485d4114abd061350462acbef0782a18ff87d,2026-10-03,docs(db): document pending contributor Listmonk migration
+b3be1b1d5828c4592c1bc5a8e4cad40451c84285,2026-10-03,fix(listmonk): keep contributor emails off member list
+f75f5a577b951ca37e1f30a42ac4ddfaf971b7cb,2026-10-03,fix(listmonk): record contributor external unsubscribes
+1ed237d879648543dda14c7cb907d3116babf3a1,2026-10-03,test(listmonk): cover contributor opt-in and unsubscribe flows
+c6fd992dfab314212f34369605d3fda56ac13a2c,2026-10-03,fix(schema): preserve later canonical refinements
+55aa0cbc5bf094745b8580d70ceb0cf854c40e8b,2026-10-03,feat(listmonk): add contributor intake mailing opt-in to schema
+732125ea3f7d6c4729b3f12120f33f18c84b5e3b,2026-10-03,feat(listmonk): add explicit contributor intake mailing opt-in
+b39fd363fea3d7904b2eafe84c3a79a9d239540c,2026-10-03,feat(listmonk): reflect contributor unsubscribes
+a7fd710e7eca1af3dfc518c13410c574b1f7c7fc,2026-10-03,feat(listmonk): make sync worker contributor-aware
+1319e66015f76e92f270455e5bbc7ea19f97afdb,2026-10-03,test(listmonk): fix contributor support regression fixture
+9be108483dd698e1b19a1e316f1ab066823cb9cb,2026-10-03,feat(listmonk): support contributor email subscriptions
+d7f39b420db3040dcc93a89628beae658c5bbdd9,2026-10-03,Fix exclusion trigger function terminator
+fbc427d143aa3aa4a96b404e34f363a28bacff77,2026-10-03,Fix exclusion trigger function terminator
+50b3957fb3d72dcff4a38ecfe7410b2c8d84c7c6,2026-10-03,Use unique dollar quote for exclusion function
+2740d7b080efc9ca75135377038134fa9854723c,2026-10-03,Use unique dollar quote for exclusion function
+b1e33a3f09dc7ff82434278fd1049ccb87b48949,2026-10-03,Use scalar donation validation in exclusion function
+4f165984364d6d0d4823a52f1ac8de3f66b033b8,2026-10-03,Use scalar donation validation in exclusion function
+19484a6b07bdab5b7c332869abab1443cfb55b64,2026-10-03,Simplify cash donation exclusion validation
+21e9111ecf60fa2297879ff85d24466ea8a82512,2026-10-03,Simplify cash donation exclusion validation
+38261722604bc0c58b3302c645f9d8184a3a09f2,2026-10-03,Terminate exclusion trigger function definition
+ed45f70138093762c04a440c46c5544e8a351f87,2026-10-03,Terminate exclusion trigger function definition
+d61941a01fd009523b011bd593557d027bcca69b,2026-10-03,Correct trigger function dollar quoting
+15433c138a906a4336ef18feae4ec603bb9621df,2026-10-03,Correct trigger function dollar quoting
+5d7ff107393611045ff29b8ceceb9a9a6cd14c53,2026-10-03,Fix cash donation exclusion trigger function quoting
+8891893540a223683f5199233ef4f2a4839db79f,2026-10-03,Fix cash donation exclusion trigger function quoting
+550164516398db44d1020066992ca85c7a564772,2026-10-03,Verify excluded cash donation batch guard
+c42c9a118ebccc1b292b1bcba25f5fb5025ec610,2026-10-03,Guard canonical schema against excluded cash deposits
+70001eb819e16097a2a4177596f4d06f0226a4a4,2026-10-03,Guard cash deposit batches against excluded donations
+b0e430e6f152fc36c95c835ee22b418a5e794ccc,2026-10-03,Add cash donation reconciliation exception regression check
+cfd4f4f9a552ea9d78a9608c068c06b748444ccb,2026-10-03,Exclude reconciled cash exceptions from Cash on Hand
+f6809cb9d78d6f72703e303eb59c4d17515fc3e6,2026-10-03,Add cash donation reconciliation exceptions to canonical schema
+edf3e34b6ea288342cb9311156710f255071fee1,2026-10-03,Add cash donation reconciliation exceptions
+6631a38c494bb9fc1d23d9491655d68056a504e9,2026-10-03,docs(db): document cash deposit print migration
+8b9d7a3079f53810dccb2a731e83b12fac3e51ac,2026-10-03,test(db): verify cash deposit print report
+39dd62a8b6634ed7bb22a979bf0fc895c787c34c,2026-10-03,docs(db): add cash deposit print report to canonical schema
+507a69cdf3ae390e6cc1afe9272ad542646d1f01,2026-10-03,feat(db): add cash deposit print report view
+f15c0de78aefd41d1651bc3391268f95ab29e536,2026-10-03,docs(db): track pending role administration migration
+2ac9e0e374ed4890666e97d95decbb512dd928de,2026-10-03,test(roles): verify self-assignment of operational roles
+fdbc68a4d613c87aa08d0109aa11fe667f78cb53,2026-10-03,fix(roles): align canonical schema with self-role administration
+f446f899073687735e395e8de99dc722b5030824,2026-10-03,fix(roles): allow directory managers to change own operational roles
+51ba0def4265a09596b6ef32f8573d6c111455f6,2026-09-30,fix(appsmith): ignore non-PostgreSQL datasource metadata
+4ba18bfba3a8c83af78280622618e61a8f39a788,2026-09-30,test(appsmith): validate datasource rebinding
+7a2792539083618a06b9e854f01863ba66d08841,2026-09-30,feat(appsmith): add datasource rebinding tool
+00d8f72dc05e4bd338223d37b727f246ab7110e6,2026-09-30,Merge pull request #25 from RayzorDuff/restore/cash-deposit-migrations
+a464751a9325f90ad2e64b6510cdd26ca9271adc,2026-09-30,restore(db): restore cash_deposit_batch_tally.sql migration
+b9af74a472f826438a5b2c710b89caa3e5a4d66d,2026-09-30,restore(db): restore cash_deposit_batch_lifecycle.sql migration
+24d34a031a64f5bcdde94f16b2d4173030b33220,2026-09-30,restore(db): restore cash_deposit_management.sql migration
+93aa37ec3e68c25e20ff6c39a2e29323e6316106,2026-09-30,Merge pull request #24 from RayzorDuff/chatgpt/issue-17-cash-deposit-backend
+95814232305298ae78f875984c179f503a8743f9,2026-09-30,docs(db): align cash deposit bootstrap guidance
+eb85559ffe8f1c9be001f079f92df052401e0611,2026-09-30,docs(db): align cash deposit bootstrap guidance
+af1391886a1ab83882250f57ca413b44ed7dbc09,2026-09-30,refactor(db): retire consolidated cash deposit migrations
+925040ebaf1fbda6ae597d9905fe08bb40b648ca,2026-09-30,refactor(db): retire consolidated cash deposit migrations
+8d0b57587cd21173a7d26c7174fcc07704289cb5,2026-09-30,refactor(db): retire consolidated cash deposit migrations
+99e6c626cebfa1792c9b6e59081e43e28a0b3ff2,2026-09-30,refactor(db): consolidate cash deposit schema
+eb9d7e14a35d85a0e2c68c5c7c16680207c125e3,2026-09-30,fix(cash-deposit): use shared audit log in e2e test
+cd74c1f5ac2b3f33fed3b5f069a6f54b1cef6b2a,2026-09-30,test(cash-deposit): cover end-to-end management flow
+03d19d962a0c4cd65738d03cafd31210041fb980,2026-09-30,test(cash-deposit): fix tally preparer fixture
+b347ae2a64931dcc10c22eb9016479098f4fb654,2026-09-30,feat(cash-deposit): add authoritative batch tally
+a893cb4a0071120003c803d83598d190f2aa82c7,2026-09-30,fix(db): pass bootstrap names into directory manager function
+fe758244ae5540d1ab4265c2f6a04c14c03797ea,2026-09-30,feat(db): improve directory manager bootstrap
+714900e5a5e6ce9b5fdabe4118d8f9489e3262bb,2026-09-30,test(cash-deposit): exercise prepared management flow
+d1d2f7dd540e6ccceda04080056e45b62627aa72,2026-09-30,test(cash-deposit): fix management smoke fixture
+336fd90a5a3f5285f39f9b7ad386bcfb0b2c18cf,2026-09-30,test(cash-deposit): align management smoke test with lifecycle
+99b94e8ee3c9103977f66a6cb37a9af51ad5a490,2026-09-30,test(cash-deposit): cover concurrent donation assignment
+164bd904f224cd739c2495a0ec2a94a1f87314df,2026-09-30,test(cash-deposit): cover prepared batch cancellation
+7d748b9ac4be751c066a91a3512bb578e4637c99,2026-09-30,test(cash-deposit): reuse released lifecycle donation
+6a2caa8bb449e4e65b2bbbba12bba00bf7bff53f,2026-09-30,test(cash-deposit): correct lifecycle fixture amounts
+880a6424a16c4ba415df44f2de0be1aae981ee7f,2026-09-30,test(cash-deposit): isolate removal history fixture
+360b7a72b4e86ab742ff3839b28fa72a2b89944d,2026-09-30,fix(cash-deposit): retire destructive item-removal overload
+63baa50d7ad3132fb452859e17813d186e29e949,2026-09-30,test(cash-deposit): fix lifecycle donor fixtures
+b2b82bc3458ad9536a379e1b7542ddbd7b23e420,2026-09-30,test(cash-deposit): cover prepared lifecycle and item history
+ad9db3ea0dfabc44a02f2c005032cb279f1ff07a,2026-09-30,feat(cash-deposit): add prepared lifecycle and item history
+ffdc1c8019e3178bb14417df3e1672c69079186b,2026-09-30,refactor(db): separate deployment migrations and regression tests
+f003213743a95d349f96e1339f861c9fdda17641,2026-09-30,refactor(db): consolidate canonical schema installation
+4f55a2f6de18b56388c3ed65e9f71511b68e58f9,2026-09-30,refactor(db): consolidate canonical schema
+2d25e55803a7dad6cf1570ea25b07c8fafdf3d48,2026-09-30,test(issue17): assert confirmed batch immutability
+43c4304ea28cfba2be073d2c396f3fabe334e120,2026-09-30,test(issue17): fix anonymous donation fixture
+240906e0d77f3e4a6a35aa82c7d25bf76c687d5c,2026-09-30,test(issue17): fix canonical people fixtures
+1883459f3294087c576f8791b4a8bc46475dada0,2026-09-30,chore(issue17): use descriptive artifact filenames
+f3c167eb8bb0cb0351a73484361382c37b4a9b73,2026-09-30,fix(issue17): align smoke test with canonical identity
+6b0a478ffaa72ecfe13071e55164e36f96aac56a,2026-09-30,fix(issue17): align deposit smoke test with canonical identity
+1dc76243b154197e713d33f126e24d0d145c16fc,2026-09-30,test(issue17): add cash deposit backend verification
+4de1f85101ff315a1ef29d777f2c23272cde617b,2026-09-30,feat(issue17): add cash deposit batch backend
+fd7ef26b79f4d05eda06144f10847ded515d821b,2026-09-28,fix(issue19): declare contact reassignment source id
+55dc73fbebe6649177a1a2e2defb5b1b7ad20091,2026-09-28,docs(issue19): document person contact reassignment migration
+61aee1ade87ca2ad3764f945fadec40fdf457f6f,2026-09-28,test(issue19): verify individual contact reassignment
+8b497507a83f599bf83d78720893de3a0005b29b,2026-09-28,fix(issue19): preserve contact owner during reassignment
+73b02c047a0127d96de5960630943cb5baa2175f,2026-09-28,feat(issue19): add individual contact reassignment
+23fa142b3b23c98c3d9b9a9a8983b7f5a68af93e,2026-09-28,Revert Appsmith json to 2a7f80f plus 7238343 as caddce1 was causing problems with pages after and including Reports loading completely.
+679defa0f3606992adc5cbacc73dd6e256aaa997,2026-09-28,chore: regenerate Appsmith export
+8487bf8e8d4f8a31a3604f9ec6d352ca97802f8d,2026-09-27,Merge pull request #21 from RayzorDuff/chore/appsmith-export-generator
+875cbd9e70706fb6375328741659942a51502873,2026-09-27,chore: add Appsmith export regeneration tooling
+008d1ba11f84a2696ac9cbf5c5ddf43a2cf96628,2026-09-27,chore: add Appsmith export regeneration tooling
+8f129d04dfcbd6b8d5c439399048d06f3b513721,2026-09-27,chore: add Appsmith export regeneration tooling
+7238343b9b187a44cbd952189072fdf9ec543999,2026-09-27,fix(appsmith): repair duplicate page git identity
+caddce1d1a3891a0ab48eb23dc0443e2f269717c,2026-09-27,test(appsmith): quarantine actions on legacy pages
+2a7f80f17838f4bc4b340e6443c91017b4961970,2026-09-27,fix(appsmith): remove duplicate action definitions
+3c57fcb9d4b710a5c753870be4f02d387071b7cb,2026-09-27,fix(terminology): remove stale page callback (#20)
+e2667a3202fb56b4a47a2ca130c7b9b9205ffbc2,2026-09-27,fix(terminology): remove stale page binding (#20)
+e56eec806f45284d087127e89eac12b67654c630,2026-09-27,feat(terminology): add repaired administration page export (#20)
+c55b9217869bfdbc692b34d088220fa8178f5f50,2026-09-27,revert: remove invalid terminology page export (#20)
+e056a0079f8b1901d249c9205e54f06e9a7d172d,2026-09-27,feat(terminology): add administration interface (#20)
+09f3827c461496bde709ea5b4f5ba402abe14b35,2026-09-27,fix: quote cash donation contributor choice
+d2fc9057a2ca820d43093018b9e104250ce7c5f5,2026-09-23,"feat(agreements): use canonical practitioner signers (#19, #20)"
+95cb3353e4781d0b342b01f991eed897e107ef76,2026-09-23,"feat(releases): use person-based practitioner operations (#19, #20)"
+4d07bf4b8e2737af16b1a3c66645528532e49bd9,2026-09-23,"feat(terminology): separate practitioner labels from role identity (#19, #20)"
+cf1b668d2ba3c7838104dd5782d353c1f5026bbf,2026-09-23,feat(practitioners): add person-based member assignments (#19)
+00ea26f4259f6589f1016754a11173af4df9cace,2026-09-23,feat(contacts): unify membership and contributor mailing addresses (#19)
+aa6f2b888df06ef0f16d12fd59d979fe27a5873d,2026-09-22,fix(n8n): cast Givebutter provider identity as text (#19)
+83c3c851eebe2f05767ff930ebe2e720c1aa04d0,2026-09-22,fix(releases): honor signed agreement versions and unify contact editor (#19)
+8d3f30a31a28fb7aeefa7f23e1afbc7ca763dd72,2026-09-22,feat(members): manage membership contacts on individual profiles (#19)
+b56491380860f884d17162e12b9ac35044895a96,2026-09-22,fix(identity): keep membership independent from contributor status (#19)
+314eacd15d82ef3b5c090ec3f19d30fbc7262e7a,2026-09-22,feat(profiles): bridge member operations into individual profiles (#19)
+446f6910e492b1efa98291e18d39a9ac12f1f145,2026-09-22,feat(releases): scope releases to sacrament transfers (#19)
+cc8bbc3924348894f4b3010d115f1c22636238ab,2026-09-22,feat(identity): add audited canonical profile editing (#19)
+c7e35c8553d6ab68730eb3e7e4be97933924555c,2026-09-22,feat(contributors): add audited status lifecycle (#19)
+f12f596150c2639b248a309bc45f48f5d28197b5,2026-09-22,fix(appsmith): show contributor history and allow empty units (#19)
+d77f6a4a4a1694b76da04b035578b916d0f3aa69,2026-09-22,feat(contributors): show profile contribution history (#19)
+efa82af933d55a40691dfb23071742ddf823b890,2026-09-22,fix(contacts): correct former-member contact migration (#19)
+acec21aed74ddade5df31993340eb7f493980f2a,2026-09-22,fix(contacts): retain former-member contacts for contributor reuse (#19)
+7e5293942b565dbded63b27a19cc916a98b4cf68,2026-09-22,feat(contacts): assign existing person contacts across roles (#19)
+697b3f5284a9bf8ccb825517653f25520a8d0a41,2026-09-22,feat(contributors): manage mailing addresses on profiles (#19)
+d93e06e6d125688a6e6abbb314f35474964254ec,2026-09-22,fix(appsmith): explain membership closure eligibility (#19)
+4ddb6b3077d856334410b081ce42f0869fb97159,2026-09-22,feat(members): end membership while retaining contributors (#19)
+582e2cc3df3c94c4da6fdb4db5d2c8f7b544a299,2026-09-22,feat(members): enroll existing people without duplicating identity (#19)
+1b0182baa426f91697b90196337008feceec60b0,2026-09-22,fix(contacts): enforce cross-party contributor ownership (#19)
+7132e488fbc98f1884d8d18a46f409d7711dff4a,2026-09-22,feat(contributors): manage profile email and phone contacts (#19)
+d29d85578204acc237a0ee505fdf30cbab21d687,2026-09-21,feat(contributors): add directory intake and profile enrollment (#19)
+4e9aa4f2b50f810bf7a5f64728fa1675dd9e3578,2026-09-21,fix(appsmith): show directory details and role labels (#19)
+f2ad4abb80d3fdc502d55630426f0967109a662e,2026-09-21,feat(identity): manage person roles and Appsmith accounts (#19)
+35d27dc4cf05786e4032f8403ad63d4ebe9832f6,2026-09-21,feat(directory): add scoped individual and company profiles (#19)
+fa72c58ce009dec288baf05c14a6428e142b6d99,2026-09-21,feat(identity): add person and organization contact foundation (#19)
+3c3f5c482d65c243663e32b65b6244dbce4c4a62,2026-09-21,feat(identity): centralize person and organization details (#19)
+9e1b493c104399ab4726ea45f41d03a9ac41f4cc,2026-09-21,Product-related API access for MushroomProcess goes through pgsql n8n workflows as Airtable is fully retired.
+b1acd6d1758c472597229fb96c535cfb494c4b13,2026-09-21,feat(identity): add shared person and organization identities (#19)
+30b6de663352e97d55533972a137a75cfbc6d52e,2026-09-20,fix(appsmith): restore member profile JS methods (#19)
+c2b5d792e9b48bc7ed74a68f5f516b3de124df01,2026-09-20,fix(appsmith): isolate donor selection and restore audit visibility (#19)
+7ce5497c591c22165146699bc0e0355796288f5b,2026-09-20,feat(donations): resolve Givebutter gifts to contributors (#19)
+46cfd9e4a021e024e455402723996f66fa32256c,2026-09-20,feat(contributors): add independent donor identity model (#19)
+378d7126123dd04feb36dae55d1928f95b1ef40c,2026-09-20,feat(donations): support anonymous cash donations (#17)
+3d07fd02d95496907f1a1c22e96504ead5e8e224,2026-09-20,"The schema now has a generated physical-address identity based on normalized street, unit, postal code, and country. City, state, and address type are excluded, preventing the exact Fort/Fort Collins and Colorado/CO failures while keeping different apartment numbers distinct."

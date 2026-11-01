@@ -1,0 +1,26 @@
+{
+  "inspection": "reporting_capacity_and_terminology_increment",
+  "date": "2026-10-19",
+  "appsmith_source_sha": "7a679b619eca7ca71a161857626661404ba3bd9d",
+  "canonical_schema_sha": "0a8df7c5287d5ddc37123011b387ed931b788bd6",
+  "workflow": "Development checks",
+  "run_id": 39183903296,
+  "run_url": "https://github.com/RayzorDuff/SignatureGate-Appsmith/actions/runs/39183903296",
+  "conclusion": "success",
+  "scopes": [
+    "navigation generation and saved bindings",
+    "controller and presentation fixtures",
+    "four actual-source disposable SQL suites",
+    "Contributor attribution and count/value reconciliation",
+    "Participant and Contributor capacity creation dates and history",
+    "direct financial denial and current assignment/account scope",
+    "alternate terminology and retained metric selections"
+  ],
+  "data": "synthetic only; no operational data or external services",
+  "runtime_limitations": [
+    "embedded PostgreSQL is not the deployed PostgreSQL 16.13 cluster",
+    "no restored-production owner/grants/concurrent-session rehearsal",
+    "native Appsmith rendering and synchronization remain to observe",
+    "external delivery and production promotion not exercised"
+  ]
+}

@@ -1,0 +1,11 @@
+page,target,exists,note
+Company Profile,Directory,True,Literal route only; conditional/dynamic targets require review
+Contributor Functions,Directory,True,Literal route only; conditional/dynamic targets require review
+Contributor Functions,Member Functions,True,Literal route only; conditional/dynamic targets require review
+Directory,Contributor Functions,True,Literal route only; conditional/dynamic targets require review
+Directory,Member Functions,True,Literal route only; conditional/dynamic targets require review
+Directory,Sacrament Release,True,Literal route only; conditional/dynamic targets require review
+Facilitator Functions,Directory,True,Literal route only; conditional/dynamic targets require review
+Individual Profile,Directory,True,Literal route only; conditional/dynamic targets require review
+Member Functions,Directory,True,Literal route only; conditional/dynamic targets require review
+Sacrament Release,Directory,True,Literal route only; conditional/dynamic targets require review

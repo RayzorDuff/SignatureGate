@@ -1,0 +1,99 @@
+{
+  "appsmith_revision": "6bee614f1a4480cb35ba8986abf1642ed1b54e5f",
+  "appsmith_tree_sha": "58c6985139aa89e6b986307a444aba9fefee712e",
+  "signaturegate_source_revision": "575d4c4b470065f574c5672dfb1ec39ba29d7e29",
+  "canonical_schema_sha256": "d79eab3f235c343076bc4dd307de6d1ab92892ee85c1826ac024978d3a265de1",
+  "terminology_seed_sha256": "4f6b48262c6c7eac229671fa036d8539c7d38c8cc5b99730998ef6fedaa7d18d",
+  "appsmith_worktree_dirty": false,
+  "signaturegate_worktree_dirty": true,
+  "baseline_v1_1_0": "654b02c00dd39165a65a6ab3aebd28455264b70a",
+  "commits_since_v1_1_0": 221,
+  "json_files": 976,
+  "pages": 17,
+  "actions": 472,
+  "js_objects": 30,
+  "js_syntax_all_pass": true,
+  "js_appsmith_format_all_pass": true,
+  "js_page_load_functions": 30,
+  "datasource_descriptors": 4,
+  "jslib_descriptors": 1,
+  "findings_by_kind": {},
+  "action_datasources": {
+    "N8N": 12,
+    "signaturegate-postgres-test": 233,
+    "NocoDB danks.store": 1,
+    "NocoDB danks.store public": 1
+  },
+  "multiply_defined_migration_objects": {
+    "can_view_donation_financials": [
+      "application_authorization.sql",
+      "donation_financial_access.sql"
+    ],
+    "cash_deposit_actor_email": [
+      "application_authorization.sql",
+      "cash_deposit_management.sql"
+    ],
+    "assert_cash_deposit_preparer": [
+      "application_authorization.sql",
+      "cash_deposit_management.sql"
+    ],
+    "assert_cash_deposit_verifier": [
+      "application_authorization.sql",
+      "cash_deposit_management.sql"
+    ],
+    "cash_deposit_batch_tally": [
+      "application_authorization.sql",
+      "cash_deposit_batch_tally.sql"
+    ],
+    "cash_deposit_batch_print": [
+      "application_authorization.sql",
+      "cash_deposit_batch_print.sql"
+    ],
+    "application_review_agreement": [
+      "application_authorization.sql",
+      "paper_agreement_upload.sql"
+    ],
+    "prevent_confirmed_cash_deposit_item_mutation": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "add_cash_deposit_item": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "remove_cash_deposit_item": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "cancel_cash_deposit_batch": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "confirm_cash_deposit_batch": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql"
+    ],
+    "cash_on_hand_donations": [
+      "cash_deposit_batch_lifecycle.sql",
+      "cash_deposit_management.sql",
+      "cash_donation_reconciliation_exceptions.sql"
+    ],
+    "prevent_confirmed_cash_deposit_mutation": [
+      "cash_deposit_confirmation_correction.sql",
+      "cash_deposit_management.sql"
+    ],
+    "revive_cash_donation_from_deposit": [
+      "cash_donation_reconciliation_revive.sql",
+      "cash_donation_reconciliation_revive.sql"
+    ],
+    "application_begin_paper_upload": [
+      "paper_agreement_upload.sql",
+      "paper_evidence_storage.sql"
+    ],
+    "application_complete_paper_upload": [
+      "paper_agreement_upload.sql",
+      "paper_evidence_storage.sql"
+    ]
+  },
+  "live_environment_verified": false
+}

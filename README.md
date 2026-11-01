@@ -12,7 +12,7 @@ It is designed to stay **separate but interoperable** with the MushroomProcess i
 
 SignatureGate provides stable support for:
 
-- Member intake and profile management
+- Participant intake and profile management
 - Agreement templates and multi-template agreement types
 - Digital and manual agreement workflows
 - Sacrament release tracking
@@ -23,7 +23,7 @@ Event-day functionality is planned but not fully implemented in this release.
 
 ## What this solves
 
-- Track **members** and contact information
+- Track **participants** and contact information
 - Track **agreements** (paper, Documenso, etc.) and enforce signing before sacrament release
 - Track **sacrament releases** with traceability to MushroomProcess `product_id`
 - Track **events** (ceremonies, retreats)
@@ -34,8 +34,8 @@ Event-day functionality is planned but not fully implemented in this release.
 
 ## Architecture (high level)
 
-- **Postgres**: SignatureGate core data (members, agreements, releases, donations, audit_log)
-- **Appsmith**: Operator-facing UI (facilitators, reviewers)
+- **Postgres**: SignatureGate core data (participants, agreements, releases, donations, audit_log)
+- **Appsmith**: Operator-facing UI (Facilitators/Spiritual Practitioners, reviewers)
 - **n8n**: Orchestration and external integrations (Documenso, Givebutter, Airtable)
 - **NocoDB**: Attachment and document storage
 - **MushroomProcess**: External inventory source (linked by ID only)
@@ -75,14 +75,14 @@ This system will store personal contact info and signed agreement references. Us
 - Encrypted storage for documents (S3 compatible / object storage recommended)
 - Regular backups (Postgres + object storage)
 
-## Audit Logging
+## `Audit Log`ging
 
 SignatureGate maintains a centralized, append-only audit trail in `public.audit_log`.
 
 The audit log records all legally, spiritually, and operationally significant events, including:
 
 - Authentication failures
-- Member creation and status changes
+- Participant creation and status changes
 - Agreement approval / rejection
 - Sacrament release issuance
 - Donation creation and verification
@@ -99,7 +99,7 @@ Audit logging is legally and spiritually significant and must never be bypassed.
 ### Where audits are written
 
 - **Appsmith**
-  - User-initiated actions (auth, member creation, agreement issuance, release issuance)
+  - User-initiated actions (auth, participant creation, agreement issuance, release issuance)
 - **n8n**
   - External system callbacks (Documenso)
   - Final irreversible workflow steps (product shipment)
@@ -108,11 +108,11 @@ Audit writes are intentionally split this way to ensure:
 - correct actor attribution
 - durability even when external systems are involved
 
-## Member contact methods architecture
+## Participant contact methods architecture
 
 SignatureGate no longer treats email or phone number as a single-field identity attribute.
 
-Members may now have:
+Participants may now have:
 
 - Multiple email addresses
 - Multiple phone numbers
@@ -146,7 +146,7 @@ Tables include:
 
 ### Email verification
 
-`member_emails.is_verified` indicates that the organization has evidence the member controls the address.
+`member_emails.is_verified` indicates that the organization has evidence the participant controls the address.
 
 Verification occurs when:
 
@@ -184,36 +184,36 @@ SignatureGate is intended to be deployed as a **private Appsmith app** (login re
 
 ### Roles
 
-- **Facilitator**: `members.is_facilitator = TRUE`
+- **Facilitator/Spiritual Practitioner**: `members.is_facilitator = TRUE`
   - Can use the app.
-  - Member directory results are scoped to: members they created, members where they are the facilitator on an agreement, or members where a sacrament release exists with them as facilitator.
+  - Participant directory results are scoped to: participants they created, participants where they are the Facilitator/Spiritual Practitioner on an agreement, or participants where a sacrament release exists with them as facilitator.
 
 - **Document Reviewer**: `members.is_document_reviewer = TRUE`
-  - Sees the full member directory (for review/QA workflows).
+  - Sees the full participant directory (for review/QA workflows).
 
 ### Deployment requirements
 
 - Do **not** make the app public.
 - Create Appsmith users (invite) using the **same email** you store in `members.email`.
-- Ensure the member row is `status='active'` and has the appropriate role flag(s).
+- Ensure the participant row is `status='active'` and has the appropriate role flag(s).
 
 Implementation details and troubleshooting are in `appsmith/GETTING_STARTED.md`.
 
-## Multi-facilitator architecture
+## Multi-Facilitator/Spiritual Practitioner architecture
 
-Members may now be assigned to multiple facilitators simultaneously.
+Participants may now be assigned to multiple Facilitators/Spiritual Practitioners simultaneously.
 
 Assignments are stored in:
 
 - `member_facilitators`
 
-This replaces the earlier single-facilitator relationship model.
+This replaces the earlier single-Facilitator/Spiritual Practitioner relationship model.
 
-### Facilitator access
+### Facilitator/Spiritual Practitioner access
 
-Facilitators may:
+Facilitators/Spiritual Practitioners may:
 
-- manage member profile information
+- manage participant profile information
 - upload agreements
 - request digital agreements
 - record sacrament releases
@@ -222,32 +222,27 @@ Facilitators may:
 
 ### Storage location access
 
-Storage locations are no longer implicitly tied to facilitator names.
+Storage locations are no longer implicitly tied to Facilitator/Spiritual Practitioner names.
 
 Access is controlled through:
 
 - `facilitator_storage_location_access`
 
-Multiple facilitators may access the same storage location.
+Multiple Facilitators/Spiritual Practitioners may access the same storage location.
 
 This architecture supports future separation between:
 
 - inventory ownership
 - physical custody
-- facilitator operational access
+- Facilitator/Spiritual Practitioner operational access
 
 ## Documenso signing
 
-### Documenso database migrations
+### Documenso database setup
 
-If you enable Documenso integration, apply the Documenso migration(s) in addition to the core schema/migrations:
+The Documenso columns and signing APIs are included in `db/schema.sql` for a fresh database. Existing deployments use the reviewed release upgrade manifest; the retired historical migration files are not setup commands. Configure active template/envelope and recipient mappings through `Agreement Templates` using the deployment's actual Documenso slots. See `db/README.md` and `n8n/DOCUMENSO_INTEGRATION.md`.
 
-- `db/migrations_documenso_integration.sql`
-- `db/migrations_documenso_integration_1.sql`
-
-See `n8n/DOCUMENSO_INTEGRATION.md` for the Documenso workflow wiring and tokens.
-
-Two-party signing (Member + Facilitator) is implemented via n8n + Documenso.
+Two-party signing (Participant + Facilitator/Spiritual Practitioner) is implemented via n8n + Documenso.
 
 - Setup & workflows: `n8n/DOCUMENSO_INTEGRATION.md`
 - Certificate troubleshooting: `deploy/DOCUMENSO_CERT_TROUBLESHOOTING.md`
@@ -256,7 +251,7 @@ Two-party signing (Member + Facilitator) is implemented via n8n + Documenso.
 
 SignatureGate supports tracking **voluntary donations** independently of sacrament release.
 
-- **Cash donations** are entered manually by facilitators and require reviewer verification.
+- **Cash donations** are entered manually by Facilitators/Spiritual Practitioners and require reviewer verification.
 - **Givebutter donations** are ingested automatically via webhook; confident contributor matches are verified and ambiguous identities enter review.
 - Donations are **never** used as a prerequisite or gate for sacrament release.
 
@@ -264,14 +259,14 @@ All donation lifecycle events are recorded in the audit log.
 
 ## Givebutter donation review workflow
 
-Givebutter donations are no longer allowed to automatically create new members solely by email address matching.
+Givebutter donations are no longer allowed to automatically create new participants solely by email address matching.
 
 Incoming Givebutter donations now follow this flow:
 
 1. Attempt identity resolution using:
    - Givebutter contact identity
    - a unique contributor email or normalized phone
-   - a unique member email or normalized phone as a compatibility fallback
+   - a unique participant email or normalized phone as a compatibility fallback
 
 2. If no confident match exists:
    - donation is inserted with:
@@ -280,18 +275,18 @@ Incoming Givebutter donations now follow this flow:
      - `member_id = NULL`
 
 3. Donations reviewers may:
-   - assign donation to an existing contributor or member
+   - assign donation to an existing contributor or participant
    - create a new individual contributor
    - create a new organization contributor
    - ignore/delete donation
-   - create a new member and linked individual contributor from donation data
+   - create a new participant and linked individual contributor from donation data
 
-### Donation-created members
+### Donation-created participants
 
-When a reviewer creates a member from a pending donation:
+When a reviewer creates a participant from a pending donation:
 
-- member record is created
-- contributor record and contributor-member link are created
+- participant record is created
+- contributor record and contributor-participant link are created
 - contributor contact and provider identities are retained
 - emails are inserted into member_emails
 - phones are inserted into member_phones
@@ -299,3 +294,5 @@ When a reviewer creates a member from a pending donation:
 - donation is linked automatically
 
 All actions are audit logged.
+
+Development naming, migration documentation and evidence conventions are in [CONTRIBUTING.md](CONTRIBUTING.md).

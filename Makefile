@@ -4,6 +4,7 @@ version:
 	@cat VERSION
 
 validate:
+	@python3 scripts/check_repository_naming.py
 	@python3 scripts/validate_release.py --assets
 
 release-check: validate

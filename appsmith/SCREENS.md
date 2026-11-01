@@ -1,37 +1,54 @@
-# Appsmith screens (starter)
+# SignatureGate Appsmith screen inventory
 
-## 1) Dashboard
-- Today’s events
-- Pending agreements (members with upcoming event but missing signed docs)
-- Recent sacrament releases
-- Quick search (member / email / phone / product_id)
+This is the v1.2.0 development candidate inventory. The operator accepted navigation across all pages on October 18, 2026. Source/generated-menu checks pass. Keyboard/mobile, profile overlap rendering and separate workflow/integration outcomes remain scoped acceptance gaps. Production retains its separately published revision until release gates pass. The application/export's technical name remains Rooted Psyche Membership Ops.
 
-## 2) Members
-- ✔️List + filters (active/inactive)
-- ✔️Member detail: contact info, agreements, releases, donations
-- Actions: 
-	✔️create member, 
-	deactivate, 
-	merge duplicates
+The native application title, sign-in and Directory navigation remain available. The shared `Current page:` caption supplies the page name; redundant standalone page-name text widgets are removed. Record identity names, workflow section headings, instructions and denied-access messages remain. Four generated Menu Button groups provide the active workflow links. Pages without required canonical authority are omitted from groups; denied pages retain an escape to Directory. Menu visibility is presentation only: every data/action still needs its existing signed database/API permission.
 
-## 3) Agreements
-- Agreement templates (name, version, required_for, active)
-- ✔️Member agreements (status, evidence link, method)
+| Group | Default display | Stable page ID | Authority and purpose |
+| --- | --- | --- | --- |
+| People & Organizations | Directory | Directory | Accessible identities and selected-profile entry; scoped SQL determines visible rows |
+| People & Organizations | Intake | Intake | Document Reviewer for Participant enrollment; Donations Reviewer for Contributor enrollment; Directory Manager plus both reviewers for dual capacity |
+| Participation & Practice | Participant Functions | Member Functions | Participant self-read; Document Reviewer/assigned Spiritual Practitioner operations, subject to resource/write checks |
+| Participation & Practice | Spiritual Practitioner Functions | Facilitator Functions | Document Reviewer manages assignments and storage scope; labels follow the practitioner configuration |
+| Participation & Practice | Sacrament Release | Sacrament Release | Spiritual Practitioner appointment and scoped Participant/location/agreement gate |
+| Contributions | Contributor Functions | Contributor Functions | Reviewers and scoped Spiritual Practitioners; donations review requires Donations Reviewer; cash recording follows its separate permission |
+| Contributions | Cash Deposits | Cash Deposits | Donations Reviewer only; reconciliation, batches and guarded ERP synchronization |
+| Reports & Administration | Reports | Reports | Reviewers/Spiritual Practitioners; financial metrics require Donations Reviewer independently |
+| Reports & Administration | Agreement Templates | Agreement Templates | Document Reviewer; types and template administration |
+| Reports & Administration | Audit Log | Audit Log | Reviewers/Spiritual Practitioners; financial versus document/assigned-person audits scoped independently |
+| Reports & Administration | Terminology Administration | Terminology Administration | Directory Manager; audited organization-facing labels; no role/capacity grants |
 
-## 4) Event Check-in
-- Select event
-- Check-in member (verify signed agreements)
-- If missing: send Documenso link, or mark “paper signed pending upload”
+Individual Profile and Company Profile are hidden context pages. Directory supplies an explicit UUID; valid accessible deep links also work. Missing/invalid/inaccessible links never reuse stored selections. Back to Directory remains available. Profile content stays hidden during dependent loading or after stale account/route/query results; reload restores the selected record after a failed read.
 
-## 5) Sacrament Release (Gate)
-- Input/scan: member + product_id
-- Quantity + unit
-- “Validate lot” (from bridge or API)
-- ✔️“Release” button (runs hard gate)
-- Print receipt / QR (optional later)
+Unauthorized, Agreements - Queue, Events - Create and Events - Check In remain unlisted. Their presence in source is not acceptance of a supported workflow. Events/queue are not exposed by this navigation increment. Legacy Intake and its native/menu entries are now retired from development; 17 pages remain. Replace old Intake bookmarks with Directory or Intake.
 
-## 6) Donations
-- ✔️Manual entry (cash)
-- List Givebutter imports (read-only)
-- ✔️Member donation history
+Participant and Spiritual Practitioner captions use deployment labels while `member`, `member_id`, `practitioner`, compatibility field names and page IDs remain stable. Historical records and executed agreement text are not passed through the UI-copy formatter. Rooted Psyche defaults refer to Facilitator/Spiritual Practitioner in explanatory documentation; a separately reserved regulated facilitator concept remains distinct and inactive.
 
+The source of truth is `SignatureGate-Appsmith/navigation/registry.json` plus `navigation/labels.js`. Run `python3 scripts/generate-navigation.py`, then `--check`, controller/menu tests and exact-source export validation after changes. Review pull/reload behavior before packaging. See [the validation sequence](../releases/v1.2.0/NAVIGATION_AND_PARTICIPANT_VALIDATION.md).
+
+
+## Table presentation and Intake recovery
+
+Agreement Templates' Created and Updated columns format their own timestamp fields as text, with blank output for missing or invalid timestamps. Created is no longer a document URL column. Document URLs and editable template data retain their separate fields.
+
+Table V2's editable column-title field in Appsmith 2.4.2 does not support the same dynamic bindings as normal widget captions. Current readable table titles are centralized in `SignatureGate-Appsmith/navigation/table-headings.json`. They use Participant/Spiritual Practitioner/Contributor defaults and require regeneration when deployment titles change; live terminology edits do not rename these headers. Other supported captions/selectors/menu labels remain configurable. Executed agreement wording and record values are untouched.
+
+Intake persists an account-scoped checkpoint before its first identity write. Saved or uncertain outcomes block another ordinary submission, including a reload that retains Appsmith storage. The notice supplies the failed stage; known technical identity/agreement IDs stay private in the checkpoint. Review the existing record's contacts, capacities, practitioner assignment and agreement/signing status. Reset after an interrupted outcome requires acknowledgment and starts a separate intake; it neither repairs saved records nor replays signing. Completed intake also requires Reset before another submission. No form values are stored in the checkpoint.
+
+The browser checkpoint remains a recovery aid. The active Intake API now also commits all database enrollment stages atomically and returns one durable owner/key/payload receipt. Check saved Intake reads that receipt without replaying enrollment or signing. No visible receipt can still mean an in-flight request. Fresh PostgreSQL 16.13 contention CI passes; installed ownership/grants, restored production and external delivery remain separate gates. Legacy Intake is retired from development. Paper remains blocked before writes. See [current confidence and focused validation](../releases/v1.2.0/UNIFIED_INTAKE_VALIDATION.md).
+
+Select `labelText`, Directory table-cell action buttons and Individual/Company contact captions now use configured terminology. Terminology Administration includes a manager-only read-only table of every installed key/kind/label/active state/description and refreshes current-page labels after a save. Operational Participant enrollment uses `member`; the separate `participant` concept is reserved for events. Use the audited adoption helper or the administration form if installed Member defaults remain. Existing Contributor/practitioner overrides are honored. The obsolete standalone Terminology Administration import in SignatureGate is removed; split Git source and the final accepted coordinated export define the application.
+
+## Report dimensions and configured page names
+
+The visible navigation entry and current-page title for the stable Member Functions route use the configured Participant singular label, such as Participant Functions; Contributor Functions uses its configured equivalent. Existing route names are retained for compatibility. An installed operational member=Member setting requires explicit audited Participant adoption.
+
+Reports defaults to authorized overall/Contributor-linked donation totals and separate Participants Created/Contributors Created capacity metrics. Individual/company attribution forms the Contributor total; anonymous/unresolved stay separate. The optional Participant-linked subset uses current active enrollment and overlaps Contributor totals. Creation uses each capacity's created-at independently of people/company creation and retains ended/archived history within the viewer's current scope. Metric choices, charts and visible rows honor configured vocabulary; technical keys are hidden. See [focused reporting validation](../releases/v1.2.0/REPORTS_VALIDATION.md).
+
+Unified Intake offers Digital now or explicit Create agreement later. Deferred enrollment requires two contact methods and a practitioner; phone plus address works without email. It creates no agreement or signing request and grants no release eligibility. The former separate write/helper/upload actions are removed; enrollment uses one guarded transaction and completion audit. PostgreSQL 16.13 contention and the complete source/controller/disposable SQL suite pass. Only installed API/native acceptance is requested in [UNIFIED_INTAKE_VALIDATION.md](../releases/v1.2.0/UNIFIED_INTAKE_VALIDATION.md).
+
+Participant Functions shows Agreement Type alongside Participant and practitioner selection for authorized staff. It loads types before matching active templates, preserves canonical assignment scope and clears stale template selections. Deferred Intake can omit email; subsequent Digital signing requires an active Participant email. Choice inspection itself sends no agreement. See releases/v1.2.0/NATIVE_STARTUP_AND_AGREEMENT_SELECTION.md for the current focused native acceptance.
+
+Paper Agreement: select one signed PDF/PNG/JPEG up to 5 MiB, upload without email, then inspect its evidence and obtain reasoned Document Reviewer approval. Check saved paper upload reads the owner-scoped receipt; Resolve pending upload opens the cancellation/recovery reason dialog. The new protected n8n workflow must be configured first; use releases/v1.2.0/PAPER_AGREEMENT_VALIDATION.md.
+
+Paper document storage offers Google Drive (current UI default) and NocoDB. Evidence links render confirmed Drive file IDs without requiring NC_PUBLIC_URL; existing NocoDB references retain their current route. The whole request body is serialized as JSON so the file collection remains an array. Current rollout: releases/v1.2.0/GOOGLE_DRIVE_PAPER_VALIDATION.md.

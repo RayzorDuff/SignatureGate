@@ -1,46 +1,19 @@
-# Policy notes (from Rooted Psyche documents)
+# Policy and operational safeguards
 
-## Sacrament
+Organization-specific policies, document wording and legal review belong in private deployment records. This guide records generic application safeguards and does not characterize an actual organization's legal position or item types.
 
-Rooted Psyche’s packet explicitly states that sacred mushrooms are treated as sacrament, not a commercial product, and that donations are voluntary and not payment for sacrament or services. 
-The packet includes a **Member Acknowledgment & Liability Release Form** and a **Facilitator Screening & Verification Form** with checkboxes for eligibility and signing confirmation. 
+## Agreements and eligibility
 
-Operational implication:
-- The system should enforce: **no sacrament release** unless the required agreement(s) are signed (or verified by facilitator), and the release is recorded with date/time and lot reference.
+A controlled operation must satisfy its reviewed eligibility and agreement rules. Select an appropriate active template for a new agreement; preserve the meaning and evidence of an already executed agreement when display terminology or template versions change.
 
-### Multiple Agreement Variants
+Participant and Facilitator/Spiritual Practitioner labels describe their operational capacities/appointments. A template recipient slot or configured label does not grant identity, capacity or permission.
 
-Multiple agreement templates may exist for the same agreement type
-(e.g. different languages or jurisdictions).
+## Contribution independence
 
-Selection of a template does not change the nature of the agreement itself,
-only the presentation or language used to convey it.
+Contributions and operational eligibility are separate. Contribution amount/status does not automatically grant participation, appointment or authorization for a controlled transfer. Contribution review serves the application's accounting/stewardship boundary.
 
-## Donations
+## Audit and accountability
 
-Rooted Psyche explicitly treats sacrament as non-commercial and donations as voluntary.
+Sensitive state changes require durable audit and preserved source/evidence references. An audit failure must roll back the associated guarded write. Retain historical agreement, operational and integration records; do not silently rewrite them to match new presentation labels.
 
-Operational enforcement:
-- Donations are tracked separately from sacrament releases
-- No donation is required or checked prior to a release
-- Donation verification exists solely for accounting and stewardship
-
-## Audit and Accountability
-
-All agreement, release, and donation actions are audit logged to provide:
-- Legal defensibility
-- Ethical accountability
-- Internal transparency
-
-Audit records are never modified or deleted.
-
-
-## Donations & Financial Stewardship
-
-Donations recorded in SignatureGate represent voluntary offerings and are not
-considered payment for sacraments or services.
-
-Operational enforcement:
-- No sacrament release checks donation status or amount
-- Donation verification exists for accounting and stewardship only
-- External platforms (e.g., Givebutter) are treated as funding sources, not commerce
+Review actual policies and document templates privately with the intended authority. Record only sanitized validation status in public release evidence.

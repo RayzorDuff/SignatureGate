@@ -1,0 +1,8 @@
+{
+  "name":"signaturegate-appsmith-e2e",
+  "private":true,
+  "version":"0.1.0",
+  "description":"Opt-in post-v1.2.0 real-Appsmith harness; not a release gate",
+  "scripts":{"test:guards":"node --test safety.test.mjs","db:reset":"node database.mjs reset","db:check":"node database.mjs check","test":"playwright test","test:list":"playwright test --list"},
+  "devDependencies":{"@playwright/test":"1.64.1","pg":"8.23.1"}
+}

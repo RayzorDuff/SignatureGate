@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-19",
+  "scope": "development_source_and_synthetic_checks",
+  "backend_schema_source": "d85fecbc6f35abb36cae0bacac7d18a220743e9a",
+  "operator_test_backend": "96c5b8b56368825c0c8379175d30add0a2e00242",
+  "user_appsmith_base": "3405a7dd19e75a1b622845eb3d925156dc85c9a4",
+  "navigation_repair": "f409997aa8b4169bdac9455be53a3a8ee2526538",
+  "appsmith_source": "0f8452cbf1ae9901e1d328e68664a6771cc5e1d6",
+  "copied_initializers_restored": 16,
+  "existing_navigation_function_metadata_resources_preserved": 85,
+  "operator_reported": {
+    "atomic_test_runner_exit_code": 0,
+    "legacy_intake_absent": true,
+    "deferred_intake_progress_completed": true,
+    "saved_receipt_lookup_passed": true,
+    "final_native_mode_provenance_verified": false
+  },
+  "ci": {
+    "run_id": 39232029483,
+    "url": "https://github.com/RayzorDuff/SignatureGate-Appsmith/actions/runs/39232029483",
+    "application_checks": "success",
+    "postgres_intake_concurrency": "success",
+    "postgres_version": "16.13"
+  },
+  "automatic_agreement_scope": [
+    "actual_saved_controller_and_prepared_source_SQL",
+    "canonical_nonmember_reviewer",
+    "assigned_practitioner",
+    "self_unassigned_and_other_target_denial",
+    "delayed_widget_hydration",
+    "valid_selection_retention",
+    "inactive_and_empty_catalogs",
+    "read_failure_feedback",
+    "stale_template_rejection",
+    "option_reads_create_no_agreement_or_audit"
+  ],
+  "candidate_export_preservation": "passed",
+  "native_startup_and_selector_acceptance": "pending",
+  "production_changed": false,
+  "privacy": "Technical source facts and pass/fail only; uploaded screenshots and operational record values excluded."
+}

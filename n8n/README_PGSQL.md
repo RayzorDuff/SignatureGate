@@ -1,129 +1,24 @@
-# SignatureGate PGSQL n8n Workflow Duplicates
+# PostgreSQL workflow integration
 
-Generated for SignatureGate issue #5.
+The PostgreSQL-backed workflows use separate routes during migration so operators can validate them alongside earlier integrations. Review the tracked workflow exports and actual published revisions before changing application routes.
 
-These workflows duplicate the Airtable-backed inventory bridge workflows with PostgreSQL-backed equivalents for the MushroomProcess cutover.
+Each database node must use the credential for its owning system. Business data and SignatureGate audit data may belong to different databases. Validate destinations privately; never infer a credential destination from a display label. Preserve required audit writes when migrating an external callback.
 
-## Generated workflows
+## Validation sequence
 
-- `SignatureGate - PGSQL - List Available Sacrament Products.json`
-- `SignatureGate - PGSQL - Mark Product Shipped.json`
-- `SignatureGate - PGSQL - Mark Product UnShipped.json`
+1. Select the reviewed source revision and import the required workflows into the test environment.
+2. Assign credentials after checking each node's destination privately.
+3. Keep production routes inactive until the application and workflow revisions have been accepted together.
+4. Verify response compatibility, permitted reads, authorized state transitions and audit behavior with synthetic fixtures.
+5. Verify denied operations and duplicate/retry behavior before publication.
+6. Record accepted revisions and pass/fail; keep endpoint values, credentials, operational identifiers and business records outside Git.
 
-## Webhook paths
+## Mailing-list synchronization
 
-The PGSQL duplicates intentionally use new `/pgsql/` webhook paths so they can be imported next to the existing Airtable workflows without route conflicts:
+Mailing synchronization uses the database outbox. Fresh deployments initialize the tables and functions from the canonical schema; existing deployments use the reviewed release migration manifest. Validate consent and queue behavior for both Participant and Contributor capacities.
 
-- `/webhook/signaturegate/pgsql/products/available`
-- `/webhook/signaturegate/pgsql/products/mark_shipped`
-- `/webhook/signaturegate/pgsql/products/mark_unshipped`
+The contributor list has its own configuration key, `LISTMONK_CONTRIBUTOR_LIST_ID`. Participant communications use `LISTMONK_MEMBER_COMMUNICATIONS_LIST_ID`; the stable variable name remains for compatibility. Newsletter and legacy fallback configuration are documented in [Listmonk integration](../docs/LISTMONK_INTEGRATION.md). Actual list identifiers and connection/authentication settings remain private.
 
-After validation, update Appsmith from the old Airtable paths:
+## Accounting integration
 
-- `/webhook/signaturegate/airtable/products/available`
-- `/webhook/signaturegate/airtable/products/mark_shipped`
-- `/webhook/signaturegate/airtable/products/mark_unshipped`
-
-## Credential notes
-
-The product list/update nodes must use the PostgreSQL credential connected to the MushroomProcess Postgres database, because they read and update `public.products`, `public.locations`, and `public.strains`.
-
-The audit nodes write to SignatureGate `public.audit_log`. If your n8n instance uses separate credentials/databases for MushroomProcess and SignatureGate, set the audit nodes to the SignatureGate Postgres credential and set the product inventory nodes to the MushroomProcess Postgres credential.
-
-## Behavior preserved from the Airtable workflows
-
-### List Available Sacrament Products
-
-Returns the same response envelope shape:
-
-```json
-{
-  "ok": true,
-  "data": [],
-  "filter": {
-    "storage_locations": []
-  }
-}
-```
-
-Each product includes:
-
-- `airtable_record_id` for legacy Appsmith compatibility, populated from `products.airtable_id` when available or `products.nocopk` as a fallback.
-- `mushroomprocess_product_id`
-- `item_name`
-- `strain`
-- `net_weight_g`
-- `unit`
-- `storage_location`
-- `storage_locations`
-
-The list filters to regulated freeze-dried mushroom products that are not in Shipped, Consumed, or Expired. It continues to support the existing query parameters:
-
-- `storage_location=Location Name`
-- `storage_locations=Location A,Location B`
-- `storage_locations_json=["Location A","Location B"]`
-
-### Mark Product Shipped
-
-Accepts either:
-
-- `airtable_record_id` for legacy Appsmith callers, or
-- `mushroomprocess_product_id` / `product_id` for Postgres-era callers.
-
-Updates `products.storage_location_id` to the `locations` row named `Shipped`.
-
-### Mark Product UnShipped
-
-Accepts:
-
-- `mushroomprocess_product_id` / `product_id`
-- `storage_location_name` / `storage_location`
-
-Updates `products.storage_location_id` to the named target location.
-
-## Import/validation checklist
-
-1. Import the three JSON workflows into n8n.
-2. Assign the MushroomProcess Postgres credential to the `PGSQL - ...` inventory nodes.
-3. Assign the SignatureGate Postgres credential to the `PG - Audit ...` nodes, or disable/remove those audit nodes if you do not want cross-project audit writes.
-4. Keep the workflows inactive until Appsmith webhook paths are updated.
-5. Test the `/webhook-test/signaturegate/pgsql/products/available` endpoint first.
-6. Test mark shipped against a non-production or reversible product row.
-7. Test mark unshipped with the original storage location.
-8. Import the current SignatureGate Appsmith export, which calls the `/pgsql/` webhook paths for product availability, mark shipped, and mark unshipped.
-
-## Known assumptions
-
-These workflows assume the MushroomProcess database has these public objects from the current Postgres migration:
-
-- `products.product_id`
-- `products.airtable_id`
-- `products.name_mat`
-- `products.item_category_mat`
-- `products.net_weight_g`
-- `products.storage_location_id`
-- `products.strain_id`
-- `locations.nocopk`
-- `locations.name`
-- `strains.nocopk`
-- `strains.species_strain`
-- `strains.regulated`
-
-
-## Listmonk mailing-list sync
-
-The Listmonk integration is database-outbox driven. Apply `db/migrations_listmonk_mailing_list.sql`, then import:
-
-- `workflows/SignatureGate - Listmonk - Process Sync Queue.json`
-- `workflows/SignatureGate - Listmonk - Poll Unsubscribes.json`
-
-Set these n8n environment variables:
-
-```env
-LISTMONK_API_URL=http://listmonk:9000/api
-LISTMONK_API_USER=signaturegate-sync
-LISTMONK_API_TOKEN=<api-token>
-LISTMONK_DEFAULT_LIST_ID=<numeric-list-id>
-```
-
-Attach the SignatureGate Postgres credential to all Postgres nodes after import.
+Cash-deposit accounting and ERP bank lookup workflows are maintained in RootedOps. See [the ERP dependency guide](CASH_DEPOSIT_ERP_INTEGRATION.md). The coordinated release must pin a compatible released RootedOps tag/SHA and verify published routes and modes before SignatureGate promotion.

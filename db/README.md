@@ -1,343 +1,89 @@
-1) Initialize the signaturegate-postgres database with db/schema.sql
+# SignatureGate database
 
-From the server where your docker compose runs (in the SignatureGate repo folder where your .env lives):
+## Canonical schema
 
-Confirm containers are up:
+`db/schema.sql` is the authoritative, self-contained database definition for SignatureGate.
+
+It is a complete schema bootstrap, including tables, constraints, indexes, functions, triggers and views. Bootstrap a fresh database from this file, then apply the explicit deployment seeds below. The schema does not contain operational records or default terminology rows.
+
+From the server where the SignatureGate PostgreSQL container runs:
 
 ```bash
-sudo docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+sudo docker exec -i signaturegate-postgres \
+  psql -X -v ON_ERROR_STOP=1 -U signaturegate \
+  -d "${release_fresh_db:?Set this to a new empty database first}" \
+  < db/schema.sql
 ```
 
-2) Load the schema + migrations into Postgres (recommended: execute inside the container):
+Create and verify an empty target before setting `release_fresh_db`; neither existing `signaturegate` nor `signaturegate_test` is a fresh-bootstrap target. Use the reviewed forward migration process for existing data. A backup does not make schema replay an in-place upgrade.
+
+## Current production upgrade
+
+The canonical schema includes current cash-deposit and identity definitions. Production acceptance has been reported for some features, but the initial v1.2.0 live catalogs have been reviewed and targeted effective definitions have been dispositioned in the release review. Do not load `db/schema.sql` over the existing production database as an upgrade mechanism. Use [the release validation checklist](../releases/v1.2.0/PHASE_1_VALIDATION.md) to establish required forward upgrades.
+
+Production deployment should use the reviewed database change procedure for the current release rather than treating the canonical bootstrap as an in-place upgrade.
+
+## Verification
+
+The verification scripts in `db/tests/verify_*.sql` are rollback-only integration checks. They create synthetic data inside a transaction and roll the transaction back when complete.
+
+Run them against a disposable or dedicated test database, not against production:
 
 ```bash
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/schema.sql
-
-# Core role + review workflow fields/indexes
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_facilitator_review.sql
-
-# Facilitator auth support (created_by_facilitator_id, etc.)
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_facilitator_authentication.sql
-
-# Sacrament release enhancements (facilitator linkage, etc.)
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_sacrament_release.sql
-
-# Optional: Documenso integration (only if using Documenso + n8n workflow)
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_integration.sql
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_integration_1.sql
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_cancel_agreement.sql
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_documenso_template_discovery.sql
-
-# Audit Log - See below for details
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_audit_log.sql
-
-# Document Reviewer actions
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_agreement_review_actions.sql
-
-# Donations and Donations Reviewer actions
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_donations_review.sql
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_is_donation_reviewer.sql
-
-# Allow voiding releases
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_release_void.sql
-
-# Rename sacrament_releases table to releases for use by other areas of the organization
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_rename_sacrament_releases_to_releases.sql
-
-# Store valid agreement types in DB
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_agreement_types.sql
-
-# Store facilitator assignments in a separate table
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_facilitators.sql
-
-# Allow facilitators to pull releases from multiple storage locations
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_facilitator_storage_location_access.sql
-
-# Allow members to have multiple email, phone or address
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_contact_methods.sql
-
-# Support setting primary email for members
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_email_primary_selection.sql
-
-# Add support for Listmonk mailing list subscription management.
-# n8n can add a SignatureGate opt-in to both LISTMONK_NEWSLETTER_LIST_ID and
-# LISTMONK_MEMBER_COMMUNICATIONS_LIST_ID. The DB queue keeps one primary list ID
-# for compatibility; n8n expands it to both Listmonk lists at sync time.
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_listmonk_mailing_list.sql
-
-# Optional one-time backfill: enqueue existing active member emails for Listmonk sync.
-# The n8n workflow will subscribe each queued email to both configured lists.
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_listmonk_mailing_list_upsert_existing.sql
-
-# Reporting indexes
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_reporting_indexes.sql
-
-# db: harden member identity contact handling
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_identity_hardening.sql
-
-# Add the stronger physical-address identity key and centralized address upsert.
-# Apply this after the v1.0.4 identity migration and before importing the
-# matching Appsmith workflow or activating the matching Givebutter n8n workflow.
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_1_0_member_address_identity_hardening.sql
-
-# Add explicit member/anonymous/unresolved donor identity and the controlled
-# anonymous-cash creation and donation-review functions for Issue #17.
-# Apply before importing the matching Appsmith and Givebutter workflow exports.
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_issue_17_anonymous_cash_donations.sql
-
-# Decouple identified contributors from membership for Issue #19. This adds
-# individual/organization contributors, auditable contributor-member links,
-# contributor contact/provider identities, donation backfill, and compatibility
-# functions for a staged Appsmith/n8n rollout.
-# Apply after the Issue #17 migration and before importing the matching
-# Appsmith export or activating the matching Givebutter workflow.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_identity.sql
-
-# Install contributor-first matching and the idempotent provider-ingestion API.
-# Apply after the Issue #19 identity migration and before activating the
-# matching Givebutter n8n workflow.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_ingestion.sql
-
-# Issue #19: shared person and organization identities under the existing
-# member/contributor APIs. Apply after BOTH preceding Issue #19 migrations.
-# This is a one-time migration: back up the DB and do not rerun it.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_shared_identity.sql
-
-# Optional smoke test for the transitional shared-identity schema. Run BEFORE
-# the canonical-people migration below; it exercises the old name projections.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_shared_identity.sql
-
-# Review previously differing names; contact values are shown through the
-# v_person_emails / v_person_phones / v_person_addresses read views.
-sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -c "SELECT person_id, member_id, contributor_id, member_name, contributor_name FROM public.person_identity_review WHERE resolved_at IS NULL ORDER BY created_at;"
-
-# Install the serialized Member Intake creation helper and active-email guard.
-# Apply this before importing the matching Appsmith export.
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_member_intake_duplicate_scope.sql
-
-# Block Member Intake when an exact normalized phone belongs to an active member.
-# Apply this after migrations_v1_0_4_member_intake_duplicate_scope.sql and before
-# importing the matching Appsmith export.
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_member_intake_exact_phone_block.sql
-
-# Issue #19: move person names and birth dates, and organization names, out of
-# role tables. Run ONCE after backing up the database, during a brief write
-# pause; import the matching Appsmith export next. Existing role IDs remain.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_canonical_people.sql
-
-# Optional end-to-end smoke test. Synthetic rows are rolled back even when
-# checks pass. Run after the canonical migration, before importing Appsmith.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_canonical_people.sql
-
-# Issue #19 contact foundation: backfill person/organization-owned email, phone,
-# and address records, and synchronize the existing member/contributor contact
-# writes. Apply ONCE after canonical_people.sql, before the Directory UI phase.
-# Keep the legacy contact tables: agreement and mailing-list rows still point
-# at member_email_id and the current Appsmith/n8n workflows write those tables.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_party_contacts.sql
-
-# Rollback-only integration check for shared, separate, archived, edited, and
-# reassigned contact owners; run after the contact foundation migration.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_party_contacts.sql
-
-# Issue #19 read-only Directory query helpers. Apply after party contacts,
-# before importing the matching Appsmith export. Current account/reviewer
-# flags still determine which people, organizations and contacts are visible.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_directory_read.sql
-
-# Rollback-only access check for the Directory helpers.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_directory_read.sql
-
-# Issue #19 person roles and account ownership; apply after the Directory
-# migration and before importing its profile-editing Appsmith export.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_roles.sql
-
-# Rollback-only permission, nonmember-account, assignment and audit checks.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_roles.sql
-
-# Review the exact account owner first. Bootstrap one directory manager via
-# the database operator (there is intentionally no automatic promotion).
-sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -c \
-  "SELECT p.person_id, p.display_name, a.email FROM public.person_app_accounts a JOIN public.people p USING (person_id) ORDER BY a.email;"
-# Substitute the intended person's actual Appsmith sign-in email below:
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' -U signaturegate -d signaturegate < db/bootstrap_issue_19_directory_manager.sql
-
-# Issue #19 contributor intake from Directory and enrollment of an existing
-# person as a contributor. Apply after person_roles.sql, before importing the
-# associated Appsmith export. No membership is created by these functions.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_directory_intake.sql
-
-# Rollback-only integration checks: permissions, duplicate contacts, person
-# and company creation, contact synchronization, enrollment, and auditing.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_directory_intake.sql
-
-# Issue #19 contributor-purpose contact maintenance on Individual and Company
-# Profile. Apply after directory intake, before importing the matching export.
-# Member-purpose contacts retain their existing edit path.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_contacts.sql
-
-# Rollback-only checks for permissions, contact ownership, primary selection,
-# legacy-to-party synchronization, archiving, and audit entries.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_contacts.sql
-
-# If contributor_contacts.sql committed but the initial verification failed
-# at the cross-party contact check, apply this forward function replacement;
-# do not rerun the CREATE FUNCTION migration. Then rerun verification.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_contact_guard_fix.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_contacts.sql
-
-# Issue #19: create membership for a selected existing person without a second
-# person record, an automatic agreement, or a rewrite of prior donations.
-# Apply AFTER the contact guard repair and its passing verification.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_existing_person_membership.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_existing_person_membership.sql
-
-# End an active membership while keeping the person and any independently
-# existing contributor. Apply AFTER existing-person membership; run the
-# rollback-only verification before importing the updated Appsmith JSON.
-# Contributor capacity is not required and is never created by this action.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_end_membership.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_end_membership.sql
-
-# Contributor-purpose mailing addresses on Individual and Company Profile.
-# Apply AFTER the membership-closure migration, then run the rollback-only test.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_addresses.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_addresses.sql
-
-# Allow reviewed assignment of one person's member/contributor email, phone,
-# or address to the other capacity without replacing its original source.
-# Apply AFTER contributor addresses, then run the rollback-only checks.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contact_role_assignment.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contact_role_assignment.sql
-
-# Keep active contact sources on former memberships visible to authorized
-# reviewers, list member-only contacts before contributor enrollment, and allow
-# reuse into an active contributor. Apply AFTER contact-role assignment.
-# If the first version failed on contact_detail before COMMIT, its transaction
-# rolled back; rerun the corrected migration below, then its verification.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contact_role_visibility.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contact_role_visibility.sql
-
-# Show contributor-attributed donation history and provider identities on
-# Individual Profile and Company Profile. Apply AFTER contact-role visibility.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_profile_history.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_profile_history.sql
-
-# Add reviewed contributor archive/reactivation for people and organizations.
-# Apply AFTER contributor profile history, then run the rollback-only checks.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_contributor_status.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_contributor_status.sql
-
-# Add audited canonical name/date-of-birth maintenance for people and names for
-# organizations. Apply AFTER contributor status, then run rollback-only checks.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_party_identity_editing.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_party_identity_editing.sql
-
-# Define a release as a tangible sacrament transfer, reject new membership or
-# event values in releases.release_type, and retain legacy exceptions for
-# explicit review. Apply AFTER canonical identity editing.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_sacrament_release_scope.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_sacrament_release_scope.sql
-
-# Expose agreement and practitioner-assignment history on Individual Profile
-# under the existing document-reviewer/assigned-practitioner access rule.
-# Apply AFTER the sacrament-release scope migration, then import Appsmith.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_member_operations_read.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_member_operations_read.sql
-
-# Remove the accidental contributor prerequisite from membership closure.
-# A member-only person may end membership without creating a contributor;
-# an existing contributor and its donations remain unchanged.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_membership_contributor_independence.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_membership_contributor_independence.sql
-
-# Add membership-purpose email/phone maintenance to Individual Profile.
-# Apply AFTER the membership/contributor independence repair. The functions
-# write only member contact rows; contributor contacts remain independent.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_member_contact_profiles.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_member_contact_profiles.sql
-
-# Make sacrament-release eligibility independent of template version/active
-# status. Apply AFTER member contact profiles, then import Appsmith. Template
-# required_for scope and signed agreement status remain mandatory.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_sacrament_agreement_gate.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_sacrament_agreement_gate.sql
-
-# Add membership-purpose mailing addresses and merge both address capacities
-# into the role-aware Individual Profile contact editor. Apply AFTER member
-# contact profiles; contributor and membership address rows remain separate.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_member_address_profiles.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_member_address_profiles.sql
-
-# Replace member-ID-only facilitator assignment with canonical person-based
-# practitioner assignment. Existing rows are backfilled and legacy writes stay
-# synchronized; a practitioner does not need membership. Apply AFTER member
-# address profiles, then import the matching Appsmith export.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_practitioner_assignments.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_practitioner_assignments.sql
-
-# Add stable terminology concepts and Rooted Psyche's deployment labels.
-# This does not rename role keys or grant appointments. The operational
-# practitioner and a future regulated facilitator remain distinct concepts.
-# Apply AFTER person-based practitioner assignments, then import Appsmith.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_20_organization_terminology.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_20_organization_terminology.sql
-
-# Move sacrament-release actor attribution and storage authorization to the
-# canonical practitioner person. Existing member-based storage grants and
-# releases are backfilled, and legacy storage writes remain synchronized while
-# older member operations are retired. Apply AFTER Issue #20 terminology, then
-# import the matching Appsmith export.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_release_operations.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_release_operations.sql
-
-# Move member-agreement practitioner attribution to the canonical person.
-# Existing facilitator member IDs remain nullable compatibility projections.
-# Apply AFTER person release operations, then import both the Appsmith export
-# and the Documenso send workflow from this revision.
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/migrations_issue_19_person_agreement_signers.sql
-sudo docker exec -i signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate < db/verify_issue_19_person_agreement_signers.sql
-
-# This should return no rows. If it returns historical records, review what
-# each record represents before correcting it and validating the constraint.
-sudo docker exec signaturegate-postgres psql -U signaturegate -d signaturegate -c "SELECT release_id, released_at, member_id, release_type, item_name, notes FROM public.releases WHERE release_type IS DISTINCT FROM 'sacrament_release' ORDER BY released_at, release_id;"
-
-# After resolving every historical exception:
-sudo docker exec signaturegate-postgres psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate -c "ALTER TABLE public.releases VALIDATE CONSTRAINT releases_sacrament_release_type_check;"
-
-# documenso: handle expirations and audit actors
-sudo docker exec -i signaturegate-postgres psql -U signaturegate -d signaturegate < db/migrations_v1_0_4_documenso_expiration.sql
+sudo docker exec -i signaturegate-postgres \
+  psql -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
+  < db/tests/verify_cash_deposit_management.sql
 ```
 
-3) Verify tables exist:
+The cash-deposit verification covers:
+
+- Cash on Hand selection and totals.
+- Exclusion of ignored and already-deposited donations.
+- Identified and anonymous cash donations.
+- Deposit batch creation and item selection.
+- Expected-total calculation and amount snapshots.
+- Duplicate donation assignment protection.
+- Preparer and verifier authorization.
+- Confirmation amount matching.
+- Confirmation and cancellation behavior.
+- Immutability of confirmed batches and items.
+- Audit entries.
+
+Other verification scripts document and test focused parts of the canonical schema. They are retained as regression tests even though the historical migrations that originally introduced those objects are no longer part of the installation procedure.
+
+## Database objects
+
+The canonical schema includes the operational database used by:
+
+- SignatureGate/Appsmith.
+- SignatureGate n8n workflows.
+- NocoDB, where applicable.
+- The cash contribution review and deposit workflow.
+- Document signing and agreement operations.
+- Membership, contributor, person, organization, contact, practitioner, release, and audit functionality.
+
+The accounting/ERP integration remains a separate system boundary. Cash-deposit confirmation records the operational deposit and its audit trail. Issue #18 queues a durable ERP synchronization row for confirmed batches while RootedOps remains authoritative for ERPNext accounting and bank reconciliation.
+
+## Agreement template seed
+
+A new installation may need an active agreement template if the canonical seed data does not contain the template required by the deployment:
 
 ```bash
-sudo docker exec -it signaturegate-postgres psql -U signaturegate -d signaturegate -c "\dt"
-```
-
-4) Seed at least one agreement template (As long as base schema doesn't already include one)
-
-```bash
-sudo docker exec -it signaturegate-postgres psql -U signaturegate -d signaturegate -c " \
-INSERT INTO agreement_templates (name, version, required_for, doc_url, active) \
-VALUES ('Member Acknowledgment & Liability Release', '2025-12-01', ARRAY['membership','sacrament_release'], \
+sudo docker exec -it signaturegate-postgres psql \
+  -U signaturegate -d "${release_fresh_db:?Select the reviewed new database}" -c "INSERT INTO agreement_templates (name, version, required_for, doc_url, active) \
+VALUES ('Synthetic Participant Agreement', '1.0', ARRAY['membership','sacrament_release'], \
 'DOCUMENSO_TEMPLATE_OR_PDF_URL', true) ON CONFLICT DO NOTHING;"
 ```
 
-5) Create the NocoDB base connected to signaturegate-postgres
+Use the deployment's actual Documenso template URL rather than the placeholder above.
 
-In NocoDB UI:
+## NocoDB
 
-Create Base → name it SignatureGate.
+Create or connect the SignatureGate NocoDB base to the PostgreSQL database as appropriate for the deployment.
 
-Open that base → Connect External Data 
-NocoDB
+When NocoDB is running in the same Docker network:
 
-Choose PostgreSQL and enter connection info:
-
-If NocoDB is running in the same docker compose network, use:
-
-```bash
+```
 Host: signaturegate-postgres
 Port: 5432
 DB: ${SIG_DB_NAME}
@@ -345,13 +91,13 @@ User: ${SIG_DB_USER}
 Password: ${SIG_DB_PASSWORD}
 ```
 
-6) Create a Postgres datasource in Appsmith
+## Appsmith
 
-Appsmith UI → Datasources → New Datasource → PostgreSQL
+Create a PostgreSQL datasource in Appsmith using the same database connection.
 
-If Appsmith is in docker with Postgres:
+When Appsmith is running in the same Docker network:
 
-```bash
+```
 Host: signaturegate-postgres
 Port: 5432
 DB: ${SIG_DB_NAME}
@@ -359,22 +105,129 @@ User: ${SIG_DB_USER}
 Password: ${SIG_DB_PASSWORD}
 ```
 
-Test & Save.
+## Directory manager bootstrap
+
+The canonical schema contains the directory-manager account and authorization model. When a new deployment requires an initial directory manager, select the intended account privately. Do not export a directory of names or contact information as release evidence.
+
+Then bootstrap the intended account with the operator-only helper. All three values are required. This legacy bootstrap creates or uses an active membership and practitioner compatibility flags; it refuses a second manager bootstrap. It grants only Directory Manager, not Donations Reviewer. Existing deployments should use the manager-controlled Individual Profile role/account controls. Do not run bootstrap to repair a cash-page denial. Keep actual names/contact values and command output private. Supply shell-quoted values without embedding SQL quotes inside them:
+
+```bash
+sudo docker exec -i signaturegate-postgres psql \
+  -X -v ON_ERROR_STOP=1 -v admin_email='ACTUAL_SIGN_IN_EMAIL' \
+  -v admin_first_name='INITIAL_MANAGER_FIRST_NAME' \
+  -v admin_last_name='INITIAL_MANAGER_LAST_NAME' \
+  -U signaturegate -d signaturegate \
+  < db/bootstrap_directory_manager.sql
+```
+
+## Audit log
+
+The `audit_log` table provides permanent, append-only recording of significant system events.
+
+Important fields include:
+
+- `actor` — email or system identifier such as `n8n` or `documenso`.
+- `action` — machine-readable event name.
+- `entity_type` — logical entity affected.
+- `entity_id` — identifier of the affected entity.
+- `details` — JSON contextual metadata.
+- `created_at` — server timestamp.
+
+The audit log is not intended for debugging or analytics and should not be truncated or modified.
+
+## Database development model
+
+The database follows a canonical-schema model with a small deployment-migration surface for changes whose deployed state must be verified against the production catalog.
+
+- Change the database definition through normal development and testing.
+- Validate the resulting schema against a clean database.
+- Regenerate `db/schema.sql` when the canonical database definition changes.
+- Keep focused `db/tests/verify_*.sql` regression checks for important behavior.
+- Do not add historical installation migrations for schema changes that are already incorporated into the canonical schema.
+- Production upgrades that cannot safely be represented by replacing the schema bootstrap should be handled as explicit, separately reviewed deployment operations.
+
+The current candidate forward migrations are listed below. Presence in this directory does not establish whether a migration is already applied or required. Phase 1 must compare effective definitions and produce the dependency-ordered manifest; do not run this list alphabetically.
+
+- `db/migrations/agreement_type_administration.sql`
+- `db/migrations/cash_deposit_batch_lifecycle.sql`
+- `db/migrations/cash_deposit_batch_print.sql`
+- `db/migrations/cash_deposit_batch_tally.sql`
+- `db/migrations/cash_deposit_confirmation_correction.sql`
+- `db/migrations/cash_deposit_erp_sync.sql`
+- `db/migrations/cash_deposit_management.sql`
+- `db/migrations/cash_donation_reconciliation_exceptions.sql`
+- `db/migrations/cash_donation_reconciliation_revive.sql`
+- `db/migrations/donation_financial_access.sql`
+- `db/migrations/listmonk_contributor_email_support.sql`
+- `db/migrations/listmonk_dual_capacity_contributor_email.sql`
+- `db/migrations/member_agreement_reviewer_on_behalf.sql`
+- `db/migrations/organization_contact_reassignment.sql`
+- `db/migrations/party_identity_notes.sql`
+- `db/migrations/person_role_self_assignment.sql`
+
+Apply and verify each required migration against the test database before applying it to production. In particular, `person_role_self_assignment.sql` changes the Issue #19 role-administration boundary so a directory manager may assign or revoke their own operational roles, including `donations_reviewer`; it does not permit this function to grant or revoke `directory_manager`.
 
 
-## Migration order
-After schema.sql run migrations in the order specified above.
+The historical migration chain has been removed from the active database installation surface. `db/migrations/` retains candidate forward deployment changes; required/applied state must be established from evidence. Future changes must update the canonical schema and supply a forward migration whenever existing deployments need one. Preserve release migration provenance through deployment verification.
 
-## audit_log table
+## Agreement Type administration (v1.2.0)
 
-The `audit_log` table is used for permanent, append-only recording of significant system events.
+`agreement_type_administration.sql` adds canonical document-reviewer authorization and atomic creation/audit. It requires canonical person accounts/roles, `agreement_types` and `audit_log`; membership is not required. Deploy this migration to test before pulling the new Agreement Templates page. Run `db/tests/verify_agreement_type_administration.sql` only on test/disposable databases. [Phase 2 progress](../releases/v1.2.0/PHASE_2_PROGRESS.md) includes exact commands, isolated test results and required live acceptance.
 
-Columns:
-- `actor` – email or system identifier (`n8n`, `documenso`)
-- `action` – machine-readable event name (e.g. `member_agreement.signed`)
-- `entity_type` – logical entity affected
-- `entity_id` – identifier of the affected entity
-- `details` – JSON payload with contextual metadata
-- `created_at` – server timestamp
 
-This table is not intended for debugging or analytics and should not be truncated or modified.
+## Identity notes migration and reapplication (v1.2.0)
+
+`party_identity_notes.sql` atomically installs canonical note APIs and initializes one historical import decision per membership. Original member notes remain intact. `member_identity_note_backfill` stores provenance/outcomes without copied note text; `backfill_member_identity_notes()` is an invoker-rights operator helper, revoked from PUBLIC. Reruns do not reimport changed/blank legacy sources or undo canonical clears. Previously audited canonical edits take precedence; privately review sources marked `preserved_edit` rather than automatically appending them. Keep historical member notes read-only after cutover and use the canonical Profile/Intake APIs for new notes.
+
+Run `verify_party_identity_notes.sql` only on test/disposable databases. It rolls back synthetic fixtures and checks behavior, permissions, migration reapplication and failure atomicity. Follow [the notes validation sequence](../releases/v1.2.0/NOTES_VALIDATION_COMMANDS.md); production requires a restored-copy rehearsal first. Live PostgreSQL 16.13 SQL migration/reapplication and behavioral checks have passed on test; UI acceptance remains pending.
+
+
+## Organization terminology seed
+
+After fresh schema bootstrap, run `db/seeds/organization_terminology.sql`. It reconstructs the earlier 14 stable concepts and deployment defaults: `practitioner` displays as **Spiritual Practitioner**, while the distinct regulated `facilitator` concept stays inactive. This seed contains public presentation configuration only; no production identities, contacts or operational data. It inserts missing rows and preserves existing labels, active states and update attribution when rerun.
+
+```bash
+sudo docker exec -i signaturegate-postgres \
+  psql -X -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
+  < db/seeds/organization_terminology.sql
+sudo docker exec -i signaturegate-postgres \
+  psql -X -v ON_ERROR_STOP=1 -U signaturegate -d signaturegate_test \
+  < db/tests/verify_organization_terminology.sql
+```
+
+Use these test commands for validation; new production installations select their intended database only after setup review. The behavioral check expects the current deployment defaults; an intentionally customized installation may require separately reviewed expectations rather than resetting its labels.
+
+**Phase 3 requirement:** update this seed and its checks with the accepted Member → Participant presentation changes, and verify every active UI/document surface agrees. This preparation seed retains the current `Member` label and separate inactive Participant concept. Stable tables/role keys and historical signed documents must not be renamed by a label seed. An existing deployment's accepted label change must use the audited terminology API; rerunning this seed deliberately does not overwrite it.
+
+### Reason-aware cash reconciliation revival
+
+After canonical application authorization is installed, apply `db/migrations/cash_donation_reconciliation_revive.sql` to test first. Revival requires Donations Reviewer authority and a nonblank new reason; both original exclusion and new rationale are audited atomically without editing the donation. Two-argument legacy calls fail closed. Run `db/tests/verify_cash_donation_reconciliation_revive.sql` on test/disposable databases only. The v1.2.0 test runner is `bash releases/v1.2.0/validate_cash_reconciliation_test.sh`; production still requires the ordered restored-copy upgrade rehearsal.
+
+### Canonical provider donation review
+
+`db/migrations/provider_donation_administration.sql` follows canonical application authorization and the existing identity/contact/mailing models. It preserves UUID-based legacy entry points while supporting reviewers without Participant capacity, protects duplicate/ambiguous/provider identities and audits attribution correction atomically. Explicit Participant/Contributor creation retains Directory Manager and both reviewer requirements. Apply/verify test with `bash releases/v1.2.0/validate_provider_review_test.sh`; do not replay the canonical schema over an existing database or treat this as an approved production manifest.
+
+## Company contact people
+
+`organization_contact_people` models company-to-individual relationships separately from organization email/phone/address ownership. The Company Profile controls link, archive and reactivate accessible existing identities with a reason and atomic audit. Multiple people and multiple companies are supported. Links grant no roles or capacity, copy no contacts or mailing consent, and do not attribute company donations to their representatives. Directory Manager or Donations Reviewer authority is required; archived companies cannot be changed. See [the increment validation guide](../releases/v1.2.0/DIRECTORY_REVIEW_VALIDATION.md) and `verify_company_contact_people.sql`.
+
+
+## Participant display defaults and existing installation adoption
+
+`db/seeds/organization_terminology.sql` now defaults the `member` compatibility concept to Participant/Participants; it still preserves installed label/activation/attribution overrides on repeat. Individual and Company remain identities; Participant and Contributor are capacities, and Facilitator/Spiritual Practitioner and reviewers characterize access. Internal keys remain stable.
+
+For the authorized existing test installation use `env -u 'BASH_FUNC__sudo%%' bash releases/v1.2.0/validate_navigation_terminology_test.sh`. It asks privately for the intended Directory Manager account, calls `db/administration/adopt_participant_terminology.sql` through the audited API and runs rollback-only presentation invariants. It changes configuration, not schema or authority. Do not apply it to production until its reviewed release step. Missing/unauthorized accounts fail; bootstrap is not a repair mechanism.
+
+### Atomic new-party Intake
+
+`migrations/atomic_intake.sql` adds `application_submit_intake(actor_email,request_id,payload)` and owner-scoped `application_intake_status(actor_email,request_id)`. One database transaction creates identity, selected capacities, contact purposes, practitioner assignment, pending digital agreement, mailing queue entries and completion audit. A required UUID request key plus the canonical actor and salted SHA-256 payload fingerprint make committed retries return the same technical result without additional writes. Changed payloads or owners cannot reuse a key; current account and role permissions are rechecked even on replay.
+
+The private receipt stores technical IDs and flags, not contact/name/form values or external responses. Functions run with the caller's privileges; no SECURITY DEFINER elevation or new role grants are introduced. The Appsmith database principal needs the existing helper permissions and private receipt-table access from its migration ownership or explicitly reviewed grants. Never grant the table to PUBLIC. Include owner/grant and concurrent-session verification in the protected restored-copy rehearsal.
+
+No HTTP occurs inside the transaction. Signing remains after commit, against the pending agreement's existing ID; a lost signing response needs delivery reconciliation, not another identity or agreement. Paper remains blocked. `tests/verify_atomic_intake.sql` supplies synthetic rollback-only enrollment/replay/denial/fault tests. `releases/v1.2.0/validate_atomic_intake_test.sh` applies the migration twice and runs them only against `signaturegate_test`. This is not an authorized production upgrade manifest.
+
+### Paper agreement evidence
+
+The reviewed forward change `migrations/paper_agreement_upload.sql` adds owner-scoped upload receipts, pre-storage canonical staff/assignment/on-behalf checks, atomic paper agreement/evidence/audit completion and reasoned cancellation/review guards. It requires current canonical authorization/signers. `tests/verify_paper_agreement_upload.sql` uses synthetic rollback-only fixtures. For this release use the test-only runner and authenticated workflow sequence in [PAPER_AGREEMENT_VALIDATION.md](../releases/v1.2.0/PAPER_AGREEMENT_VALIDATION.md); do not replay all migrations in production. The private receipt table stores hashes/metadata, not file bytes; review invoker grants/backups.
+
+`migrations/paper_evidence_storage.sql` follows the base paper upload migration. It adds a technical storage-provider column and replaces guarded APIs to accept confirmed private Drive file references or retained NocoDB paths. Existing receipt fingerprints, evidence and agreement IDs are preserved. The updated paper test runner applies both changes in order; `tests/verify_paper_evidence_storage.sql` covers provider conflicts and compatibility. See [the current Drive rollout](../releases/v1.2.0/GOOGLE_DRIVE_PAPER_VALIDATION.md).
