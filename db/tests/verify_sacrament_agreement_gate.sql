@@ -1,6 +1,11 @@
 -- Rollback-only checks for version-independent sacrament agreement gating.
 \set ON_ERROR_STOP on
 BEGIN;
+-- Required catalog entries are transaction-local fixtures, not production seeds.
+INSERT INTO public.agreement_types(type_key,display_name) VALUES
+    ('membership','Synthetic Membership'),
+    ('sacrament_release','Synthetic Sacrament Release')
+ON CONFLICT (type_key) DO NOTHING;
 DO $$
 DECLARE
   v_person uuid;
@@ -87,4 +92,5 @@ BEGIN
 
   RAISE NOTICE 'Version-independent sacrament agreement gate checks passed; rolling back synthetic records.';
 END $$;
+SET CONSTRAINTS ALL IMMEDIATE;
 ROLLBACK;

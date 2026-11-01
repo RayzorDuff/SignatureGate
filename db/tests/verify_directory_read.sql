@@ -16,10 +16,14 @@ BEGIN
     RETURNING person_id INTO v_doc_actor;
   INSERT INTO public.people(display_name) VALUES ('Directory Donor Actor')
     RETURNING person_id INTO v_donor_actor;
-  INSERT INTO public.members(person_id,email,is_facilitator,is_document_reviewer)
-    VALUES (v_doc_actor,'issue19-doc-actor@example.invalid',true,true);
-  INSERT INTO public.members(person_id,email,is_facilitator,is_donations_reviewer)
-    VALUES (v_donor_actor,'issue19-donor-actor@example.invalid',true,true);
+  -- Access belongs to canonical app accounts and roles, not membership flags.
+  -- Reviewers need no Participant enrollment.
+  INSERT INTO public.person_app_accounts(person_id,email) VALUES
+    (v_doc_actor,'issue19-doc-actor@example.invalid'),
+    (v_donor_actor,'issue19-donor-actor@example.invalid');
+  INSERT INTO public.person_roles(person_id,role_key,assigned_by) VALUES
+    (v_doc_actor,'document_reviewer','synthetic_directory_test'),
+    (v_donor_actor,'donations_reviewer','synthetic_directory_test');
 
   INSERT INTO public.people(display_name) VALUES ('Directory Member Target')
     RETURNING person_id INTO v_member_person;

@@ -25,6 +25,8 @@ BEGIN
     RETURNING member_id INTO v_practitioner_member;
   INSERT INTO public.person_app_accounts(person_id,email)
     VALUES (v_practitioner_person,'issue19-assigned-practitioner@example.invalid');
+  INSERT INTO public.person_roles(person_id,role_key,assigned_by)
+    VALUES (v_practitioner_person,'practitioner','synthetic_operations_test');
 
   INSERT INTO public.people(display_name) VALUES ('Issue 19 Operations Outsider')
     RETURNING person_id INTO v_outsider_person;
@@ -41,11 +43,11 @@ BEGIN
     member_id,facilitator_id,signature_method,status,review_notes)
   VALUES (v_target_member,v_practitioner_member,'paper','pending_review',
     'Synthetic agreement for rollback-only verification');
-  INSERT INTO public.member_facilitators(
-    member_id,facilitator_id,assigned_by_member_id,status,notes)
-  VALUES (v_target_member,v_practitioner_member,v_practitioner_member,
+  INSERT INTO public.member_practitioner_assignments(
+    member_id,practitioner_person_id,assigned_by_person_id,status,notes)
+  VALUES (v_target_member,v_practitioner_person,v_reviewer_person,
     'active','Synthetic assignment for rollback-only verification')
-  RETURNING member_facilitator_id INTO v_assignment;
+  RETURNING member_practitioner_assignment_id INTO v_assignment;
 
   IF NOT EXISTS (SELECT 1
       FROM public.issue19_person_member_operations_state(
@@ -65,6 +67,7 @@ BEGIN
       FROM public.issue19_person_practitioner_assignments(
         'issue19-assigned-practitioner@example.invalid',v_target_person)
       WHERE member_facilitator_id=v_assignment
+        AND member_practitioner_assignment_id=v_assignment
         AND practitioner_person_id=v_practitioner_person)
   THEN RAISE EXCEPTION 'Assigned practitioner cannot read member operations'; END IF;
 
@@ -76,8 +79,10 @@ BEGIN
         'issue19-operations-outsider@example.invalid',v_target_person))
   THEN RAISE EXCEPTION 'Donations-only reviewer crossed into member operations'; END IF;
 
-  UPDATE public.member_facilitators SET status='inactive'
-  WHERE member_facilitator_id=v_assignment;
+  UPDATE public.member_practitioner_assignments
+  SET status='inactive',ended_at=now(),ended_by_person_id=v_reviewer_person,
+      end_reason='Synthetic assignment revocation'
+  WHERE member_practitioner_assignment_id=v_assignment;
   IF EXISTS (SELECT 1
       FROM public.issue19_person_member_agreements(
         'issue19-assigned-practitioner@example.invalid',v_target_person))
@@ -92,4 +97,5 @@ BEGIN
 
   RAISE NOTICE 'Individual Profile member-operation read checks passed; rolling back synthetic records.';
 END $$;
+SET CONSTRAINTS ALL IMMEDIATE;
 ROLLBACK;

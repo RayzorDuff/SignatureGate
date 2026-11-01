@@ -9,17 +9,22 @@ DECLARE
   v_member_first public.members%ROWTYPE;
   v_organization public.contributors%ROWTYPE;
   v_gift uuid;
+  v_donor_person uuid;
+  v_member_person uuid;
+  v_organization_id uuid;
   v_auto_contributor uuid;
   v_email text := public.uuid_generate_v4()::text || '@example.invalid';
   v_count integer;
 BEGIN
   -- Individual donor exists before any membership or Appsmith account.
-  INSERT INTO public.contributors
-    (contributor_type, display_name, first_name, last_name, source)
-  VALUES ('individual', 'Test Donor Person', 'Test', 'Donor Person', 'identity_test')
+  INSERT INTO public.people(display_name,first_name,last_name,created_at)
+  VALUES ('Synthetic Donor Person','Synthetic','Donor Person',now()-interval '1 day')
+  RETURNING person_id INTO v_donor_person;
+  INSERT INTO public.contributors(contributor_type,person_id,source)
+  VALUES ('individual',v_donor_person,'identity_test')
   RETURNING * INTO v_donor;
-  IF v_donor.person_id IS NULL THEN
-    RAISE EXCEPTION 'Contributor insert failed to create a person';
+  IF v_donor.person_id IS DISTINCT FROM v_donor_person THEN
+    RAISE EXCEPTION 'Contributor role did not retain its canonical person';
   END IF;
 
   INSERT INTO public.donations
@@ -27,8 +32,12 @@ BEGIN
   VALUES ('cash', 100, 'identified', v_donor.contributor_id, 'verified')
   RETURNING donation_id INTO v_gift;
 
-  INSERT INTO public.members (first_name, last_name)
-  VALUES ('Test', 'Donor Person') RETURNING * INTO v_member;
+  -- Exercise legacy role-link reconciliation with explicit canonical identities.
+  INSERT INTO public.people(display_name,first_name,last_name)
+  VALUES ('Synthetic Donor Person','Synthetic','Donor Person')
+  RETURNING person_id INTO v_member_person;
+  INSERT INTO public.members(person_id)
+  VALUES (v_member_person) RETURNING * INTO v_member;
   INSERT INTO public.contributor_member_links (contributor_id, member_id)
   VALUES (v_donor.contributor_id, v_member.member_id);
 
@@ -41,28 +50,25 @@ BEGIN
     RAISE EXCEPTION 'Donation preceding membership was retagged';
   END IF;
 
-  UPDATE public.members SET last_name = 'Revised'
-  WHERE member_id = v_member.member_id;
-  IF (SELECT last_name FROM public.contributors
-      WHERE contributor_id = v_donor.contributor_id) IS DISTINCT FROM 'Revised' THEN
-    RAISE EXCEPTION 'Member name was not projected to contributor';
-  END IF;
-
-  UPDATE public.contributors SET first_name = 'Updated'
-  WHERE contributor_id = v_donor.contributor_id;
-  IF (SELECT first_name FROM public.members
-      WHERE member_id = v_member.member_id) IS DISTINCT FROM 'Updated' THEN
-    RAISE EXCEPTION 'Contributor name was not projected to member';
+  -- Role tables no longer own duplicated name fields. Both presentation views
+  -- must reflect edits to the one canonical person, in either name component.
+  UPDATE public.people SET last_name = 'Revised'
+  WHERE person_id = v_donor.person_id;
+  IF (SELECT last_name FROM public.member_profiles
+      WHERE member_id = v_member.member_id) IS DISTINCT FROM 'Revised'
+     OR (SELECT last_name FROM public.contributor_profiles
+         WHERE contributor_id = v_donor.contributor_id) IS DISTINCT FROM 'Revised' THEN
+    RAISE EXCEPTION 'Canonical surname was not projected to both roles';
   END IF;
 
   UPDATE public.people SET first_name = 'Canonical'
   WHERE person_id = v_donor.person_id;
-  IF (SELECT first_name FROM public.members WHERE member_id = v_member.member_id)
+  IF (SELECT first_name FROM public.member_profiles WHERE member_id = v_member.member_id)
       IS DISTINCT FROM 'Canonical'
-     OR (SELECT first_name FROM public.contributors
+     OR (SELECT first_name FROM public.contributor_profiles
          WHERE contributor_id = v_donor.contributor_id)
       IS DISTINCT FROM 'Canonical' THEN
-    RAISE EXCEPTION 'Person edit was not projected to both legacy records';
+    RAISE EXCEPTION 'Canonical given name was not projected to both roles';
   END IF;
 
   INSERT INTO public.member_emails (member_id, email, is_primary)
@@ -77,8 +83,11 @@ BEGIN
   END IF;
 
   -- Member-first Givebutter/cash compatibility path keeps the member person.
-  INSERT INTO public.members (first_name, last_name)
-  VALUES ('Test', 'Member First') RETURNING * INTO v_member_first;
+  INSERT INTO public.people(display_name,first_name,last_name)
+  VALUES ('Synthetic Participant First','Synthetic','Participant First')
+  RETURNING person_id INTO v_member_person;
+  INSERT INTO public.members(person_id)
+  VALUES (v_member_person) RETURNING * INTO v_member_first;
   v_auto_contributor := public.ensure_member_contributor(v_member_first.member_id);
   IF (SELECT person_id FROM public.contributors
       WHERE contributor_id = v_auto_contributor)
@@ -86,16 +95,17 @@ BEGIN
     RAISE EXCEPTION 'Member-first donor creation replaced person ID';
   END IF;
 
-  INSERT INTO public.contributors
-    (contributor_type, display_name, organization_name, source)
-  VALUES ('organization', 'Test Organization', 'Test Organization', 'identity_test')
+  INSERT INTO public.organizations(organization_name)
+  VALUES ('Synthetic Organization') RETURNING organization_id INTO v_organization_id;
+  INSERT INTO public.contributors(contributor_type,organization_id,source)
+  VALUES ('organization',v_organization_id,'identity_test')
   RETURNING * INTO v_organization;
   IF v_organization.organization_id IS NULL OR v_organization.person_id IS NOT NULL THEN
     RAISE EXCEPTION 'Organization received the wrong identity type';
   END IF;
   UPDATE public.organizations SET organization_name = 'Revised Organization'
   WHERE organization_id = v_organization.organization_id;
-  IF (SELECT organization_name FROM public.contributors
+  IF (SELECT organization_name FROM public.contributor_profiles
       WHERE contributor_id = v_organization.contributor_id)
      IS DISTINCT FROM 'Revised Organization' THEN
     RAISE EXCEPTION 'Organization name was not projected to contributor';
