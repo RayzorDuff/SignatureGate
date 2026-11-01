@@ -4,6 +4,8 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Allow Document Reviewers to correct contact ownership from inactive Participant enrollments without reactivation; retain active-target, reason, canonical ownership, capacity separation and audit checks.
+
 - Add optional private Google Drive paper storage with retained NocoDB references, provider-bound request replay and controlled file-ID links. Repair complete JSON serialization so paper files remain an array with Base64 content; preserve synchronized Header Auth and existing native identities.
 
 - Add protected paper agreement upload for Participants without email: authenticated/scoped n8n storage, bounded PDF/PNG/JPEG validation, pending independent reviewer approval, atomic saved receipts and audited cancellation/recovery without replaying uploads.

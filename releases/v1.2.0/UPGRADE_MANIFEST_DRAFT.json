@@ -2,7 +2,7 @@
   "state": "draft_non_executable",
   "release": "SignatureGate v1.2.0",
   "purpose": "Conditional source ordering and checksum pinning only. Do not execute all entries. Each needs a reviewed selected/skipped disposition.",
-  "canonical_schema_sha256": "d79eab3f235c343076bc4dd307de6d1ab92892ee85c1826ac024978d3a265de1",
+  "canonical_schema_sha256": "6a374c0df207de90a27ffa988c4c70279357bfa4e8d9d738d7a765638e29f63c",
   "required_environment_proofs": {
     "canonical_base_and_missing_forward_changes_reviewed": false,
     "current_production_effective_definitions_reviewed": false,
@@ -450,6 +450,25 @@
         "db/tests/verify_paper_evidence_storage.sql"
       ],
       "recovery": "Preserve receipt ownership/hash and agreement evidence. Never retry an unresolved request against another provider. Use owner-scoped lookup/cancellation and the reviewed production recovery plan."
+    },
+    {
+      "id": "person_contact_reassignment",
+      "path": "db/migrations/person_contact_reassignment.sql",
+      "sha256": "14b026b4ff0d1076de05d45e061c285b02152b29c9de4a2a781ea6ed29072e2f",
+      "after": [
+        "application_authorization"
+      ],
+      "selected": null,
+      "disposition_evidence": null,
+      "preconditions": [
+        "Canonical person accounts/roles, purpose contacts, source synchronization and audited reassignment API installed.",
+        "Review existing function owner/grants and contact mappings; source Participant may be inactive, target must be active."
+      ],
+      "transaction": "One transaction replaces the existing invoker function without changing its identity, owner or grants.",
+      "verification": [
+        "db/tests/verify_person_contact_reassignment.sql"
+      ],
+      "recovery": "Do not reactivate enrollment to correct ownership. Preserve role/contact history and audit; rehearse the reviewed backup/recovery plan before production rollout."
     }
   ]
 }

@@ -48,3 +48,8 @@ The unreleased atomic Intake API also accepts explicit `Later` agreement timing.
 
 
 `paper_evidence_storage.sql` follows paper_agreement_upload.sql and preserves the old receipt/hash/evidence contract while adding provider-specific references. The existing test-only runner applies both in order and both rollback suites. The latest manifest has 23 undecided entries; no production sequence is approved. See GOOGLE_DRIVE_PAPER_VALIDATION.md for the selected-provider rollout.
+
+
+## Former Participant contact ownership correction
+
+`person_contact_reassignment.sql` retains the existing function identity and role requirements while allowing an inactive source enrollment; the target must remain active. The prior metadata-only test did not exercise this path and the new synthetic behavior test reproduces the old rejection. No production/test-host migration has been applied in this increment. Review source mappings and existing owner/grants, apply twice on the dedicated test database, then run `verify_person_contact_reassignment.sql` before focused native UI acceptance. The draft manifest includes this as an undecided forward step; production rollout remains separate.

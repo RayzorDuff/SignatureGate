@@ -4009,8 +4009,8 @@ BEGIN
      OR p_source_person_id = p_target_person_id THEN
     RAISE EXCEPTION 'A different target individual is required';
   END IF;
-  IF p_capacity NOT IN ('member','contributor')
-     OR p_contact_kind NOT IN ('email','phone','address')
+  IF p_capacity IS NULL OR p_capacity NOT IN ('member','contributor')
+     OR p_contact_kind IS NULL OR p_contact_kind NOT IN ('email','phone','address')
      OR p_contact_id IS NULL
      OR NULLIF(btrim(p_reason),'') IS NULL THEN
     RAISE EXCEPTION 'Capacity, contact, target, and reason are required';
@@ -4037,10 +4037,10 @@ BEGIN
   IF p_capacity = 'member' THEN
     SELECT m.member_id INTO v_source_owner_id
     FROM public.members m
-    WHERE m.person_id = p_source_person_id AND m.status = 'active'
+    WHERE m.person_id = p_source_person_id AND m.status IN ('active','inactive')
     FOR UPDATE;
     IF v_source_owner_id IS NULL THEN
-      RAISE EXCEPTION 'Active membership not found for source individual';
+      RAISE EXCEPTION 'Participant enrollment not found for source individual';
     END IF;
 
     SELECT m.member_id INTO v_target_owner_id
