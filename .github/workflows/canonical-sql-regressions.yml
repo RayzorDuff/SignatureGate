@@ -26,12 +26,12 @@ jobs:
         options: >-
           --health-cmd="pg_isready -U signaturegate_ci_owner -d signaturegate_regression"
           --health-interval=5s --health-timeout=5s --health-retries=12
-    env:
-      PG_CONTAINER: ${{ job.services.postgres.id }}
     steps:
       - uses: actions/checkout@v4
       - name: Bootstrap fresh canonical schema and public terminology
         shell: bash
+        env:
+          PG_CONTAINER: ${{ job.services.postgres.id }}
         run: |
           set -euo pipefail
           psql_ci() {
@@ -45,6 +45,8 @@ jobs:
           printf 'Native PostgreSQL server_version_num=%s\n' "$version"
       - name: Run every versioned SQL check twice and verify rollback
         shell: bash
+        env:
+          PG_CONTAINER: ${{ job.services.postgres.id }}
         run: |
           set -euo pipefail
           snapshot() {
