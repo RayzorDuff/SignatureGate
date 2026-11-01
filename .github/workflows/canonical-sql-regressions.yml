@@ -1,0 +1,76 @@
+name: Canonical SQL regressions (PostgreSQL 16)
+
+on:
+  pull_request:
+    paths:
+      - 'db/**'
+      - '.github/workflows/canonical-sql-regressions.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-sql:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # This service is created and destroyed by GitHub for this job only.
+    # No host ports, deployment credentials or operational database URLs.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: signaturegate_regression
+          POSTGRES_USER: signaturegate_ci_owner
+          POSTGRES_PASSWORD: synthetic-ci-only
+        options: >-
+          --health-cmd="pg_isready -U signaturegate_ci_owner -d signaturegate_regression"
+          --health-interval=5s --health-timeout=5s --health-retries=12
+    env:
+      PG_CONTAINER: ${{ job.services.postgres.id }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bootstrap fresh canonical schema and public terminology
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql_ci() {
+            docker exec -i "$PG_CONTAINER" psql -X -v ON_ERROR_STOP=1 \
+              -U signaturegate_ci_owner -d signaturegate_regression "$@"
+          }
+          version=$(psql_ci -qAt -c 'SHOW server_version_num')
+          ((version >= 160000 && version < 170000))
+          psql_ci < db/schema.sql > "$RUNNER_TEMP/schema.log" 2>&1
+          psql_ci < db/seeds/organization_terminology.sql > "$RUNNER_TEMP/terminology.log" 2>&1
+          printf 'Native PostgreSQL server_version_num=%s\n' "$version"
+      - name: Run every versioned SQL check twice and verify rollback
+        shell: bash
+        run: |
+          set -euo pipefail
+          snapshot() {
+            docker exec "$PG_CONTAINER" pg_dump -U signaturegate_ci_owner \
+              -d signaturegate_regression --schema=public --data-only --no-owner --no-privileges \
+              | sed '/^\\/d'
+          }
+          snapshot > "$RUNNER_TEMP/baseline.sql"
+          checks=(db/tests/*.sql)
+          ((${#checks[@]} > 0))
+          for attempt in first repeat; do
+            passed=0
+            for check in "${checks[@]}"; do
+              log="$RUNNER_TEMP/$attempt-$(basename "$check").log"
+              if ! docker exec -i "$PG_CONTAINER" psql -X -v ON_ERROR_STOP=1 \
+                  -U signaturegate_ci_owner -d signaturegate_regression < "$check" > "$log" 2>&1; then
+                cat "$log"
+                exit 1
+              fi
+              snapshot > "$RUNNER_TEMP/after.sql"
+              if ! cmp -s "$RUNNER_TEMP/baseline.sql" "$RUNNER_TEMP/after.sql"; then
+                printf 'FAIL: %s left persistent public data\n' "$check"
+                exit 1
+              fi
+              printf 'PASS %s %s (public data unchanged)\n' "$attempt" "$check"
+              passed=$((passed + 1))
+            done
+            printf '%s: %s/%s checks passed\n' "$attempt" "$passed" "${#checks[@]}" >> "$GITHUB_STEP_SUMMARY"
+          done

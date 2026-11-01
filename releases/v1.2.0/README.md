@@ -54,3 +54,5 @@ Current focused follow-up: [native startup and Participant agreement selection](
 Navigation/selectors are now operator-accepted. Current required sequence: [protected no-email paper upload](PAPER_AGREEMENT_VALIDATION.md).
 
 Current paper rollout superseding earlier provider setup: [private Drive storage and repaired file transport](GOOGLE_DRIVE_PAPER_VALIDATION.md).
+
+Shared Test2 follow-up: [canonical SQL fixture validation and console coordination](CANONICAL_REGRESSION_VALIDATION.md).
