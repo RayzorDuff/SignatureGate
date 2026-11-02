@@ -1,51 +1,57 @@
 # Test2 UI acceptance checkpoint
 
-Updated November 2, 2026 (America/Denver). This checkpoint supersedes earlier deployment-status statements; earlier operator UI acceptance remains historical evidence. Production promotion is on hold.
+Updated November 2, 2026. Production promotion remains on hold. This report contains sanitized release results only.
 
-## Git synchronization
+## Scope and preserved evidence
 
-- The reported `syncBranch` conflict is an Appsmith application-level Redis lock. At direct inspection that key was absent, and no filesystem Git lock existed. No lock was deleted.
-- Fresh native Git synchronization fails because GitHub cannot resolve from Appsmith's deliberately isolated runtime. The shared network is internal. Deleting Git metadata or clearing unrelated Redis keys would not repair that failure.
-- The existing `chatgpt_development` editor opens with its native identities. On November 2, the native Git pull advanced its checkout to `ceb26ff02166d69ed0c64b0c77811f8b22164a67`; ancestry of merged Appsmith PR #7 was verified.
-- Appsmith's native backup completed, including MongoDB and Git storage. The archive, encryption configuration and checksum receipt are retained privately outside Git. Uncommitted checkout differences were preserved; no reset, discard, reimport or shared-service restart was performed.
-- The owner authorized a temporary GitHub-only access window. A source-restricted host relay restored GitHub SSH transport without changing Docker networks or restarting containers. After the native pull, the relay, exact firewall rules and temporary hostname override were removed and their absence verified. The Git synchronization gate is now closed; further Git investigation is unnecessary. Future remote pulls require another controlled access window.
+The existing development application was exercised through its installed Appsmith browser preview using synthetic records and an authorized linked staff account. Results below describe actual interface interactions, not a production deployment or complete integration certification.
 
-## Connection isolation
+The accepted development baseline is `ceb26ff02166d69ed0c64b0c77811f8b22164a67`, including merged Appsmith PR #7. Prior successful 47-check PostgreSQL suites, Appsmith CI, and focused former-Participant migration/rollback checks remain accepted historical evidence. They were not repeated. Prior source synchronization and backup checkpoints remain preserved; no synchronization recovery was repeated.
 
-The existing development datasource is configured for the dedicated synthetic database, but still uses the owner login. Its connection must be changed to the restricted application login before UI write acceptance. Preserve datasource/action IDs and production-facing configurations.
+## Configuration results
 
-A direct connection using the private restricted-role credentials succeeded against the dedicated test database. Catalog checks confirm no superuser flag, schema-creation permission, public-schema creation permission or ownership of public objects.
-
-The same login can connect to the restored database. Catalog checks there report zero readable public relations and zero public tables with INSERT/UPDATE/DELETE privilege, but connection denial is not enforced. These checks do not certify every routine, alternate schema or connection path. Do not report complete isolation from role flags or hostnames alone.
-
-The saved n8n datasource still targets production. Identify shared usage before making any change; isolate only the acceptance workflows and verify their database, storage, signing, mailing and ERP destinations/credentials. Keep workflows inactive until that review is complete. No workflow action was used to test a production endpoint.
-
-## Focused acceptance matrix
-
-| Check | Result | Evidence or remaining cause |
+| Check | Result | Evidence or limit |
 | --- | --- | --- |
-| HTTPS and native sign-in | PASS | Authenticated application/editor reached |
-| Dedicated database and restricted-role authentication | PASS | Native connection and narrow catalog checks |
-| Former-Participant forward migration | PASS | Applied twice; focused rollback check passed; function identity/owner/grants preserved |
-| Open existing development branch | PASS | Existing editor opens directly; no reimport |
-| Pull current development source including Appsmith PR #7 | PASS | Native pull to `ceb26ff`; ancestry verified; temporary access removed |
-| Restricted datasource configuration and complete isolation | BLOCKED | Owner login remains saved; cross-database connection still possible |
-| Test-only n8n routing | BLOCKED | Saved production destination; workflow targets/credentials not yet certified |
-| Directory/Profile and Reports functional smoke | BLOCKED | Source/binding prerequisites; current sign-in lacks an active synthetic directory account link |
-| Repeated Participant Intake | BLOCKED | Source/binding prerequisites |
-| Agreement creation/review | BLOCKED | Source/binding and integration prerequisites |
-| Former-Participant contact reassignment in browser | BLOCKED | Source/binding and authorized synthetic reviewer prerequisites |
-| Contributor identity and cash deposits | BLOCKED | Source/binding prerequisites |
-| Paper storage (Drive/NocoDB) | BLOCKED | Test-only workflow/storage credentials and destinations unverified |
+| Browser navigation and authenticated editor | PASS | Existing development application opens and responds to navigation, selection, form entry and writes. |
+| Restricted development datasource | PASS | Saved development connection uses the existing restricted application role; Appsmith queries and synthetic writes authenticate successfully. No new credentials were generated. |
+| Development n8n routing | PASS | Development workflow actions use the isolated test destination. The shared production destination was preserved. |
+| Integration readiness | BLOCKED | Workflow activation and downstream signing, mailing, ERP and storage credentials/destinations are not certified. Workflows remain inactive. No production workflow was invoked. |
+| Complete database isolation certification | BLOCKED | Successful restricted-role authentication is not proof of complete cross-database or routine isolation; the previously documented boundary limitation remains unresolved. |
 
-The passing 47-check PostgreSQL suites and Appsmith CI remain accepted evidence. They were not repeated. No browser write workflow is counted as passing.
+## Actual browser acceptance
 
-## Next focused operations
+| Workflow | Result | Observed outcome |
+| --- | --- | --- |
+| Directory | PASS | Listed synthetic staff and both Intake records; search, contextual actions and View Profile worked. |
+| Individual Profiles | PASS | Explicit selected identity, Participant/Contributor capacities, contacts and staff controls loaded. Company Profile is not included in this pass. |
+| Reports | PASS after focused fix | Authorized staff without Participant enrollment could see report controls and execute a report returning metric rows. |
+| Two consecutive Participant Intakes | PASS | Two separate synthetic enrollments committed, with an explicit reset between them. The second also enabled Contributor capacity. Both used enrollment-only agreement handling and disabled mailing subscriptions. |
+| Intake recovery check | PASS | Check saved Intake confirmed the committed result without replaying enrollment or signing. |
+| Former-Participant contact correction | PASS after focused fixes | Reviewer selected a retained email, an active target and a reason; reassignment succeeded. Source lost the transferred email and the target profile showed it, preserving its existing primary email. Other ended-enrollment contact writes stayed disabled. The former fixture was prepared separately through the existing audited lifecycle routine; lifecycle UI acceptance is not claimed. |
+| Contributor identity | PASS | Contextual Contributor Functions selected the intended synthetic individual and showed the correct Contributor identity. |
+| Cash entry and review | PASS | A synthetic contribution stored 1,234 cents and was verified through Cash Deposits, moving to Cash on Hand. |
+| Draft deposit batching | PASS | Created one draft batch and added the verified contribution. The batch showed one item and 1,234 cents. |
+| Contribution amount display | PASS after focused fix | Contribution history displayed 12.34 for 1,234 stored cents. |
+| Pending Contribution list refresh | FAIL; repair awaiting browser retest | The SQL driver treated a JSON operator as an extra parameter. The equivalent JSON function has been installed for focused retest. The original cash write was retained and was not replayed. |
+| Final deposit preparation/confirmation and ERP | BLOCKED | Isolated bank-account selection returned no results. No final confirmation or ERP synchronization was attempted. |
+| Agreement creation and review | BLOCKED | Selected Participant loaded, but agreement-type selection returned no results. Signing integration is not certified. No signing request was triggered. |
+| Paper agreement upload and review | BLOCKED | Isolated storage credentials/destinations remain unverified. No file was uploaded. |
 
-1. Completed: controlled GitHub access and native development pull. Preserve this accepted source and avoid further Git changes during the focused acceptance pass.
-2. Update only the development datasource to the restricted role; verify the actual application connection and negative access boundaries. Review shared n8n datasource usage and isolate the required acceptance endpoints.
-3. Provision/use synthetic application actors, then perform the requested single browser acceptance pass. Record actual results and only repair demonstrated core-workflow failures.
-4. Assess historical replay only after synthetic UI acceptance. No replay decision or restore is justified by the current Git/network blocker.
-5. Pin the accepted sources, reviewed forward migrations and external dependencies; document tested rollback before requesting production promotion. Preserve private backup material; never use instance-wide restore as an individual-app recovery step.
+## Demonstrated defects and focused repairs
 
-The exclusive console lock was explicitly released and availability verified after the focused operations. Commerce subsequently resumed its console work. No production promotion, production-facing app change, shared Docker/network change or Commerce mutation occurred.
+[Appsmith PR #8](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/8) contains the release fixes installed in development for acceptance:
+
+- Canonical staff authorization for Reports visibility.
+- Required reason/target inputs and target loading for former-Participant contact correction.
+- Two-decimal contribution amounts preserving cents.
+- Pending donation JSON lookup compatible with prepared SQL parameters.
+
+Targeted contact authorization/selection regression checks and a focused profile-loader check passed. Full automated suites were not repeated. PR #8 remains pending review and merge.
+
+## Release blockers
+
+1. Complete pending Contribution refresh retest and resolve any remaining demonstrated core failures.
+2. Review/merge the focused UI repairs and confirm the accepted development source contains them.
+3. Provide and verify isolated agreement templates, signing/mailing integrations, ERP bank-account data and paper-storage credentials; then complete the blocked browser workflows.
+4. Resolve the previously recorded database access-boundary limitation before claiming complete isolation.
+5. Company Profile and remaining role-denial cases still require focused browser acceptance. Production promotion is not approved by this checkpoint.
