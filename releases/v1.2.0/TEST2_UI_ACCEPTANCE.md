@@ -32,7 +32,7 @@ The accepted development baseline is `ceb26ff02166d69ed0c64b0c77811f8b22164a67`,
 | Cash entry and review | PASS | A synthetic contribution stored 1,234 cents and was verified through Cash Deposits, moving to Cash on Hand. |
 | Draft deposit batching | PASS | Created one draft batch and added the verified contribution. The batch showed one item and 1,234 cents. |
 | Contribution amount display | PASS after focused fix | Contribution history displayed 12.34 for 1,234 stored cents. |
-| Pending Contribution list refresh | FAIL; repair awaiting browser retest | The SQL driver treated a JSON operator as an extra parameter. The equivalent JSON function has been installed for focused retest. The original cash write was retained and was not replayed. |
+| Pending Contribution list refresh and review | PASS after focused fix | A separate 56-cent contribution appeared in the pending queue, verified successfully and left that queue without a refresh failure. The original contribution was not replayed. |
 | Final deposit preparation/confirmation and ERP | BLOCKED | Isolated bank-account selection returned no results. No final confirmation or ERP synchronization was attempted. |
 | Agreement creation and review | BLOCKED | Selected Participant loaded, but agreement-type selection returned no results. Signing integration is not certified. No signing request was triggered. |
 | Paper agreement upload and review | BLOCKED | Isolated storage credentials/destinations remain unverified. No file was uploaded. |
@@ -50,8 +50,7 @@ Targeted contact authorization/selection regression checks and a focused profile
 
 ## Release blockers
 
-1. Complete pending Contribution refresh retest and resolve any remaining demonstrated core failures.
-2. Review/merge the focused UI repairs and confirm the accepted development source contains them.
-3. Provide and verify isolated agreement templates, signing/mailing integrations, ERP bank-account data and paper-storage credentials; then complete the blocked browser workflows.
-4. Resolve the previously recorded database access-boundary limitation before claiming complete isolation.
-5. Company Profile and remaining role-denial cases still require focused browser acceptance. Production promotion is not approved by this checkpoint.
+1. Review/merge the focused UI repairs and confirm the accepted development source contains them.
+2. Provide and verify isolated agreement templates, signing/mailing integrations, ERP bank-account data and paper-storage credentials; then complete the blocked browser workflows.
+3. Resolve the previously recorded database access-boundary limitation before claiming complete isolation.
+4. Company Profile and remaining role-denial cases still require focused browser acceptance. Production promotion is not approved by this checkpoint.
