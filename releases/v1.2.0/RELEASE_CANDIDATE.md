@@ -14,7 +14,7 @@ Required workflows are canonical Directory/Profiles/Reports, consecutive Partici
 | --- | --- | --- |
 | SignatureGate backend | main at ba7eec08120e82bb97b5034fe6a5d816e2a51705, including PR #33 | Existing accepted backend baseline; no new database migration needed for the local deposit UI correction |
 | Appsmith development | chatgpt_development at 666c9bcaefa6bf22c5683f7819bdbbc55e114482, including PR #8 | Core browser PASS evidence preserved |
-| Local deposit correction | [Appsmith PR #9](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/9), head 4670bbeca08421bc11ac2638c4fa4ee4e83fbacc | Installed only in development; local preparation/confirmation and printable record passed; review/merge pending |
+| Local deposit correction | [Appsmith PR #9](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/9), head 4670bbeca08421bc11ac2638c4fa4ee4e83fbacc | Installed only in development; local preparation/confirmation, single audit events, deposited-item eligibility exclusion and printable record passed; review/merge pending |
 | Acceptance and release preparation | [SignatureGate PR #35](https://github.com/RayzorDuff/SignatureGate/pull/35) | Sanitized evidence and scope disposition; review/merge pending |
 | Optional dependencies | ERP and Drive remain excluded | Do not require their external acceptance or an ERP-only release pin for this scope |
 
@@ -37,7 +37,7 @@ Review production account ownership, effective grants and data invariants privat
 
 ## Known limitations and remaining acceptance
 
-- Local/NocoDB paper upload has an unresolved browser receipt. One synthetic dispatch did not produce a committed agreement; creation, retrieval, reviewer transition and evidence/audit acceptance remain required.
+- Local/NocoDB paper upload failed before durable reservation (#36). One synthetic dispatch did not produce a reservation or committed agreement; creation, retrieval, reviewer transition and evidence/audit acceptance remain required.
 - Digital signing is not certified by this checkpoint. Do not enable a release-used digital path without its separate isolated acceptance.
 - ERP accounting synchronization and Drive storage are unavailable in this release scope and must be presented as deferred, not failed core workflows.
 - Wider provider address canonicalization, navigation accessibility/mobile completion and other issue-wide residual work remain tracked; do not introduce general redesign or unrelated functionality.
