@@ -1,14 +1,14 @@
 # Test2 UI acceptance checkpoint
 
-Updated November 1, 2026 (America/Denver). This checkpoint supersedes earlier deployment-status statements; earlier operator UI acceptance remains historical evidence. Production promotion is on hold.
+Updated November 2, 2026 (America/Denver). This checkpoint supersedes earlier deployment-status statements; earlier operator UI acceptance remains historical evidence. Production promotion is on hold.
 
 ## Git synchronization
 
 - The reported `syncBranch` conflict is an Appsmith application-level Redis lock. At direct inspection that key was absent, and no filesystem Git lock existed. No lock was deleted.
 - Fresh native Git synchronization fails because GitHub cannot resolve from Appsmith's deliberately isolated runtime. The shared network is internal. Deleting Git metadata or clearing unrelated Redis keys would not repair that failure.
-- The existing `chatgpt_development` editor opens directly with its native application/page identities. This is not proof of a successful current-source pull: incorporation of merged Appsmith PR #7 remains unverified.
+- The existing `chatgpt_development` editor opens with its native identities. On November 2, the native Git pull advanced its checkout to `ceb26ff02166d69ed0c64b0c77811f8b22164a67`; ancestry of merged Appsmith PR #7 was verified.
 - Appsmith's native backup completed, including MongoDB and Git storage. The archive, encryption configuration and checksum receipt are retained privately outside Git. Uncommitted checkout differences were preserved; no reset, discard, reimport or shared-service restart was performed.
-- A remote-source access method must be coordinated before changing the intentionally isolated runtime. Stop Git investigation once native source synchronization succeeds.
+- The owner authorized a temporary GitHub-only access window. A source-restricted host relay restored GitHub SSH transport without changing Docker networks or restarting containers. After the native pull, the relay, exact firewall rules and temporary hostname override were removed and their absence verified. The Git synchronization gate is now closed; further Git investigation is unnecessary. Future remote pulls require another controlled access window.
 
 ## Connection isolation
 
@@ -28,7 +28,7 @@ The saved n8n datasource still targets production. Identify shared usage before 
 | Dedicated database and restricted-role authentication | PASS | Native connection and narrow catalog checks |
 | Former-Participant forward migration | PASS | Applied twice; focused rollback check passed; function identity/owner/grants preserved |
 | Open existing development branch | PASS | Existing editor opens directly; no reimport |
-| Pull current development source including Appsmith PR #7 | BLOCKED | GitHub unavailable from isolated Appsmith runtime |
+| Pull current development source including Appsmith PR #7 | PASS | Native pull to `ceb26ff`; ancestry verified; temporary access removed |
 | Restricted datasource configuration and complete isolation | BLOCKED | Owner login remains saved; cross-database connection still possible |
 | Test-only n8n routing | BLOCKED | Saved production destination; workflow targets/credentials not yet certified |
 | Directory/Profile and Reports functional smoke | BLOCKED | Source/binding prerequisites; current sign-in lacks an active synthetic directory account link |
@@ -42,7 +42,7 @@ The passing 47-check PostgreSQL suites and Appsmith CI remain accepted evidence.
 
 ## Next focused operations
 
-1. Coordinate a safe Git source-access method, then use the existing Git-linked development application to synchronize current source without discarding preserved changes or touching master.
+1. Completed: controlled GitHub access and native development pull. Preserve this accepted source and avoid further Git changes during the focused acceptance pass.
 2. Update only the development datasource to the restricted role; verify the actual application connection and negative access boundaries. Review shared n8n datasource usage and isolate the required acceptance endpoints.
 3. Provision/use synthetic application actors, then perform the requested single browser acceptance pass. Record actual results and only repair demonstrated core-workflow failures.
 4. Assess historical replay only after synthetic UI acceptance. No replay decision or restore is justified by the current Git/network blocker.
