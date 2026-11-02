@@ -23,7 +23,8 @@ The accepted development baseline is `ceb26ff02166d69ed0c64b0c77811f8b22164a67`,
 | Workflow | Result | Observed outcome |
 | --- | --- | --- |
 | Directory | PASS | Listed synthetic staff and both Intake records; search, contextual actions and View Profile worked. |
-| Individual Profiles | PASS | Explicit selected identity, Participant/Contributor capacities, contacts and staff controls loaded. Company Profile is not included in this pass. |
+| Individual Profiles | PASS | Explicit selected identity, Participant/Contributor capacities, contacts and staff controls loaded. |
+| Company Profile | PASS after focused fix | Opened a separately prepared synthetic organization from Directory; saved identity, linked an existing synthetic contact person and confirmed persistence after reload. A second rename verified the saved name remains in the input. Organization fixture creation itself is not claimed as a UI pass. |
 | Reports | PASS after focused fix | Authorized staff without Participant enrollment could see report controls and execute a report returning metric rows. |
 | Two consecutive Participant Intakes | PASS | Two separate synthetic enrollments committed, with an explicit reset between them. The second also enabled Contributor capacity. Both used enrollment-only agreement handling and disabled mailing subscriptions. |
 | Intake recovery check | PASS | Check saved Intake confirmed the committed result without replaying enrollment or signing. |
@@ -45,6 +46,7 @@ The accepted development baseline is `ceb26ff02166d69ed0c64b0c77811f8b22164a67`,
 - Required reason/target inputs and target loading for former-Participant contact correction.
 - Two-decimal contribution amounts preserving cents.
 - Pending donation JSON lookup compatible with prepared SQL parameters.
+- Company identity input retaining its newly saved name.
 
 Targeted contact authorization/selection regression checks and a focused profile-loader check passed. Full automated suites were not repeated. PR #8 remains pending review and merge.
 
@@ -53,4 +55,4 @@ Targeted contact authorization/selection regression checks and a focused profile
 1. Review/merge the focused UI repairs and confirm the accepted development source contains them.
 2. Provide and verify isolated agreement templates, signing/mailing integrations, ERP bank-account data and paper-storage credentials; then complete the blocked browser workflows.
 3. Resolve the previously recorded database access-boundary limitation before claiming complete isolation.
-4. Company Profile and remaining role-denial cases still require focused browser acceptance. Production promotion is not approved by this checkpoint.
+4. Remaining role-denial cases still require focused browser acceptance. Production promotion is not approved by this checkpoint.
