@@ -4,7 +4,7 @@ Updated November 2, 2026. **Candidate preparation only; not approved for product
 
 ## Scope freeze
 
-ERPNext deposit accounting synchronization (#18) and Google Drive paper storage (#34) are owner-approved, deferred, nonblocking work. Preserve their implementations and validation runbooks; leave the optional integrations disabled. No ERP synchronization, real bank transaction, production signing or production storage action is authorized by this candidate.
+Additional end-to-end ERPNext deposit synchronization (#18) and Google Drive storage (#34) acceptance testing is deferred and nonblocking. Existing integration functionality and validation runbooks must remain intact. This does not authorize disabling, removing or redesigning either integration. No real bank transaction, production signing or production storage action is authorized by this candidate.
 
 Required workflows are canonical Directory/Profiles/Reports, consecutive Participant Intake, reviewer contact correction, Contributor/cash handling, local deposit preparation/confirmation, and local/NocoDB paper agreement creation/review. Preserve accepted results in [TEST2_UI_ACCEPTANCE.md](TEST2_UI_ACCEPTANCE.md). Do not repeat full suites or add a browser framework.
 
@@ -12,11 +12,11 @@ Required workflows are canonical Directory/Profiles/Reports, consecutive Partici
 
 | Component | Candidate source | State |
 | --- | --- | --- |
-| SignatureGate backend | main at ba7eec08120e82bb97b5034fe6a5d816e2a51705, including PR #33 | Existing accepted backend baseline; no new database migration needed for the local deposit UI correction |
+| SignatureGate backend | main at ba7eec08120e82bb97b5034fe6a5d816e2a51705, including PR #33 | Existing accepted backend baseline; accepted evidence retained; PR #9 capability reductions rejected |
 | Appsmith development | chatgpt_development at 666c9bcaefa6bf22c5683f7819bdbbc55e114482, including PR #8 | Core browser PASS evidence preserved |
-| Local deposit correction | [Appsmith PR #9](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/9), head 4670bbeca08421bc11ac2638c4fa4ee4e83fbacc | Installed only in development; local preparation/confirmation, single audit events, deposited-item eligibility exclusion and printable record passed; review/merge pending |
+| Rejected deposit change | [Appsmith PR #9](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/9) | Closed without merging; failed Development checks. Historical local deposit evidence retained, but this change is excluded from the candidate. Targeted restoration in test2 must preserve PR #8 and unrelated changes. |
 | Acceptance and release preparation | [SignatureGate PR #35](https://github.com/RayzorDuff/SignatureGate/pull/35) | Sanitized evidence and scope disposition; review/merge pending |
-| Optional dependencies | ERP and Drive remain excluded | Do not require their external acceptance or an ERP-only release pin for this scope |
+| Existing integrations | ERP and Drive functionality retained | Additional end-to-end acceptance is deferred; preserve existing dependency and configuration contracts |
 
 After approved PRs are merged, freeze exact backend and production-bound Appsmith revisions. Do not merge development wholesale into production or substitute a development VERSION for a released dependency pin.
 
@@ -29,9 +29,9 @@ The existing [upgrade manifest](UPGRADE_MANIFEST_DRAFT.json) remains non-executa
 - Cash lifecycle, tally/print, correction guards, reconciliation exclusions and existing authorization compatibility.
 - Central terminology and the separately approved Participant presentation configuration.
 - Atomic Intake and durable paper-upload/evidence-storage contracts.
-- Provider/mailing compatibility only where required by the retained application contracts; deferred integrations must not activate workers or contact external services.
+- Provider/mailing compatibility only where required by the retained application contracts; isolated testing must not contact production; preserve existing integration contracts.
 
-Use the manifest's dependency order and source checksums after each selected/skipped decision has supporting private catalog/data evidence. Never bootstrap over an existing database. No additional schema is proposed for entering the local deposit destination.
+Use the manifest's dependency order and source checksums after each selected/skipped decision has supporting private catalog/data evidence. Never bootstrap over an existing database. No deposit schema or architecture redesign is authorized.
 
 Review production account ownership, effective grants and data invariants privately. The narrowed test connection-policy observation is not proof of production isolation and does not justify broad access-control restructuring.
 
@@ -39,7 +39,7 @@ Review production account ownership, effective grants and data invariants privat
 
 - Local/NocoDB paper upload failed before durable reservation (#36). One synthetic dispatch did not produce a reservation or committed agreement; creation, retrieval, reviewer transition and evidence/audit acceptance remain required.
 - Digital signing is not certified by this checkpoint. Do not enable a release-used digital path without its separate isolated acceptance.
-- ERP accounting synchronization and Drive storage are unavailable in this release scope and must be presented as deferred, not failed core workflows.
+- Additional ERP synchronization and Drive storage testing is deferred. Existing functionality remains part of the application; do not describe it as unavailable or intentionally disabled.
 - Wider provider address canonicalization, navigation accessibility/mobile completion and other issue-wide residual work remain tracked; do not introduce general redesign or unrelated functionality.
 - Source and deployed development configuration must be reconciled before packaging. Private destination/credential bindings must never enter the public export or evidence.
 
@@ -55,7 +55,7 @@ Record the recovery decision point and owner approval privately. Reconcile any c
 
 1. Close core local agreement/paper acceptance and retain the accepted local deposit evidence; review/merge the focused PRs.
 2. Resolve all manifest dispositions and release-used dependency/configuration pins; verify restoration, rehearsal, history and recovery.
-3. Review the production-bound Appsmith delta, exact exported source and private configuration. Keep optional ERP/Drive paths disabled.
+3. Review the production-bound Appsmith delta, exact exported source and private configuration. Preserve existing ERP/Drive functionality; verify targeted development restoration without invoking production.
 4. Reconcile changelog/release notes, VERSION, export checksum and final immutable source pins.
 5. Obtain explicit owner approval for production migration, publication and release/tag actions.
 
