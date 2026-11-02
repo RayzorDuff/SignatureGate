@@ -4,7 +4,7 @@ Updated November 1, 2026 (America/Denver). This checkpoint supersedes earlier de
 
 ## Git synchronization
 
-- The reported `syncBranch` conflict is an Appsmith application-level Redis lock. At direct inspection that key had expired, and no filesystem Git lock existed. No lock was deleted.
+- The reported `syncBranch` conflict is an Appsmith application-level Redis lock. At direct inspection that key was absent, and no filesystem Git lock existed. No lock was deleted.
 - Fresh native Git synchronization fails because GitHub cannot resolve from Appsmith's deliberately isolated runtime. The shared network is internal. Deleting Git metadata or clearing unrelated Redis keys would not repair that failure.
 - The existing `chatgpt_development` editor opens directly with its native application/page identities. This is not proof of a successful current-source pull: incorporation of merged Appsmith PR #7 remains unverified.
 - Appsmith's native backup completed, including MongoDB and Git storage. The archive, encryption configuration and checksum receipt are retained privately outside Git. Uncommitted checkout differences were preserved; no reset, discard, reimport or shared-service restart was performed.
