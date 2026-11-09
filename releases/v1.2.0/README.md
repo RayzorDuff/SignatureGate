@@ -2,6 +2,9 @@
 
 Status: **unreleased**. This is the first coordinated SignatureGate-Appsmith release. `VERSION` remains 1.1.0 until final release preparation.
 
+- [Current status](STATUS.md)
+- [Production database and promotion steps](PRODUCTION_UPGRADE_AND_PROMOTION.md)
+- [Issue release disposition](ISSUE_RELEASE_DISPOSITION.md)
 - [Current unified Intake rollout and narrow validation](UNIFIED_INTAKE_VALIDATION.md)
 - [Disposable PostgreSQL 16 contention check](POSTGRES_INTAKE_VALIDATION.md)
 - [Current report definitions and focused validation](REPORTS_VALIDATION.md)

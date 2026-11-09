@@ -1,0 +1,54 @@
+{
+  "recorded_on": "2026-11-09",
+  "state": "preparation_only_not_production_ready",
+  "backend_baseline": "9556662677f2567fa71de73c3444d74c5d6fba65",
+  "appsmith_baseline": "666c9bcaefa6bf22c5683f7819bdbbc55e114482",
+  "appsmith_correction": "322816a92aec2f9309b7d39a9c0099a841156ce5",
+  "appsmith_correction_pr": "https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/10",
+  "appsmith_master_review_baseline": "48905ca281271889cf6cb778cd0249a221b87c82",
+  "local_checks": {
+    "native_collection_binding_compilation": "pass: 30 collections, 803 expressions/action bodies after generated configurable guidance binding",
+    "paper_controller_provider_recovery": "pass: NocoDB default, stale Drive rejection, unresolved no-replay across changed Participant, controlled historical links",
+    "cash_access_reconciliation": "pass; cash source unchanged",
+    "application_permissions": "pass",
+    "source_export_preservation": "pass: 17 pages, 472 actions, 30 collections, 4 descriptors, 1 library",
+    "inventory_saved_code": "pass: aggregate/direct rows; empty/malformed/one-grant/omitted; sample/expired exclusions",
+    "terminology_rollback": "pass in disposable PGlite: seeded defaults, custom labels preserved, missing concept fails",
+    "native_asset_identities": "unchanged in edited assets"
+  },
+  "owner_evidence": {
+    "donation_verify_reassign": "reported pass with development screenshots",
+    "test_database": "signaturegate_test on production host, not production migration",
+    "sql_loop": "contains terminology assertion error; continued after failure; not an all-pass run",
+    "paper": "unresolved saved checkpoint, receipt check did not redispatch; storage/review not accepted"
+  },
+  "not_performed": [
+    "production change",
+    "master merge",
+    "live workflow activation",
+    "clearing or resubmitting uncertain upload",
+    "complete local SQL suite rerun",
+    "repeating accepted browser workflows",
+    "final production-bound export or tag"
+  ],
+  "remaining": [
+    "native #36 recovery, NocoDB upload/retrieval and independent review with audit",
+    "corrected source test deployment and bounded location verification",
+    "24 manifest decisions and 9 environment proofs",
+    "master-only disposition, environment delta and compatible deployed dependency pin",
+    "final production-bound export/version/release approval"
+  ],
+  "ci": {
+    "appsmith": {
+      "head": "322816a92aec2f9309b7d39a9c0099a841156ce5",
+      "result": "success",
+      "url": "https://github.com/RayzorDuff/SignatureGate-Appsmith/actions/runs/42665293723",
+      "supersedes": "42664929679 failed generated guidance binding check; source corrected, check retained"
+    },
+    "backend_code": {
+      "head": "c3f43aa87ed22b44e735c49af162c396dd5ff545",
+      "result": "success",
+      "url": "https://github.com/RayzorDuff/SignatureGate/actions/runs/42665135453"
+    }
+  }
+}

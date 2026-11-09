@@ -9,22 +9,24 @@ DECLARE
   v_denied boolean := false;
   v_unknown_denied boolean := false;
 BEGIN
-  IF NOT EXISTS (
-      SELECT 1 FROM public.issue20_organization_terminology()
-      WHERE concept_key='member' AND singular_label='Participant'
-        AND plural_label='Participants' AND is_active)
-    OR NOT EXISTS (
-      SELECT 1 FROM public.issue20_organization_terminology()
-      WHERE concept_key='practitioner'
-        AND singular_label='Spiritual Practitioner'
-        AND plural_label='Spiritual Practitioners' AND is_active)
-    OR NOT EXISTS (
-      SELECT 1 FROM public.issue20_organization_terminology()
-      WHERE concept_key='facilitator' AND singular_label='Facilitator'
-        AND NOT is_active)
-  THEN
-    RAISE EXCEPTION 'Rooted Psyche practitioner/facilitator defaults are incorrect';
+  -- Existing organization labels/activation are configuration, not seed drift.
+  -- Check the installed registry before isolating mutable labels in this rollback.
+  IF (SELECT count(*) FROM public.issue20_organization_terminology()
+      WHERE concept_key IN ('member','practitioner','facilitator')
+        AND nullif(btrim(singular_label),'') IS NOT NULL
+        AND nullif(btrim(plural_label),'') IS NOT NULL) <> 3 THEN
+    RAISE EXCEPTION 'Required organization terminology concepts are missing or blank';
   END IF;
+  -- Start the two mutation cases from controlled values so an installed override
+  -- cannot turn either mutation into a no-op. ROLLBACK restores all configuration.
+  UPDATE public.organization_terminology
+    SET singular_label='Spiritual Practitioner',plural_label='Spiritual Practitioners',
+        short_label='Practitioner',is_active=true
+    WHERE concept_key='practitioner';
+  UPDATE public.organization_terminology
+    SET singular_label='Facilitator',plural_label='Facilitators',
+        short_label=NULL,is_active=false
+    WHERE concept_key='facilitator';
 
   INSERT INTO public.people(display_name)
     VALUES ('Issue 20 Terminology Manager')
