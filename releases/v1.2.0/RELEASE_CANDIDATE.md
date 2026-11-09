@@ -1,6 +1,6 @@
 # v1.2.0 release candidate preparation
 
-Updated November 2, 2026. **Candidate preparation only; not approved for production.**
+Updated November 8, 2026. **Candidate preparation only; not approved for production.**
 
 ## Scope freeze
 
@@ -14,7 +14,7 @@ Required workflows are canonical Directory/Profiles/Reports, consecutive Partici
 | --- | --- | --- |
 | SignatureGate backend | main at ba7eec08120e82bb97b5034fe6a5d816e2a51705, including PR #33 | Existing accepted backend baseline; accepted evidence retained; PR #9 capability reductions rejected |
 | Appsmith development | chatgpt_development at 666c9bcaefa6bf22c5683f7819bdbbc55e114482, including PR #8 | Core browser PASS evidence preserved |
-| Rejected deposit change | [Appsmith PR #9](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/9) | Closed without merging; failed Development checks. Historical local deposit evidence retained, but this change is excluded from the candidate. Targeted restoration in test2 must preserve PR #8 and unrelated changes. |
+| Rejected deposit change | [Appsmith PR #9](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/9) | Closed without merging; failed Development checks. Excluded from the candidate. The retained development source preserves all existing ERP capabilities and PR #8; native collection compilation, bindings and focused cash regressions pass. The former disposable deployment is retired, so its editor does not require restoration. |
 | Acceptance and release preparation | [SignatureGate PR #35](https://github.com/RayzorDuff/SignatureGate/pull/35) | Sanitized evidence and scope disposition; review/merge pending |
 | Existing integrations | ERP and Drive functionality retained | Additional end-to-end acceptance is deferred; preserve existing dependency and configuration contracts |
 
@@ -43,6 +43,10 @@ Review production account ownership, effective grants and data invariants privat
 - Wider provider address canonicalization, navigation accessibility/mobile completion and other issue-wide residual work remain tracked; do not introduce general redesign or unrelated functionality.
 - Source and deployed development configuration must be reconciled before packaging. Private destination/credential bindings must never enter the public export or evidence.
 
+Work can continue without the former acceptance deployment. November 8 local checks passed the existing paper controller, workflow and database regressions plus one connected actual-source rehearsal with synthetic in-memory storage. No product source change was required. Preserve the distinction between these results and real Appsmith/n8n/NocoDB transport, protected storage retrieval and reviewer acceptance. The historical #36 failure remains unresolved; its runtime cause cannot be established from passing local checks. No replacement host, general storage redesign or new reusable test framework is required by this checkpoint.
+
+Do not replay the historical uncertain upload. If a prior checkpoint is restored, perform owner-scoped receipt inspection and reasoned cancellation/tombstoning before a separate attempt. The retired deployment is not proof that a restored request was cancelled.
+
 ## Rollback and recovery conditions
 
 Before migration approval, verify a restorable backup and rehearse the exact selected upgrade on a protected restored copy with workers and destinations isolated. Verify historical identities, contacts, contributions, agreements and audits, plus recovery at each incompatible boundary.
@@ -55,7 +59,7 @@ Record the recovery decision point and owner approval privately. Reconcile any c
 
 1. Close core local agreement/paper acceptance and retain the accepted local deposit evidence; review/merge the focused PRs.
 2. Resolve all manifest dispositions and release-used dependency/configuration pins; verify restoration, rehearsal, history and recovery.
-3. Review the production-bound Appsmith delta, exact exported source and private configuration. Preserve existing ERP/Drive functionality; verify targeted development restoration without invoking production.
+3. Review the production-bound Appsmith delta, exact exported source and private configuration. Preserve existing ERP/Drive functionality and PR #8. Use the retained development source; no retired-editor restoration is required.
 4. Reconcile changelog/release notes, VERSION, export checksum and final immutable source pins.
 5. Obtain explicit owner approval for production migration, publication and release/tag actions.
 
