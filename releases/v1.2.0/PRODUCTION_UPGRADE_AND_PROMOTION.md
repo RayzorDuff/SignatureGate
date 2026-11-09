@@ -99,7 +99,7 @@ Saved connection settings live outside Git. If the existing production datasourc
 
 ## 6. Prepare the master PR and export
 
-The reviewed baseline is backend main `9556662677f2567fa71de73c3444d74c5d6fba65`, Appsmith development `666c9bcaefa6bf22c5683f7819bdbbc55e114482` plus [correction PR #10](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/10) at `7af34c0fb7981f90b19f853f9792dbe68b6496de`, and Appsmith master `48905ca281271889cf6cb778cd0249a221b87c82`. Refresh heads before final packaging. Preserve all five PR #8 repairs and unrelated master changes, including its Cash Deposits widget arrangement and internal-routing work. PR #9 remains excluded.
+The reviewed baseline is backend main `9556662677f2567fa71de73c3444d74c5d6fba65`, Appsmith development `666c9bcaefa6bf22c5683f7819bdbbc55e114482` plus [correction PR #10](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/10) at `322816a92aec2f9309b7d39a9c0099a841156ce5`, and Appsmith master `48905ca281271889cf6cb778cd0249a221b87c82`. Refresh heads before final packaging. Preserve all five PR #8 repairs and unrelated master changes, including its Cash Deposits widget arrangement and internal-routing work. PR #9 remains excluded.
 
 Prepare a separate production candidate from reviewed feature changes, with a per-file master-only disposition. **Do not merge development wholesale into master.** Add the existing production datasource descriptor from master without inventing a new native identity. In that isolated checkout, inspect a dry run, then rebind metadata using the existing tool:
 
