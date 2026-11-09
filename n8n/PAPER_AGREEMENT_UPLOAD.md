@@ -4,7 +4,7 @@ Paper agreements do not require a Participant email and do not call Documenso. U
 
 ## Test deployment sequence
 
-Current provider-specific setup: [Google Drive paper storage](GOOGLE_DRIVE_PAPER_STORAGE.md). The workflow now supports google_drive or nocodb. Update the existing authenticated development workflow in place; do not create a duplicate active webhook. For Drive, configure its OAuth2 credential and private parent folder; the NocoDB-specific instructions below apply only when choosing NocoDB.
+Current provider-specific setup: [Google Drive paper storage](GOOGLE_DRIVE_PAPER_STORAGE.md). The workflow supports google_drive or nocodb. The November 9 v1.2.0 UI direction selects NocoDB and temporarily disables new Drive selection; retain both backend branches and existing Drive links. Update the existing authenticated development workflow in place; do not create a duplicate active webhook. For Drive, configure its OAuth2 credential and private parent folder; the NocoDB-specific instructions below apply only when choosing NocoDB.
 
 1. Apply db/migrations/paper_agreement_upload.sql followed by db/migrations/paper_evidence_storage.sql to signaturegate_test, each twice, then run both paper verification files. The test-only releases/v1.2.0/validate_paper_agreement_test.sh performs those steps with private logs and rollback-only synthetic fixtures. Do not apply this sequence to production or replay all migration files.
 2. For a fresh installation import n8n/workflows/SignatureGate - Paper Agreement Upload.json; update an existing development paper workflow in place. The older generic upload workflow/path is retained for existing applications. This new export is inactive and contains credential names without secrets or deployment IDs.

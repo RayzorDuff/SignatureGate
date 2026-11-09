@@ -136,3 +136,15 @@ After those gates, review the production-bound Appsmith environment delta and ex
 4. Review the final production-bound Appsmith configuration/export and packaging; obtain explicit production-promotion approval.
 
 All prior PASS results remain accepted. No full SQL/Appsmith CI suite, test-environment rebuild, shared-service restart, navigation redesign or new automated framework was introduced.
+
+## November 9 owner test evidence (current host)
+
+The Test2 Linode is deleted. The owner reports import and SQL testing on `signaturegate_test` on the production Linode. Screenshots show the existing Appsmith development branch, not a production release. No host rebuild or production modification is required to prepare the release.
+
+- **Donation Verify/Reassign: owner-reported PASS.** Screenshots show verified cash, a reasoned reassignment dialog, and the resulting company attribution. No claim of a complete provider/cancellation/authorization/audit browser matrix is made.
+- **Paper recovery: still blocked (#36).** A receipt check warns the existing upload is unresolved and explicitly sends no second file. Two different selected Participants show the same account-owned guard. No new failed storage dispatch, durable agreement, retrieval or review is proved. Inspect the saved request, actual workflow execution, database binding and storage before reasoned cancellation and a separate attempt.
+- **Intake paper: blocked before writes.** The selected unavailable option accepted a file but warned that no record/file was sent. Correct the misleading option/picker; use Later, finish enrollment, then upload from Participant Functions. Do not claim atomic Intake paper storage exists.
+- **Storage direction changed:** the owner now explicitly requests NocoDB default and temporarily disabled Google Drive new-upload selection. Preserve both backend providers and existing Drive evidence links. Additional Drive acceptance remains deferred. ERP preservation is unchanged.
+- **SQL transcript: one error.** The explicit contact migration completed. One wildcard redirect did not execute. The subsequent test loop continued after `verify_organization_terminology.sql` raised its defaults assertion. Other reported checks remain evidence; this run cannot be recorded as 47/47. The seed preserves overrides; inventory installed terminology and repeat only the corrected rollback-only check.
+
+Targeted source validation covers NocoDB selection/fallback, stale Drive rejection before dispatch, unresolved checkpoint retention across Participant changes, retained Drive links, hidden Intake picker, native collection/binding compilation and unchanged cash regressions. The actual saved inventory Code is exercised for empty/malformed/granted/omitted scopes. These checks do not substitute for the remaining native paper upload/retrieval/review.

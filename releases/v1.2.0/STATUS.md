@@ -1,6 +1,23 @@
 # v1.2.0 phase status
 
-Current shared Test2 acceptance: see [focused UI acceptance checkpoint](TEST2_UI_ACCEPTANCE.md) for observed Git-sync, datasource and integration blockers. The native former-Participant migration/check has passed on the dedicated database; the existing development editor opens, but current-source synchronization and browser write acceptance remain blocked. See [branch consolidation and current release gates](BRANCH_CONSOLIDATION.md) for repository provenance. The October observations below remain historical acceptance. Production rollout remains separate.
+Updated November 9, 2026. **Preparation only; not ready for production promotion.** This checkpoint supersedes the historical deployment and mandatory integration-test statements below. The Test2 Linode was deleted. Current owner testing uses `signaturegate_test` on the production Linode and Appsmith `chatgpt_development`; this is not evidence of a production-database migration.
+
+Accepted core results remain accepted: Directory/Profiles/Reports, consecutive Intake/reset/receipt recovery, former-Participant contact correction, cash entry/review and draft batching. The owner now reports donation Verify/Reassign passed, with screenshots showing a verified cash row moving from an individual Contributor to a company. Images do not independently prove all denial/audit/provider cases. Historical local deposit/PDF/audit evidence remains useful with its documented PR #9 limits.
+
+The supplied SQL transcript is **not a clean full-suite pass**: organization terminology verification raised a defaults error and the shell loop continued. Its assertion assumed installation labels matched fresh defaults, although seeds intentionally retain organization overrides. The correction isolates mutation fixtures inside rollback and preserves installed labels; missing concepts still fail. Only this check needs repeating, after a read-only terminology inventory. Previous successful CI and other accepted test results are retained.
+
+| Remaining work | Release disposition |
+| --- | --- |
+| #36 saved paper request | Primary functional blocker. Resolve the existing request with receipt/workflow/storage inspection before a new attempt. Complete one synthetic NocoDB upload, retrieval and independent authorized review with durable evidence/audits. No new uncertain request was dispatched in the screenshots. |
+| NocoDB and Intake UI | Owner-requested correction: NocoDB default/only new-upload choice; Drive upload UI temporarily disabled, implementation and historical links retained. Intake offers Digital or Later and directs paper users to Participant Functions after enrollment. Source corrected; native deployment/acceptance pending. |
+| Inventory location scope | Saved n8n Code now denies explicit empty/malformed scope, retaining omitted-scope compatibility. Actual exported Code regression passes. Review and install Code in the intended test workflow, then promote during the approved window. |
+| ERP / Drive additional testing | A new ERP end-to-end test and Drive acceptance are deferred. Preserve bank selector, refresh lookup, automatic sync, retry and dynamic status. Drive UI disablement is specifically requested November 9; it does not apply to ERP. |
+| Database release | Finalize 24 selected/skipped migration decisions from current production inventory, verify backup restoration, rehearse selected changes with isolated workers/destinations, verify history/grants/recovery. All nine manifest proofs remain open. |
+| Master/export/release | Review master-only fixes, production datasource/mode delta and release-used dependency pins. Generate export from the accepted production-bound source, then version/tag after approval. No production connection switch, publish, migration or merge occurred. |
+
+See [production update and promotion steps](PRODUCTION_UPGRADE_AND_PROMOTION.md), [current evidence](TEST2_UI_ACCEPTANCE.md) and [issue release disposition](ISSUE_RELEASE_DISPOSITION.md). Do not repeat the complete SQL suite or already-passing browser workflows.
+
+## Historical October checkpoints
 
 Updated October 19, 2026. Participant presentation adoption on signaturegate_test is operator-confirmed exit 0. Earlier deployed navigation, readable headers/dates, email, reasonable permissions, cash revival and completion/reset observations remain accepted. October 19 deferred Intake, progress and receipt recovery are now operator-accepted, and the test atomic runner exits 0. Restored navigation and Agreement Type/template selection are now operator-accepted. Protected no-email paper upload now offers private Google Drive or NocoDB with corrected file transport; installed OAuth/native storage acceptance remains open. Production promotion is not ready.
 
