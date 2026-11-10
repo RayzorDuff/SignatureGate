@@ -1,5 +1,11 @@
 // Authenticated webhook only. Normalize a single bounded document before any database/storage write.
-const body=$json.body ?? $json;
+let body=$json.body ?? $json;
+// Appsmith's JSON body transport may encode the complete object as one JSON string.
+// Decode once only; nested strings, arrays and scalar roots are not request objects.
+if(typeof body==='string'){
+ try { body=JSON.parse(body); } catch (_) { throw Error('Paper request body must be valid JSON'); }
+}
+if(!body || typeof body!=='object' || Array.isArray(body))throw Error('Paper request body must be a JSON object');
 const provider=String(body.storage_provider || $env.SIGNATUREGATE_PAPER_STORAGE_PROVIDER || 'nocodb');
 if(!['nocodb','google_drive'].includes(provider))throw Error('Choose Google Drive or NocoDB paper storage');
 if(provider==='nocodb'){
