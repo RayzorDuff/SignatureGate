@@ -46,6 +46,8 @@ jobs:
 
       - name: Verify source and export preservation
         run: |
+          node --check scripts/prepare-appsmith-release-export.mjs
+          node scripts/test-appsmith-rebind-datasource.mjs
           node scripts/test-appsmith-export.mjs
           python3 scripts/validate_release.py --assets
 
