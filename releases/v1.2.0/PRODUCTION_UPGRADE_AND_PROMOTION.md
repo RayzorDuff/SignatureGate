@@ -1,17 +1,16 @@
 # Production database update and Appsmith promotion
 
-November 9, 2026. Reviewable preparation, **not an approved execution manifest**. Test2 was deleted. Continue development on the existing host using the separate `signaturegate_test` database and development branch; do not change `signaturegate` or published master during acceptance.
+Updated November 10, 2026 (UTC). Reviewable preparation, **not an approved execution manifest**. Test2 was deleted. Continue development on the existing host using the separate `signaturegate_test` database and development branch; do not change `signaturegate` or published master during acceptance.
 
-## Minimum remaining release work
+## Current accepted checkpoint and remaining release work (November 10 UTC)
 
-1. Resolve #36's saved request, then complete one synthetic NocoDB upload, retrieve the stored document as the intended reviewer, approve with an authorized independent Document Reviewer and verify agreement/evidence/audit/receipt records. Intake uses Later followed by Participant Functions; direct atomic Intake paper upload is not implemented.
-2. Review/pull the NocoDB default and temporarily disabled new Drive UI correction into development. Install the reviewed inventory Code correction in the intended test workflow and check one assigned scope plus an empty scope. Keep bank selection, refresh lookup, confirm-triggered ERP synchronization, retry and dynamic status intact.
-3. Inventory the actual production baseline, choose missing forward changes, restore/rehearse with workers/destinations isolated, and pin compatible deployed dependencies. Historical or fresh-schema tests cannot replace this step.
-4. Review the production-bound Appsmith source/environment delta, generate its export, pass required checks, then obtain production promotion approval. Final version/tag/publish follows approval and successful cutover.
+**Accepted, do not repeat as open tasks:** Issue #36 NocoDB synthetic upload, exact retrieved PDF, independent reviewer approval and audited receipt are documented in [native evidence](evidence/november_10_paper_native_retry.md). On a checksum-verified, network-isolated PostgreSQL 16.13 **restore of production**, 12 reviewed SQL migrations applied successfully in sequence, 12 targeted rollback-only SQL verification scripts passed, the upgraded schema matched `signaturegate_test` across the eight compared categories and all 35 original production-table row counts were preserved. See [rehearsal evidence](evidence/november_10_restored_production_migration_rehearsal.md). These are *not* evidence of production migration or external worker acceptance.
 
-Already accepted browser workflows do not need wholesale repetition. A new ERP synchronization end-to-end test and Google Drive storage acceptance are not release gates. Drive backend and historical links remain; only new Drive uploads in this UI are temporarily disabled by explicit owner direction.
+**Still required before production approval:** finalize all 24 manifest selected/skipped dispositions and nine environmental proofs; verify owner/grant/role permissions and data-level invariants; pin actual n8n/ERP/RootedOps/other integration revisions and isolate writers; perform the final approved-sequence/recovery rehearsal; review Appsmith development vs production master and production mode differences; produce the pinned-source JSON through the shared generator; obtain cutover approval and verify live publication. The requested NocoDB-only new-upload UI and inventory-location-scope correction still need their recorded deployment dispositions. A new ERP end-to-end replay and Drive new-upload acceptance are explicitly deferred; retain existing ERP capabilities, historical Drive evidence and links.
 
-## 1. Reconcile the operator SQL transcript
+The numbered sections below contain **historical diagnostic and recovery procedures**. They are not a mandatory rerun sequence. Use them only for unresolved new failures. The current release checkpoint is in [STATUS.md](STATUS.md), not the older issue #36 retry instructions.
+
+## 1. Historical diagnostic: reconcile the operator SQL transcript (already resolved)
 
 The contact reassignment migration completed on `signaturegate_test`. The test loop continued after one terminology-default assertion error. Do not record that loop as an all-pass run. The seed deliberately preserves organization-specific labels. First inspect configuration privately:
 
@@ -33,7 +32,7 @@ sudo docker exec -i signaturegate-postgres psql -X -v ON_ERROR_STOP=1 -U signatu
 
 Stop on nonzero status. No need to repeat the entire `db/tests/*.sql` loop.
 
-## 2. Recover the existing paper request before retrying
+## 2. Historical recovery procedure: existing paper request (accepted retry complete)
 
 In the same signed-in account, use **Check saved paper upload**. Changing the selected Participant does not change the saved account-owned request. Retain its request/member/practitioner IDs from the saved checkpoint privately; never post file bytes, contacts, credentials or execution payloads in an issue.
 
@@ -43,7 +42,7 @@ If the receipt is committed, recover its agreement; do not upload again. If pend
 
 Only after cancellation is confirmed, select the synthetic Participant/file and start a separate NocoDB attempt. Record request ID, agreement ID, controlled storage reference, reviewer reason and audit identities privately. Verify storage retrieval and approved agreement state; do not equate a successful HTTP response with complete acceptance.
 
-## 3. Inventory and back up production (review first)
+## 3. Production inventory and backup (baseline completed; refresh at cutover)
 
 Use a checkout pinned to the approved backend commit. Capture `capture_database_inventory.sql`, `capture_effective_definition_review.sql` and `capture_integration_configuration.sql` separately for production and test into protected private evidence. Review their output before sharing. For example, from the repository root:
 
@@ -65,7 +64,7 @@ sudo docker exec -i signaturegate-postgres pg_restore --list < private-v120-evid
 
 Checking an archive list is not a verified restore. Restore into a separate protected rehearsal database, preserve owners/grants where required and isolate workers, queue consumers, signing/mail/storage/ERP destinations. Use the reviewed restore procedure for that host. Never restore over production for a rehearsal.
 
-## 4. Select and rehearse the exact forward sequence
+## 4. Finalize migration dispositions and rehearse the final forward sequence
 
 `UPGRADE_MANIFEST_DRAFT.json` contains **24 undecided entries and nine unverified environment proofs**. It is conditional ordering, not a list to execute. Against the refreshed production baseline, give every entry a selected/skipped disposition and evidence; reconstruct any missing canonical forward change. Do not load `db/schema.sql` on an existing database or glob all migration files.
 
@@ -75,7 +74,7 @@ Validate the reviewed manifest structure:
 python3 scripts/validate_upgrade_manifest.py releases/v1.2.0/UPGRADE_MANIFEST_DRAFT.json
 ```
 
-On the protected restored copy, execute only the selected files in dependency order, each with `psql -X -v ON_ERROR_STOP=1`, and retain exit statuses privately. Respect each file's transaction boundaries. Run only the selected changes' scoped verification, check historical identity/contribution/agreement/evidence/audit preservation and actual app-role grants, and rehearse application/configuration rollback plus database recovery. A validation pass does not flip any environment proof automatically.
+The scoped November 10 rehearsal already executed 12 selected candidate files successfully; it does not by itself select/skip all 24 manifest entries or verify role/owner/grant recovery. For the final reviewed plan, on a fresh protected restored copy, execute only the selected files in dependency order, each with `psql -X -v ON_ERROR_STOP=1`, and retain exit statuses privately. Respect each file's transaction boundaries. Run only the selected changes' scoped verification, check historical identity/contribution/agreement/evidence/audit preservation and actual app-role grants, and rehearse application/configuration rollback plus database recovery. A validation pass does not flip any environment proof automatically.
 
 Finalize the reviewed manifest with source checksums, actual backup/restore evidence, compatible n8n/RootedOps revisions and the maintenance/recovery boundary. If an older application cannot read the upgraded schema, rolling back Git alone is insufficient. Agree the verified recovery method before changing production.
 
@@ -118,22 +117,9 @@ During the approved cutover, verify the *actual* PostgreSQL database name and ro
 
 The reviewed baseline is backend main `9556662677f2567fa71de73c3444d74c5d6fba65`, Appsmith development `666c9bcaefa6bf22c5683f7819bdbbc55e114482` plus [correction PR #10](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/10) at `322816a92aec2f9309b7d39a9c0099a841156ce5`, and Appsmith master `48905ca281271889cf6cb778cd0249a221b87c82`. Refresh heads before final packaging. Preserve all five PR #8 repairs and unrelated master changes, including its Cash Deposits widget arrangement and internal-routing work. PR #9 remains excluded.
 
-Prepare a separate production candidate from reviewed feature changes, with a per-file master-only disposition. **Do not merge development wholesale into master.** Add the existing production datasource descriptor from master without inventing a new native identity. In that isolated checkout, inspect a dry run, then rebind metadata using the existing tool:
+Prepare a separate production candidate from reviewed feature changes, with a per-file master-only disposition. **Do not merge development wholesale into master.** The Appsmith production master descriptor is reused, not re-created. Explicitly review the ERP API fallback and both confirm/retry `mode: "test"` controller calls before accepting production integrations; changing only a fallback does not switch those calls. Preserve manual signing selection and deliberate storage destinations. Do not initiate production synchronization during source preparation.
 
-```bash
-node scripts/appsmith-rebind-datasource.mjs --source /path/to/isolated-production-candidate --from signaturegate-postgres-test --to signaturegate-postgres --dry-run
-node scripts/appsmith-rebind-datasource.mjs --source /path/to/isolated-production-candidate --from signaturegate-postgres-test --to signaturegate-postgres
-node scripts/appsmith-rebind-datasource.mjs --source /path/to/isolated-production-candidate --verify --expected-datasource signaturegate-postgres
-```
-
-The source must contain both named descriptors while rebinding. Review unused test descriptor retention separately; no credentials go in Git. Review both the ERP API fallback body **and the two explicit `mode: "test"` controller calls** (confirm and retry). The production candidate must use the established production contract; changing only the body fallback leaves both calls in test mode. Keep Manual signing selection and production-only destinations deliberate. Do not run the production synchronization action during source preparation.
-
-Compile native JS collections/bindings and verify existing ERP widgets/actions/bindings. Required CI must pass; do not bypass a failure. Generate the export from the exact reviewed production candidate, then compare:
-
-```bash
-node scripts/appsmith-export.mjs --source /path/to/isolated-production-candidate --output /path/to/candidate-export.json
-python3 scripts/validate_appsmith_source_export.py --source /path/to/isolated-production-candidate --export /path/to/candidate-export.json
-```
+**Canonical build after candidate merge:** use `scripts/prepare-appsmith-release-export.mjs` (or the `Regenerate Appsmith export` Action at the pinned, accepted Appsmith SHA), as shown in the shared procedure above. Do not independently repeat the old rebind-and-raw-export commands; the shared script stages a temporary copy and runs rebind, verify, export and source/export checks. Compile native JS collections and bindings, retain ERP widgets/actions, and require CI. Saved datasource connection settings and published revision still require runtime verification.
 
 Review source IDs, native identities, descriptors, jsPDF and all pages/actions/collections. Commit the final accepted JSON to `appsmith/Rooted Psyche Membership Ops.json` only after the production-bound source is pinned. Keep VERSION at 1.1.0 and no final tag while the release gates remain open. Reconcile changelog, coordinated dependency/release notes, checksums and publication order at final acceptance; a development dependency version is not a released/deployed pin.
 
