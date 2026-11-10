@@ -4,8 +4,18 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+No changes yet.
+
+## [v1.2.0] - 2026-11-10
+
+- Production rollout: apply the checksum-verified 12-file forward migration sequence to `signaturegate` after a verified backup; retain the 11 skipped legacy replays and separately audited terminology operation. Operator reported all 12 migrations PASS, six core schema object checks PASS, zero invalid indexes, and zero historical agreement-status violations. Existing `member_agreements_status_chk` remains `NOT VALID` pending follow-up.
+- Production source: Appsmith `master` merged; the published Directory displays operational records. Both live paper-upload PostgreSQL nodes were bound to production and the resulting workflow source was committed at `684c8776c98a28bd26c93fdff7ef54d3f7b55a8a`. Native n8n export changed node IDs; preserve actual deployed workflow ID and runtime credentials.
+- Deferred: restore storage-location autocomplete in Spiritual Practitioner Functions (SignatureGate-Appsmith #18); optional new Google Drive paper uploads, expanded ERP replay, mobile/accessibility and Playwright are not v1.2.0 acceptance gates.
+- Known operational caveats: the existing `signaturegate` application database role has SUPERUSER and BYPASSRLS privileges; a least-privilege migration is a follow-up. Protected owner/ACL-preserving restore and full historical content-digest comparison were not reported complete. Retain the verified November 10 production backup and private operational evidence.
+
+
 - Release preparation: explicitly dispose all 24 candidate upgrade entries while retaining private environment gates; add read-only protected owner/ACL/history collectors and fail-closed evidence comparison.
-- Packaging: fix shared Appsmith export flag parsing, require exact source and production-descriptor commits, reject dirty inputs and write deterministic export provenance. Production candidate Appsmith #16 preserves native identities, master cash layout and existing production ERP modes. No production deployment or version bump.
+- Packaging: fix shared Appsmith export flag parsing, require exact source and production-descriptor commits, reject dirty inputs and write deterministic export provenance. Production Appsmith source candidate #16 preserves native identities, master cash layout and reviewed production ERP modes; the reproducible export is committed with source/descriptor provenance.
 
 
 - Enforce explicit empty/malformed inventory location scopes in the saved n8n product workflow; retain omitted-scope compatibility and product eligibility filters.
