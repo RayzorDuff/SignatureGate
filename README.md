@@ -1,6 +1,6 @@
 # SignatureGate
 
-Current version: **1.1.0**.
+Current version: **1.2.0**.
 
 See [`docs/RELEASE_PROCESS.md`](docs/RELEASE_PROCESS.md) for the repeatable release workflow.
 
