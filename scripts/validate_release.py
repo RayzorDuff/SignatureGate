@@ -194,8 +194,8 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
                 }
                 selector = release_widgets.get("selFacilitator", {})
                 serialized = json.dumps(selector, sort_keys=True)
-                if 'navigationLabels.label("practitioner")' not in serialized \
-                   or "practitioner_person_id" not in serialized:
+                if ('navigationLabels.label("practitioner")' not in selector.get("labelText", "")
+                        or "practitioner_person_id" not in selector.get("sourceData", "")):
                     failures.append(
                         f"{relative_path}: {variant_name}/selFacilitator must "
                         "use configured terminology and person identity"
