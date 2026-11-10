@@ -31,7 +31,7 @@ SELECT jsonb_build_object('kind','routine','name',p.oid::regprocedure::text,
 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
 WHERE n.nspname='public' AND p.prokind IN ('f','p') ORDER BY p.oid::regprocedure::text;
 SELECT jsonb_build_object('kind','default_acl','name',pg_get_userbyid(defaclrole)||':'||
- COALESCE(n.nspname,'*')||':'||defaclobjtype,'acl',defaclacl::text)
+ COALESCE(n.nspname,'*')||':'||defaclobjtype::text,'acl',defaclacl::text)
 FROM pg_default_acl d LEFT JOIN pg_namespace n ON n.oid=d.defaclnamespace
 ORDER BY defaclrole,defaclnamespace,defaclobjtype;
 -- Compare full historical row contents, not counts alone. Only people.notes

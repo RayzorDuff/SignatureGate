@@ -24,7 +24,9 @@ def main():
     def sql(text, db=database, flags=()):
         result = subprocess.run(['docker', 'exec', '-i', args.container, 'psql', '-X', '-qAt',
             '-v', 'ON_ERROR_STOP=1', '-U', 'signaturegate', '-d', db, *flags],
-            input=text, text=True, capture_output=True, check=True)
+            input=text, text=True, capture_output=True)
+        if result.returncode:
+            raise RuntimeError('Synthetic collector SQL failed: ' + result.stderr)
         return result.stdout
     sql('CREATE DATABASE ' + database, 'postgres')
     try:
