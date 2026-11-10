@@ -9,13 +9,13 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "ce604834-7635-4054-b240-8e91449d0439",
+      "id": "14e3448b-a2ba-4797-b612-170fde54f595",
       "name": "Webhook - Paper Agreement",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -960,
-        144
+        -3712,
+        1072
       ],
       "webhookId": "5b37ffc8-8f7e-42c4-be06-1c73c30ce716",
       "credentials": {
@@ -29,13 +29,13 @@
       "parameters": {
         "jsCode": "// Authenticated webhook only. Normalize a single bounded document before any database/storage write.\nlet body=$json.body ?? $json;\n// Appsmith's JSON body transport may encode the complete object as one JSON string.\n// Decode once only; nested strings, arrays and scalar roots are not request objects.\nif(typeof body==='string'){\n try { body=JSON.parse(body); } catch (_) { throw Error('Paper request body must be valid JSON'); }\n}\nif(!body || typeof body!=='object' || Array.isArray(body))throw Error('Paper request body must be a JSON object');\nconst provider=String(body.storage_provider || $env.SIGNATUREGATE_PAPER_STORAGE_PROVIDER || 'nocodb');\nif(!['nocodb','google_drive'].includes(provider))throw Error('Choose Google Drive or NocoDB paper storage');\nif(provider==='nocodb'){\n const storage=String($env.NOCODB_BASE_URL || '').trim();\n if(!/^https?:\\/\\/[^/?#@\\s]+(?:\\/[^?#]*)?$/.test(storage))throw Error('A reviewed NOCODB_BASE_URL is required for NocoDB storage');\n}else{\n const folder=String($env.SIGNATUREGATE_PAPER_DRIVE_FOLDER_ID || '').trim();\n if(!/^[A-Za-z0-9_-]{10,200}$/.test(folder))throw Error('A reviewed private Google Drive parent folder is required');\n}\nconst uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\nconst actor=String(body.actor_email || '').trim().toLowerCase();\nif(!actor || actor.length>320 || !uuid.test(body.request_id || '') || !uuid.test(body.member_id || '') || !uuid.test(body.practitioner_person_id || ''))throw Error('Account, request and assigned Participant/practitioner identifiers required');\nif(body.agreement_template_id && !uuid.test(body.agreement_template_id))throw Error('Invalid template identifier');\nif(!Array.isArray(body.files)||body.files.length!==1)throw Error('Select exactly one PDF, PNG or JPEG document');\nconst file=body.files[0],name=String(file.name || ''),mimeType=String(file.type || file.mimeType || '');\nlet data=file.data || file.base64 || file.content;\nif(!name || name.length>160 || /[\\x00-\\x1f\\x7f/\\\\]/.test(name) || typeof data!=='string')throw Error('Document filename and base64 content required');\nif(data.startsWith('data:')){\n const match=/^data:([^;,]+);base64,([A-Za-z0-9+/]*={0,2})$/.exec(data);\n if(!match || match[1]!==mimeType)throw Error('Document data URL type mismatch');data=match[2];\n}\nif(data.length<12 || data.length>6990508 || data.length%4 || !/^[A-Za-z0-9+/]+={0,2}$/.test(data))throw Error('Invalid or oversized document content');\nconst bytes=Buffer.from(data,'base64');\nif(bytes.length>5242880 || bytes.toString('base64')!==data)throw Error('Invalid or oversized document content');\nconst hex=bytes.subarray(0,8).toString('hex');\nif(!((mimeType==='application/pdf' && hex.startsWith('255044462d')) || (mimeType==='image/png' && hex==='89504e470d0a1a0a') || (mimeType==='image/jpeg' && hex.startsWith('ffd8ff'))))throw Error('PDF, PNG or JPEG content must match its type');\nreturn [{json:{actor_email:actor,request_id:body.request_id,storage_provider:provider,payload:{storage_provider:provider,member_id:body.member_id,practitioner_person_id:body.practitioner_person_id,agreement_template_id:body.agreement_template_id || '',files:[{name,mimeType,data}]}}}];\n"
       },
-      "id": "e03ff8e4-bbb5-4ab4-b2da-abddd7b9883d",
+      "id": "a6c9fe88-a824-439f-bad0-b31680385ad6",
       "name": "Code - Validate Paper Request",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -720,
-        144
+        -3472,
+        1072
       ]
     },
     {
@@ -46,18 +46,18 @@
           "queryReplacement": "={{ [$json.actor_email,$json.request_id,JSON.stringify($json.payload)] }}"
         }
       },
-      "id": "ba4c8647-40aa-4b71-8b55-51f2a7a820cc",
+      "id": "5bedbac0-0db3-41e8-8927-1b5677a37759",
       "name": "PG - Begin Paper Upload",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -480,
-        144
+        -3232,
+        1072
       ],
       "credentials": {
         "postgres": {
-          "id": "bXut1vXxtMx7OMxT",
-          "name": "signaturegate_test"
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "signaturegate"
         }
       }
     },
@@ -86,26 +86,26 @@
         },
         "options": {}
       },
-      "id": "2576a926-f8dd-4949-b667-cabd2d2216e2",
+      "id": "19486513-5f62-485b-aa55-8263667a0e5a",
       "name": "IF - New Paper Request",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -240,
-        144
+        -2992,
+        1072
       ]
     },
     {
       "parameters": {
         "jsCode": "const source=$('Code - Validate Paper Request').first().json;\nconst file=source.payload.files[0];\nconst data=await this.helpers.prepareBinaryData(Buffer.from(file.data,'base64'),file.name,file.mimeType);\nreturn [{json:{request_id:source.request_id},binary:{data}}];"
       },
-      "id": "11b0c811-736c-475c-b3b4-c9440c3e685b",
+      "id": "aa5a511f-3dfc-42cd-a7be-e0b3c11b07de",
       "name": "Code - Paper Binary",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        0,
-        0
+        -2752,
+        928
       ]
     },
     {
@@ -129,13 +129,13 @@
           "timeout": 120000
         }
       },
-      "id": "ec1caff7-099b-44db-967d-1000d145cb25",
+      "id": "330f0676-9fe0-4c71-9132-b31cea0fc203",
       "name": "HTTP - Store Paper Evidence",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        240,
-        0
+        -2512,
+        928
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -148,13 +148,13 @@
       "parameters": {
         "jsCode": "// Accept only a real storage response. No caller-provided attachment URL is accepted.\nconst input=$input.all(),source=$('Code - Validate Paper Request').first().json;\nconst files=input.flatMap(item=>{const raw=item.json?.body ?? item.json;return Array.isArray(raw)?raw:Array.isArray(raw?.files)?raw.files:[raw];});\nif(files.length!==1)throw Error('Storage did not return exactly one attachment; inspect this request before retrying');\nif(source.storage_provider!=='nocodb')throw Error('NocoDB response does not match the selected provider');\nconst path=files[0]?.path;\nif(typeof path!=='string'||!/^[A-Za-z0-9_-][A-Za-z0-9_./-]{1,1023}$/.test(path)||path.includes('..')||path.includes('//'))throw Error('Storage did not return a safe relative attachment path');\nconst file=source.payload.files[0];\nreturn [{json:{actor_email:source.actor_email,request_id:source.request_id,evidence:[{storage_provider:'nocodb',path,title:file.name,mimetype:file.mimeType,size:Buffer.from(file.data,'base64').length}]}}];\n"
       },
-      "id": "f747afea-793c-4648-8a36-722fa599b48a",
+      "id": "410f4eb1-0fe1-4efe-8a9b-99f192b9e60a",
       "name": "Code - Stored Paper Evidence",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        480,
-        0
+        -2272,
+        928
       ]
     },
     {
@@ -165,18 +165,18 @@
           "queryReplacement": "={{ [$json.actor_email,$json.request_id,JSON.stringify($json.evidence)] }}"
         }
       },
-      "id": "8a7c0b4c-5bb8-4618-929f-98db9fb884af",
+      "id": "2bbe925a-5a51-469d-899b-a11629bdec12",
       "name": "PG - Complete Paper Upload",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        720,
-        0
+        -2032,
+        928
       ],
       "credentials": {
         "postgres": {
-          "id": "bXut1vXxtMx7OMxT",
-          "name": "signaturegate_test"
+          "id": "r1oDpLoZSVIIOWRS",
+          "name": "signaturegate"
         }
       }
     },
@@ -196,24 +196,16 @@
           }
         }
       },
-      "id": "0120ff07-0e89-4da6-8499-ff02e6576bba",
+      "id": "e18f2d4f-a1c1-42b4-958e-e4a35de63b34",
       "name": "Respond - Paper Receipt",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        960,
-        144
+        -1792,
+        1072
       ]
     },
     {
-      "id": "c9795f31-6c83-4f59-aea6-d2aba91da56c",
-      "name": "IF - Google Drive Storage",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1050,
-        -140
-      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -237,21 +229,18 @@
           "combinator": "and"
         },
         "options": {}
-      }
+      },
+      "id": "035b1174-98a4-4f44-8b27-ea51a2ec1534",
+      "name": "IF - Google Drive Storage",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1696,
+        784
+      ]
     },
     {
-      "id": "e176b21c-0114-4f07-a03b-a6108c120a2b",
-      "name": "Google Drive - Store Paper Evidence",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        1320,
-        -340
-      ],
       "parameters": {
-        "resource": "file",
-        "operation": "upload",
-        "inputDataFieldName": "data",
         "name": "={{ $('Code - Validate Paper Request').first().json.payload.files[0].name }}",
         "driveId": {
           "__rl": true,
@@ -267,24 +256,33 @@
           "simplifyOutput": false
         }
       },
+      "id": "322f2cf8-e669-4ae3-883f-6f4a5f2d6a2c",
+      "name": "Google Drive - Store Paper Evidence",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1424,
+        576
+      ],
       "credentials": {
         "googleDriveOAuth2Api": {
-          "name": "SIGNATUREGATE_GOOGLE_DRIVE"
+          "id": "vGQ1HFhdchxZoBZ0",
+          "name": "Google Drive account"
         }
       }
     },
     {
-      "id": "a4078316-e6c1-45c0-8fa3-c67a68253aba",
+      "parameters": {
+        "jsCode": "// Only the authenticated Drive upload node supplies this reference; no sharing operation is performed.\nconst input=$input.all(),source=$('Code - Validate Paper Request').first().json;\nif(source.storage_provider!=='google_drive' || input.length!==1)throw Error('Drive response does not match the reserved upload');\nconst stored=input[0].json,folder=String($env.SIGNATUREGATE_PAPER_DRIVE_FOLDER_ID || '').trim();\nif(typeof stored.id!=='string'||!/^[A-Za-z0-9_-]{10,200}$/.test(stored.id)||stored.trashed===true || !Array.isArray(stored.parents)||!stored.parents.includes(folder))throw Error('Drive did not confirm the configured parent folder');\nconst file=source.payload.files[0];\nif(stored.mimeType!==file.mimeType || Number(stored.size)!==Buffer.from(file.data,'base64').length)throw Error('Stored Drive file metadata differs from the uploaded document');\nreturn [{json:{actor_email:source.actor_email,request_id:source.request_id,evidence:[{storage_provider:'google_drive',drive_file_id:stored.id,web_url:'https://drive.google.com/file/d/'+stored.id+'/view',title:file.name,mimetype:file.mimeType,size:Number(stored.size)}]}}];\n"
+      },
+      "id": "848b8fe9-5a44-435b-9351-5462ff830fd1",
       "name": "Code - Stored Drive Evidence",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1580,
-        -340
-      ],
-      "parameters": {
-        "jsCode": "// Only the authenticated Drive upload node supplies this reference; no sharing operation is performed.\nconst input=$input.all(),source=$('Code - Validate Paper Request').first().json;\nif(source.storage_provider!=='google_drive' || input.length!==1)throw Error('Drive response does not match the reserved upload');\nconst stored=input[0].json,folder=String($env.SIGNATUREGATE_PAPER_DRIVE_FOLDER_ID || '').trim();\nif(typeof stored.id!=='string'||!/^[A-Za-z0-9_-]{10,200}$/.test(stored.id)||stored.trashed===true || !Array.isArray(stored.parents)||!stored.parents.includes(folder))throw Error('Drive did not confirm the configured parent folder');\nconst file=source.payload.files[0];\nif(stored.mimeType!==file.mimeType || Number(stored.size)!==Buffer.from(file.data,'base64').length)throw Error('Stored Drive file metadata differs from the uploaded document');\nreturn [{json:{actor_email:source.actor_email,request_id:source.request_id,evidence:[{storage_provider:'google_drive',drive_file_id:stored.id,web_url:'https://drive.google.com/file/d/'+stored.id+'/view',title:file.name,mimetype:file.mimeType,size:Number(stored.size)}]}}];\n"
-      }
+        -1168,
+        576
+      ]
     }
   ],
   "pinData": {},
@@ -428,13 +426,9 @@
   "active": true,
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate",
-    "saveDataErrorExecution": "none",
-    "saveDataSuccessExecution": "none",
-    "saveManualExecutions": false,
-    "saveExecutionProgress": false
+    "binaryMode": "separate"
   },
-  "versionId": "d3c38049-6222-48f6-8b98-122fc4c59903",
+  "versionId": "eee68e1d-654a-499e-98cb-bd43a5c02daa",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "80f6db60a29056f4b0d55bd1ef6e213f497428949062f982c496e7b46a37f624"
