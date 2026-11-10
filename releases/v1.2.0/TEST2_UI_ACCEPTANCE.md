@@ -1,5 +1,23 @@
 # Test2 UI acceptance checkpoint
 
+## Native NocoDB paper acceptance — November 9 Denver / November 10 UTC
+
+This checkpoint supersedes the historical unresolved-paper rows below, while retaining their diagnostic history. Appsmith `chatgpt_development` and verified `signaturegate_test` only; production uploader/configuration reviewed read-only.
+
+| Required paper result | Native result |
+| --- | --- |
+| Upload through existing Participant Functions UI | PASS — one new synthetic PDF, no Participant email required and no email sent; original active webhook route used. |
+| Durable storage and receipt | PASS — receipt `committed`, one agreement and one evidence item. |
+| Evidence retrieval | PASS — actual evidence link opened the PDF; downloaded 1,607 bytes match source exactly, SHA-256 `ade2242173257b2dcbc40880888c26bb474407b3fc3e95a8e684a1f0fc2698c5`. |
+| Reasoned authorized review | PASS — existing reviewer permission, reviewer distinct from test Participant, explicit synthetic-only reason; pending_review became signed. Same operator performed upload and review; separate reviewer-account sign-in was not tested. |
+| Audit and persistence | PASS — read-only native query confirmed `signaturegate_test`, committed receipt, signed agreement, recorded reviewer/review timestamp, one upload audit and one review audit. Runtime reload retained signed row; checking saved upload sent no file. |
+| Prior uncertain dispatches | Recovered/cancelled with audited reasons before separate attempts; no blind replay. |
+
+Cause/correction: parse one Appsmith JSON-string envelope, then bind the paper HTTP storage node to the existing NocoDB `xc-token` credential identified from production read-only review. Shared credential values, production workflow/master/database and original Appsmith routing unchanged. Temporary audit query removed. [Full evidence](evidence/november_10_paper_native_retry.md); source correction in [PR #38](https://github.com/RayzorDuff/SignatureGate/pull/38), pending review/merge. No full SQL or already-passing browser suite repeated. Drive and additional ERP acceptance remain deferred.
+
+## Historical evidence and scope
+
+
 Updated November 2, 2026. Owner scope clarification: **Additional end-to-end ERPNext synchronization and Google Drive storage acceptance testing is deferred and nonblocking for v1.2.0. Existing functionality must remain intact.** Core deposit confirmation and local/NocoDB agreement intake/review remain required. Production promotion remains on hold. This report contains sanitized release results only.
 
 ## Scope and preserved evidence

@@ -1,0 +1,25 @@
+name: Paper upload contract
+
+on:
+  pull_request:
+    paths:
+      - 'n8n/code/paper_upload_*.js'
+      - 'n8n/workflows/SignatureGate - Paper Agreement Upload.json'
+      - 'scripts/test_paper_upload_workflow.mjs'
+      - '.github/workflows/paper-upload-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paper-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exercise saved paper workflow with synthetic input
+        run: node scripts/test_paper_upload_workflow.mjs

@@ -6,6 +6,8 @@ const node=name=>workflow.nodes.find(n=>n.name===name);
 const validate=read('n8n/code/paper_upload_request.js'),evidence=read('n8n/code/paper_upload_evidence.js'),driveEvidence=read('n8n/code/paper_upload_drive_evidence.js');
 assert.equal(node('Code - Validate Paper Request').parameters.jsCode,validate);assert.equal(node('Code - Stored Paper Evidence').parameters.jsCode,evidence);
 assert.equal(node('Webhook - Paper Agreement').parameters.authentication,'headerAuth');assert.ok(node('Webhook - Paper Agreement').credentials.httpHeaderAuth);
+const legacyUploader=JSON.parse(read('n8n/workflows/SignatureGate - Upload Evidence via n8n (Base64 -_ NocoDB).json'));
+assert.deepEqual(node('HTTP - Store Paper Evidence').credentials.httpHeaderAuth,legacyUploader.nodes.find(n=>n.name==='HTTP - NocoDB Upload').credentials.httpHeaderAuth,'paper storage must use the reviewed NocoDB credential descriptor, not the unrelated messaging credential');
 assert.equal(node('Code - Stored Drive Evidence').parameters.jsCode,driveEvidence);
 assert.equal(node('Google Drive - Store Paper Evidence').parameters.operation,'upload');
 assert.equal(node('Google Drive - Store Paper Evidence').parameters.driveId.value,'My Drive');
@@ -21,6 +23,10 @@ const id='10000000-0000-4000-8000-000000000001';
 const body={actor_email:'synthetic-paper@example.invalid',request_id:id,member_id:id,practitioner_person_id:id,files:[{name:'synthetic.pdf',type:'application/pdf',data:Buffer.from('%PDF-1.4 synthetic document').toString('base64')}]};
 function request(b=body,env={NOCODB_BASE_URL:'https://storage.example.invalid'}){return vm.runInNewContext('(function(){'+validate+'})()',{Buffer,$json:{body:b},$env:env});}
 const source=request()[0].json;assert.equal(source.payload.files.length,1);assert.equal(source.storage_provider,'nocodb');
+assert.deepEqual(JSON.parse(JSON.stringify(request(JSON.stringify(body)))),JSON.parse(JSON.stringify(request(body))), 'one JSON string envelope must normalize to the same request as an object');
+for(const invalid of ['{bad-json',JSON.stringify(JSON.stringify(body)),'null','[]','false','42','"scalar"',[],null])assert.throws(()=>request(invalid),/Paper request body must be|Account, request/);
+assert.throws(()=>request(JSON.stringify({...body,files:JSON.stringify(body.files)})),/Select exactly one/,'parsing the envelope must not parse or relax the file array');
+
 for(const [mime,bytes] of [['image/png',Buffer.from('89504e470d0a1a0a00000000','hex')],['image/jpeg',Buffer.from('ffd8ff000000000000000000','hex')]]){
  const f={name:'synthetic-image',type:mime,data:bytes.toString('base64')};assert.equal(request({...body,files:[f]})[0].json.payload.files[0].mimeType,mime);
 }
@@ -57,3 +63,6 @@ console.log('PASS optional private Drive storage: provider validation, per-provi
 
 assert.equal(node('Google Drive - Store Paper Evidence').parameters.folderId.value,'={{ $env.SIGNATUREGATE_PAPER_DRIVE_FOLDER_ID }}');
 assert.ok(!('folder_id' in request({...body,storage_provider:'google_drive',folder_id:'ignored_untrusted_folder'},driveEnv)[0].json.payload));
+
+assert.equal(request(JSON.stringify({...body,storage_provider:'google_drive'}),driveEnv)[0].json.storage_provider,'google_drive');
+console.log('PASS object and single JSON-string envelopes; malformed/scalar/array/double-encoded roots and serialized file arrays rejected; both providers retain validation');
