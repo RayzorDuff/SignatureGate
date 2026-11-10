@@ -6,6 +6,8 @@ const node=name=>workflow.nodes.find(n=>n.name===name);
 const validate=read('n8n/code/paper_upload_request.js'),evidence=read('n8n/code/paper_upload_evidence.js'),driveEvidence=read('n8n/code/paper_upload_drive_evidence.js');
 assert.equal(node('Code - Validate Paper Request').parameters.jsCode,validate);assert.equal(node('Code - Stored Paper Evidence').parameters.jsCode,evidence);
 assert.equal(node('Webhook - Paper Agreement').parameters.authentication,'headerAuth');assert.ok(node('Webhook - Paper Agreement').credentials.httpHeaderAuth);
+const legacyUploader=JSON.parse(read('n8n/workflows/SignatureGate - Upload Evidence via n8n (Base64 -_ NocoDB).json'));
+assert.deepEqual(node('HTTP - Store Paper Evidence').credentials.httpHeaderAuth,legacyUploader.nodes.find(n=>n.name==='HTTP - NocoDB Upload').credentials.httpHeaderAuth,'paper storage must use the reviewed NocoDB credential descriptor, not the unrelated messaging credential');
 assert.equal(node('Code - Stored Drive Evidence').parameters.jsCode,driveEvidence);
 assert.equal(node('Google Drive - Store Paper Evidence').parameters.operation,'upload');
 assert.equal(node('Google Drive - Store Paper Evidence').parameters.driveId.value,'My Drive');

@@ -4,7 +4,7 @@ Reviewed November 9, 2026 against current open issue lists, retained acceptance,
 
 | Issue | v1.2.0 status / remaining work | Later scope |
 | --- | --- | --- |
-| SignatureGate #36 | **Functional blocker.** Existing request unresolved; no new dispatch in screenshots. Recover/cancel with inspection, then one NocoDB upload, retrieval, authorized review and durable evidence/audits. | No storage redesign. |
+| SignatureGate #36 | **Functional acceptance passed; correction awaiting PR #38 merge.** Existing uncertain requests cancelled with audit records. Corrected test-only NocoDB credential binding; synthetic upload, exact-byte retrieval, authorized review, committed receipt and audit verification passed. | No storage redesign; retain evidence and normal release promotion gates. |
 | SignatureGate #34 | NocoDB default and temporarily disabled new Drive UI explicitly requested Nov 9. Keep Drive backend and existing links. | Optional Drive acceptance; nonblocking. |
 | SignatureGate #29 / Appsmith #5 | Verify actual release-used datasource routes/principals and compatible deployed revisions before promotion; Test2-first directions are historical because the host was deleted. Source inventory scope correction included in this increment. | Broader route migration beyond release-used paths remains tracked. |
 | SignatureGate #27 | No new harness for this release; use focused existing tests. | Playwright expansion deferred. |
