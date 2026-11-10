@@ -2,6 +2,8 @@
 
 Updated November 9, 2026. **Candidate preparation only; not approved for production.**
 
+**November 10 superseding checkpoint:** The restored-production migration rehearsal and 12 rollback-only SQL tests **passed**, the compared schema now matches development and 35 historical table counts were preserved; see [scoped evidence](evidence/november_10_restored_production_migration_rehearsal.md). Native NocoDB paper upload/review acceptance is also [recorded](evidence/november_10_paper_native_retry.md). The Appsmith export preparation was unified under shared Action/manual tooling in merged SignatureGate PR #40; see [export procedure](../../appsmith/EXPORT.md). The older source SHAs and work items in this document are historical preparation snapshots, **not release pins or instructions to repeat accepted tests**. Production roles/grants, final manifest, actual deployment, integration pins and rollback remain open. This is still **not** approval for production promotion.
+
 ## Scope freeze
 
 Additional end-to-end ERPNext deposit synchronization (#18) and Google Drive storage (#34) acceptance testing is deferred and nonblocking. Existing integration functionality and validation runbooks must remain intact. ERP capabilities remain enabled. The November 9 owner direction temporarily disables new Google Drive uploads in the UI and selects NocoDB by default; preserve Drive implementation and existing document access. No real bank transaction, production signing or production storage action is authorized by this candidate.
