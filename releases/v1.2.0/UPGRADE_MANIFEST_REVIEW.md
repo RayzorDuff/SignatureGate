@@ -2,6 +2,8 @@
 
 `UPGRADE_MANIFEST_DRAFT.json` pins 24 conditional migration/configuration entries in a conditional dependency order. **It is not an execution list. All 24 selections remain undecided and all final environment proofs remain open.** Do not run every listed file or load bootstrap over an existing database.
 
+**November 10 scoped rehearsal checkpoint:** 12 migrations were executed on a checksum-verified network-isolated restored production database, with 12/12 targeted rollback-only SQL tests PASS, zero compared structural differences from development, and 35/35 original production-table counts preserved. The evidence is [here](evidence/november_10_restored_production_migration_rehearsal.md). This does not change the draft manifest's **24 undecided selected/skipped entries and nine unverified environment proofs**. The final reviewed order, owner/grant preservation and recovery rehearsal remain pending.
+
 The read-only validator checks canonical-schema and step-source checksums, unique step IDs, prerequisite order, review fields, the complete nine-proof inventory and the rule that older cash/financial helpers cannot follow canonical authorization. Checks remain enabled under optimized Python (`-O`). It has no SQL execution or deployment function:
 
 ```bash

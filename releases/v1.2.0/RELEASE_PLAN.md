@@ -2,6 +2,8 @@
 
 Planned release: **v1.2.0** (unreleased). This is the first coordinated release of **SignatureGate-Appsmith**.
 
+**Current checkpoint, November 10, 2026 (UTC):** This long plan contains dated phases, initial branch SHAs and historical acceptance criteria. For current action order, use [STATUS.md](STATUS.md), [the successful 12-migration/12-test isolated rehearsal](evidence/november_10_restored_production_migration_rehearsal.md), [the production promotion runbook](PRODUCTION_UPGRADE_AND_PROMOTION.md), and [the canonical shared Appsmith export procedure](../../appsmith/EXPORT.md) established in merged PR #40. The historical references below to pending Test2 work or untested restored-production schema are superseded; **24 manifest dispositions, nine environment proofs, owners/grants/recovery, pinned integrations and production Appsmith promotion remain pending**. Do not repeat accepted SQL/browser tests solely because a historical phase says they are outstanding.
+
 Prepared October 11, 2026, for SignatureGate #17, #18, #19, #20, and #23, and SignatureGate-Appsmith #2 and #4.
 
 ## Execution progress
