@@ -1,10 +1,10 @@
 # Issue release disposition
 
-Reviewed November 9, 2026 against current open issue lists, retained acceptance, owner screenshots and SQL transcript. Issue closure requires its full criteria; mixed-scope issues remain open. This table assigns intended release scope without inventing a version for deferred work.
+Reviewed November 10, 2026 against current open issue lists, retained acceptance, owner screenshots and SQL transcript. Issue closure requires its full criteria; mixed-scope issues remain open. This table assigns intended release scope without inventing a version for deferred work.
 
 | Issue | v1.2.0 status / remaining work | Later scope |
 | --- | --- | --- |
-| SignatureGate #36 | **Functional acceptance passed; correction awaiting PR #38 merge.** Existing uncertain requests cancelled with audit records. Corrected test-only NocoDB credential binding; synthetic upload, exact-byte retrieval, authorized review, committed receipt and audit verification passed. | No storage redesign; retain evidence and normal release promotion gates. |
+| SignatureGate #36 | **Closed; functional acceptance passed and correction PR #38 merged.** Existing uncertain requests cancelled with audit records. Corrected test-only NocoDB credential binding; synthetic upload, exact-byte retrieval, authorized review, committed receipt and audit verification passed. | No storage redesign; retain evidence and normal release promotion gates. |
 | SignatureGate #34 | NocoDB default and temporarily disabled new Drive UI explicitly requested Nov 9. Keep Drive backend and existing links. | Optional Drive acceptance; nonblocking. |
 | SignatureGate #29 / Appsmith #5 | Verify actual release-used datasource routes/principals and compatible deployed revisions before promotion; Test2-first directions are historical because the host was deleted. Source inventory scope correction included in this increment. | Broader route migration beyond release-used paths remains tracked. |
 | SignatureGate #27 | No new harness for this release; use focused existing tests. | Playwright expansion deferred. |
@@ -20,3 +20,5 @@ Reviewed November 9, 2026 against current open issue lists, retained acceptance,
 Closed issue results remain closed, including consecutive Intake (#12), canonical Directory/Reports (#23), canonical SQL fixture repair (#30), and fresh Agreement Type administration (Appsmith #2). The acceptance ledger now records their retained evidence. Do not reopen resolved work because older rows used stale statuses.
 
 The November 9 test loop is not an all-pass run: one terminology assertion failed and the loop continued. Previous CI's 47 checks twice remains separate historical evidence. No complete suite or passing browser path needs manual repetition. Production upgrade, backup/restore, data/ownership/grants and exact source/configuration/export packaging are still open release gates, not optional integration tests.
+
+Current preparation: Appsmith #16 stages the production source and explicit ERP modes; backend preparation supplies 24 manifest dispositions, dual-SHA export provenance, protected history/permission collectors and source workflow pins. See [PREPRODUCTION_HANDOFF.md](PREPRODUCTION_HANDOFF.md). No additional issue is closed by source-only preparation. Actual deployed revisions/routes and production history/permissions remain required; optional ERP/Drive replay does not.

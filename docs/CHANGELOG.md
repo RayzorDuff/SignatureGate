@@ -4,6 +4,10 @@ Public release notes describe software behavior and technical contracts. Rooted 
 
 ## [Unreleased]
 
+- Release preparation: explicitly dispose all 24 candidate upgrade entries while retaining private environment gates; add read-only protected owner/ACL/history collectors and fail-closed evidence comparison.
+- Packaging: fix shared Appsmith export flag parsing, require exact source and production-descriptor commits, reject dirty inputs and write deterministic export provenance. Production candidate Appsmith #16 preserves native identities, master cash layout and existing production ERP modes. No production deployment or version bump.
+
+
 - Enforce explicit empty/malformed inventory location scopes in the saved n8n product workflow; retain omitted-scope compatibility and product eligibility filters.
 - Make NocoDB the default/only new paper-upload UI destination at the owner’s request; temporarily disable new Drive selection while preserving Drive workflow support and existing evidence links. Guide paper Intake through enrollment-only Later, followed by Participant Functions upload/review.
 - Make rollback-only terminology verification respect installed organization overrides instead of requiring fresh defaults; retain missing-concept, authority, audit and stable-role checks.

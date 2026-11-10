@@ -143,3 +143,8 @@ e2e/.auth/
 e2e/artifacts/
 e2e/selectors.private.json
 e2e/.env*
+
+# Private operator database/configuration evidence must never enter release source.
+private-v120-evidence/
+private-v120-evidence-*/
+__pycache__/

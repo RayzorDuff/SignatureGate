@@ -26,7 +26,7 @@ class ManifestChecks(unittest.TestCase):
                     if accepted:
                         self.assertEqual(result.returncode, 0, result.stderr)
                         self.assertEqual(json.loads(result.stdout), {
-                            'steps': 24, 'undisposed_steps': 24,
+                            'steps': 24, 'undisposed_steps': 0,
                             'unverified_environment_gates': 9, 'executable': False,
                         })
                     else:
@@ -37,6 +37,14 @@ class ManifestChecks(unittest.TestCase):
 
     def test_current_draft(self):
         self.run_case(BASE, True)
+
+    def test_candidate_order(self):
+        for order in (BASE['candidate_forward_order'][:-1],
+                      list(reversed(BASE['candidate_forward_order'])),
+                      BASE['candidate_forward_order'] + [BASE['candidate_forward_order'][0]]):
+            draft = copy.deepcopy(BASE)
+            draft['candidate_forward_order'] = order
+            self.run_case(draft, False, 'Candidate order')
 
     def test_invalid_drafts(self):
         cases = [
@@ -68,6 +76,8 @@ class ManifestChecks(unittest.TestCase):
         ]:
             draft = copy.deepcopy(BASE)
             draft['steps'][0][field] = value
+            if field == 'selected' and type(value) is bool:
+                draft['steps'][0]['disposition_evidence'] = None
             self.run_case(draft, False, message)
         draft = copy.deepcopy(BASE)
         draft['steps'].append(draft['steps'][0])

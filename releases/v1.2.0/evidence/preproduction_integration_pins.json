@@ -1,0 +1,737 @@
+{
+  "reviewed_at": "2026-11-10",
+  "scope": "source pins only; no workflow import, activation, connections or external calls",
+  "backend_source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+  "rootedops_source_commit": "9c1d25a792498a838619fa4d00aaf36e97d13fc9",
+  "rootedops_repository_version": "1.5.28",
+  "latest_published_rootedops_release": "v1.1.0",
+  "latest_release_has_required_integration": false,
+  "actual_deployed_rootedops_commit": null,
+  "deployed_workflow_inventory_verified": false,
+  "rootedops_required_services": [
+    {
+      "path": "erpnext/apps/rootedops_payroll/rootedops_payroll/services/signaturegate_deposits.py",
+      "sha256": "c4b9a9b950b79b669e5a89d953eaae7832db7b15b1b9a2b8af7d94b15949dee4",
+      "git_blob_sha": "64a1b79497bf5ca4dfebb97de66ee073a3321362"
+    },
+    {
+      "path": "erpnext/apps/rootedops_payroll/rootedops_payroll/api/integration.py",
+      "sha256": "1e8cc03d8edb598b7a7e05e3bd435554ef365f22e95242767c99bb5b3c1ee59e",
+      "git_blob_sha": "101ba26876b04df0051215e0041665941dd188f9"
+    }
+  ],
+  "workflows": [
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Airtable - List Available Sacrament Products.json",
+      "sha256": "b688cc91f25acd6e2ccf79695b9bb2aed9ed4eb8181cc67e4dd3707e114f1514",
+      "workflow_id": "nY5117w4g7kW6iWo",
+      "version_id": "c7a3b12d-6e93-4064-821e-db7fe8383f9c",
+      "webhooks": [
+        {
+          "method": "GET",
+          "path": "signaturegate/airtable/products/available",
+          "authentication": "none"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Airtable - List Products",
+          "kind": "airtableTokenApi",
+          "source_name": "Airtable Personal Access Token account",
+          "binding_sha256": "8d812ed9920da3b01adb2272cdf5d8ff02db1bceaa10425e588cebbc124468ad"
+        },
+        {
+          "node": "Airtable - List Locations",
+          "kind": "airtableTokenApi",
+          "source_name": "Airtable Personal Access Token account",
+          "binding_sha256": "8d812ed9920da3b01adb2272cdf5d8ff02db1bceaa10425e588cebbc124468ad"
+        }
+      ],
+      "use": "legacy retained; not selected for new release paths",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Airtable - Mark Product Shipped.json",
+      "sha256": "9280328c30a6054bf6be7c06c7f0af7143e90a6dd09133dd5428167ac523988a",
+      "workflow_id": "OMIv5C1iUbxZEZ8o",
+      "version_id": "aa95efa2-fdbe-495e-ad29-43e668342958",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/airtable/products/mark_shipped",
+          "authentication": "none"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Airtable - Find Product by product_id",
+          "kind": "airtableTokenApi",
+          "source_name": "Airtable Personal Access Token account",
+          "binding_sha256": "8d812ed9920da3b01adb2272cdf5d8ff02db1bceaa10425e588cebbc124468ad"
+        },
+        {
+          "node": "Airtable - Find Location Shipped",
+          "kind": "airtableTokenApi",
+          "source_name": "Airtable Personal Access Token account",
+          "binding_sha256": "8d812ed9920da3b01adb2272cdf5d8ff02db1bceaa10425e588cebbc124468ad"
+        },
+        {
+          "node": "HTTP Request",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 3",
+          "binding_sha256": "d420df933c22461c168e93da6faa4bb59a584b5c06d5c21e3e86c8a8daffec39"
+        },
+        {
+          "node": "HTTP Request",
+          "kind": "airtableApi",
+          "source_name": "Airtable account",
+          "binding_sha256": "f8bb2a9f010cba95d14b8d893e6f89205ed4f078fd78b12ebaac085d28d9aaf8"
+        },
+        {
+          "node": "HTTP Request",
+          "kind": "airtableTokenApi",
+          "source_name": "Airtable Personal Access Token account",
+          "binding_sha256": "8d812ed9920da3b01adb2272cdf5d8ff02db1bceaa10425e588cebbc124468ad"
+        },
+        {
+          "node": "PG - Audit product shipped",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        }
+      ],
+      "use": "legacy retained; not selected for new release paths",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Airtable - Mark Product UnShipped.json",
+      "sha256": "93ac5e84c3f36dd4d8fe8a31f9c3a8ed7135008432d17b7d5fc5801b3aabec0e",
+      "workflow_id": "sPFn38hbLG8Pdf7B",
+      "version_id": "88ae39cb-db90-4224-a3c8-81c499c3026f",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/airtable/products/mark_unshipped",
+          "authentication": "none"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Airtable - Find Product by product_id",
+          "kind": "airtableTokenApi",
+          "source_name": "Airtable Personal Access Token account",
+          "binding_sha256": "8d812ed9920da3b01adb2272cdf5d8ff02db1bceaa10425e588cebbc124468ad"
+        },
+        {
+          "node": "HTTP Request",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 3",
+          "binding_sha256": "d420df933c22461c168e93da6faa4bb59a584b5c06d5c21e3e86c8a8daffec39"
+        },
+        {
+          "node": "HTTP Request",
+          "kind": "airtableApi",
+          "source_name": "Airtable account",
+          "binding_sha256": "f8bb2a9f010cba95d14b8d893e6f89205ed4f078fd78b12ebaac085d28d9aaf8"
+        },
+        {
+          "node": "HTTP Request",
+          "kind": "airtableTokenApi",
+          "source_name": "Airtable Personal Access Token account",
+          "binding_sha256": "8d812ed9920da3b01adb2272cdf5d8ff02db1bceaa10425e588cebbc124468ad"
+        },
+        {
+          "node": "Airtable - Find Target Location",
+          "kind": "airtableTokenApi",
+          "source_name": "Airtable Personal Access Token account",
+          "binding_sha256": "8d812ed9920da3b01adb2272cdf5d8ff02db1bceaa10425e588cebbc124468ad"
+        },
+        {
+          "node": "PG - Audit product unshipped",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        }
+      ],
+      "use": "legacy retained; not selected for new release paths",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Documenso - Cancel Agreement.json",
+      "sha256": "2c004e3f70c369906c1cb7de339d32721244e428b31fc6e1a33ede22c5e73525",
+      "workflow_id": "GvBLqe22I6SLQW8Y",
+      "version_id": "bc98f9ed-6c43-4055-a592-106c748b1682",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/documenso/cancel",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Webhook",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        },
+        {
+          "node": "PG - Load Agreement Context",
+          "kind": "postgres",
+          "source_name": "signaturegate",
+          "binding_sha256": "5b4518c1438d2701aedcb42e5fc1b65fbb704403e2f17a80f0dbeae8beaff06d"
+        },
+        {
+          "node": "HTTP - Documenso Delete Envelope",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account",
+          "binding_sha256": "e2e3a10d8a969ccbd212be445b267f3695033de34f786b892610ec3b884cdae4"
+        },
+        {
+          "node": "PG - Mark Agreement Canceled",
+          "kind": "postgres",
+          "source_name": "signaturegate",
+          "binding_sha256": "5b4518c1438d2701aedcb42e5fc1b65fbb704403e2f17a80f0dbeae8beaff06d"
+        },
+        {
+          "node": "PG - Audit Cancellation",
+          "kind": "postgres",
+          "source_name": "signaturegate",
+          "binding_sha256": "5b4518c1438d2701aedcb42e5fc1b65fbb704403e2f17a80f0dbeae8beaff06d"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Documenso - List Templates.json",
+      "sha256": "973cdca1e72632dc97b4d347271962820d621103f414412c6c6a438558a7b7bf",
+      "workflow_id": "uC1Xix6PE2cGXqc1",
+      "version_id": "bd1ce7a9-0f96-467a-8b30-a94b28eb6b97",
+      "webhooks": [
+        {
+          "method": "GET",
+          "path": "signaturegate/documenso/templates",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Webhook",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        },
+        {
+          "node": "HTTP - Documenso List Templates",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account",
+          "binding_sha256": "e2e3a10d8a969ccbd212be445b267f3695033de34f786b892610ec3b884cdae4"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Documenso - Send Release (Member+Facilitator).json",
+      "sha256": "90d4bc22f96445e2f5c7a83f4a5bc78f19902f8eab5110729a16d00fca8753d9",
+      "workflow_id": "1xFmF6pEa5y9IJql",
+      "version_id": "3bad2ea3-784f-42ee-a33d-b371c98c502f",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/documenso/send",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Webhook",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        },
+        {
+          "node": "PG - Load Agreement Context",
+          "kind": "postgres",
+          "source_name": "signaturegate",
+          "binding_sha256": "5b4518c1438d2701aedcb42e5fc1b65fbb704403e2f17a80f0dbeae8beaff06d"
+        },
+        {
+          "node": "HTTP - Documenso Use Template",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account",
+          "binding_sha256": "e2e3a10d8a969ccbd212be445b267f3695033de34f786b892610ec3b884cdae4"
+        },
+        {
+          "node": "PG - Update member_agreements",
+          "kind": "postgres",
+          "source_name": "signaturegate",
+          "binding_sha256": "5b4518c1438d2701aedcb42e5fc1b65fbb704403e2f17a80f0dbeae8beaff06d"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Documenso - Webhook Events.json",
+      "sha256": "5f265a69fc507c76cb0107b3ab5532124b3b3c5e4c3fdb841670d606d978ac21",
+      "workflow_id": "jA0LU4YYRqWJACRl",
+      "version_id": "911a5a95-b7a4-49e2-84ec-daea675bb5c9",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/documenso/events",
+          "authentication": "none"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "PG - Update status",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        },
+        {
+          "node": "PG - Fetch agreement",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        },
+        {
+          "node": "HTTP - Documenso Get Envelope",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account",
+          "binding_sha256": "e2e3a10d8a969ccbd212be445b267f3695033de34f786b892610ec3b884cdae4"
+        },
+        {
+          "node": "HTTP - Documenso Download PDF",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account",
+          "binding_sha256": "e2e3a10d8a969ccbd212be445b267f3695033de34f786b892610ec3b884cdae4"
+        },
+        {
+          "node": "HTTP - NocoDB Upload Evidence",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 2",
+          "binding_sha256": "feb361de4e0463e6e3334b59bcfca07bef46f5510debaad848731888da34b890"
+        },
+        {
+          "node": "PG - Attach signed PDF",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        },
+        {
+          "node": "PG - Audit agreement signed",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Givebutter - Webhook Transactions.json",
+      "sha256": "605d150ded87be569d28c2b5db565af7f720ac47cf0c9139d9234117e75690a7",
+      "workflow_id": "cX9wkV5IDsNebpTs",
+      "version_id": "7c6c1dc8-6a6c-46e6-8ebc-f53203676170",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/givebutter/transactions",
+          "authentication": "none"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "PG - Insert Donation + Audit",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Listmonk - Poll Unsubscribes.json",
+      "sha256": "e3d927d6f82aaf687f3ea0dc4cd6bcb9147cbee9087c1ae7fcfe813814aa39c0",
+      "workflow_id": "ZmP43z5LP2bevTbU",
+      "version_id": "90a58813-aa34-4b04-a057-00eb35e79dbf",
+      "webhooks": [],
+      "credential_bindings": [
+        {
+          "node": "HTTP - Fetch Listmonk Unsubscribes",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 4",
+          "binding_sha256": "bb1d1066d8ce3aaf5a47eda45b0beac5035d3d4d66907c5c67b2f5579697dd7c"
+        },
+        {
+          "node": "PG - Record External Unsubscribe",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        },
+        {
+          "node": "PG - Check SignatureGate Mailing Status",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Listmonk - Process Sync Queue.json",
+      "sha256": "2f93a70f82cc12eb42eac3bd541bb5015d71812cb1222dc6d93cc2ba79453cef",
+      "workflow_id": "0Dwi6BRPXxTyTbcI",
+      "version_id": "7cda4491-260f-460f-9f42-11c80885a8db",
+      "webhooks": [],
+      "credential_bindings": [
+        {
+          "node": "PG - Claim Pending Queue Rows",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        },
+        {
+          "node": "HTTP - Find Subscriber",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 4",
+          "binding_sha256": "bb1d1066d8ce3aaf5a47eda45b0beac5035d3d4d66907c5c67b2f5579697dd7c"
+        },
+        {
+          "node": "HTTP - Create Subscriber",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 4",
+          "binding_sha256": "bb1d1066d8ce3aaf5a47eda45b0beac5035d3d4d66907c5c67b2f5579697dd7c"
+        },
+        {
+          "node": "HTTP - Unsubscribe Subscriber",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 4",
+          "binding_sha256": "bb1d1066d8ce3aaf5a47eda45b0beac5035d3d4d66907c5c67b2f5579697dd7c"
+        },
+        {
+          "node": "PG - Mark Sync Success",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        },
+        {
+          "node": "PG - Mark Sync Failure",
+          "kind": "postgres",
+          "source_name": "Postgres account",
+          "binding_sha256": "324ef3fd49476caaecccc40e78e6b1b2cf10891f81edc7da47b1b9da4e0c2681"
+        },
+        {
+          "node": "HTTP - Update Subscriber",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 4",
+          "binding_sha256": "bb1d1066d8ce3aaf5a47eda45b0beac5035d3d4d66907c5c67b2f5579697dd7c"
+        },
+        {
+          "node": "HTTP - Resubscribe Subscriber Lists",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 4",
+          "binding_sha256": "bb1d1066d8ce3aaf5a47eda45b0beac5035d3d4d66907c5c67b2f5579697dd7c"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "c3f43aa87ed22b44e735c49af162c396dd5ff545",
+      "path": "n8n/workflows/SignatureGate - PGSQL - List Available Sacrament Products.json",
+      "sha256": "0b6babc11a6eaea37d4902ab54e8538653a582a0d028584b7d3d125118ff6549",
+      "workflow_id": "0mAHXDGhAjdlllrO",
+      "version_id": "6c16dcb4-ea1e-42e0-979b-a95e8d1d6c91",
+      "webhooks": [
+        {
+          "method": "GET",
+          "path": "signaturegate/pgsql/products/available",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Webhook - List Products",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        },
+        {
+          "node": "PGSQL - List Available Products",
+          "kind": "postgres",
+          "source_name": "mushroomprocess_bridge",
+          "binding_sha256": "1f14c15d3260d3b11772294b50bdfa18a17e3a5b7154d6042fec8d55ee25a717"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - PGSQL - Mark Product Shipped.json",
+      "sha256": "0ac859020073432377e635762ec3247fd01e8e579f4aa2157eb77997c014d21f",
+      "workflow_id": "s5EiVIoUS5FcdY7w",
+      "version_id": "6751b9a4-f61c-4c64-b97c-7e96dac91b04",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/pgsql/products/mark_shipped",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Webhook - Mark Shipped",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        },
+        {
+          "node": "PGSQL - Mark Product Shipped",
+          "kind": "postgres",
+          "source_name": "mushroomprocess_bridge",
+          "binding_sha256": "1f14c15d3260d3b11772294b50bdfa18a17e3a5b7154d6042fec8d55ee25a717"
+        },
+        {
+          "node": "PG - Audit product shipped",
+          "kind": "postgres",
+          "source_name": "mushroomprocess_bridge",
+          "binding_sha256": "1f14c15d3260d3b11772294b50bdfa18a17e3a5b7154d6042fec8d55ee25a717"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - PGSQL - Mark Product UnShipped.json",
+      "sha256": "5a59dd595c039d2374053bc8ad2da70eec0499bccaf577915710fe1aba151a0a",
+      "workflow_id": "hCgzhnL3CkcmyR44",
+      "version_id": "cda70af4-26d1-4594-bf12-7a3ca014c37a",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/pgsql/products/mark_unshipped",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Webhook - Mark UnShipped",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        },
+        {
+          "node": "PGSQL - Mark Product UnShipped",
+          "kind": "postgres",
+          "source_name": "mushroomprocess_bridge",
+          "binding_sha256": "1f14c15d3260d3b11772294b50bdfa18a17e3a5b7154d6042fec8d55ee25a717"
+        },
+        {
+          "node": "PG - Audit product unshipped",
+          "kind": "postgres",
+          "source_name": "mushroomprocess_bridge",
+          "binding_sha256": "1f14c15d3260d3b11772294b50bdfa18a17e3a5b7154d6042fec8d55ee25a717"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "8333bdce52085daa8e0df8d5359ee731789a2839",
+      "path": "n8n/workflows/SignatureGate - Paper Agreement Upload.json",
+      "sha256": "c19b2b578fca11b3420c977e3b29db1e572fffbf9d2726bff3484acaac5b2a21",
+      "workflow_id": "w5HM9OQfX69RmM1l",
+      "version_id": "d3c38049-6222-48f6-8b98-122fc4c59903",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/paper-agreements",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Webhook - Paper Agreement",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        },
+        {
+          "node": "PG - Begin Paper Upload",
+          "kind": "postgres",
+          "source_name": "signaturegate_test",
+          "binding_sha256": "e37f7f4b7c7098097029463c47727ffc3fc0cb69f2a5fa05bf827f00aea13e7c"
+        },
+        {
+          "node": "HTTP - Store Paper Evidence",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 2",
+          "binding_sha256": "feb361de4e0463e6e3334b59bcfca07bef46f5510debaad848731888da34b890"
+        },
+        {
+          "node": "PG - Complete Paper Upload",
+          "kind": "postgres",
+          "source_name": "signaturegate_test",
+          "binding_sha256": "e37f7f4b7c7098097029463c47727ffc3fc0cb69f2a5fa05bf827f00aea13e7c"
+        },
+        {
+          "node": "Google Drive - Store Paper Evidence",
+          "kind": "googleDriveOAuth2Api",
+          "source_name": "SIGNATUREGATE_GOOGLE_DRIVE",
+          "binding_sha256": "ced6ccff7b450696d5ee3fe5ee393897e185fb486205f49b975c58af93bf1209"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/SignatureGate",
+      "source_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+      "last_change_commit": "ba7eec08120e82bb97b5034fe6a5d816e2a51705",
+      "path": "n8n/workflows/SignatureGate - Upload Evidence via n8n (Base64 -_ NocoDB).json",
+      "sha256": "b946f050ad20bd9d457fa38a4a96082354f01f0cc771e1e645340897d504f1f1",
+      "workflow_id": "8Z6Ll2LSVBIfLPtk",
+      "version_id": "6ccef30b-84d9-44b4-b685-8881d1766de5",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/upload",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Webhook - Upload Evidence",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        },
+        {
+          "node": "HTTP - NocoDB Upload",
+          "kind": "httpHeaderAuth",
+          "source_name": "Header Auth account 2",
+          "binding_sha256": "feb361de4e0463e6e3334b59bcfca07bef46f5510debaad848731888da34b890"
+        }
+      ],
+      "use": "legacy retained; not selected for new release paths",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/RootedOps",
+      "source_commit": "9c1d25a792498a838619fa4d00aaf36e97d13fc9",
+      "last_change_commit": "9c1d25a792498a838619fa4d00aaf36e97d13fc9",
+      "path": "n8n/SignatureGate - ERP Bank Accounts.json",
+      "sha256": "df1c06dc1166bf4ea1882cdf817814d1d5ce35ca3f79b5ee4c966be0f6cc1354",
+      "workflow_id": "RmQPZZokNYbzsyUb",
+      "version_id": "8e3b0a04-7875-461e-9c04-a2ec736fc74f",
+      "webhooks": [
+        {
+          "method": "GET",
+          "path": "signaturegate/erp/bank-accounts",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "ERP Bank Accounts",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    },
+    {
+      "repository": "RayzorDuff/RootedOps",
+      "source_commit": "9c1d25a792498a838619fa4d00aaf36e97d13fc9",
+      "last_change_commit": "9c1d25a792498a838619fa4d00aaf36e97d13fc9",
+      "path": "n8n/SignatureGate - Cash Deposit to ERPNext.json",
+      "sha256": "b4eebeb8df4d0385ce652605f1117e815c8a84e7245edad012b334ad6fca6b91",
+      "workflow_id": "0ZuleFnfUSSklwkp",
+      "version_id": "2f183570-b93e-4b62-8ec4-d4c458c3eb3d",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "signaturegate/cash-deposit/erp-sync",
+          "authentication": "headerAuth"
+        }
+      ],
+      "credential_bindings": [
+        {
+          "node": "Cash Deposit ERP Sync",
+          "kind": "httpHeaderAuth",
+          "source_name": "Appsmith-SignatureGate",
+          "binding_sha256": "eb3362d60cfbe93dae03dcde2f456bbaa79a9faf11ab73a9a6733757d814bd33"
+        },
+        {
+          "node": "PG - Begin ERP Sync",
+          "kind": "postgres",
+          "source_name": "signaturegate",
+          "binding_sha256": "5b4518c1438d2701aedcb42e5fc1b65fbb704403e2f17a80f0dbeae8beaff06d"
+        },
+        {
+          "node": "PG - Complete ERP Sync",
+          "kind": "postgres",
+          "source_name": "signaturegate",
+          "binding_sha256": "5b4518c1438d2701aedcb42e5fc1b65fbb704403e2f17a80f0dbeae8beaff06d"
+        }
+      ],
+      "use": "release-used endpoint or background/callback integration; actual activation must be inventoried",
+      "deployed_match_verified": false
+    }
+  ],
+  "cutover_requirements": [
+    "Paper workflow PG Begin/Complete references signaturegate_test in source. Preserve development; use reviewed existing production credentials only in production workflow revision.",
+    "Preserve node/workflow/webhook IDs, Header Auth and credential bindings; do not bulk import or activate these sources.",
+    "Verify destination from actual caller and current_database/current_user through actual saved credentials.",
+    "Additional ERP end-to-end and Drive new-upload acceptance remain deferred."
+  ]
+}

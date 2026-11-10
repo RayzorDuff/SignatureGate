@@ -1,0 +1,67 @@
+{
+  "review_date": "2026-11-10",
+  "release_state": "preparation_review_only",
+  "version_unchanged": "1.1.0",
+  "backend_baseline_commit": "f07f0de32218cac6fb01b295113dac53a0670c75",
+  "backend_preparation_commit": "Record the reviewed PR/merge SHA separately; no self-referential hash.",
+  "appsmith_candidate_pr": "https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/16",
+  "appsmith_disposable_export": {
+    "schemaVersion": 1,
+    "sourceRepository": "RayzorDuff/SignatureGate-Appsmith",
+    "sourceCommit": "50a3b887e34e5905c3daeb208fcd1bfca03824ce",
+    "productionDescriptorCommit": "48905ca281271889cf6cb778cd0249a221b87c82",
+    "productionDescriptorSHA256": "49ee160f1a5bb8070d4416bbdce06ca3a10261c8a56cfc22afa7cbaaa8e42714",
+    "exportSHA256": "66fd39a8fa9fb07147a23d3e0d495266cf8a44d8789eb3a7e0e43c547b90b35d",
+    "pages": 17,
+    "actions": 475,
+    "collections": 30,
+    "postgresActionCount": 235,
+    "productionDatasource": "signaturegate-postgres",
+    "runtimeVerified": false
+  },
+  "export_repeated_builds_identical": true,
+  "shipped_export_replaced": false,
+  "manifest": {
+    "selected": 12,
+    "legacy_skipped": 11,
+    "separate_configuration_skipped": 1,
+    "final_environment_proofs_open": 9,
+    "executable": false
+  },
+  "local_checks": [
+    "Existing Appsmith source/controller regressions PASS",
+    "30 JS collections / 805 binding-action expressions compile",
+    "201 literal navigation targets resolve",
+    "17-page navigation generation current",
+    "966 native identity records retained",
+    "Synthetic production confirm/retry/fallback mode checks PASS",
+    "Dual-SHA export determinism/preservation/dirty-input rejection PASS",
+    "Manifest normal/optimized Python and candidate-order negative cases PASS",
+    "Protected evidence comparison failure-case tests PASS",
+    "Saved inventory workflow scope regression PASS"
+  ],
+  "protected_capture_postgres_ci": "pending PR CI; no host PostgreSQL/Docker available in this workspace",
+  "accepted_prior_evidence": {
+    "restored_production_migrations": "12/12 PASS",
+    "targeted_rollback_sql": "12/12 PASS; not repeated",
+    "historical_counts": "35/35 preserved; broader new content/ACL proof remains open",
+    "paper": "accepted synthetic upload/retrieval/review/receipt/audit; issue36 closed"
+  },
+  "runtime_limits": [
+    "No operator private backup/catalog captures available here",
+    "Actual deployed RootedOps SHA not established from Git",
+    "Live n8n revisions/credential destinations and caller-network routes require private verification",
+    "Same-screen Intake paper path source merged; separate live acceptance result not recorded here"
+  ],
+  "recovery_runbook": "PREPRODUCTION_HANDOFF.md",
+  "files": {
+    "UPGRADE_MANIFEST_DRAFT.json": "5a765f7131e56d62e363e1e8c5f70a0a741da6a7e13eff897c70bc5cfb8e5336",
+    "capture_protected_upgrade_evidence.sql": "7ea63c04610dc937a3ec307baecbbe3c08993cecad6e9bc2cda3ba71422e1084",
+    "check_upgrade_invoker_permissions.sql": "377920f5b7180c34a3034a901494c59d1a715377e42cadf182d95ddb892fb233",
+    "evidence/november_10_restored_production_migration_rehearsal.md": "5aa0c1dee7ff8bf71de7c2527005a9f5990b992af4cca6c85fbe14409b8aeb37",
+    "evidence/november_10_paper_native_retry.md": "aaa3ae1b2cc1636f0f51133d0cebfbf119e785bb16a38ee37a8a5cdf4a9ad3be",
+    "evidence/preproduction_integration_pins.json": "8c1c352782e5f2bddb7124079f5d3c90f6063bb760e3af7c1b7d266d98e37d11"
+  },
+  "production_operations_performed": false,
+  "release_tag_created": false
+}

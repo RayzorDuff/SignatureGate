@@ -1,5 +1,8 @@
 # Production database update and Appsmith promotion
 
+**Current pre-production review (November 10):** [PREPRODUCTION_HANDOFF.md](PREPRODUCTION_HANDOFF.md) supersedes the planning counts and source pins below. All 24 manifest entries now have proposed dispositions (12 selected forward files, 11 skipped legacy replays, one separately audited configuration skipped); nine final private environment proofs remain open. [Appsmith candidate PR #16](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/16) is prepared at `50a3b887e34e5905c3daeb208fcd1bfca03824ce`. Its disposable dual-pinned export validates; it is not the shipped artifact. Existing accepted paper/cash/authorization and restored-production results remain accepted. Final master merge, schema migration, publication and release are not authorized here.
+
+
 Updated November 10, 2026 (UTC). Reviewable preparation, **not an approved execution manifest**. Test2 was deleted. Continue development on the existing host using the separate `signaturegate_test` database and development branch; do not change `signaturegate` or published master during acceptance.
 
 ## Current accepted checkpoint and remaining release work (November 10 UTC)
@@ -66,7 +69,7 @@ Checking an archive list is not a verified restore. Restore into a separate prot
 
 ## 4. Finalize migration dispositions and rehearse the final forward sequence
 
-`UPGRADE_MANIFEST_DRAFT.json` contains **24 undecided entries and nine unverified environment proofs**. It is conditional ordering, not a list to execute. Against the refreshed production baseline, give every entry a selected/skipped disposition and evidence; reconstruct any missing canonical forward change. Do not load `db/schema.sql` on an existing database or glob all migration files.
+`UPGRADE_MANIFEST_DRAFT.json` contains **24 proposed dispositions and nine unverified final environment proofs**. It is conditional ordering, not a list to execute. Against the refreshed production baseline, give every entry a selected/skipped disposition and evidence; reconstruct any missing canonical forward change. Do not load `db/schema.sql` on an existing database or glob all migration files.
 
 Validate the reviewed manifest structure:
 
@@ -105,11 +108,14 @@ After the candidate is reviewed and pinned, the checked-in export in **Signature
 ```bash
 node scripts/prepare-appsmith-release-export.mjs \
   --source /path/to/reviewed-appsmith-candidate \
-  --production-source /path/to/appsmith-master \
-  --output "appsmith/Rooted Psyche Membership Ops.json"
+  --source-sha "$APP_SOURCE_SHA" \
+  --production-source /path/to/pinned-appsmith-master \
+  --production-source-sha "$APP_DESCRIPTOR_SHA" \
+  --output "appsmith/Rooted Psyche Membership Ops.json" \
+  --provenance appsmith/EXPORT_PROVENANCE.json
 ```
 
-The production-source path provides the existing `signaturegate-postgres` native descriptor, while the script stages the source, applies `appsmith-rebind-datasource.mjs` if needed, verifies all SQL action datasource descriptors, generates the JSON with `appsmith-export.mjs`, and checks source/export parity. None of this changes live Appsmith secrets/connections or publishes the app. For repeatability, the Action checks out the chosen pinned Appsmith ref and the `master` descriptor baseline separately, then invokes the same command. See [the canonical export workflow](../../appsmith/EXPORT.md) for both invocation paths and limitations.
+The production-source path provides the existing `signaturegate-postgres` native descriptor, while the script stages the source, applies `appsmith-rebind-datasource.mjs` if needed, verifies all SQL action datasource descriptors, generates the JSON with `appsmith-export.mjs`, and checks source/export parity. None of this changes live Appsmith secrets/connections or publishes the app. For repeatability, the Action requires exact `appsmith_ref` and `production_descriptor_sha` commit inputs and checks out both separately, then invokes the same command. See [the canonical export workflow](../../appsmith/EXPORT.md) for both invocation paths and limitations.
 
 During the approved cutover, verify the *actual* PostgreSQL database name and role through Appsmith and n8n, retain the production integration modes, and verify deployed revision. Keep `VERSION=1.1.0` and the release tag unmodified until production acceptance and final packaging.
 
