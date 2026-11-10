@@ -1,0 +1,58 @@
+name: Preproduction preparation checks
+on:
+  pull_request:
+    paths:
+      - 'scripts/*appsmith*'
+      - 'scripts/*upgrade*'
+      - 'scripts/*protected*'
+      - 'releases/v1.2.0/UPGRADE_MANIFEST_DRAFT.json'
+      - 'releases/v1.2.0/*upgrade*.sql'
+      - '.github/workflows/preproduction-preparation-checks.yml'
+      - '.github/workflows/regenerate-appsmith-export.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-release-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check candidate manifest and protected evidence failure cases
+        run: |
+          python3 scripts/validate_upgrade_manifest.py releases/v1.2.0/UPGRADE_MANIFEST_DRAFT.json
+          python3 scripts/test_upgrade_manifest.py
+          python3 scripts/test_protected_upgrade_evidence.py
+      - name: Check export pins, preservation and source isolation
+        run: |
+          node scripts/test-prepare-appsmith-release-export.mjs
+          node scripts/test-appsmith-rebind-datasource.mjs
+          node scripts/test-appsmith-export.mjs
+          node scripts/test_inventory_location_scope.mjs
+  protected-collector-sql:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    services:
+      postgres:
+        image: postgres:16.13
+        env:
+          POSTGRES_USER: signaturegate
+          POSTGRES_PASSWORD: synthetic-evidence-ci-only
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd "pg_isready -U signaturegate -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exercise only the new collectors on synthetic PostgreSQL 16
+        env:
+          EVIDENCE_CONTAINER: ${{ job.services.postgres.id }}
+        run: python3 scripts/test_protected_capture.py --container "$EVIDENCE_CONTAINER"

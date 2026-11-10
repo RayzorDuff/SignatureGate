@@ -4,9 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       appsmith_ref:
-        description: Reviewed production-bound SignatureGate-Appsmith branch, tag, or commit (not raw development without promotion review)
+        description: Full 40-character reviewed production-bound SignatureGate-Appsmith commit SHA
         required: true
-        default: master
+      production_descriptor_sha:
+        description: Full 40-character reviewed production descriptor baseline commit SHA
+        required: true
 
 permissions:
   contents: write
@@ -29,7 +31,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: RayzorDuff/SignatureGate-Appsmith
-          ref: master
+          ref: ${{ inputs.production_descriptor_sha }}
           path: .appsmith-production
 
       - name: Set up Node
@@ -38,17 +40,24 @@ jobs:
           node-version: "22"
 
       - name: Regenerate monolithic Appsmith export
+        env:
+          APP_SOURCE_SHA: ${{ inputs.appsmith_ref }}
+          APP_DESCRIPTOR_SHA: ${{ inputs.production_descriptor_sha }}
         run: |
           node scripts/prepare-appsmith-release-export.mjs \
             --source .appsmith-source \
             --production-source .appsmith-production \
-            --output "appsmith/Rooted Psyche Membership Ops.json"
+            --source-sha "$APP_SOURCE_SHA" \
+            --production-source-sha "$APP_DESCRIPTOR_SHA" \
+            --output "appsmith/Rooted Psyche Membership Ops.json" \
+            --provenance appsmith/EXPORT_PROVENANCE.json
 
       - name: Verify source and export preservation
         run: |
           node --check scripts/prepare-appsmith-release-export.mjs
           node scripts/test-appsmith-rebind-datasource.mjs
           node scripts/test-appsmith-export.mjs
+          node scripts/test-prepare-appsmith-release-export.mjs
           python3 scripts/validate_release.py --assets
 
       - name: Validate generated export
@@ -67,7 +76,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "appsmith/Rooted Psyche Membership Ops.json"
+          git add "appsmith/Rooted Psyche Membership Ops.json" appsmith/EXPORT_PROVENANCE.json
           if git diff --cached --quiet; then
             echo "Generated export is already current."
           else

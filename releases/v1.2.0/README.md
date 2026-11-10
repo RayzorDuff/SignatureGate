@@ -2,6 +2,7 @@
 
 Status: **unreleased**. This is the first coordinated SignatureGate-Appsmith release. `VERSION` remains 1.1.0 until final release preparation.
 
+- [Current pre-production handoff, evidence and recovery](PREPRODUCTION_HANDOFF.md)
 - [Current status](STATUS.md)
 - [Documentation consistency audit and remaining gaps](DOCUMENTATION_CONSISTENCY_AUDIT.md)
 - [Restored-production upgrade rehearsal: 12 migrations / 12 tests PASS](evidence/november_10_restored_production_migration_rehearsal.md)

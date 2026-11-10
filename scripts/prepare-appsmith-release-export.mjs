@@ -5,16 +5,28 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 
 const root = path.resolve(import.meta.dirname, '..');
 const args = process.argv.slice(2);
 function flag(name) {
-  const index = args.indexOf(name);
+  const index = args.indexOf('--' + name);
   if (index < 0 || index + 1 >= args.length || args[index + 1].startsWith('--')) {
     throw new Error(`Missing required --${name}`);
   }
   return path.resolve(args[index + 1]);
 }
+function revision(name, source) {
+  const index = args.indexOf('--' + name);
+  const expected = index < 0 ? '' : args[index + 1];
+  if (!/^[a-f0-9]{40}$/.test(expected || '')) throw new Error(`--${name} requires a full commit SHA`);
+  const result = spawnSync('git', ['-C', source, 'rev-parse', 'HEAD'], {encoding: 'utf8'});
+  if (result.status !== 0 || result.stdout.trim() !== expected) throw new Error(`--${name} does not match checkout HEAD`);
+  const status = spawnSync('git', ['-C', source, 'status', '--porcelain', '--untracked-files=all'], {encoding: 'utf8'});
+  if (status.status !== 0 || status.stdout.trim()) throw new Error(`--${name} checkout must be clean, including untracked files`);
+  return expected;
+}
+const sha256 = data => crypto.createHash('sha256').update(data).digest('hex');
 function run(command, values) {
   const result = spawnSync(command, values, { cwd: root, stdio: 'inherit' });
   if (result.error) throw result.error;
@@ -33,6 +45,15 @@ try {
   const source = flag('source');
   const productionSource = flag('production-source');
   const output = flag('output');
+  const provenance = flag('provenance');
+  if (output === provenance) throw new Error('Export and provenance paths must differ');
+  const sourceCommit = revision('source-sha', source);
+  const descriptorCommit = revision('production-source-sha', productionSource);
+  for (const destination of [output, provenance]) {
+    if ([source, productionSource].some(dir => destination === dir || destination.startsWith(dir + path.sep))) {
+      throw new Error('Export/provenance must be outside the pinned input checkouts');
+    }
+  }
   if (!fs.statSync(path.join(source, 'pages')).isDirectory()) {
     throw new Error('Expected Appsmith split source with pages/');
   }
@@ -47,7 +68,8 @@ try {
   }
   workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'signaturegate-appsmith-release-'));
   const staged = path.join(workspace, 'candidate');
-  fs.cpSync(source, staged, { recursive: true, filter: name => !name.includes('/.git/') && !name.endsWith('/.git') });
+  fs.cpSync(source, staged, { recursive: true, filter: name =>
+    !['.git', 'node_modules'].includes(path.relative(source, name).split(path.sep)[0]) });
   fs.copyFileSync(productionFile, path.join(staged, 'datasources', 'signaturegate-postgres.json'));
 
   const testFile = path.join(staged, 'datasources', 'signaturegate-postgres-test.json');
@@ -83,6 +105,21 @@ try {
   if (used.some(name => name !== 'signaturegate-postgres')) {
     throw new Error('Generated action uses an unexpected PostgreSQL datasource');
   }
+  const record = {
+    schemaVersion: 1,
+    sourceRepository: 'RayzorDuff/SignatureGate-Appsmith',
+    sourceCommit,
+    productionDescriptorCommit: descriptorCommit,
+    productionDescriptorSHA256: sha256(fs.readFileSync(productionFile)),
+    exportSHA256: sha256(fs.readFileSync(output)),
+    pages: exported.pageList.length,
+    actions: exported.actionList.length,
+    collections: exported.actionCollectionList.length,
+    postgresActionCount: used.length,
+    productionDatasource: 'signaturegate-postgres',
+    runtimeVerified: false
+  };
+  fs.writeFileSync(provenance, JSON.stringify(record, null, 2) + '\n');
   console.log(JSON.stringify({
     productionBoundExport: output,
     source,

@@ -79,6 +79,18 @@ def validate(manifest, root=ROOT):
             'Required environment proof inventory changed')
     require(all(type(value) is bool for value in gates.values()),
             'Environment proofs must be booleans')
+    order = manifest.get('candidate_forward_order')
+    if order is not None:
+        selected = {step['id'] for step in steps if step['selected'] is True}
+        require(isinstance(order, list) and len(order) == len(set(order))
+                and set(order) == selected, 'Candidate order must cover selected steps exactly once')
+        done = {step['id'] for step in steps if step['selected'] is False}
+        for step_id in order:
+            step = next(step for step in steps if step['id'] == step_id)
+            require(set(step['after']) <= done, 'Candidate order violates prerequisite: ' + step_id)
+            require(text(step.get('affected_data')) and text(step.get('installed_state')),
+                    'Missing candidate data/installed-state review: ' + step_id)
+            done.add(step_id)
     return {
         'steps': len(steps),
         'undisposed_steps': sum(step['selected'] is None for step in steps),

@@ -1,7 +1,7 @@
 {
   "state": "draft_non_executable",
   "release": "SignatureGate v1.2.0",
-  "purpose": "Conditional source ordering and checksum pinning only. Do not execute all entries. Each needs a reviewed selected/skipped disposition.",
+  "purpose": "Reviewed source-level candidate: 12 selected forward migrations, 11 legacy replays skipped, one organization configuration skipped. NOT production authorization; unresolved private environment evidence and final recovery approval still block execution.",
   "canonical_schema_sha256": "6a374c0df207de90a27ffa988c4c70279357bfa4e8d9d738d7a765638e29f63c",
   "required_environment_proofs": {
     "canonical_base_and_missing_forward_changes_reviewed": false,
@@ -20,8 +20,8 @@
       "path": "db/migrations/cash_deposit_management.sql",
       "sha256": "153262ae269f481523f4050faecccd27bceab661117879f79c26ccbcdfa6cf9f",
       "after": [],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -30,7 +30,9 @@
       "verification": [
         "db/tests/verify_cash_deposit_management.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "legacy_cash_lifecycle",
@@ -39,8 +41,8 @@
       "after": [
         "legacy_cash_base"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -49,7 +51,9 @@
       "verification": [
         "db/tests/verify_cash_deposit_batch_lifecycle.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "legacy_cash_tally",
@@ -58,8 +62,8 @@
       "after": [
         "legacy_cash_lifecycle"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -68,7 +72,9 @@
       "verification": [
         "db/tests/verify_cash_deposit_batch_tally.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "legacy_cash_print",
@@ -77,8 +83,8 @@
       "after": [
         "legacy_cash_lifecycle"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -87,7 +93,9 @@
       "verification": [
         "db/tests/verify_cash_deposit_batch_print.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "legacy_cash_exclusion",
@@ -96,8 +104,8 @@
       "after": [
         "legacy_cash_lifecycle"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -106,7 +114,9 @@
       "verification": [
         "db/tests/verify_cash_donation_reconciliation_exceptions.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "legacy_cash_erp",
@@ -115,8 +125,8 @@
       "after": [
         "legacy_cash_lifecycle"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -125,7 +135,9 @@
       "verification": [
         "db/tests/verify_cash_deposit_erp_sync.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "legacy_cash_date_correction",
@@ -134,8 +146,8 @@
       "after": [
         "legacy_cash_erp"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -144,15 +156,17 @@
       "verification": [
         "db/tests/verify_cash_deposit_confirmation_correction.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "legacy_financial_scope",
       "path": "db/migrations/donation_financial_access.sql",
       "sha256": "027c4999c0100c6e23d7630c8724b203df0e215a82cd808bf89f202821290335",
       "after": [],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -161,15 +175,17 @@
       "verification": [
         "Review effective definitions and scoped behavioral/data invariants in the protected restored copy; specify the exact query before selection."
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "role_self_assignment",
       "path": "db/migrations/person_role_self_assignment.sql",
       "sha256": "789d513918488fbabd5e6c57286a63a63ce5bf6e8969b4e561edafd07ec9f2aa",
       "after": [],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -178,15 +194,17 @@
       "verification": [
         "Review effective definitions and scoped behavioral/data invariants in the protected restored copy; specify the exact query before selection."
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "contributor_mailing",
       "path": "db/migrations/listmonk_contributor_email_support.sql",
       "sha256": "2777c9083570fbb469ac231eb2a843599af7e3780822074723df5db2ec3abd97",
       "after": [],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -195,7 +213,9 @@
       "verification": [
         "db/tests/verify_listmonk_contributor_email_support.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "dual_mailing",
@@ -204,8 +224,8 @@
       "after": [
         "contributor_mailing"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -214,15 +234,17 @@
       "verification": [
         "Review effective definitions and scoped behavioral/data invariants in the protected restored copy; specify the exact query before selection."
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "SKIP replay: existing baseline prerequisites and complete post-upgrade structural parity support reuse. Historical installation file execution is not inferred; final private effective-definition check must confirm retained objects.",
+      "affected_data": "No replay and no historical mutation. Retain installed legacy behavior unless superseded by the selected canonical authorization/forward helpers."
     },
     {
       "id": "identity_notes",
       "path": "db/migrations/party_identity_notes.sql",
       "sha256": "7c1737c58829913d34233ee0688000eff08ec3a0096579bd983b6ceac17fa6f3",
       "after": [],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -231,15 +253,17 @@
       "verification": [
         "db/tests/verify_party_identity_notes.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Adds canonical people/organization notes and a provenance table. EXECUTES historical member-note backfill, updating people.notes/updated_at; original member notes retained. Private preserved_edit and canonical note review required."
     },
     {
       "id": "agreement_types",
       "path": "db/migrations/agreement_type_administration.sql",
       "sha256": "574a862369297919a3d0b062acd9341ce6aaecc95edd01e139808939c6524abd",
       "after": [],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -248,15 +272,17 @@
       "verification": [
         "db/tests/verify_agreement_type_administration.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Replaces create_agreement_type authority; no top-level operational row changes."
     },
     {
       "id": "reviewer_agreements",
       "path": "db/migrations/member_agreement_reviewer_on_behalf.sql",
       "sha256": "5fe7bd6bdbb0f118d340a92351af384368ac6b4dfa63712174f410579f8651d9",
       "after": [],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -265,15 +291,17 @@
       "verification": [
         "db/tests/verify_member_agreement_reviewer_on_behalf.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Replaces agreement creation authority; no top-level operational row changes."
     },
     {
       "id": "organization_contacts",
       "path": "db/migrations/organization_contact_reassignment.sql",
       "sha256": "305d14749513812f791fd6c69f1ce4725cd7f5f056ba0905e1fe78f26f3b54d9",
       "after": [],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -282,7 +310,9 @@
       "verification": [
         "db/tests/verify_organization_contact_reassignment.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Replaces audited organization contact reassignment; no top-level operational row changes."
     },
     {
       "id": "application_authorization",
@@ -298,8 +328,8 @@
         "dual_mailing",
         "reviewer_agreements"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -308,7 +338,9 @@
       "verification": [
         "db/tests/verify_application_authorization.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Adds actor-reference table; snapshots existing member/person links, installs maintenance trigger and canonical authorization helpers/views. Existing cash helper signatures retained; changed permission semantics require actual-principal review."
     },
     {
       "id": "cash_revival",
@@ -317,8 +349,8 @@
       "after": [
         "application_authorization"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -327,7 +359,9 @@
       "verification": [
         "db/tests/verify_cash_donation_reconciliation_revive.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Replaces reconciliation revival helpers; no top-level operational row changes. Preserve confirmed-date guard and ERP structures."
     },
     {
       "id": "provider_review",
@@ -338,8 +372,8 @@
         "dual_mailing",
         "cash_revival"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -348,7 +382,9 @@
       "verification": [
         "db/tests/verify_provider_donation_administration.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Replaces provider matching/review/reassignment helpers; no top-level operational row changes."
     },
     {
       "id": "company_contacts",
@@ -357,8 +393,8 @@
       "after": [
         "provider_review"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -367,7 +403,9 @@
       "verification": [
         "db/tests/verify_company_contact_people.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Adds organization_contact_people relationship table/index and access helpers; no bulk historical contact reassignment."
     },
     {
       "id": "participant_labels",
@@ -376,8 +414,8 @@
       "after": [
         "company_contacts"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": false,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected restored-production baseline, workers isolated and all referenced canonical identity/account/role/contact/agreement/cash objects verified.",
         "Review actual effective definitions, historical backfills, ownership/grants and installed state; names or hashes alone do not authorize replay."
@@ -386,7 +424,9 @@
       "verification": [
         "db/tests/verify_participant_presentation.sql"
       ],
-      "recovery": "Use the verified restore/recovery plan; do not run bootstrap or an unreviewed down migration over production."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Organization-specific configuration, not a generic schema prerequisite.",
+      "affected_data": "SKIP generic upgrade. Separately authorized account-scoped terminology changes only; preserve current organization overrides."
     },
     {
       "id": "atomic_intake",
@@ -400,8 +440,8 @@
         "agreement_types",
         "reviewer_agreements"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Canonical people/accounts/roles, contact-purpose/mailing/notes/practitioner/agreement helpers verified.",
         "Application DB principal must have invoker access to the private receipt table; review owners/grants. New-party transaction only, no HTTP."
@@ -410,7 +450,9 @@
       "verification": [
         "db/tests/verify_atomic_intake.sql"
       ],
-      "recovery": "Verified protected restore for production schema recovery; do not drop committed receipts to force a replay. Complete external signing separately against the existing agreement ID."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Creates private durable request table and invoker functions; no enrollment is submitted by migration."
     },
     {
       "id": "paper_agreement_upload",
@@ -420,8 +462,8 @@
         "application_authorization",
         "reviewer_agreements"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Canonical account/resource authority, practitioner assignment and agreement/evidence schema verified.",
         "Application/workflow invoker grants on private upload receipt table reviewed; isolated storage destination and authenticated webhook configured."
@@ -430,7 +472,9 @@
       "verification": [
         "db/tests/verify_paper_agreement_upload.sql"
       ],
-      "recovery": "Preserve committed receipts. Cancel unresolved requests through the owner-scoped, reasoned API before a new attempt; inspect privately for an orphaned storage file. Use the reviewed production restore plan."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Creates private durable reservations and owner-scoped upload/cancel/review APIs; no file storage call or agreement upload occurs."
     },
     {
       "id": "paper_evidence_storage",
@@ -439,8 +483,8 @@
       "after": [
         "paper_agreement_upload"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Protected paper upload receipts and authority already installed; review actual invoker grants.",
         "Private Google Drive OAuth/folder mapping or reviewed NocoDB target configured in the authenticated workflow; no caller-specified folder or sharing grant."
@@ -449,7 +493,9 @@
       "verification": [
         "db/tests/verify_paper_evidence_storage.sql"
       ],
-      "recovery": "Preserve receipt ownership/hash and agreement evidence. Never retry an unresolved request against another provider. Use owner-scoped lookup/cancellation and the reviewed production recovery plan."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Adds storage_provider with nocodb default to receipt table, preserving existing receipt fingerprints/evidence; replaces guarded APIs. No external storage call."
     },
     {
       "id": "person_contact_reassignment",
@@ -458,8 +504,8 @@
       "after": [
         "application_authorization"
       ],
-      "selected": null,
-      "disposition_evidence": null,
+      "selected": true,
+      "disposition_evidence": "evidence/november_10_restored_production_migration_rehearsal.md; UPGRADE_MANIFEST_REVIEW.md (proposed forward disposition, subject to protected final-baseline approval)",
       "preconditions": [
         "Canonical person accounts/roles, purpose contacts, source synchronization and audited reassignment API installed.",
         "Review existing function owner/grants and contact mappings; source Participant may be inactive, target must be active."
@@ -468,7 +514,28 @@
       "verification": [
         "db/tests/verify_person_contact_reassignment.sql"
       ],
-      "recovery": "Do not reactivate enrollment to correct ownership. Preserve role/contact history and audit; rehearse the reviewed backup/recovery plan before production rollout."
+      "recovery": "No down migration. Keep each file transaction and ON_ERROR_STOP; a later failure leaves earlier files committed. Keep workers stopped. Restore the verified database plus matching app/workflow revision if forward repair is not approved. Never delete committed Intake/paper receipts to force retries.",
+      "installed_state": "Missing or superseded effective definition in November 10 source baseline; selected change applied in accepted restore rehearsal. Refresh private inventory before production.",
+      "affected_data": "Replaces invoker helper in place, preserving identity, owner and ACL; no top-level operational row changes."
     }
-  ]
+  ],
+  "candidate_forward_order": [
+    "identity_notes",
+    "agreement_types",
+    "reviewer_agreements",
+    "organization_contacts",
+    "application_authorization",
+    "cash_revival",
+    "provider_review",
+    "company_contacts",
+    "person_contact_reassignment",
+    "atomic_intake",
+    "paper_agreement_upload",
+    "paper_evidence_storage"
+  ],
+  "selection_baseline": "Production backup 20261110T045802Z, operator-reported isolated rehearsal; backend 6dcaebe0ac13d5b81023bbaa32b93fbe10b09df1. Any baseline drift invalidates automatic reuse.",
+  "proof_evidence": {
+    "backup_restore_verified": "Scoped custom backup checksum/list/isolated no-owner/no-acl restore PASS. Owner/ACL recovery remains open.",
+    "restored_copy_rehearsal_passed": "12 selected files and 12 scoped rollback tests PASS; final owner/grant/history/recovery rehearsal still open."
+  }
 }

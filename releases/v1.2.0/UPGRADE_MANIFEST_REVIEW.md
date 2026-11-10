@@ -1,8 +1,28 @@
-# Conditional upgrade planning checkpoint
+# Candidate upgrade manifest review
 
-`UPGRADE_MANIFEST_DRAFT.json` pins 24 conditional migration/configuration entries in a conditional dependency order. **It is not an execution list. All 24 selections remain undecided and all final environment proofs remain open.** Do not run every listed file or load bootstrap over an existing database.
+`UPGRADE_MANIFEST_DRAFT.json` now records all 24 source-level dispositions:
+12 selected forward files, 11 skipped legacy replays and one skipped generic
+terminology operation. Every source checksum was reverified. The explicit
+`candidate_forward_order` matches the accepted November 10 rehearsal.
 
-**November 10 scoped rehearsal checkpoint:** 12 migrations were executed on a checksum-verified network-isolated restored production database, with 12/12 targeted rollback-only SQL tests PASS, zero compared structural differences from development, and 35/35 original production-table counts preserved. The evidence is [here](evidence/november_10_restored_production_migration_rehearsal.md). This does not change the draft manifest's **24 undecided selected/skipped entries and nine unverified environment proofs**. The final reviewed order, owner/grant preservation and recovery rehearsal remain pending.
+**Still non-executable:** current private effective-definition, role/owner/grant,
+historical note/data, isolation/dependency and recovery approvals are not available
+in this workspace. Nine final environment proofs remain false. Selection means
+proposed forward application, not production authorization or proof that every
+skipped file was historically executed.
+
+The selected migration descriptions identify top-level mutations. In particular,
+identity-note backfill updates people notes/timestamps; authorization snapshots
+actor references; new receipt/contact tables do not themselves submit operational
+requests. Legacy cash date correction and ERP structures are preserved, and older
+helpers must not overwrite canonical authorization. Terminology adoption remains
+a separate audited organization operation.
+
+See [the current handoff](PREPRODUCTION_HANDOFF.md) for the exact selected order,
+protected owner/ACL restore procedure, new row-content/catalog comparator,
+actual-principal matrix, cutover sequence and rollback limits. Retain the accepted
+[12-file rehearsal](evidence/november_10_restored_production_migration_rehearsal.md);
+do not repeat its entire functional suite to compensate for missing private evidence.
 
 The read-only validator checks canonical-schema and step-source checksums, unique step IDs, prerequisite order, review fields, the complete nine-proof inventory and the rule that older cash/financial helpers cannot follow canonical authorization. Checks remain enabled under optimized Python (`-O`). It has no SQL execution or deployment function:
 
