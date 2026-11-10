@@ -97,6 +97,23 @@ SELECT current_database() AS database_name, current_user AS database_role,
 
 Saved connection settings live outside Git. If the existing production datasource already targets `signaturegate` with the reviewed production app role, no connection change is needed after merge. If settings do need correction, stage them in an isolated candidate datasource and switch the production app during the approved cutover; never edit a shared datasource blindly before merge. Delete temporary diagnostic actions after recording private evidence.
 
+## Established Appsmith merge/export procedure (shared local and Action path)
+
+The documented v1.2.0 candidate preparation remains a gated, reviewed step: reconcile `chatgpt_development` against Appsmith `master`, preserve master-only fixes and native identities, verify production ERP/signing/storage modes, and merge only the reviewed production candidate. Do **not** merge raw development wholesale or retarget its saved test datasource.
+
+After the candidate is reviewed and pinned, the checked-in export in **SignatureGate** must come from that *same* Appsmith source commit. The `Regenerate Appsmith export` Action and the manual process now share one staging command:
+
+```bash
+node scripts/prepare-appsmith-release-export.mjs \
+  --source /path/to/reviewed-appsmith-candidate \
+  --production-source /path/to/appsmith-master \
+  --output "appsmith/Rooted Psyche Membership Ops.json"
+```
+
+The production-source path provides the existing `signaturegate-postgres` native descriptor, while the script stages the source, applies `appsmith-rebind-datasource.mjs` if needed, verifies all SQL action datasource descriptors, generates the JSON with `appsmith-export.mjs`, and checks source/export parity. None of this changes live Appsmith secrets/connections or publishes the app. For repeatability, the Action checks out the chosen pinned Appsmith ref and the `master` descriptor baseline separately, then invokes the same command. See [the canonical export workflow](../../appsmith/EXPORT.md) for both invocation paths and limitations.
+
+During the approved cutover, verify the *actual* PostgreSQL database name and role through Appsmith and n8n, retain the production integration modes, and verify deployed revision. Keep `VERSION=1.1.0` and the release tag unmodified until production acceptance and final packaging.
+
 ## 6. Prepare the master PR and export
 
 The reviewed baseline is backend main `9556662677f2567fa71de73c3444d74c5d6fba65`, Appsmith development `666c9bcaefa6bf22c5683f7819bdbbc55e114482` plus [correction PR #10](https://github.com/RayzorDuff/SignatureGate-Appsmith/pull/10) at `322816a92aec2f9309b7d39a9c0099a841156ce5`, and Appsmith master `48905ca281271889cf6cb778cd0249a221b87c82`. Refresh heads before final packaging. Preserve all five PR #8 repairs and unrelated master changes, including its Cash Deposits widget arrangement and internal-routing work. PR #9 remains excluded.

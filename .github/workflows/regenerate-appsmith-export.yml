@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       appsmith_ref:
-        description: SignatureGate-Appsmith branch, tag, or commit
+        description: Reviewed production-bound SignatureGate-Appsmith branch, tag, or commit (not raw development without promotion review)
         required: true
         default: master
 
@@ -25,6 +25,13 @@ jobs:
           ref: ${{ inputs.appsmith_ref }}
           path: .appsmith-source
 
+      - name: Check out production Appsmith descriptor baseline
+        uses: actions/checkout@v4
+        with:
+          repository: RayzorDuff/SignatureGate-Appsmith
+          ref: master
+          path: .appsmith-production
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -32,16 +39,16 @@ jobs:
 
       - name: Regenerate monolithic Appsmith export
         run: |
-          node scripts/appsmith-export.mjs \
+          node scripts/prepare-appsmith-release-export.mjs \
             --source .appsmith-source \
+            --production-source .appsmith-production \
             --output "appsmith/Rooted Psyche Membership Ops.json"
 
       - name: Verify source and export preservation
         run: |
+          node --check scripts/prepare-appsmith-release-export.mjs
+          node scripts/test-appsmith-rebind-datasource.mjs
           node scripts/test-appsmith-export.mjs
-          python3 scripts/validate_appsmith_source_export.py \
-            --source .appsmith-source \
-            --export "appsmith/Rooted Psyche Membership Ops.json"
           python3 scripts/validate_release.py --assets
 
       - name: Validate generated export
