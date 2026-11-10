@@ -1,73 +1,56 @@
-# SignatureGate v1.2.0 — release candidate notes (draft; NOT YET RELEASED)
+# SignatureGate v1.2.0
 
-**Release date:** Pending production acceptance and final tag.
-
-**Status:** Prepared release notes only. `VERSION` remains `1.1.0`; no production schema migration, Appsmith publication, release tag, or production n8n promotion is established by this document. This file may be finalized only after the operator's approved cutover and actual verification.
+Release date: **2026-11-10**
 
 ## Summary
 
-This coordinated release advances SignatureGate's Participant, Contributor, agreement and donation workflows, with its first versioned SignatureGate-Appsmith application source and generated JSON export. It preserves existing ERPNext accounting integration and the separate MushroomProcess inventory boundary.
+This coordinated release introduces the first versioned SignatureGate-Appsmith application source alongside the SignatureGate database, paper evidence, participant/contributor and cash-deposit upgrades. The production database upgrade and Appsmith master deployment were performed on November 10, with scoped operator verification. See the accepted [restored-production rehearsal](evidence/november_10_restored_production_migration_rehearsal.md) and [preproduction preparation](PREPRODUCTION_HANDOFF.md).
 
-## Application and functional changes
+## Highlights
 
-- Consolidated Directory and identity/capacity workflows, with Individual and Company Profiles, person-level notes and guarded contact ownership/reassignment including inactive Participant correction.
-- Configurable organization-facing Participant and Spiritual Practitioner terminology while retaining stable internal identifiers and historical signed records.
-- Unified atomic Intake with two-contact enrollment, capacity selection, assigned practitioner, saved receipt/replay/recovery, optional later agreement, digital signing, and a separately accepted same-screen paper-upload path.
-- NocoDB paper agreement storage with bounded file validation, independent reviewer approval, recoverable upload receipts and audited cancellation; new Google Drive upload selection is deferred in the UI while implementation and older Drive links remain.
-- Contributor-independent identity and donation review, including company/individual contributors, cash verification, attribution reassignment and reporting separation.
-- Cash Deposit preparation/confirmation, eligibility/immutability, tally/print, audit, and existing optional RootedOps/ERPNext synchronization/status/retry contracts.
-- Role-aware grouped navigation, Directory-to-Profile routing and scope-aware practitioner/reviewer access. Preserves `master` Cash Deposits layout, native Appsmith IDs and production ERP API/controller modes.
-- Hardened inventory location scope: explicitly empty/malformed scope fails closed; omitted-scope compatibility retained.
+- Directory, Individual/Company Profiles and role-aware navigation; independent Participant and Contributor capacities, contact correction and person-level notes.
+- Configurable Participant and Spiritual Practitioner display terminology without rewriting historical internal identifiers or executed documents.
+- Atomic Intake with two contacts, role/assignment checks, durable request receipts and recovery, digital, later and paper agreement choices.
+- Protected paper evidence: NocoDB storage, validation, request idempotency and cancellation/recovery, independent reviewer decisions and durable audit records; Drive new-upload UI remains disabled while historical Drive links and implementation are preserved.
+- Contributor-independent cash/provider donation review and attribution, reports, operational cash deposit batching, confirmation, audit and optional ERP synchronization/retry.
+- Preserved production Cash Deposits layout, native Appsmith IDs and production ERP mode semantics; inventory scope fails closed on explicitly malformed/empty scope.
 
-## Database migration and recovery
+## Released code and provenance
 
-The proposed production upgrade contains **12 selected forward migration files** from `releases/v1.2.0/UPGRADE_MANIFEST_DRAFT.json`, **11 skipped legacy replays** and **one separately reviewed audited terminology operation excluded from the generic upgrade**. The draft remains non-executable until the nine protected environment proofs are signed off.
+- SignatureGate backend and generated Appsmith export are included in the **v1.2.0** release commit and tag, to be recorded by the tagging operator.
+- Canonical Appsmith source: `RayzorDuff/SignatureGate-Appsmith` `master` at **`809f1b8e23f228f671873e6d8752e208d52a3d9a`** (production candidate PR #16 merged, followed by documentation PR #17).
+- Appsmith production datasource descriptor: `48905ca281271889cf6cb778cd0249a221b87c82`.
+- Generated `appsmith/Rooted Psyche Membership Ops.json` and `appsmith/EXPORT_PROVENANCE.json` use the two exact source pins. The recorded generated export SHA-256 is `66fd39a8fa9fb07147a23d3e0d495266cf8a44d8789eb3a7e0e43c547b90b35d` (verify against the actual tagged file).
+- Production-bound n8n paper workflow is `n8n/workflows/SignatureGate - Paper Agreement Upload.json`, updated on `main` at commit **`684c8776c98a28bd26c93fdff7ef54d3f7b55a8a`** with the two PostgreSQL credential selections changed to `signaturegate`. This source refresh also changed n8n node IDs/layout positions: the operator should retain the existing deployed workflow ID, previously accepted request/receipt state, and live credential bindings instead of blindly reimporting the file.
+- The RootedOps source pin used during preparation is documented in `evidence/preproduction_integration_pins.json`; **its exact deployed production revision was not established by that source-only record**. This release does not claim a new ERP acceptance transaction.
 
-On November 10, 2026, a custom production backup was restored into isolated PostgreSQL 16.13. All 12 proposed migrations and 12 targeted SQL verification scripts passed, the compared upgraded schema matched development with zero structural differences and all 35 original production tables had unchanged row counts. See [rehearsal evidence](evidence/november_10_restored_production_migration_rehearsal.md).
+## Production upgrade and accepted verification
 
-**No claim is made that production has been migrated**. Required cutover steps include owner/ACL-preserving restore, actual app and n8n role/grant review, historical-data/backfill invariants, final backup, isolated workers, recovery exercise, and approval of selected dispositions.
+1. The 12 forward SQL migrations selected in `UPGRADE_MANIFEST_DRAFT.json` (11 legacy replays skipped and separately audited terminology adoption omitted) were applied in the rehearsed order to production `signaturegate`. The operator's November 10 terminal transcript reported **12/12 PASS**.
+2. The pre-migration custom-format production archive was saved with a validated SHA-256 checksum at `~/signaturegate-release-backups/v1.2.0/production-20261110T162541Z/`. Keep the backup and private evidence off GitHub.
+3. Isolated rehearsal on restored production data previously reported **12/12 SQL verification tests PASS**, zero compared schema differences versus `signaturegate_test`, and the original 35 production-table row counts preserved.
+4. Post-upgrade production read-only checks reported six core identity/Intake/paper objects present, zero invalid indexes and **zero violating agreement-status rows**. One `member_agreements_status_chk` constraint remains `NOT VALID`, though new/updated rows are checked.
+5. Appsmith's production `signaturegate-postgres` datasource was observed using host `signaturegate-postgres:5432` and database `signaturegate`; a read-only query returned database/user `signaturegate`, PostgreSQL 16.13. The operator showed the merged `master` Directory loading 75 records in Appsmith; the temporary database diagnostic edit was discarded.
+6. The operator confirmed the published application's Directory/Intake/Cash Deposits navigation and changed both existing live n8n paper upload nodes to the production PostgreSQL credential, then committed their exported workflow to SignatureGate `main`. These are configuration-level checks; **a new production paper upload/ERP transaction was not run** and is not required to restate prior accepted functionality.
 
-## Application and integration packaging
+## Known limitations, security and recovery follow-up
 
-- **Appsmith production candidate:** PR #16 merged at `87cd74f5ee40dfe134a56ca92f5f4cfeb47065fe`, preserving reviewed source and native IDs.
-- **Appsmith documentation-only follow-up:** PR #17 merged at `809f1b8e23f228f671873e6d8752e208d52a3d9a`. This is the **current exact Appsmith master export source pin**, subject to any later merges.
-- **Production descriptor baseline:** Appsmith commit `48905ca281271889cf6cb778cd0249a221b87c82`. Review and retain its native `signaturegate-postgres` descriptor SHA-256.
-- **Export artifact:** Pending regeneration from those two exact commit pins and check-in of `appsmith/Rooted Psyche Membership Ops.json` and `appsmith/EXPORT_PROVENANCE.json` in SignatureGate. The earlier PR #16 disposable export digest is **not** the final shipped artifact.
-- **Integration pins:** See `evidence/preproduction_integration_pins.json`. The actual deployed RootedOps revision, n8n workflow versions/credentials and paper workflow production PG bindings still require private runtime verification.
+- Production app database role `signaturegate` is currently SUPERUSER and BYPASSRLS, as observed in the read-only post-upgrade query. Use an approved least-privilege role migration in a separate change; do not silently alter credentials during the cutover.
+- The isolated functional rehearsal used `pg_restore --no-owner --no-acl`; a separate owner/ACL-preserving restore and protected row-content digest comparison have **not been reported complete**. The November 10 production backup checksum was verified, but that alone does not prove a full disaster-recovery restoration. Retain private backup and operational recovery work for follow-up.
+- The current migration manifest records 12 selected entries, 11 skipped legacy entries, one excluded configuration operation and nine environment proofs originally left false. It is the reviewed source inventory, **not a signed record that every private proof was closed**. Do not automatically rerun the entire manifest against an already upgraded database.
+- Spiritual Practitioner Functions → Assign Storage Location currently exposes a text input without the existing location suggestions. Follow-up: [Appsmith #18](https://github.com/RayzorDuff/SignatureGate-Appsmith/issues/18); no release claim that MushroomProcess locations automatically populate.
+- Additional ERP end-to-end replay, optional new Google Drive upload verification, Playwright and broad accessibility tests remain deferred. Keep historical Drive references, ERP bank lookup/sync/retry/status, and prior signed evidence intact.
 
-The agreed export procedure is [appsmith/EXPORT.md](../../appsmith/EXPORT.md). Source metadata rebinding does not change saved Appsmith credentials/connection targets or publish the application.
+## Operational notes
 
-## Accepted verification
+- Retain production backups, release provenance, node/credential mappings and any exported live workflow configuration privately.
+- Avoid importing the production-bound monolithic JSON into a new Appsmith workspace when Git Sync can update the existing application while preserving its identity. The existing Git-synchronized `master` was used for production promotion.
+- Avoid replaying uncertain paper uploads, signing requests, or ERP accounting events as smoke tests.
+- Consult [production promotion/recovery guidance](PREPRODUCTION_HANDOFF.md) for recovery boundaries. After writes resume, backup rollback requires reconciliation of new records and external effects.
+- If a noncritical regression is discovered, prepare a focused **v1.2.1** repair rather than changing the released v1.2.0 tag.
 
-- Network-isolated production-restore schema rehearsal: **12/12 migrations PASS**.
-- Targeted rollback-only SQL suite: **12/12 PASS**.
-- Compared schema category differences: **0**.
-- Original production table row-count preservation: **35/35**.
-- Native NocoDB test paper upload/retrieval/independent reviewer/audit: accepted under [paper evidence](evidence/november_10_paper_native_retry.md).
-- Same-screen Intake paper enrollment and saved receipt recovery: operator reported PASS in the subsequent development session; new synthetic agreement remained pending independent review.
-- Appsmith candidate source/controller, production ERP modes, native identity preservation and disposable deterministic export tests: operator reported PASS; exact release export from merged master remains pending.
+## Coordinated release references
 
-## Deployment order and release gates
-
-1. Regenerate the release export using the **final exact Appsmith `master` SHA**, a separately pinned production descriptor SHA and identical local/Action preparation logic. Inspect generated provenance/JSON and record the export workflow run.
-2. Complete and privately approve all nine production environment proofs in the migration manifest; verify actual roles/grants/data invariants, deployed RootedOps/n8n/Documenso/NocoDB routing and old-app read compatibility.
-3. Approve production maintenance and recovery, freeze or isolate writers, capture final production backup and matching service settings; execute only the approved hash-checked selected migration list.
-4. Verify schema, data invariants, roles/grants, old/new app compatibility, paper request and cash-state contracts before resuming writes.
-5. Publish the approved Appsmith revision against the **actual** production `signaturegate` datasource; rebind paper workflow's two PG nodes to reviewed production credentials, verify caller routes/worker state and resume reviewed consumers in sequence.
-6. Confirm actual deployment/published revision and smoke evidence, finalize dependency pins and release notes, update `VERSION`/README/changelog with the established release tooling, run `make release-check`, then create/publish the final `v1.2.0` Git tag and release.
-
-**Do not tag early:** a Git source merge or a successful isolated rehearsal does not establish a production deployment.
-
-## Deferred / not release-blocking
-
-A second ERP end-to-end transaction replay, optional Google Drive new-upload acceptance, full Playwright browser harness, broad mobile/accessibility navigation testing and issue-wide future identity/terminology expansion are deferred. Existing integration functionality is preserved; deferral is not a decision to disable ERP.
-
-## Final evidence to fill before publishing
-
-- [ ] Final backend packaging commit and `VERSION=1.2.0`.
-- [ ] Exact Appsmith master source SHA and descriptor commit SHA.
-- [ ] Regenerate Appsmith export workflow run URL, generated JSON SHA-256 and `EXPORT_PROVENANCE.json`.
-- [ ] Approved manifest including selected/skipped dispositions, private evidence sign-offs and recovery rehearsal.
-- [ ] Actual deployed RootedOps tag/SHA, n8n workflow revisions, saved datasource identities/roles and paper PG credentials.
-- [ ] Production PostgreSQL migration and post-upgrade verification outcome.
-- [ ] Published Appsmith revision, operational acceptance and release tag.
+- SignatureGate source/tag: **v1.2.0**
+- SignatureGate-Appsmith source: `809f1b8e23f228f671873e6d8752e208d52a3d9a` (tag separately after verifying branch head matches)
+- RootedOps: current deployment unchanged by SignatureGate packaging; its actual deployed SHA remains an operational inventory item.
