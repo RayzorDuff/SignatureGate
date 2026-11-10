@@ -2,6 +2,7 @@
 
 Status: **unreleased**. This is the first coordinated SignatureGate-Appsmith release. `VERSION` remains 1.1.0 until final release preparation.
 
+- [Draft v1.2.0 release notes and remaining final acceptance](RELEASE_NOTES.md)
 - [Current pre-production handoff, evidence and recovery](PREPRODUCTION_HANDOFF.md)
 - [Current status](STATUS.md)
 - [Documentation consistency audit and remaining gaps](DOCUMENTATION_CONSISTENCY_AUDIT.md)
@@ -28,7 +29,7 @@ Status: **unreleased**. This is the first coordinated SignatureGate-Appsmith rel
 - [Read-only database collector](capture_database_inventory.sql)
 - [Source inventory summary](evidence/source_summary.json)
 
-**Current checkpoint (November 10, 2026):** The restored-production rehearsal is **PASS**: 12 selected SQL migrations applied on an isolated PostgreSQL 16.13 restore; 12/12 targeted rollback-only SQL tests passed; **zero compared structural differences** against `signaturegate_test`; all 35 original production-table row counts preserved. Native NocoDB paper upload and independent review have separate accepted test evidence. **Still open:** manifest dispositions and environment proofs, ownership/grants and production-role checks, final rollback exercise, integration pins, reviewed Appsmith master promotion and actual production publication. Production `signaturegate` has not been migrated. No v1.2.0 release/tag is final.
+**Current checkpoint (November 10, 2026):** The restored-production rehearsal is **PASS**: 12 selected SQL migrations applied on an isolated PostgreSQL 16.13 restore; 12/12 targeted rollback-only SQL tests passed; **zero compared structural differences** against `signaturegate_test`; all 35 original production-table row counts preserved. Native NocoDB paper upload and independent review have separate accepted test evidence. **Still open:** final private approval of the proposed 24 manifest dispositions and nine environment proofs, ownership/grants and production-role checks, final rollback exercise, actual deployed integration pins, generated JSON from merged Appsmith `master`, and production publication. Production `signaturegate` has not been migrated. No v1.2.0 release/tag is final.
 
 - [Sanitized live evidence review](LIVE_EVIDENCE_REVIEW.md): received catalog dispositions, confirmed software versions and open deployment gates.
 - [Next identity-notes validation commands](NOTES_VALIDATION_COMMANDS.md): private effective-definition capture, test migration/reapplication and Profile/`Intake` checks.
@@ -48,7 +49,7 @@ Status: **unreleased**. This is the first coordinated SignatureGate-Appsmith rel
 
 - [Grouped navigation and Participant presentation validation](NAVIGATION_AND_PARTICIPANT_VALIDATION.md).
 
-First Appsmith release notes: [draft in the application source](https://github.com/RayzorDuff/SignatureGate-Appsmith/blob/chatgpt_development/releases/first-release/RELEASE_NOTES.md). Final version/tag and production provenance remain gated.
+First Appsmith release notes: [draft in merged application master](https://github.com/RayzorDuff/SignatureGate-Appsmith/blob/master/releases/first-release/RELEASE_NOTES.md). Final version/tag and production provenance remain gated.
 
 - [Conditional upgrade-manifest review](UPGRADE_MANIFEST_REVIEW.md): checksum/order draft, undecided selections and required restore/dependency evidence.
 
