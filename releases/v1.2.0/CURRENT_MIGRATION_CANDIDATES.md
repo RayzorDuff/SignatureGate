@@ -1,6 +1,8 @@
 # Current v1.2.0 migration candidates
 
-**Pending effective-definition review and restored-production rehearsal; not a production execution manifest.** The original `evidence/migrations.csv` is the initial source-audit snapshot. This document records changed/new candidates without rewriting that baseline. Only technical objects and source checksums are recorded here.
+**Scoped restored-production rehearsal PASSED November 10, 2026; final manifest/environment review still pending. Not a production execution manifest.** The original `evidence/migrations.csv` is the initial source-audit snapshot. This document records changed/new candidates without rewriting that baseline. Only technical objects and source checksums are recorded here.
+
+The restored-production exercise applied 12 selected candidates with 12/12 targeted verification tests PASS, matching `signaturegate_test` on the compared schema definitions and preserving row counts in 35 original production tables. This **supersedes older statements below that rehearsal is still pending**, while each candidate's original pre-rehearsal observations remain historical context. See [November 10 evidence](evidence/november_10_restored_production_migration_rehearsal.md). Source hashes below are historical candidate inventory snapshots: recheck them against the finally pinned source. Ownership/grants, data contents, integration isolation, selected/skipped manifest status and production deployment still require separate acceptance.
 
 | Candidate | Current SHA-256 | Evidence / prerequisites | Verification / recovery |
 | --- | --- | --- | --- |
