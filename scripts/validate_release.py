@@ -97,7 +97,7 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
             )
 
     release_queries = {
-        "qCurrentFacilitator": "issue19_current_release_actor",
+        "qCurrentFacilitator": "application_access",
         "qMembersDirectory": "issue19_sacrament_release_members",
         "qListFacilitators": "issue19_release_practitioners",
         "qAccessibleStorageLocations": "issue19_release_storage_locations",
@@ -130,24 +130,27 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
             "as its canonical practitioner"
         )
 
+    # Unified Intake retired the duplicate pending-agreement writer.
+    # Require the remaining canonical Member Functions writer.
     agreement_create_actions = [
         action for action in data.get("actionList", [])
         if action.get("publishedAction", {}).get("name") == "qCreatePendingAgreement"
     ]
-    if len(agreement_create_actions) != 2:
+    if len(agreement_create_actions) != 1:
         failures.append(
-            f"{relative_path}: expected two transitional member agreement writers"
+            f"{relative_path}: expected one canonical pending agreement writer"
         )
     for action in agreement_create_actions:
         published = action.get("publishedAction", {})
         unpublished = action.get("unpublishedAction", {})
         published_body = published.get("actionConfiguration", {}).get("body", "")
         unpublished_body = unpublished.get("actionConfiguration", {}).get("body", "")
-        if published_body != unpublished_body \
-           or "issue19_create_member_agreement" not in published_body:
+        if (published.get("pageId") != "Member Functions"
+                or published_body != unpublished_body
+                or "issue19_create_member_agreement" not in published_body):
             failures.append(
                 f"{relative_path}: {published.get('pageId')}/qCreatePendingAgreement "
-                "must use the canonical guarded agreement writer"
+                "must remain the canonical guarded agreement writer"
             )
 
     page_names = {
@@ -191,7 +194,7 @@ def validate_appsmith_export(path: pathlib.Path, data: dict, failures: list[str]
                 }
                 selector = release_widgets.get("selFacilitator", {})
                 serialized = json.dumps(selector, sort_keys=True)
-                if "practitioner_singular_label" not in serialized \
+                if 'navigationLabels.label("practitioner")' not in serialized \
                    or "practitioner_person_id" not in serialized:
                     failures.append(
                         f"{relative_path}: {variant_name}/selFacilitator must "
