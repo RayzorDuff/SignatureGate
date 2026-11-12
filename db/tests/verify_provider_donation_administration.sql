@@ -62,6 +62,24 @@ BEGIN
  SELECT * INTO v_b FROM public.contributors WHERE contributor_id=v_result.contributor_id;
  IF v_b.organization_id IS NULL OR v_b.person_id IS NOT NULL OR v_result.member_id IS NOT NULL THEN RAISE EXCEPTION 'Company became a person or Participant'; END IF;
 
+ -- Givebutter formatting variants reuse the same physical address, while
+ -- distinct units remain separate and incomplete payloads stay on the donation.
+ v_gift2:=pg_temp.provider_fixture('{"address":{"line1":"12 Example Street","line2":"Apartment 4","city":"Example","state":"Colorado","zip":"80000-1234","country":"USA"}}');
+ PERFORM public.add_donation_payload_to_contributor(v_a.contributor_id,v_gift2);
+ UPDATE public.contributor_addresses SET address_type='home' WHERE contributor_id=v_a.contributor_id;
+ v_gift2:=pg_temp.provider_fixture('{"address":{"street":"12 example st","suite":"Unit 4","city":"Example","province":"CO","postal_code":"80000","country":"US"}}');
+ PERFORM public.add_donation_payload_to_contributor(v_a.contributor_id,v_gift2);
+ IF (SELECT count(*) FROM public.contributor_addresses WHERE contributor_id=v_a.contributor_id)<>1
+ THEN RAISE EXCEPTION 'Givebutter formatting changes duplicated a physical address'; END IF;
+ v_gift2:=pg_temp.provider_fixture('{"address":{"line1":"12 Example St","line2":"Apt 5","zip":"80000"}}');
+ PERFORM public.add_donation_payload_to_contributor(v_a.contributor_id,v_gift2);
+ v_gift2:=pg_temp.provider_fixture('{"address":{"line1":"12 Example Street","line2":"Apartment 4","city":"Example","state":"CO"}}');
+ PERFORM public.add_donation_payload_to_contributor(v_a.contributor_id,v_gift2);
+ PERFORM public.add_donation_payload_to_contributor(v_a.contributor_id,v_gift2);
+ IF (SELECT count(*) FROM public.contributor_addresses WHERE contributor_id=v_a.contributor_id)<>2
+  OR public.donation_provider_payload(v_gift2)#>>'{address,line1}' IS DISTINCT FROM '12 Example Street'
+ THEN RAISE EXCEPTION 'Givebutter replay duplicated an incomplete address or lost its source payload'; END IF;
+
  -- Known provider IDs prevent new duplicate parties, even with different contacts.
  v_gift2:=pg_temp.provider_fixture('{"first_name":"Synthetic","last_name":"Duplicate","email":"provider-other@example.invalid","contact_id":101}'::jsonb);
  SELECT count(*) INTO v_count FROM public.people;
