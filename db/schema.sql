@@ -193,6 +193,10 @@ DECLARE
   v_email text;
   v_phone text;
   v_address jsonb;
+  v_address_1 text;
+  v_address_2 text;
+  v_postal_code text;
+  v_country text;
   v_provider text;
   v_provider_identity text;
 BEGIN
@@ -254,34 +258,34 @@ BEGIN
   END IF;
 
   v_address := COALESCE(v_payload->'address', '{}'::jsonb);
-  IF NULLIF(btrim(COALESCE(
-    v_address->>'address_1',
-    v_address->>'line1',
-    v_address->>'street',
-    v_address->>'street_address'
-  )), '') IS NOT NULL THEN
+  v_address_1 := NULLIF(btrim(COALESCE(
+    v_address->>'address_1', v_address->>'line1',
+    v_address->>'street', v_address->>'street_address'
+  )), '');
+  v_address_2 := COALESCE(v_address->>'address_2', v_address->>'line2', v_address->>'suite');
+  v_postal_code := COALESCE(v_address->>'zipcode', v_address->>'postal_code', v_address->>'zip');
+  v_country := COALESCE(NULLIF(v_address->>'country', ''), 'USA');
+
+  -- Preserve incomplete Givebutter addresses in the donation payload. Without
+  -- a physical address key, replay cannot safely identify a matching row.
+  IF v_address_1 IS NOT NULL AND (
+    v_provider IS DISTINCT FROM 'givebutter'
+    OR public.member_address_identity_key(v_address_1, v_address_2, v_postal_code, v_country) IS NOT NULL
+  ) THEN
+    IF v_provider = 'givebutter' THEN
+      -- Concurrent reviews for the same Contributor must see prior writes.
+      PERFORM 1 FROM public.contributors
+      WHERE contributor_id = p_contributor_id FOR NO KEY UPDATE;
+    END IF;
     PERFORM public.upsert_contributor_address(
       p_contributor_id => p_contributor_id,
-      p_address_1 => COALESCE(
-        v_address->>'address_1',
-        v_address->>'line1',
-        v_address->>'street',
-        v_address->>'street_address'
-      ),
+      p_address_1 => v_address_1,
       p_address_type => 'mailing',
-      p_address_2 => COALESCE(
-        v_address->>'address_2',
-        v_address->>'line2',
-        v_address->>'suite'
-      ),
+      p_address_2 => v_address_2,
       p_city => v_address->>'city',
       p_state => COALESCE(v_address->>'state', v_address->>'province'),
-      p_postal_code => COALESCE(
-        v_address->>'zipcode',
-        v_address->>'postal_code',
-        v_address->>'zip'
-      ),
-      p_country => COALESCE(NULLIF(v_address->>'country', ''), 'USA'),
+      p_postal_code => v_postal_code,
+      p_country => v_country,
       p_is_primary => true,
       p_source => p_source,
       p_notes => 'Added from donation ' || p_donation_id::text
